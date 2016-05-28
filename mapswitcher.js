@@ -40,6 +40,7 @@ function parseGoogleURL(url) {
         extractedMapData["centreLng"] = coordArray[2];
     }
 
+    //TODO correct legal characters for locations in google URL?
     re = /dir\/([-A-Za-z0-9%'+,]+)\/([-A-Za-z0-9%'+,]+)\//;
     coordArray = parser.pathname.match(re);
     if (coordArray && coordArray.length >= 3) {
@@ -89,15 +90,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     getCurrentTabUrl(function(url) {
-
         console.log('Extracting coords from ' + url);
+
+        chrome.tabs.executeScript({
+            file: "dataExtractor.js"
+        });
+
+
         var matched = false;
 
         //Attempt to parse each type of input map document.
         //Any that match return true and populate the extracted data object;
         //others return false and have no effect.
         matched = matched || parseGoogleURL(url);
-        matched = matched || parseBingURL(url);
+        //matched = matched || parseBingURL(url);
 
         //If we found a match, we now have extracted data which we can use to
         //construct URLs for all the other services.

@@ -16,5 +16,14 @@
   ],
   "background": {
     "scripts": ["jquery-2.2.4.min.js"]
-  }
+  },
+  "content_scripts": [{
+    "matches": [
+      "*://www.bing.com/maps/*",
+      "*://www.bing.com/mapspreview/*"
+    ],
+    "js": [
+      "dataExtractor.js"
+    ]
+  }]
 }
