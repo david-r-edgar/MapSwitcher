@@ -6,13 +6,10 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
     //TODO if there's no 'state', it means no scrolling has happened yet.
     //So we should extract the lat and lng from the window.location parameter
 
-    var lat = window.history.state.MapModeStateHistory.centerPoint.latitude;
-    var lng = window.history.state.MapModeStateHistory.centerPoint.longitude;
+    sourceMapData.centreLat = window.history.state.MapModeStateHistory.centerPoint.latitude;
+    sourceMapData.centreLng = window.history.state.MapModeStateHistory.centerPoint.longitude;
 
-    console.log(lat + ", " + lng);
-
-    sourceMapData.centreLat = lat;
-    sourceMapData.centreLng = lng;
+    console.log(sourceMapData.centreLat + ", " + sourceMapData.centreLng);
 
 } else if (window.location.hostname.indexOf("google.") >= 0) {
 

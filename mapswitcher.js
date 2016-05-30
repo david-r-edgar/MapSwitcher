@@ -48,8 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.tabs.executeScript({
         file: "dataExtractor.js"
     }, function(result) {
-        //FIXME centreLat or centreLng could validly be 0
-        if (result && result[0] && result[0].centreLat && result[0].centreLng) {
+        if (result && result[0]
+            && (result[0].centreLat !== null)
+            && (result[0].centreLng !== null)) {
             buildBingURLs(result[0]);
             buildGoogleURLs(result[0]);
         }
