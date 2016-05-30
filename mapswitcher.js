@@ -1,68 +1,18 @@
 
-/**
- * Get the current URL.
- *
- * @param {function(string)} callback - called when the URL of the current tab
- *   is found.
- */
-function getCurrentTabUrl(callback) {
-  var queryInfo = {
-    active: true,
-    currentWindow: true
-  };
-
-  chrome.tabs.query(queryInfo, function(tabs) {
-    var tab = tabs[0];
-    var url = tab.url;
-    console.assert(typeof url == 'string', 'tab.url should be a string');
-    callback(url);
-  });
-
-}
-
-
-var extractedMapData = {}
 var availableLinks = {}
 
-function parseGoogleURL(url) {
-    var parser = document.createElement('a');
-    parser.href = url;
-    var hostname = parser.hostname;
-    var google = "google";
-    if (hostname.indexOf(google) <= -1) {
-        return false;
-    }
-
-    var re = /@([-0-9.]+),([-0-9.]+),/;
-    coordArray = parser.pathname.match(re);
-    if (coordArray && coordArray.length >= 3) {
-        extractedMapData["centreLat"] = coordArray[1];
-        extractedMapData["centreLng"] = coordArray[2];
-    }
-
-    //TODO correct legal characters for locations in google URL?
-    re = /dir\/([-A-Za-z0-9%'+,]+)\/([-A-Za-z0-9%'+,]+)\//;
-    coordArray = parser.pathname.match(re);
-    if (coordArray && coordArray.length >= 3) {
-        extractedMapData["dirFrom"] = coordArray[1];
-        extractedMapData["dirTo"] = coordArray[2];
-    }
-
-    return true;
-}
-
-
-function buildBingURLs(extractedMapData) {
+//TODO refactor so that we can call all such routines with one command
+function buildBingURLs(sourceMapData) {
 
     var bingBase = "http://bing.com/maps/default.aspx?";
     var directions = "";
-    var mapCentre = "cp=" + extractedMapData["centreLat"] + "~" + extractedMapData["centreLng"];
+    var mapCentre = "cp=" + sourceMapData["centreLat"] + "~" + sourceMapData["centreLng"];
 
-    if (("dirFrom" in extractedMapData) && ("dirTo" in extractedMapData)) {
-        console.log(extractedMapData["dirFrom"]);
-        console.log(extractedMapData["dirTo"]);
+    if (("dirFrom" in sourceMapData) && ("dirTo" in sourceMapData)) {
+        console.log(sourceMapData["dirFrom"]);
+        console.log(sourceMapData["dirTo"]);
 
-        directions = "rtp=adr." + extractedMapData["dirFrom"] + "~adr." + extractedMapData["dirTo"];
+        directions = "rtp=adr." + sourceMapData["dirFrom"] + "~adr." + sourceMapData["dirTo"];
     }
 
     availableLinks["bingroad"] = bingBase + directions + "&" + mapCentre;
@@ -74,10 +24,16 @@ function buildBingURLs(extractedMapData) {
     console.log(availableLinks["bingos"]);
 }
 
+function buildGoogleURLs(sourceMapData) {
 
+    var googleBase = "https://www.google.co.uk/maps/";
+    var mapCentre = "@" + sourceMapData["centreLat"] + "," + sourceMapData["centreLng"] + ",";
+    var zoom = "17z";
 
-
-
+    availableLinks["googlemaps"] = googleBase + mapCentre + zoom;
+    availableLinks["googleterrain"] = googleBase + mapCentre + zoom + "/data=!5m1!1e4";
+    availableLinks["googleearth"] = googleBase + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
+}
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -89,26 +45,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    getCurrentTabUrl(function(url) {
-        console.log('Extracting coords from ' + url);
-
-        chrome.tabs.executeScript({
-            file: "dataExtractor.js"
-        });
-
-
-        var matched = false;
-
-        //Attempt to parse each type of input map document.
-        //Any that match return true and populate the extracted data object;
-        //others return false and have no effect.
-        matched = matched || parseGoogleURL(url);
-        //matched = matched || parseBingURL(url);
-
-        //If we found a match, we now have extracted data which we can use to
-        //construct URLs for all the other services.
-        if (matched) {
-            buildBingURLs(extractedMapData);
+    chrome.tabs.executeScript({
+        file: "dataExtractor.js"
+    }, function(result) {
+        //FIXME centreLat or centreLng could validly be 0
+        if (result && result[0] && result[0].centreLat && result[0].centreLng) {
+            buildBingURLs(result[0]);
+            buildGoogleURLs(result[0]);
         }
     });
+
 });
+
