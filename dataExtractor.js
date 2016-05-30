@@ -36,15 +36,12 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
     }
 
 } else if (window.location.hostname.indexOf("geocaching.") >= 0) {
-    console.log("geocaching");
     var re = /ll=([-0-9.]+),([-0-9.]+)/;
-    console.log(window.location);
     coordArray = window.location.hash.match(re);
     if (coordArray && coordArray.length >= 3) {
         sourceMapData.centreLat = coordArray[1];
         sourceMapData.centreLng = coordArray[2];
     }
-    console.log(sourceMapData);
 }
 
 //this expression is how we return a result object to the caller (extension script)

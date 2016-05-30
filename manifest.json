@@ -6,7 +6,10 @@
   "version": "0.1",
 
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": {
+      "19": "image/mapswitcher19x19.png",
+      "38": "image/mapswitcher38x38.png"
+    },
     "default_popup": "mapswitcher.html",
     "default_title": "Map Switcher"
   },
@@ -19,7 +22,7 @@
   },
   "content_scripts": [{
     "matches": [
-      "*://www.google.*/maps/*",
+      "*://www.google.com/maps/*",
       "*://www.bing.com/maps/*",
       "*://www.bing.com/mapspreview/*",
       "*://www.geocaching.com/map/*"
@@ -27,5 +30,10 @@
     "js": [
       "dataExtractor.js"
     ]
-  }]
+  }],
+  "icons": {
+    "16": "image/mapswitcherFavicon16x16.png",
+    "32": "image/mapswitcher32x32.png",
+    "48": "image/mapswitcher48x48.png",
+    "128": "image/mapswitcher128x128.png"}
 }
