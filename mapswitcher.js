@@ -32,6 +32,14 @@ function buildGoogleURLs(sourceMapData) {
     availableLinks["googleearth"] = googleBase + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
 }
 
+function buildGeocachingURLs(sourceMapData) {
+
+    var geocachingBase = "https://www.geocaching.com/map/#?";
+    var mapCentre = "ll=" + sourceMapData["centreLat"] + "," + sourceMapData["centreLng"];
+    var zoom = "z=14";
+
+    availableLinks["geocaching"] = geocachingBase + mapCentre + '&' + zoom;
+}
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -50,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
             && (result[0].centreLng !== null)) {
             buildBingURLs(result[0]);
             buildGoogleURLs(result[0]);
+            buildGeocachingURLs(result[0]);
         }
     });
 

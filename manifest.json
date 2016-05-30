@@ -19,8 +19,10 @@
   },
   "content_scripts": [{
     "matches": [
+      "*://www.google.*/maps/*",
       "*://www.bing.com/maps/*",
-      "*://www.bing.com/mapspreview/*"
+      "*://www.bing.com/mapspreview/*",
+      "*://www.geocaching.com/map/*"
     ],
     "js": [
       "dataExtractor.js"
