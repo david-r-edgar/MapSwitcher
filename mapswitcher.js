@@ -19,9 +19,6 @@ function buildBingURLs(sourceMapData) {
     availableLinks["bingos"] = bingBase + directions + "&" + mapCentre + "&sty=s";
     availableLinks["bingaerial"] = bingBase + directions + "&" + mapCentre + "&sty=h";
     availableLinks["bingbirdseye"] = bingBase + directions + "&" + mapCentre + "&sty=b";
-
-    console.log(availableLinks["bingroad"]);
-    console.log(availableLinks["bingos"]);
 }
 
 function buildGoogleURLs(sourceMapData) {

@@ -2,14 +2,21 @@ var sourceMapData = {}
 
 if (window.location.hostname.indexOf(".bing.") >= 0) {
 
-    console.log(window.history);
-    //TODO if there's no 'state', it means no scrolling has happened yet.
+    //if there's no 'state', it means no scrolling has happened yet.
     //So we should extract the lat and lng from the window.location parameter
-
-    sourceMapData.centreLat = window.history.state.MapModeStateHistory.centerPoint.latitude;
-    sourceMapData.centreLng = window.history.state.MapModeStateHistory.centerPoint.longitude;
-
-    console.log(sourceMapData.centreLat + ", " + sourceMapData.centreLng);
+    if (window.history && !window.history.state) {
+        var re = /cp=([-0-9.]+)~([-0-9.]+)/
+        coordArray = window.location.search.match(re);
+        if (coordArray && coordArray.length >= 3) {
+            sourceMapData.centreLat = coordArray[1];
+            sourceMapData.centreLng = coordArray[2];
+        }
+    } else {
+        //scrolling has happened, but bing doesn't update its URL. So we pull the coords
+        //from the'MapModeStateHistory'
+        sourceMapData.centreLat = window.history.state.MapModeStateHistory.centerPoint.latitude;
+        sourceMapData.centreLng = window.history.state.MapModeStateHistory.centerPoint.longitude;
+    }
 
 } else if (window.location.hostname.indexOf("google.") >= 0) {
 
