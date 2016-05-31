@@ -18,6 +18,9 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
         sourceMapData.centreLng = window.history.state.MapModeStateHistory.centerPoint.longitude;
     }
 
+    sourceMapData.dirFrom = $(".dirWaypoints input[title='From']").val();
+    sourceMapData.dirTo = $(".dirWaypoints input[title='To']").val();
+
 } else if (window.location.hostname.indexOf("google.") >= 0) {
 
     var re = /@([-0-9.]+),([-0-9.]+),/;
@@ -31,8 +34,8 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
     re = /dir\/([-A-Za-z0-9%'+,]+)\/([-A-Za-z0-9%'+,]+)\//;
     coordArray = window.location.pathname.match(re);
     if (coordArray && coordArray.length >= 3) {
-        sourceMapData["dirFrom"] = coordArray[1];
-        sourceMapData["dirTo"] = coordArray[2];
+        sourceMapData.dirFrom = coordArray[1];
+        sourceMapData.dirTo = coordArray[2];
     }
 
 } else if (window.location.hostname.indexOf("openstreetmap.") >= 0) {

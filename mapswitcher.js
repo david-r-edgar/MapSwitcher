@@ -24,12 +24,17 @@ function buildBingURLs(sourceMapData) {
 function buildGoogleURLs(sourceMapData) {
 
     var googleBase = "https://www.google.co.uk/maps/";
+    var directions = "";
     var mapCentre = "@" + sourceMapData["centreLat"] + "," + sourceMapData["centreLng"] + ",";
     var zoom = "17z";
 
-    availableLinks["googlemaps"] = googleBase + mapCentre + zoom;
-    availableLinks["googleterrain"] = googleBase + mapCentre + zoom + "/data=!5m1!1e4";
-    availableLinks["googleearth"] = googleBase + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
+    if (("dirFrom" in sourceMapData) && ("dirTo" in sourceMapData)) {
+        directions = "dir/" + sourceMapData["dirFrom"] + "/" + sourceMapData["dirTo"] + "/";
+    }
+
+    availableLinks["googlemaps"] = googleBase + directions + mapCentre + zoom;
+    availableLinks["googleterrain"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
+    availableLinks["googleearth"] = googleBase + directions + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
 }
 
 function buildOpenStreetMapURLs(sourceMapData) {
@@ -70,23 +75,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    chrome.tabs.executeScript({
-        file: "dataExtractor.js"
-    }, function(result) {
-        if (result && result[0]
-            && (result[0].centreLat !== null)
-            && (result[0].centreLat !== undefined)
-            && (result[0].centreLng !== null)
-            && (result[0].centreLng !== undefined)) {
-            buildBingURLs(result[0]);
-            buildGoogleURLs(result[0]);
-            buildOpenStreetMapURLs(result[0]);
-            buildGeoHackURLs(result[0]);
-            buildGeocachingURLs(result[0]);
-        } else {
-            $("#nomap").show();
-            $("#maplinkbox").hide();
-        }
+    chrome.tabs.executeScript({file: "jquery-2.2.4.min.js"}, function(){
+        chrome.tabs.executeScript({
+            file: "dataExtractor.js"
+        }, function(result) {
+            if (result && result[0]
+                && (result[0].centreLat !== null)
+                && (result[0].centreLat !== undefined)
+                && (result[0].centreLng !== null)
+                && (result[0].centreLng !== undefined)) {
+                buildBingURLs(result[0]);
+                buildGoogleURLs(result[0]);
+                buildOpenStreetMapURLs(result[0]);
+                buildGeoHackURLs(result[0]);
+                buildGeocachingURLs(result[0]);
+            } else {
+                $("#nomap").show();
+                $("#maplinkbox").hide();
+            }
+        });
     });
 
 });
