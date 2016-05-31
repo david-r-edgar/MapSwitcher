@@ -28,8 +28,8 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
         sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]};
     }
 
-    //TODO correct legal characters for locations in google URL?
-    re = /dir\/([-A-Za-z0-9%'+,]+)\/([-A-Za-z0-9%'+,]+)\//;
+    //window.location.pathname url-encodes other characters so we can ignore them
+    re = /dir\/([-A-Za-z0-9%'+,!$_.*()]+)\/([-A-Za-z0-9%'+,!$_.*()]+)\//;
     coordArray = window.location.pathname.match(re);
     if (coordArray && coordArray.length >= 3) {
         sourceMapData.dirFrom = coordArray[1];
