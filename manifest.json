@@ -23,8 +23,10 @@
   "content_scripts": [{
     "matches": [
       "*://www.google.com/maps/*",
+      "*://www.google.co.uk/maps/*",
       "*://www.bing.com/maps/*",
       "*://www.bing.com/mapspreview/*",
+      "*://www.openstreetmap.org/*",
       "*://www.geocaching.com/map/*"
     ],
     "js": [

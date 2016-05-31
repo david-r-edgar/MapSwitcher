@@ -35,6 +35,15 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
         sourceMapData["dirTo"] = coordArray[2];
     }
 
+} else if (window.location.hostname.indexOf("openstreetmap.") >= 0) {
+    var re = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
+    coordArray = window.location.hash.match(re);
+    if (coordArray && coordArray.length >= 4) {
+        //coordArray[1] is the zoom
+        sourceMapData.centreLat = coordArray[2];
+        sourceMapData.centreLng = coordArray[3];
+    }
+
 } else if (window.location.hostname.indexOf("geocaching.") >= 0) {
     var re = /ll=([-0-9.]+),([-0-9.]+)/;
     coordArray = window.location.hash.match(re);

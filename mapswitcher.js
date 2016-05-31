@@ -32,6 +32,19 @@ function buildGoogleURLs(sourceMapData) {
     availableLinks["googleearth"] = googleBase + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
 }
 
+function buildOpenStreetMapURLs(sourceMapData) {
+
+    var osmBase = "https://www.openstreetmap.org/#map=";
+    var zoom = "12/";
+    var mapCentre = sourceMapData["centreLat"] + "/" + sourceMapData["centreLng"];
+
+    availableLinks["osmStandard"] = osmBase + zoom + mapCentre;
+    availableLinks["osmCycle"] = osmBase + zoom + mapCentre + "&layers=C";
+    availableLinks["osmTransport"] = osmBase + zoom + mapCentre + "&layers=T";
+    availableLinks["osmMapQuestOpen"] = osmBase + zoom + mapCentre + "&layers=Q";
+    availableLinks["osmHumanitarian"] = osmBase + zoom + mapCentre + "&layers=H";
+}
+
 function buildGeocachingURLs(sourceMapData) {
 
     var geocachingBase = "https://www.geocaching.com/map/#?";
@@ -58,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
             && (result[0].centreLng !== null)) {
             buildBingURLs(result[0]);
             buildGoogleURLs(result[0]);
+            buildOpenStreetMapURLs(result[0]);
             buildGeocachingURLs(result[0]);
         }
     });
