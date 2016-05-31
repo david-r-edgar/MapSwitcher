@@ -6,7 +6,7 @@ function buildBingURLs(sourceMapData) {
 
     var bingBase = "http://bing.com/maps/default.aspx?";
     var directions = "";
-    var mapCentre = "cp=" + sourceMapData["centreLat"] + "~" + sourceMapData["centreLng"];
+    var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
 
     if (("dirFrom" in sourceMapData) && ("dirTo" in sourceMapData)) {
         console.log(sourceMapData["dirFrom"]);
@@ -25,8 +25,8 @@ function buildGoogleURLs(sourceMapData) {
 
     var googleBase = "https://www.google.co.uk/maps/";
     var directions = "";
-    var mapCentre = "@" + sourceMapData["centreLat"] + "," + sourceMapData["centreLng"] + ",";
-    var zoom = "17z";
+    var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
+    var zoom = "14z";
 
     if (("dirFrom" in sourceMapData) && ("dirTo" in sourceMapData)) {
         directions = "dir/" + sourceMapData["dirFrom"] + "/" + sourceMapData["dirTo"] + "/";
@@ -41,7 +41,7 @@ function buildOpenStreetMapURLs(sourceMapData) {
 
     var osmBase = "https://www.openstreetmap.org/#map=";
     var zoom = "12/";
-    var mapCentre = sourceMapData["centreLat"] + "/" + sourceMapData["centreLng"];
+    var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
 
     availableLinks["osmStandard"] = osmBase + zoom + mapCentre;
     availableLinks["osmCycle"] = osmBase + zoom + mapCentre + "&layers=C";
@@ -53,14 +53,14 @@ function buildOpenStreetMapURLs(sourceMapData) {
 function buildGeoHackURLs(sourceMapData) {
 
     var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
-    var mapCentre = sourceMapData["centreLat"] + "_N_" + sourceMapData["centreLng"] + "_E";
+    var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
     availableLinks["wmGeoHack"] = geohackBase + mapCentre;
 }
 
 function buildGeocachingURLs(sourceMapData) {
 
     var geocachingBase = "https://www.geocaching.com/map/#?";
-    var mapCentre = "ll=" + sourceMapData["centreLat"] + "," + sourceMapData["centreLng"];
+    var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
     var zoom = "z=14";
 
     availableLinks["geocaching"] = geocachingBase + mapCentre + '&' + zoom;
@@ -79,11 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.tabs.executeScript({
             file: "dataExtractor.js"
         }, function(result) {
-            if (result && result[0]
-                && (result[0].centreLat !== null)
-                && (result[0].centreLat !== undefined)
-                && (result[0].centreLng !== null)
-                && (result[0].centreLng !== undefined)) {
+            if (result && result[0] && (result[0].centreCoords != null)) {
                 buildBingURLs(result[0]);
                 buildGoogleURLs(result[0]);
                 buildOpenStreetMapURLs(result[0]);

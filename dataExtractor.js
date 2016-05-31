@@ -8,14 +8,13 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
         var re = /cp=([-0-9.]+)~([-0-9.]+)/
         coordArray = window.location.search.match(re);
         if (coordArray && coordArray.length >= 3) {
-            sourceMapData.centreLat = coordArray[1];
-            sourceMapData.centreLng = coordArray[2];
+            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]};
         }
     } else {
         //scrolling has happened, but bing doesn't update its URL. So we pull the coords
         //from the'MapModeStateHistory'
-        sourceMapData.centreLat = window.history.state.MapModeStateHistory.centerPoint.latitude;
-        sourceMapData.centreLng = window.history.state.MapModeStateHistory.centerPoint.longitude;
+        sourceMapData.centreCoords = {
+            "lat": window.history.state.MapModeStateHistory.centerPoint.latitude, "lng": window.history.state.MapModeStateHistory.centerPoint.longitude};
     }
 
     sourceMapData.dirFrom = $(".dirWaypoints input[title='From']").val();
@@ -26,8 +25,7 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
     var re = /@([-0-9.]+),([-0-9.]+),/;
     coordArray = window.location.pathname.match(re);
     if (coordArray && coordArray.length >= 3) {
-        sourceMapData.centreLat = coordArray[1];
-        sourceMapData.centreLng = coordArray[2];
+        sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]};
     }
 
     //TODO correct legal characters for locations in google URL?
@@ -43,16 +41,14 @@ if (window.location.hostname.indexOf(".bing.") >= 0) {
     coordArray = window.location.hash.match(re);
     if (coordArray && coordArray.length >= 4) {
         //coordArray[1] is the zoom
-        sourceMapData.centreLat = coordArray[2];
-        sourceMapData.centreLng = coordArray[3];
+        sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]};
     }
 
 } else if (window.location.hostname.indexOf("geocaching.") >= 0) {
     var re = /ll=([-0-9.]+),([-0-9.]+)/;
     coordArray = window.location.hash.match(re);
     if (coordArray && coordArray.length >= 3) {
-        sourceMapData.centreLat = coordArray[1];
-        sourceMapData.centreLng = coordArray[2];
+        sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]};
     }
 }
 
