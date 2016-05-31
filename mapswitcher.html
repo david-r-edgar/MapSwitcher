@@ -6,11 +6,18 @@
       body {
         font-family: Tahoma, Verdana, sans-serif;
         font-size: 80%;
-        min-width: 300px;
-        min-height: 200px;
+        background-color: #eee;
+        margin: 4px;
+      }
+      .borderBox {
+        background-color: #fff;
+        padding: 4px;
+      }
+      #mainBorderBox {
+        margin-top: 4px;
       }
       #titleLine {
-        margin-bottom: 24px;
+        min-width: 300px;
         text-align: right;
       }
       #titleLine h2 {
@@ -21,25 +28,40 @@
       #titleLine img {
         vertical-align: middle;
       }
+      #nomap {
+        display: none;
+      }
     </style>
     <script src="jquery-2.2.4.min.js"></script>
     <script src="mapswitcher.js"></script>
   </head>
   <body>
-    <div id="titleLine">
+    <div class=borderBox>
+      <div id="titleLine">
         <h2>Map Switcher</h2> <img src="image/mapswitcher48x48.png">
+      </div>
     </div>
-    <div>
-        <span><img src="image/googleMapsLogo16x16.png"></span> <span>Google</span> <a class="maplink" href="#" id="googlemaps">Maps</a> <a class="maplink" href="#" id="googleterrain">Terrain</a> <a class="maplink" href="#" id="googleearth">Earth</a>
-    </div>
-    <div>
-        <span><img src="image/bingLogo16x16.png"></span> <span>Bing</span> <a class="maplink" href="#" id="bingroad">Road</a> <a class="maplink" href="#" id="bingaerial">Aerial</a> <a class="maplink" href="#" id="bingbirdseye">Bird's eye</a> <a class="maplink" href="#" id="bingos">Ordnance Survey</a>
-    </div>
-    <div>
-        <span><img src="image/osmLogo16x16.png"></span> <span>OpenStreetMap</span> <a class="maplink" href="#" id="osmStandard">Standard</a> <a class="maplink" href="#" id="osmCycle">Cycle Map</a> <a class="maplink" href="#" id="osmTransport">Transport</a> <a class="maplink" href="#" id="osmMapQuestOpen">MapQuest Open</a> <a class="maplink" href="#" id="osmHumanitarian">Humanitarian</a>
-    </div>
-    <div>
-        <span><img src="image/geocachingLogo16x16.png"></span> <span>Geocaching</span> <a class="maplink" href="#" id="geocaching">Map</a>
+    <div class=borderBox id=mainBorderBox>
+      <div id="maplinkbox">
+        <div>
+          <span><img src="image/googleMapsLogo16x16.png"></span> <span>Google</span> <a class="maplink" href="#" id="googlemaps">Maps</a> <a class="maplink" href="#" id="googleterrain">Terrain</a> <a class="maplink" href="#" id="googleearth">Earth</a>
+        </div>
+        <div>
+          <span><img src="image/bingLogo16x16.png"></span> <span>Bing</span> <a class="maplink" href="#" id="bingroad">Road</a> <a class="maplink" href="#" id="bingaerial">Aerial</a> <a class="maplink" href="#" id="bingbirdseye">Bird's eye</a> <a class="maplink" href="#" id="bingos">Ordnance Survey</a>
+        </div>
+        <div>
+          <span><img src="image/osmLogo16x16.png"></span> <span>OpenStreetMap</span> <a class="maplink" href="#" id="osmStandard">Standard</a> <a class="maplink" href="#" id="osmCycle">Cycle Map</a> <a class="maplink" href="#" id="osmTransport">Transport</a> <a class="maplink" href="#" id="osmMapQuestOpen">MapQuest Open</a> <a class="maplink" href="#" id="osmHumanitarian">Humanitarian</a>
+        </div>
+        <div>
+          <span><img src="image/wmGeohackToolsLogo.png"></span> <span>Wikimedia Labs</span> <a class="maplink" href="#" id="wmGeoHack">GeoHack</a>
+        </div>
+        <div>
+          <span><img src="image/geocachingLogo16x16.png"></span> <span>Geocaching</span> <a class="maplink" href="#" id="geocaching">Map</a>
+        </div>
+      </div>
+      <div id=nomap>
+        <span>No coordinates available on this page</span>
+      </div>
     </div>
   </body>
 </html>

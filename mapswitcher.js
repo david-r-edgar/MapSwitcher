@@ -45,6 +45,13 @@ function buildOpenStreetMapURLs(sourceMapData) {
     availableLinks["osmHumanitarian"] = osmBase + zoom + mapCentre + "&layers=H";
 }
 
+function buildGeoHackURLs(sourceMapData) {
+
+    var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
+    var mapCentre = sourceMapData["centreLat"] + "_N_" + sourceMapData["centreLng"] + "_E";
+    availableLinks["wmGeoHack"] = geohackBase + mapCentre;
+}
+
 function buildGeocachingURLs(sourceMapData) {
 
     var geocachingBase = "https://www.geocaching.com/map/#?";
@@ -68,11 +75,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }, function(result) {
         if (result && result[0]
             && (result[0].centreLat !== null)
-            && (result[0].centreLng !== null)) {
+            && (result[0].centreLat !== undefined)
+            && (result[0].centreLng !== null)
+            && (result[0].centreLng !== undefined)) {
             buildBingURLs(result[0]);
             buildGoogleURLs(result[0]);
             buildOpenStreetMapURLs(result[0]);
+            buildGeoHackURLs(result[0]);
             buildGeocachingURLs(result[0]);
+        } else {
+            $("#nomap").show();
+            $("#maplinkbox").hide();
         }
     });
 
