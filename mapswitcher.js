@@ -4,34 +4,48 @@ var availableLinks = {}
 let outputMaps = [
 {
     generate: function(sourceMapData) {
+        var googleBase = "https://www.google.co.uk/maps/";
+        var directions = "";
+        var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
+        var zoom = "14z";
+
+        if ("directions" in sourceMapData) {
+            directions = "dir/" + sourceMapData.directions.from + "/" + sourceMapData.directions.to + "/";
+        }
+
+        availableLinks["googlemaps"] = googleBase + directions + mapCentre + zoom;
+        availableLinks["googleterrain"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
+        availableLinks["googleearth"] = googleBase + directions + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
+    }
+},
+{
+    generate: function(sourceMapData) {
         var bingBase = "http://bing.com/maps/default.aspx?";
         var directions = "";
         var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
 
-        if (("dirFrom" in sourceMapData) && ("dirTo" in sourceMapData)) {
-            directions = "rtp=adr." + sourceMapData["dirFrom"] + "~adr." + sourceMapData["dirTo"];
+        if ("directions" in sourceMapData) {
+            var mode = "";
+            if (sourceMapData.directions.mode) {
+                switch (sourceMapData.directions.mode) {
+                    case "foot":
+                        mode = "&mode=w";
+                        break;
+                    case "car":
+                        mode = "&mode=d";
+                        break;
+                    case "transit":
+                        mode = "&mode=t";
+                        break;
+                }
+            }
+            directions = "rtp=adr." + sourceMapData.directions.from + "~adr." + sourceMapData.directions.to + mode;
         }
 
         availableLinks["bingroad"] = bingBase + directions + "&" + mapCentre;
         availableLinks["bingos"] = bingBase + directions + "&" + mapCentre + "&sty=s";
         availableLinks["bingaerial"] = bingBase + directions + "&" + mapCentre + "&sty=h";
         availableLinks["bingbirdseye"] = bingBase + directions + "&" + mapCentre + "&sty=b";
-    }
-},
-{
-    generate: function(sourceMapData) {
-        var googleBase = "https://www.google.co.uk/maps/";
-        var directions = "";
-        var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
-        var zoom = "14z";
-
-        if (("dirFrom" in sourceMapData) && ("dirTo" in sourceMapData)) {
-            directions = "dir/" + sourceMapData["dirFrom"] + "/" + sourceMapData["dirTo"] + "/";
-        }
-
-        availableLinks["googlemaps"] = googleBase + directions + mapCentre + zoom;
-        availableLinks["googleterrain"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
-        availableLinks["googleearth"] = googleBase + directions + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
     }
 },
 {
