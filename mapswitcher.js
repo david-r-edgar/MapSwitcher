@@ -75,6 +75,13 @@ let outputMaps = [
         var zoom = "z=14";
         availableLinks["geocaching"] = geocachingBase + mapCentre + '&' + zoom;
     }
+},
+{
+    generate: function(sourceMapData) {
+        var w3wBase = "https://map.what3words.com/";
+        var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        availableLinks["what3words"] = w3wBase + mapCentre;
+    }
 }
 ];
 
