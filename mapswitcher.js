@@ -70,6 +70,15 @@ let outputMaps = [
 },
 {
     generate: function(sourceMapData) {
+        var wikimapiaBase = "http://wikimapia.org/#lang=en&";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "z=12";
+        availableLinks["wikimapiaSatellite"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
+        availableLinks["wikimapiaMap"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
+    }
+},
+{
+    generate: function(sourceMapData) {
         var geocachingBase = "https://www.geocaching.com/map/#?";
         var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "z=14";
