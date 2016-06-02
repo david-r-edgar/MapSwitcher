@@ -70,6 +70,15 @@ let outputMaps = [
 },
 {
     generate: function(sourceMapData) {
+        var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
+        var mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
+        var zoom = "10";
+        availableLinks["wikiminiatlas"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
+        console.log(availableLinks["wikiminiatlas"]);
+    }
+},
+{
+    generate: function(sourceMapData) {
         var wikimapiaBase = "http://wikimapia.org/#lang=en&";
         var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "z=12";
