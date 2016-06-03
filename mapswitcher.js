@@ -3,6 +3,14 @@ var availableLinks = {}
 
 let outputMaps = [
 {
+    site: "Google",
+    image: "googleMapsLogo16x16.png",
+    maplinks:
+    {
+        googlemaps: "Maps",
+        googleterrain: "Terrain",
+        googleearth: "Earth"
+    },
     generate: function(sourceMapData) {
         var googleBase = "https://www.google.co.uk/maps/";
         var directions = "";
@@ -19,6 +27,15 @@ let outputMaps = [
     }
 },
 {
+    site: "Bing",
+    image: "bingLogo16x16",
+    maplinks:
+    {
+        bingroad: "Road",
+        bingaerial: "Aerial",
+        bingbirdseye: "Bird's eye",
+        bingos: "Ordnance Survey"
+    },
     generate: function(sourceMapData) {
         var bingBase = "http://bing.com/maps/default.aspx?";
         var directions = "";
@@ -49,6 +66,16 @@ let outputMaps = [
     }
 },
 {
+    site: "OpenStreetMap",
+    image: "osmLogo16x16.png",
+    maplinks:
+    {
+        osmStandard: "Standard",
+        osmCycle: "Cycle Map",
+        osmTransport: "Transport",
+        osmMapQuestOpen: "MapQuest Open",
+        osmHumanitarian: "Humanitarian"
+    },
     generate: function(sourceMapData) {
         var osmBase = "https://www.openstreetmap.org/#map=";
         var zoom = "12/";
@@ -62,22 +89,32 @@ let outputMaps = [
     }
 },
 {
+    site: "Wikimedia Labs",
+    image: "wmGeohackToolsLogo.png",
+    maplinks:
+    {
+        wmGeoHack: "GeoHack",
+        wikiminiatlas: "Wiki Mini Atlas"
+    },
     generate: function(sourceMapData) {
         var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
         var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
         availableLinks["wmGeoHack"] = geohackBase + mapCentre;
-    }
-},
-{
-    generate: function(sourceMapData) {
+
         var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
-        var mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
-        var zoom = "10";
+        mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
+        zoom = "10";
         availableLinks["wikiminiatlas"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
-        console.log(availableLinks["wikiminiatlas"]);
     }
 },
 {
+    site: "Wikimapia",
+    image: "wikimapiaLogo16x16.png",
+    maplinks:
+    {
+        wikimapiaSatellite: "Satellite",
+        wikimapiaMap: "Map"
+    },
     generate: function(sourceMapData) {
         var wikimapiaBase = "http://wikimapia.org/#lang=en&";
         var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
@@ -87,6 +124,12 @@ let outputMaps = [
     }
 },
 {
+    site: "Geocaching",
+    image: "geocachingLogo16x16.png",
+    maplinks:
+    {
+        geocaching: "Map"
+    },
     generate: function(sourceMapData) {
         var geocachingBase = "https://www.geocaching.com/map/#?";
         var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
@@ -95,6 +138,12 @@ let outputMaps = [
     }
 },
 {
+    site: "what3words",
+    image: "w3wLogo.png",
+    maplinks:
+    {
+        what3words: "Map"
+    },
     generate: function(sourceMapData) {
         var w3wBase = "https://map.what3words.com/";
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
