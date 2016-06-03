@@ -154,14 +154,6 @@ let outputMaps = [
 
 
 document.addEventListener('DOMContentLoaded', function() {
-
-    $(".maplink").on("click", function() {
-        var mlid = $(this).attr('id');
-        if (availableLinks.hasOwnProperty(mlid)) {
-            chrome.tabs.create({url: availableLinks[mlid]});
-        }
-    });
-
     chrome.tabs.executeScript({file: "jquery-2.2.4.min.js"}, function(){
         chrome.tabs.executeScript({
             file: "dataExtractor.js"
@@ -170,12 +162,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (outputMap of outputMaps) {
                     outputMap.generate(result[0]);
                 }
+                $(".maplink").each(function() {
+                    var mlid = $(this).attr('id');
+                    if (availableLinks.hasOwnProperty(mlid)) {
+                        $(this).attr('href', availableLinks[mlid]);
+                    }
+                });
             } else {
                 $("#nomap").show();
                 $("#maplinkbox").hide();
             }
         });
     });
-
 });
 
