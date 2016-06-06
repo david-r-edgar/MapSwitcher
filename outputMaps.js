@@ -3,6 +3,7 @@ let outputMaps = [
     site: "Google",
     image: "googleMapsLogo16x16.png",
     id: "google",
+    dirn: false,
     maplinks:
     {
         googlemaps: {
@@ -23,6 +24,7 @@ let outputMaps = [
 
         if ("directions" in sourceMapData) {
             directions = "dir/" + sourceMapData.directions.from + "/" + sourceMapData.directions.to + "/";
+            this.dirn = true;
         }
 
         this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom;
@@ -34,6 +36,7 @@ let outputMaps = [
     site: "Bing",
     image: "bingLogo16x16.png",
     id: "bing",
+    dirn: false,
     maplinks:
     {
         bingroad: {
@@ -70,6 +73,7 @@ let outputMaps = [
                 }
             }
             directions = "rtp=adr." + sourceMapData.directions.from + "~adr." + sourceMapData.directions.to + mode;
+            this.dirn = true;
         }
 
         this.maplinks.bingroad["link"] = bingBase + directions + "&" + mapCentre;
@@ -82,6 +86,7 @@ let outputMaps = [
     site: "OpenStreetMap",
     image: "osmLogo16x16.png",
     id: "osm",
+    dirn: false,
     maplinks:
     {
         osmStandard: "Standard",
@@ -124,6 +129,7 @@ let outputMaps = [
     site: "Wikimedia Labs",
     image: "wmLabsLogo16x16.png",
     id: "wmLabs",
+    dirn: false,
     maplinks:
     {
         wmGeoHack: {
@@ -148,6 +154,7 @@ let outputMaps = [
     site: "Wikimapia",
     image: "wikimapiaLogo16x16.png",
     id: "wikimapia",
+    dirn: false,
     maplinks:
     {
         wikimapiaSatellite: {
@@ -169,6 +176,7 @@ let outputMaps = [
     site: "Geocaching",
     image: "geocachingLogo16x16.png",
     id: "geocaching",
+    dirn: false,
     maplinks:
     {
         geocaching: {
@@ -186,6 +194,7 @@ let outputMaps = [
     site: "what3words",
     image: "w3wLogo.png",
     id: "w3w",
+    dirn: false,
     maplinks:
     {
         what3words: {
