@@ -90,7 +90,7 @@ let outputMaps = [
 },
 {
     site: "Wikimedia Labs",
-    image: "wmGeohackToolsLogo.png",
+    image: "wmLabsLogo16x16.png",
     maplinks:
     {
         wmGeoHack: "GeoHack",
