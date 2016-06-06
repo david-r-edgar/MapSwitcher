@@ -4,6 +4,7 @@
   "name": "Map Switcher",
   "description": "Switch between different maps",
   "version": "0.1",
+  "options_page": "options.html",
 
   "browser_action": {
     "default_icon": {
@@ -14,10 +15,11 @@
     "default_title": "Map Switcher"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "background": {
-    "scripts": ["jquery-2.2.4.min.js"]
+    "scripts": ["vendor/jquery/jquery-2.2.4.min.js"]
   },
   "content_scripts": [{
     "matches": [
@@ -29,11 +31,11 @@
       "*://www.geocaching.com/map/*"
     ],
     "js": [
-      "jquery-2.2.4.min.js", "dataExtractor.js"
+      "vendor/jquery/jquery-2.2.4.min.js", "dataExtractor.js"
     ]
   }],
   "icons": {
-    "16": "image/mapswitcherFavicon16x16.png",
+    "16": "image/mapswitcher16x16.png",
     "32": "image/mapswitcher32x32.png",
     "48": "image/mapswitcher48x48.png",
     "128": "image/mapswitcher128x128.png"}

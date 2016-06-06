@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <title>Options - Map Switcher</title>
+  <style>
+    body {
+      font-family: Tahoma, Verdana, sans-serif;
+    }
+    #titleLine {
+      float: right;
+    }
+    #titleLine h2 {
+      display: inline;
+      font-size: 20px;
+      padding-right: 12px;
+    }
+    #titleLine img {
+      vertical-align: middle;
+    }
+    #mapsTickList {
+      list-style-type: none;
+    }
+  </style>
+  <script src="vendor/jquery/jquery-2.2.4.min.js"></script>
+  <script src="outputMaps.js"></script>
+</head>
+<body>
+<div class=borderBox>
+<div id="titleLine">
+  <h2>Map Switcher</h2> <img src="image/mapswitcher48x48.png">
+</div>
+</div>
+<h1>Options</h1>
+
+<ul id="mapsTickList"></ul>
+
+
+<button id="save">Save</button>
+<div id="status"></div>
+
+<script src="options.js"></script>
+</body>
+</html>

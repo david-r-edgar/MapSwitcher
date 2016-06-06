@@ -18,6 +18,7 @@
       }
       #titleLine {
         min-width: 300px;
+        min-height: 48px;
         text-align: right;
       }
       #titleLine h2 {
@@ -28,17 +29,37 @@
       #titleLine img {
         vertical-align: middle;
       }
+      #ctrlButtons {
+        font-size: 12px;
+        position: absolute;
+        left: 8px;
+        top: 40px;
+      }
       #nomap {
         display: none;
       }
+      #ctrlButtons a {
+        text-decoration: none;
+        color: #333;
+      }
+      #ctrlButtons a:hover {
+        color: #888;
+      }
     </style>
-    <script src="jquery-2.2.4.min.js"></script>
+    <link rel="stylesheet" href="vendor/font-awesome-4.6.3/css/font-awesome.min.css">
+    <script src="vendor/jquery/jquery-2.2.4.min.js"></script>
+    <script src="outputMaps.js"></script>
     <script src="mapswitcher.js"></script>
   </head>
   <body>
     <div class=borderBox>
       <div id="titleLine">
         <h2>Map Switcher</h2> <img src="image/mapswitcher48x48.png">
+        <div id="ctrlButtons">
+            <span><a href="options.html" target="_blank" title="Options" class="fa fa-cog fa-lg"></a></span>
+            <span><a href="help.html" target="_blank" title="Help" class="fa fa-question-circle fa-lg"></a></span>
+            <span><a href="about.html" target="_blank" title="About" class="fa fa-info-circle fa-lg"></a></span>
+        </div>
       </div>
     </div>
     <div class=borderBox id=mainBorderBox>
