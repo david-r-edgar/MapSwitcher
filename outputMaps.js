@@ -5,9 +5,15 @@ let outputMaps = [
     id: "google",
     maplinks:
     {
-        googlemaps: "Maps",
-        googleterrain: "Terrain",
-        googleearth: "Earth"
+        googlemaps: {
+            name: "Maps"
+        },
+        googleterrain: {
+            name: "Terrain"
+        },
+        googleearth: {
+            name: "Earth"
+        }
     },
     generate: function(sourceMapData) {
         var googleBase = "https://www.google.co.uk/maps/";
@@ -19,9 +25,9 @@ let outputMaps = [
             directions = "dir/" + sourceMapData.directions.from + "/" + sourceMapData.directions.to + "/";
         }
 
-        availableLinks["googlemaps"] = googleBase + directions + mapCentre + zoom;
-        availableLinks["googleterrain"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
-        availableLinks["googleearth"] = googleBase + directions + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
+        this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom;
+        this.maplinks.googleterrain["link"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
+        this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
     }
 },
 {
@@ -30,10 +36,18 @@ let outputMaps = [
     id: "bing",
     maplinks:
     {
-        bingroad: "Road",
-        bingaerial: "Aerial",
-        bingbirdseye: "Bird's eye",
-        bingos: "Ordnance Survey"
+        bingroad: {
+            name: "Road"
+        },
+        bingaerial: {
+            name: "Aerial"
+        },
+        bingbirdseye: {
+            name: "Bird's eye"
+        },
+        bingos: {
+            name: "Ordnance Survey"
+        }
     },
     generate: function(sourceMapData) {
         var bingBase = "http://bing.com/maps/default.aspx?";
@@ -58,10 +72,10 @@ let outputMaps = [
             directions = "rtp=adr." + sourceMapData.directions.from + "~adr." + sourceMapData.directions.to + mode;
         }
 
-        availableLinks["bingroad"] = bingBase + directions + "&" + mapCentre;
-        availableLinks["bingos"] = bingBase + directions + "&" + mapCentre + "&sty=s";
-        availableLinks["bingaerial"] = bingBase + directions + "&" + mapCentre + "&sty=h";
-        availableLinks["bingbirdseye"] = bingBase + directions + "&" + mapCentre + "&sty=b";
+        this.maplinks.bingroad["link"] = bingBase + directions + "&" + mapCentre;
+        this.maplinks.bingos["link"] = bingBase + directions + "&" + mapCentre + "&sty=s";
+        this.maplinks.bingaerial["link"] = bingBase + directions + "&" + mapCentre + "&sty=h";
+        this.maplinks.bingbirdseye["link"] = bingBase + directions + "&" + mapCentre + "&sty=b";
     }
 },
 {
@@ -76,16 +90,34 @@ let outputMaps = [
         osmMapQuestOpen: "MapQuest Open",
         osmHumanitarian: "Humanitarian"
     },
+    maplinks:
+    {
+        osmStandard: {
+            name: "Standard"
+        },
+        osmCycle: {
+            name: "Cycle Map"
+        },
+        osmTransport: {
+            name: "Transport"
+        },
+        osmMapQuestOpen: {
+            name: "MapQuest Open"
+        },
+        osmHumanitarian: {
+            name: "Humanitarian"
+        },
+    },
     generate: function(sourceMapData) {
         var osmBase = "https://www.openstreetmap.org/#map=";
         var zoom = "12/";
         var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
 
-        availableLinks["osmStandard"] = osmBase + zoom + mapCentre;
-        availableLinks["osmCycle"] = osmBase + zoom + mapCentre + "&layers=C";
-        availableLinks["osmTransport"] = osmBase + zoom + mapCentre + "&layers=T";
-        availableLinks["osmMapQuestOpen"] = osmBase + zoom + mapCentre + "&layers=Q";
-        availableLinks["osmHumanitarian"] = osmBase + zoom + mapCentre + "&layers=H";
+        this.maplinks.osmStandard["link"] = osmBase + zoom + mapCentre;
+        this.maplinks.osmCycle["link"] = osmBase + zoom + mapCentre + "&layers=C";
+        this.maplinks.osmTransport["link"] = osmBase + zoom + mapCentre + "&layers=T";
+        this.maplinks.osmMapQuestOpen["link"] = osmBase + zoom + mapCentre + "&layers=Q";
+        this.maplinks.osmHumanitarian["link"] = osmBase + zoom + mapCentre + "&layers=H";
     }
 },
 {
@@ -94,18 +126,22 @@ let outputMaps = [
     id: "wmLabs",
     maplinks:
     {
-        wmGeoHack: "GeoHack",
-        wikiminiatlas: "Wiki Mini Atlas"
+        wmGeoHack: {
+            name: "GeoHack"
+        },
+        wikiminiatlas: {
+            name: "Wiki Mini Atlas"
+        }
     },
     generate: function(sourceMapData) {
         var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
         var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
-        availableLinks["wmGeoHack"] = geohackBase + mapCentre;
+        this.maplinks.wmGeoHack["link"] = geohackBase + mapCentre;
 
         var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
         mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
         zoom = "10";
-        availableLinks["wikiminiatlas"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
+        this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
     }
 },
 {
@@ -114,15 +150,19 @@ let outputMaps = [
     id: "wikimapia",
     maplinks:
     {
-        wikimapiaSatellite: "Satellite",
-        wikimapiaMap: "Map"
+        wikimapiaSatellite: {
+            name: "Satellite"
+        },
+        wikimapiaMap: {
+            name: "Maps"
+        }
     },
     generate: function(sourceMapData) {
         var wikimapiaBase = "http://wikimapia.org/#lang=en&";
         var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "z=12";
-        availableLinks["wikimapiaSatellite"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
-        availableLinks["wikimapiaMap"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
+        this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
+        this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
     }
 },
 {
@@ -131,13 +171,15 @@ let outputMaps = [
     id: "geocaching",
     maplinks:
     {
-        geocaching: "Map"
+        geocaching: {
+            name: "Map"
+        }
     },
     generate: function(sourceMapData) {
         var geocachingBase = "https://www.geocaching.com/map/#?";
         var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "z=14";
-        availableLinks["geocaching"] = geocachingBase + mapCentre + '&' + zoom;
+        this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
     }
 },
 {
@@ -146,12 +188,14 @@ let outputMaps = [
     id: "w3w",
     maplinks:
     {
-        what3words: "Map"
+        what3words: {
+            name: "Map"
+        }
     },
     generate: function(sourceMapData) {
         var w3wBase = "https://map.what3words.com/";
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
-        availableLinks["what3words"] = w3wBase + mapCentre;
+        this.maplinks.what3words["link"] = w3wBase + mapCentre;
     }
 }
 ];

@@ -27,7 +27,6 @@ function restore_options() {
     //    mapDefaults[$(this).attr("id")] = true;
     //});
     chrome.storage.sync.get(mapDefaults, function(items) {
-        console.log(items);
         $("#mapsTickList input").each(function() {
             $(this).prop('checked', items[$(this).attr("id")]);
         });
