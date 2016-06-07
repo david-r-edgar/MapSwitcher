@@ -1,6 +1,6 @@
 
 
-document.addEventListener('DOMContentLoaded', function() {
+$(document).ready(function() {
     chrome.tabs.executeScript({file: "vendor/jquery/jquery-2.2.4.min.js"}, function(){
         chrome.tabs.executeScript({
             file: "dataExtractor.js"
@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 $("#maplinkbox").append(mapsWithoutDirns);
             } else {
+                console.log("no coords");
+                console.log(result);
                 $("#nomap").show();
                 $("#maplinkbox").hide();
             }

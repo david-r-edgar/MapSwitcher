@@ -23,7 +23,19 @@ let outputMaps = [
         var zoom = "14z";
 
         if ("directions" in sourceMapData) {
-            directions = "dir/" + sourceMapData.directions.from + "/" + sourceMapData.directions.to + "/";
+            directions = "dir/";
+            if ("coords" in sourceMapData.directions.from) {
+                directions += sourceMapData.directions.from.coords.lat + "," +
+                    sourceMapData.directions.from.coords.lng + "/";
+            } else {
+                directions += sourceMapData.directions.from.address + "/";
+            }
+            if ("coords" in sourceMapData.directions.to) {
+                directions += sourceMapData.directions.to.coords.lat + "," +
+                    sourceMapData.directions.to.coords.lng + "/";
+            } else {
+                directions += sourceMapData.directions.to.address + "/";
+            }
             this.dirn = true;
         }
 
@@ -72,7 +84,20 @@ let outputMaps = [
                         break;
                 }
             }
-            directions = "rtp=adr." + sourceMapData.directions.from + "~adr." + sourceMapData.directions.to + mode;
+            directions = "rtp=";
+            if ("coords" in sourceMapData.directions.from) {
+                directions += "pos." + sourceMapData.directions.from.coords.lat + "_" +
+                    sourceMapData.directions.from.coords.lng + "~";
+            } else {
+                directions += "adr." + sourceMapData.directions.from.address + "~";
+            }
+            if ("coords" in sourceMapData.directions.to) {
+                directions += "pos." + sourceMapData.directions.to.coords.lat + "_" +
+                    sourceMapData.directions.to.coords.lng;
+            } else {
+                directions += "adr." + sourceMapData.directions.to.address;
+            }
+            directions += mode;
             this.dirn = true;
         }
 

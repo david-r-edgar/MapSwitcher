@@ -10,11 +10,12 @@ if (window.location.hostname.indexOf("google.") >= 0) {
 
     //window.location.pathname url-encodes other characters so we can ignore them
     re = /dir\/([-A-Za-z0-9%'+,!$_.*()]+)\/([-A-Za-z0-9%'+,!$_.*()]+)\//;
-    coordArray = window.location.pathname.match(re);
-    if (coordArray && coordArray.length >= 3) {
+    routeArray = window.location.pathname.match(re);
+    if (routeArray && routeArray.length >= 3) {
         sourceMapData.directions = {
-            "from": coordArray[1],
-            "to": coordArray[2]}
+            "from": { "address": routeArray[1] },
+            "to": { "address": routeArray[2] }
+        }
 
         re = /!3e([0-3])/;
         var modeArray = window.location.pathname.match(re);
@@ -52,8 +53,9 @@ if (window.location.hostname.indexOf("google.") >= 0) {
 
     if ($("#directionsPanelRoot").length) {
         sourceMapData.directions = {
-            "from": $(".dirWaypoints input[title='From']").val(),
-            "to": $(".dirWaypoints input[title='To']").val()}
+            "from": { "address": $(".dirWaypoints input[title='From']").val() },
+            "to": { "address": $(".dirWaypoints input[title='To']").val() }
+        }
 
         switch($(".dirBtnSelected")[0].classList[0]) {
             case "dirBtnDrive":
@@ -79,7 +81,20 @@ if (window.location.hostname.indexOf("google.") >= 0) {
         && ($("#route_from").val().length > 0)
         && ($("#route_to").val().length > 0)) {
         sourceMapData.directions = {
-            "from": $("#route_from").val(), "to": $("#route_to").val()}
+            "from": { "address": $("#route_from").val() },
+            "to": { "address": $("#route_to").val() }
+        }
+
+        re = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/;
+        var routeCoordsArray = window.location.search.match(re);
+        if (routeCoordsArray && routeCoordsArray.length > 4) {
+            sourceMapData.directions.from.coords =
+                { "lat": routeCoordsArray[1],
+                  "lng": routeCoordsArray[2] }
+            sourceMapData.directions.to.coords =
+                { "lat": routeCoordsArray[3],
+                  "lng": routeCoordsArray[4] }
+        }
 
         re = /engine=[a-zA-Z]+_([a-z]+)/;
         var modeArray = window.location.search.match(re);
