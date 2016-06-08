@@ -10,8 +10,8 @@ if (window.location.hostname.indexOf("google.") >= 0) {
     if (coordArray && coordArray.length >= 5) {
         if (coordArray[4] === 'z') {
             sourceMapData.metresPerPixel =
-                calculateMetresPerPixelfromGoogleZoom(coordArray[3],
-                                                      coordArray[1]);
+                calculateResolutionFromGoogleZoom(coordArray[3],
+                                                  coordArray[1]);
         } else {
             console.log("unknown scale system " + coordArray[4]);
             //FIXME we have to deal with m - normally eg. 7000m - metres?

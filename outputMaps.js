@@ -41,7 +41,7 @@ let outputMaps = [
 
         if ("metresPerPixel" in sourceMapData) {
             zoom =
-                calculateGoogleZoomFromMetresPerPixel(
+                calculateGoogleZoomFromResolution(
                     sourceMapData.metresPerPixel, sourceMapData.centreCoords.lat) + "z";
         }
 
@@ -73,7 +73,15 @@ let outputMaps = [
     generate: function(sourceMapData) {
         var bingBase = "http://bing.com/maps/default.aspx?";
         var directions = "";
-        var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
+        var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" +
+                                sourceMapData.centreCoords.lng;
+        var zoom = "&lvl=10";
+
+        if ("metresPerPixel" in sourceMapData) {
+            zoom = "&lvl=" + calculateBingZoomFromResolution(
+                                sourceMapData.metresPerPixel,
+                                sourceMapData.centreCoords.lat);
+        }
 
         if ("directions" in sourceMapData) {
             var mode = "";
@@ -107,10 +115,14 @@ let outputMaps = [
             this.dirn = true;
         }
 
-        this.maplinks.bingroad["link"] = bingBase + directions + "&" + mapCentre;
-        this.maplinks.bingos["link"] = bingBase + directions + "&" + mapCentre + "&sty=s";
-        this.maplinks.bingaerial["link"] = bingBase + directions + "&" + mapCentre + "&sty=h";
-        this.maplinks.bingbirdseye["link"] = bingBase + directions + "&" + mapCentre + "&sty=b";
+        this.maplinks.bingroad["link"] =
+            bingBase + directions + "&" + mapCentre + zoom;
+        this.maplinks.bingos["link"] =
+            bingBase + directions + "&" + mapCentre + zoom + "&sty=s";
+        this.maplinks.bingaerial["link"] =
+            bingBase + directions + "&" + mapCentre + zoom + "&sty=h";
+        this.maplinks.bingbirdseye["link"] =
+            bingBase + directions + "&" + mapCentre + zoom + "&sty=b";
     }
 },
 {

@@ -1,24 +1,50 @@
 //156543.03392 is a coefficient related to the diameter of the earth
 
-function calculateMetresPerPixelfromGoogleZoom(zoom, lat) {
+//zoom z value from google URL (decimal)
+//lat wgs84 decimal
+//resn returned in metres per pixel
+function calculateResolutionFromGoogleZoom(zoom, lat) {
     let latAdjCoeff = Math.cos(lat * Math.PI / 180);
     return 156543.03392 * latAdjCoeff / Math.pow(2, zoom);
 }
 
-function calculateGoogleZoomFromMetresPerPixel(mpp, lat) {
+//resn in metres per pixel
+//lat wgs84 decimal
+//returns integer zoom for use as z parameter in google URL
+function calculateGoogleZoomFromResolution(resn, lat) {
     let latAdjCoeff = Math.cos(lat * Math.PI / 180);
-    let zoom = Math.log(156543.03392 * latAdjCoeff / mpp) / Math.log(2);
+    let zoom = Math.log(156543.03392 * latAdjCoeff / resn) / Math.log(2);
     return Math.round(zoom);
 }
 
-function calculateScaleFromMetresPerPixel(mpp, pixelPitch_mm) {
-    return mpp / (pixelPitch_mm / 1000);
+
+//from https://msdn.microsoft.com/en-us/library/aa940990.aspx
+//156543.04 is in metres per pixel (?)
+function calculateResolutionFromBingZoom(zoom, lat) {
+    let latAdjCoeff = Math.cos(lat * Math.PI / 180);
+    return 156543.04 * latAdjCoeff / Math.pow(2, zoom)
 }
 
-function calculatePPIFromPixelPitch(pixelPitch_mm) {
-    return 25.4 / pixelPitch_mm;
+function calculateBingZoomFromResolution(resn, lat) {
+    let latAdjCoeff = Math.cos(lat * Math.PI / 180);
+    let zoom = Math.log(156543.04 * latAdjCoeff / resn) / Math.log(2);
+    return Math.round(zoom);
 }
 
+
+//pixelPitch in mm per pixel
+function calculateScaleFromResolution(resn, pixelPitch) {
+    return resn / (pixelPitch / 1000);
+}
+
+//pixelPitch in mm per pixel
+//returns screen resolution in pixels per inch
+function calculatePPIFromPixelPitch(pixelPitch) {
+    return 25.4 / pixelPitch;
+}
+
+//ppi screen resolution in pixels per inch
+//returns pixel pitch in mm per pixel
 function calculatePixelPitchFromPPI(ppi) {
     return 25.4 / ppi;
 }
