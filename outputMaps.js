@@ -20,7 +20,7 @@ let outputMaps = [
         var googleBase = "https://www.google.co.uk/maps/";
         var directions = "";
         var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
-        var zoom = "14z";
+        var zoom = "10z";
 
         if ("directions" in sourceMapData) {
             directions = "dir/";
@@ -37,6 +37,12 @@ let outputMaps = [
                 directions += sourceMapData.directions.to.address + "/";
             }
             this.dirn = true;
+        }
+
+        if ("metresPerPixel" in sourceMapData) {
+            zoom =
+                calculateGoogleZoomFromMetresPerPixel(
+                    sourceMapData.metresPerPixel, sourceMapData.centreCoords.lat) + "z";
         }
 
         this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom;

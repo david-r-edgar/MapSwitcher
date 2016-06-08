@@ -2,10 +2,20 @@ var sourceMapData = {}
 
 if (window.location.hostname.indexOf("google.") >= 0) {
 
-    var re = /@([-0-9.]+),([-0-9.]+),/;
+    var re = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/;
     var coordArray = window.location.pathname.match(re);
     if (coordArray && coordArray.length >= 3) {
         sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+    }
+    if (coordArray && coordArray.length >= 5) {
+        if (coordArray[4] === 'z') {
+            sourceMapData.metresPerPixel =
+                calculateMetresPerPixelfromGoogleZoom(coordArray[3],
+                                                      coordArray[1]);
+        } else {
+            console.log("unknown scale system " + coordArray[4]);
+            //FIXME we have to deal with m - normally eg. 7000m - metres?
+        }
     }
 
     //window.location.pathname url-encodes other characters so we can ignore them

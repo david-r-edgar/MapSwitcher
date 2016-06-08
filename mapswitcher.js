@@ -2,9 +2,13 @@
 
 $(document).ready(function() {
     chrome.tabs.executeScript({file: "vendor/jquery/jquery-2.2.4.min.js"}, function(){
+      chrome.tabs.executeScript({file: "mapUtil.js"}, function() {
         chrome.tabs.executeScript({
             file: "dataExtractor.js"
         }, function(result) {
+
+            console.log(result[0]);
+
             if (result && result[0] && (result[0].centreCoords != null)) {
                 let mapsWithDirns = "";
                 let mapsWithoutDirns = "";
@@ -40,6 +44,7 @@ $(document).ready(function() {
                 $("#maplinkbox").hide();
             }
         });
+      });
     });
 });
 

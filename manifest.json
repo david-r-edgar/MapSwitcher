@@ -31,7 +31,7 @@
       "*://www.geocaching.com/map/*"
     ],
     "js": [
-      "vendor/jquery/jquery-2.2.4.min.js", "dataExtractor.js"
+      "vendor/jquery/jquery-2.2.4.min.js", "mapUtil.js", "dataExtractor.js"
     ]
   }],
   "icons": {
