@@ -6,9 +6,6 @@ $(document).ready(function() {
         chrome.tabs.executeScript({
             file: "dataExtractor.js"
         }, function(result) {
-
-            console.log(result[0]);
-
             if (result && result[0] && (result[0].centreCoords != null)) {
                 let mapsWithDirns = "";
                 let mapsWithoutDirns = "";

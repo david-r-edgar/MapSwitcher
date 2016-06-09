@@ -16,7 +16,8 @@
   },
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "<all_urls>"
   ],
   "background": {
     "scripts": ["vendor/jquery/jquery-2.2.4.min.js"]

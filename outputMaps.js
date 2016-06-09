@@ -117,12 +117,20 @@ let outputMaps = [
 
         this.maplinks.bingroad["link"] =
             bingBase + directions + "&" + mapCentre + zoom;
-        this.maplinks.bingos["link"] =
-            bingBase + directions + "&" + mapCentre + zoom + "&sty=s";
         this.maplinks.bingaerial["link"] =
             bingBase + directions + "&" + mapCentre + zoom + "&sty=h";
         this.maplinks.bingbirdseye["link"] =
             bingBase + directions + "&" + mapCentre + zoom + "&sty=b";
+
+        var countryCode = getCountryCode(sourceMapData.centreCoords.lat,
+                                         sourceMapData.centreCoords.lng);
+        console.log("returned: ", countryCode);
+        if (countryCode && countryCode === "gb") {
+            console.log(countryCode);
+            this.maplinks.bingos["link"] =
+                bingBase + directions + "&" + mapCentre + zoom + "&sty=s";
+        }
+        console.log(this.maplinks);
     }
 },
 {
