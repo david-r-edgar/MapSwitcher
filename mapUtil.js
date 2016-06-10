@@ -50,21 +50,5 @@ function calculatePixelPitchFromPPI(ppi) {
 }
 
 
-function getCountryCode(lat, lng) {
-    grid = codegrid.CodeGrid("http://localhost/codegrid-js/tiles/", jsonWorldGrid);
-    console.log(jsonWorldGrid);
-    console.log(lat, lng);
-    grid.getCode (Number(lat), Number(lng), function (error, code) {
-        if (error) {
-            console.log("error");
-            return null;
-        } else {
-            console.log(code);
-            return code;
-        }
-    });
-}
-
-
 
 

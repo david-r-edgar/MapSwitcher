@@ -16,7 +16,7 @@ let outputMaps = [
             name: "Earth"
         }
     },
-    generate: function(sourceMapData) {
+    generate: function(sourceMapData, onSuccess) {
         var googleBase = "https://www.google.co.uk/maps/";
         var directions = "";
         var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
@@ -47,7 +47,13 @@ let outputMaps = [
 
         this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom;
         this.maplinks.googleterrain["link"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
-        this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + "1891m/data=!3m1!1e3!5m1!1e4";
+        this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + zoom + "/data=!3m1!1e3!5m1!1e4";
+
+        if (this.dirn) {
+            onSuccess(this, this.maplinks, null);
+        } else {
+            onSuccess(this, null, this.maplinks);
+        }
     }
 },
 {
@@ -70,7 +76,7 @@ let outputMaps = [
             name: "Ordnance Survey"
         }
     },
-    generate: function(sourceMapData) {
+    generate: function(sourceMapData, onSuccess) {
         var bingBase = "http://bing.com/maps/default.aspx?";
         var directions = "";
         var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" +
@@ -122,15 +128,34 @@ let outputMaps = [
         this.maplinks.bingbirdseye["link"] =
             bingBase + directions + "&" + mapCentre + zoom + "&sty=b";
 
-        var countryCode = getCountryCode(sourceMapData.centreCoords.lat,
-                                         sourceMapData.centreCoords.lng);
-        console.log("returned: ", countryCode);
-        if (countryCode && countryCode === "gb") {
-            console.log(countryCode);
-            this.maplinks.bingos["link"] =
-                bingBase + directions + "&" + mapCentre + zoom + "&sty=s";
-        }
-        console.log(this.maplinks);
+        this.generatedMapLinks = {}
+        this.generatedMapLinks.bingroad = this.maplinks.bingroad;
+        this.generatedMapLinks.bingaerial = this.maplinks.bingaerial;
+        this.generatedMapLinks.bingbirdseye = this.maplinks.bingbirdseye;
+
+
+        var self = this;
+        CodeGrid.getCode (Number(sourceMapData.centreCoords.lat),
+                          Number(sourceMapData.centreCoords.lng),
+            function (error, countryCode) {
+                if (error) {
+                    console.log("error");
+                } else {
+                    console.log(countryCode);
+                    if (countryCode === "gb") {
+                        console.log(countryCode);
+                        self.generatedMapLinks.bingos = {name: self.maplinks.bingos.name,
+                            link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
+                    }
+                    console.log(self.generatedMapLinks);
+                }
+
+                if (self.dirn) {
+                    onSuccess(self, self.generatedMapLinks, null);
+                } else {
+                    onSuccess(self, null, self.generatedMapLinks);
+                }
+            });
     }
 },
 {
@@ -164,7 +189,7 @@ let outputMaps = [
             name: "Humanitarian"
         },
     },
-    generate: function(sourceMapData) {
+    generate: function(sourceMapData, onSuccess) {
         var osmBase = "https://www.openstreetmap.org/#map=";
         var zoom = "12/";
         var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
@@ -174,6 +199,8 @@ let outputMaps = [
         this.maplinks.osmTransport["link"] = osmBase + zoom + mapCentre + "&layers=T";
         this.maplinks.osmMapQuestOpen["link"] = osmBase + zoom + mapCentre + "&layers=Q";
         this.maplinks.osmHumanitarian["link"] = osmBase + zoom + mapCentre + "&layers=H";
+
+        onSuccess(this, null, this.maplinks);
     }
 },
 {
@@ -190,7 +217,7 @@ let outputMaps = [
             name: "Wiki Mini Atlas"
         }
     },
-    generate: function(sourceMapData) {
+    generate: function(sourceMapData, onSuccess) {
         var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
         var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
         this.maplinks.wmGeoHack["link"] = geohackBase + mapCentre;
@@ -199,6 +226,8 @@ let outputMaps = [
         mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
         zoom = "10";
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
+
+        onSuccess(this, null, this.maplinks);
     }
 },
 {
@@ -215,12 +244,14 @@ let outputMaps = [
             name: "Maps"
         }
     },
-    generate: function(sourceMapData) {
+    generate: function(sourceMapData, onSuccess) {
         var wikimapiaBase = "http://wikimapia.org/#lang=en&";
         var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "z=12";
         this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
+
+        onSuccess(this, null, this.maplinks);
     }
 },
 {
@@ -234,11 +265,13 @@ let outputMaps = [
             name: "Map"
         }
     },
-    generate: function(sourceMapData) {
+    generate: function(sourceMapData, onSuccess) {
         var geocachingBase = "https://www.geocaching.com/map/#?";
         var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "z=14";
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
+
+        onSuccess(this, null, this.maplinks);
     }
 },
 {
@@ -252,10 +285,12 @@ let outputMaps = [
             name: "Map"
         }
     },
-    generate: function(sourceMapData) {
+    generate: function(sourceMapData, onSuccess) {
         var w3wBase = "https://map.what3words.com/";
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
+
+        onSuccess(this, null, this.maplinks);
     }
 }
 ];
