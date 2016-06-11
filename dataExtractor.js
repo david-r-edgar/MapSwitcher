@@ -9,9 +9,9 @@ if (window.location.hostname.indexOf("google.") >= 0) {
     }
     if (coordArray && coordArray.length >= 5) {
         if (coordArray[4] === 'z') {
-            sourceMapData.metresPerPixel =
-                calculateResolutionFromGoogleZoom(coordArray[3],
-                                                  coordArray[1]);
+            sourceMapData.resolution =
+                calculateResolutionFromStdZoom(coordArray[3],
+                                               coordArray[1]);
         } else {
             console.log("unknown scale system " + coordArray[4]);
             //FIXME we have to deal with m - normally eg. 7000m - metres?
@@ -57,7 +57,7 @@ if (window.location.hostname.indexOf("google.") >= 0) {
         re = /lvl=([0-9]+)/;
         var levelArray = window.location.search.match(re);
         if (levelArray && levelArray.length > 1) {
-            sourceMapData.metresPerPixel = calculateResolutionFromBingZoom(
+            sourceMapData.resolution = calculateResolutionFromStdZoom(
                 levelArray[1], sourceMapData.centreCoords.lat);
         }
     } else {
@@ -67,7 +67,7 @@ if (window.location.hostname.indexOf("google.") >= 0) {
             "lat": window.history.state.MapModeStateHistory.centerPoint.latitude, "lng": window.history.state.MapModeStateHistory.centerPoint.longitude}
 
         var level = history.state.MapModeStateHistory.level;
-        sourceMapData.metresPerPixel = calculateResolutionFromBingZoom(
+        sourceMapData.resolution = calculateResolutionFromStdZoom(
             level, sourceMapData.centreCoords.lat);
     }
 

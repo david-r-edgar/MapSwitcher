@@ -1,6 +1,7 @@
 let outputMaps = [
 {
     site: "Google",
+    prio: 1,
     image: "googleMapsLogo16x16.png",
     id: "google",
     dirn: false,
@@ -39,10 +40,9 @@ let outputMaps = [
             this.dirn = true;
         }
 
-        if ("metresPerPixel" in sourceMapData) {
-            zoom =
-                calculateGoogleZoomFromResolution(
-                    sourceMapData.metresPerPixel, sourceMapData.centreCoords.lat) + "z";
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                sourceMapData.resolution, sourceMapData.centreCoords.lat) + "z";
         }
 
         this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom;
@@ -58,6 +58,7 @@ let outputMaps = [
 },
 {
     site: "Bing",
+    prio: 2,
     image: "bingLogo16x16.png",
     id: "bing",
     dirn: false,
@@ -83,9 +84,9 @@ let outputMaps = [
                                 sourceMapData.centreCoords.lng;
         var zoom = "&lvl=10";
 
-        if ("metresPerPixel" in sourceMapData) {
-            zoom = "&lvl=" + calculateBingZoomFromResolution(
-                                sourceMapData.metresPerPixel,
+        if ("resolution" in sourceMapData) {
+            zoom = "&lvl=" + calculateStdZoomFromResolution(
+                                sourceMapData.resolution,
                                 sourceMapData.centreCoords.lat);
         }
 
@@ -160,6 +161,7 @@ let outputMaps = [
 },
 {
     site: "OpenStreetMap",
+    prio: 3,
     image: "osmLogo16x16.png",
     id: "osm",
     dirn: false,
@@ -193,6 +195,11 @@ let outputMaps = [
         var osmBase = "https://www.openstreetmap.org/#map=";
         var zoom = "12/";
         var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                sourceMapData.resolution, sourceMapData.centreCoords.lat) + "/";
+        }
 
         this.maplinks.osmStandard["link"] = osmBase + zoom + mapCentre;
         this.maplinks.osmCycle["link"] = osmBase + zoom + mapCentre + "&layers=C";
@@ -248,6 +255,13 @@ let outputMaps = [
         var wikimapiaBase = "http://wikimapia.org/#lang=en&";
         var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "z=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "z=" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
         this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
 
@@ -269,6 +283,12 @@ let outputMaps = [
         var geocachingBase = "https://www.geocaching.com/map/#?";
         var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "z=14";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "z=" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
         onSuccess(this, null, this.maplinks);

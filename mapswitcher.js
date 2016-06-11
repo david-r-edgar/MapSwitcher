@@ -5,7 +5,7 @@ function buildLineOfLinks(mapSite, links) {
     var html = "";
     if (links) {
             html =
-            "<div>" +
+            "<div data-sort='" + mapSite.prio + "'>" +
             "<span><img src=\"image/" + mapSite.image + "\"></span> " +
             "<span>" + mapSite.site + "</span> ";
         Object.keys(links).forEach(link => {
@@ -17,6 +17,14 @@ function buildLineOfLinks(mapSite, links) {
         html += "</div>";
     }
     return html;
+}
+
+jQuery.fn.sortDivs = function sortDivs() {
+    $("> div", this[0]).sort(dec_sort).appendTo(this[0]);
+    function dec_sort(a, b){
+        if ('undefined' === $(a).data("sort")) { return true; }
+        if ('undefined' === $(b).data("sort")) { return false; }
+        return ($(b).data("sort")) < ($(a).data("sort")) ? 1 : -1; }
 }
 
 
@@ -35,7 +43,9 @@ $(document).ready(function() {
                     outputMap.generate(result[0], function(mapSite,
                                                            dirnLinks, plainMapLinks) {
                         $("#withDirns").append(buildLineOfLinks(mapSite, dirnLinks));
+                        $("#withDirns").sortDivs();
                         $("#withoutDirns").append(buildLineOfLinks(mapSite, plainMapLinks));
+                        $("#withoutDirns").sortDivs();
                     });
                 }
             } else {
