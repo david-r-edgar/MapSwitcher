@@ -93,8 +93,9 @@ if (window.location.hostname.indexOf("google.") >= 0) {
     var re = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
     var coordArray = window.location.hash.match(re);
     if (coordArray && coordArray.length >= 4) {
-        //coordArray[1] is the zoom
         sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]}
+        sourceMapData.resolution = calculateResolutionFromStdZoom(
+                coordArray[1], sourceMapData.centreCoords.lat);
     }
 
     if ($(".directions_form").is(':visible')
@@ -150,17 +151,23 @@ if (window.location.hostname.indexOf("google.") >= 0) {
     if (coordArray && coordArray.length >= 3) {
         sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
     }
+    re = /z=([0-9]+)/;
+    var zoomArray = window.location.hash.match(re);
+    if (zoomArray && zoomArray.length > 1) {
+        sourceMapData.resolution = calculateResolutionFromStdZoom(
+                zoomArray[1], sourceMapData.centreCoords.lat);
+    }
 } else if (window.location.hostname.indexOf("wikimapia.org") >= 0) {
     var re = /&lat=([-0-9.]+)&lon=([-0-9.]+)&/;
     coordArray = window.location.hash.match(re);
     if (coordArray && coordArray.length >= 3) {
         sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
     }
-
-    var re = /&z=([0-9]+)&/;
+    re = /z=([0-9]+)/;
     var zoomArray = window.location.hash.match(re);
     if (zoomArray && zoomArray.length > 1) {
-        //FIXME convert this into scale: sourceMapData.scale = zoomArray[1];
+        sourceMapData.resolution = calculateResolutionFromStdZoom(
+                zoomArray[1], sourceMapData.centreCoords.lat);
     }
 }
 

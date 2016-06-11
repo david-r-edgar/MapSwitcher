@@ -142,13 +142,10 @@ let outputMaps = [
                 if (error) {
                     console.log("error");
                 } else {
-                    console.log(countryCode);
                     if (countryCode === "gb") {
-                        console.log(countryCode);
                         self.generatedMapLinks.bingos = {name: self.maplinks.bingos.name,
                             link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
                     }
-                    console.log(self.generatedMapLinks);
                 }
 
                 if (self.dirn) {
