@@ -49,16 +49,26 @@ if (window.location.hostname.indexOf("google.") >= 0) {
     //if there's no 'state', it means no scrolling has happened yet.
     //So we should extract the lat and lng from the window.location parameter
     if (window.history && !window.history.state) {
-        var re = /cp=([-0-9.]+)~([-0-9.]+)/
+        var re = /cp=([-0-9.]+)~([-0-9.]+)/;
         var coordArray = window.location.search.match(re);
         if (coordArray && coordArray.length >= 3) {
             sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+        }
+        re = /lvl=([0-9]+)/;
+        var levelArray = window.location.search.match(re);
+        if (levelArray && levelArray.length > 1) {
+            sourceMapData.metresPerPixel = calculateResolutionFromBingZoom(
+                levelArray[1], sourceMapData.centreCoords.lat);
         }
     } else {
         //scrolling has happened, but bing doesn't update its URL. So we pull
         //the coords from the'MapModeStateHistory'
         sourceMapData.centreCoords = {
             "lat": window.history.state.MapModeStateHistory.centerPoint.latitude, "lng": window.history.state.MapModeStateHistory.centerPoint.longitude}
+
+        var level = history.state.MapModeStateHistory.level;
+        sourceMapData.metresPerPixel = calculateResolutionFromBingZoom(
+            level, sourceMapData.centreCoords.lat);
     }
 
     if ($("#directionsPanelRoot").length) {
@@ -153,6 +163,8 @@ if (window.location.hostname.indexOf("google.") >= 0) {
         //FIXME convert this into scale: sourceMapData.scale = zoomArray[1];
     }
 }
+
+
 
 //this expression is how we return a result object to the caller (extension script)
 sourceMapData

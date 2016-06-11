@@ -1,6 +1,25 @@
 
 CodeGrid = codegrid.CodeGrid("http://localhost/codegrid-js/tiles/", jsonWorldGrid);
 
+function buildLineOfLinks(mapSite, links) {
+    var html = "";
+    if (links) {
+            html =
+            "<div>" +
+            "<span><img src=\"image/" + mapSite.image + "\"></span> " +
+            "<span>" + mapSite.site + "</span> ";
+        Object.keys(links).forEach(link => {
+            html += "<a class=\"maplink\" target=\"_blank\" id=\"" +
+                link + "\" href=\"" +
+                links[link].link + "\">" +
+                links[link].name + "</a> ";
+        });
+        html += "</div>";
+    }
+    return html;
+}
+
+
 $(document).ready(function() {
     chrome.tabs.executeScript({file: "vendor/jquery/jquery-2.2.4.min.js"}, function(){
       chrome.tabs.executeScript({file: "mapUtil.js"}, function() {
@@ -9,43 +28,14 @@ $(document).ready(function() {
         }, function(result) {
             if (result && result[0] && (result[0].centreCoords != null)) {
                 if (result[0].directions != null) {
-                    $("#maplinkbox #withDirns").append("<h4>Directions</h4>");
-                    $("#maplinkbox #withoutDirns").append("<h4>Other Maps</h4>");
+                    $("#withDirns").append("<h4>Directions</h4>");
+                    $("#withoutDirns").append("<h4>Other Maps</h4>");
                 }
                 for (outputMap of outputMaps) {
                     outputMap.generate(result[0], function(mapSite,
                                                            dirnLinks, plainMapLinks) {
-                        var dirnLinkHtml = "";
-                        if (dirnLinks) {
-                            dirnLinkHtml =
-                                "<div>" +
-                                "<span><img src=\"image/" + mapSite.image + "\"></span> " +
-                                "<span>" + mapSite.site + "</span> ";
-                            Object.keys(dirnLinks).forEach(dirnLink => {
-                                dirnLinkHtml += "<a class=\"maplink\" target=\"_blank\" id=\"" +
-                                    dirnLink + "\" href=\"" +
-                                    dirnLinks[dirnLink].link + "\">" +
-                                    dirnLinks[dirnLink].name + "</a> ";
-                            });
-                            dirnLinkHtml += "</div>";
-                            $("#maplinkbox #withDirns").append(dirnLinkHtml);
-                        }
-
-                        var plainMapHtml = "";
-                        if (plainMapLinks) {
-                            plainMapHtml =
-                                "<div>" +
-                                "<span><img src=\"image/" + mapSite.image + "\"></span> " +
-                                "<span>" + mapSite.site + "</span> ";
-                            Object.keys(plainMapLinks).forEach(plainMapLink => {
-                                plainMapHtml += "<a class=\"maplink\" target=\"_blank\" id=\"" +
-                                    plainMapLink + "\" href=\"" +
-                                    plainMapLinks[plainMapLink].link + "\">" +
-                                    plainMapLinks[plainMapLink].name + "</a> ";
-                            });
-                            plainMapHtml += "</div>";
-                            $("#maplinkbox #withoutDirns").append(plainMapHtml);
-                        }
+                        $("#withDirns").append(buildLineOfLinks(mapSite, dirnLinks));
+                        $("#withoutDirns").append(buildLineOfLinks(mapSite, plainMapLinks));
                     });
                 }
             } else {
