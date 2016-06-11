@@ -4,7 +4,6 @@ let outputMaps = [
     prio: 1,
     image: "googleMapsLogo16x16.png",
     id: "google",
-    dirn: false,
     maplinks:
     {
         googlemaps: {
@@ -37,7 +36,6 @@ let outputMaps = [
             } else {
                 directions += sourceMapData.directions.to.address + "/";
             }
-            this.dirn = true;
         }
 
         if ("resolution" in sourceMapData) {
@@ -49,7 +47,7 @@ let outputMaps = [
         this.maplinks.googleterrain["link"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
         this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + zoom + "/data=!3m1!1e3!5m1!1e4";
 
-        if (this.dirn) {
+        if (directions.length > 0) {
             onSuccess(this, this.maplinks, null);
         } else {
             onSuccess(this, null, this.maplinks);
@@ -61,7 +59,6 @@ let outputMaps = [
     prio: 2,
     image: "bingLogo16x16.png",
     id: "bing",
-    dirn: false,
     maplinks:
     {
         bingroad: {
@@ -119,7 +116,6 @@ let outputMaps = [
                 directions += "adr." + sourceMapData.directions.to.address;
             }
             directions += mode;
-            this.dirn = true;
         }
 
         this.maplinks.bingroad["link"] =
@@ -148,7 +144,7 @@ let outputMaps = [
                     }
                 }
 
-                if (self.dirn) {
+                if (directions.length > 0) {
                     onSuccess(self, self.generatedMapLinks, null);
                 } else {
                     onSuccess(self, null, self.generatedMapLinks);
@@ -161,7 +157,6 @@ let outputMaps = [
     prio: 3,
     image: "osmLogo16x16.png",
     id: "osm",
-    dirn: false,
     maplinks:
     {
         osmStandard: "Standard",
@@ -189,29 +184,64 @@ let outputMaps = [
         },
     },
     generate: function(sourceMapData, onSuccess) {
-        var osmBase = "https://www.openstreetmap.org/#map=";
+        var osmBase = "https://www.openstreetmap.org/";
         var zoom = "12/";
         var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
+        var directions = "";
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
                 sourceMapData.resolution, sourceMapData.centreCoords.lat) + "/";
         }
 
-        this.maplinks.osmStandard["link"] = osmBase + zoom + mapCentre;
-        this.maplinks.osmCycle["link"] = osmBase + zoom + mapCentre + "&layers=C";
-        this.maplinks.osmTransport["link"] = osmBase + zoom + mapCentre + "&layers=T";
-        this.maplinks.osmMapQuestOpen["link"] = osmBase + zoom + mapCentre + "&layers=Q";
-        this.maplinks.osmHumanitarian["link"] = osmBase + zoom + mapCentre + "&layers=H";
+        if (sourceMapData.directions &&
+                sourceMapData.directions.from &&
+                sourceMapData.directions.to) {
+            //FIXME if there are only addresses, no coords, how do we handle this?
+            if (sourceMapData.directions.from.coords &&
+                    sourceMapData.directions.to.coords) {
+                var mode = "";
+                if (sourceMapData.directions.mode) {
+                    switch (sourceMapData.directions.mode) {
+                        case "foot":
+                            mode = "engine=mapzen_foot&";
+                            break;
+                        case "car":
+                            mode = "engine=osrm_car&";
+                            break;
+                        case "bike":
+                            mode = "engine=graphhopper_bicycle&";
+                            break;
+                    }
+                }
 
-        onSuccess(this, null, this.maplinks);
+                directions = "directions?" + mode + "route=" +
+                    sourceMapData.directions.from.coords.lat + "," +
+                    sourceMapData.directions.from.coords.lng + ";" +
+                    sourceMapData.directions.to.coords.lat + "," +
+                    sourceMapData.directions.to.coords.lng;
+            }
+        }
+
+        var coreLink = osmBase + directions + "#map=" + zoom + mapCentre;
+
+        this.maplinks.osmStandard["link"] = coreLink;
+        this.maplinks.osmCycle["link"] = coreLink + "&layers=C";
+        this.maplinks.osmTransport["link"] = coreLink + "&layers=T";
+        this.maplinks.osmMapQuestOpen["link"] = coreLink + "&layers=Q";
+        this.maplinks.osmHumanitarian["link"] = coreLink + "&layers=H";
+
+        if (directions.length > 0) {
+            onSuccess(this, this.maplinks, null);
+        } else {
+            onSuccess(this, null, this.maplinks);
+        }
     }
 },
 {
     site: "Wikimedia Labs",
     image: "wmLabsLogo16x16.png",
     id: "wmLabs",
-    dirn: false,
     maplinks:
     {
         wmGeoHack: {
@@ -238,7 +268,6 @@ let outputMaps = [
     site: "Wikimapia",
     image: "wikimapiaLogo16x16.png",
     id: "wikimapia",
-    dirn: false,
     maplinks:
     {
         wikimapiaSatellite: {
@@ -269,7 +298,6 @@ let outputMaps = [
     site: "Geocaching",
     image: "geocachingLogo16x16.png",
     id: "geocaching",
-    dirn: false,
     maplinks:
     {
         geocaching: {
@@ -295,7 +323,6 @@ let outputMaps = [
     site: "what3words",
     image: "w3wLogo.png",
     id: "w3w",
-    dirn: false,
     maplinks:
     {
         what3words: {
