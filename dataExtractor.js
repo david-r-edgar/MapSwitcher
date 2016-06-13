@@ -164,7 +164,7 @@ if (window.location.hostname.indexOf("google.") >= 0) {
     var re = /1:([0-9]+)/;
     var scaleMatch = scaleElem[0].innerText.match(re);
     if (scaleMatch && scaleMatch.length > 1) {
-        sourceMapData.scale = scaleMatch[1];
+        sourceMapData.resolution = calculateResolutionFromScale(scaleMatch[1]);
     }
 } else if (window.location.hostname.indexOf("geocaching.") >= 0) {
     var re = /ll=([-0-9.]+),([-0-9.]+)/;

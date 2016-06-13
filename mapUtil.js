@@ -14,6 +14,11 @@
 var WORLD_RESOLUTION_MPP = 156543.03392;
 
 /**
+ * I have no idea what the median pixel pitch is, so I just used this one (96ppi).
+ */
+var MEDIAN_PIXEL_PITCH = 0.264;
+
+/**
  * Calculates the map resolution for a given latitude from the zoom level
  * as used for google, bing, and other common mapping services
  *
@@ -42,10 +47,20 @@ function calculateStdZoomFromResolution(resn, lat) {
 }
 
 
-
 //pixelPitch in mm per pixel
 function calculateScaleFromResolution(resn, pixelPitch) {
+    if (!pixelPitch) {
+        pixelPitch = MEDIAN_PIXEL_PITCH;
+    }
     return resn / (pixelPitch / 1000);
+}
+
+//pixelPitch in mm per pixel
+function calculateResolutionFromScale(scale, pixelPitch) {
+    if (!pixelPitch) {
+        pixelPitch = MEDIAN_PIXEL_PITCH;
+    }
+    return scale * pixelPitch / 1000;
 }
 
 //pixelPitch in mm per pixel

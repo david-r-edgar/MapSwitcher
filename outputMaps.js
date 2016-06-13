@@ -247,7 +247,9 @@ let outputMaps = [
         var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
         var region = (sourceMapData.countryCode.length > 0) ?
                         "_region:" + sourceMapData.countryCode : "";
-        this.maplinks.wmGeoHack["link"] = geohackBase + mapCentre + region;
+
+        var scale = calculateScaleFromResolution(sourceMapData.resolution);
+        this.maplinks.wmGeoHack["link"] = geohackBase + mapCentre + region + "_scale:" + scale;
 
         var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
         mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
