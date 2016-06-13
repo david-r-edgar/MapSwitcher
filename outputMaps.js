@@ -75,7 +75,7 @@ let outputMaps = [
         }
     },
     generate: function(sourceMapData, onSuccess) {
-        var bingBase = "http://bing.com/maps/default.aspx?";
+        var bingBase = "https://www.bing.com/maps/default.aspx?";
         var directions = "";
         var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" +
                                 sourceMapData.centreCoords.lng;

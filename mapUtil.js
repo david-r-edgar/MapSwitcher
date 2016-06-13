@@ -8,8 +8,10 @@
  * Calculated: ~ 40075 * 1000/ 256
  * (40075 is the circumference of the earth at the equator in km, and the
  * 360 degree world map is 256 pixels wide at zoom 0.)
+ *
+ * FIXME I wanted to define this as const, but get an already-declared error. Why?
  */
-const WORLD_RESOLUTION_MPP = 156543.03392;
+var WORLD_RESOLUTION_MPP = 156543.03392;
 
 /**
  * Calculates the map resolution for a given latitude from the zoom level

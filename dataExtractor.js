@@ -21,10 +21,19 @@ if (window.location.hostname.indexOf("google.") >= 0) {
     //window.location.pathname url-encodes other characters so we can ignore them
     re = /dir\/([-A-Za-z0-9%'+,!$_.*()]+)\/([-A-Za-z0-9%'+,!$_.*()]+)\//;
     routeArray = window.location.pathname.match(re);
-    if (routeArray && routeArray.length >= 3) {
+    if (routeArray && routeArray.length > 2) {
         sourceMapData.directions = {
             "from": { "address": routeArray[1] },
             "to": { "address": routeArray[2] }
+        }
+
+        re = /dir\/([-0-9.]+),\+([-0-9.]+)\/([-0-9.]+),\+([-0-9.]+)\//;
+        var dirnCoordsArray = window.location.pathname.match(re);
+        if (dirnCoordsArray && dirnCoordsArray.length > 4) {
+            sourceMapData.directions.from.coords =
+                {"lat": dirnCoordsArray[1], "lng": dirnCoordsArray[2]}
+            sourceMapData.directions.to.coords =
+                {"lat": dirnCoordsArray[3], "lng": dirnCoordsArray[4]}
         }
 
         re = /!3e([0-3])/;
@@ -75,6 +84,18 @@ if (window.location.hostname.indexOf("google.") >= 0) {
         sourceMapData.directions = {
             "from": { "address": $(".dirWaypoints input[title='From']").val() },
             "to": { "address": $(".dirWaypoints input[title='To']").val() }
+        }
+
+        var re = /([-0-9.]+)[, ]+([-0-9.]+)/
+        var fromArray = sourceMapData.directions.from.address.match(re);
+        if (fromArray && fromArray.length > 2) {
+            sourceMapData.directions.from.coords =
+                {"lat": fromArray[1], "lng": fromArray[2]}
+        }
+        var toArray = sourceMapData.directions.to.address.match(re);
+        if (toArray && toArray.length > 2) {
+            sourceMapData.directions.to.coords =
+                {"lat": toArray[1], "lng": toArray[2]}
         }
 
         switch($(".dirBtnSelected")[0].classList[0]) {
