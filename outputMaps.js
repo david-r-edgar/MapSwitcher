@@ -132,24 +132,15 @@ let outputMaps = [
 
 
         var self = this;
-        CodeGrid.getCode (Number(sourceMapData.centreCoords.lat),
-                          Number(sourceMapData.centreCoords.lng),
-            function (error, countryCode) {
-                if (error) {
-                    console.log("error");
-                } else {
-                    if (countryCode === "gb") {
-                        self.generatedMapLinks.bingos = {name: self.maplinks.bingos.name,
-                            link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
-                    }
-                }
-
-                if (directions.length > 0) {
-                    onSuccess(self, self.generatedMapLinks, null);
-                } else {
-                    onSuccess(self, null, self.generatedMapLinks);
-                }
-            });
+        if (sourceMapData.countryCode === "gb") {
+            self.generatedMapLinks.bingos = {name: self.maplinks.bingos.name,
+                link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
+        }
+        if (directions.length > 0) {
+            onSuccess(self, self.generatedMapLinks, null);
+        } else {
+            onSuccess(self, null, self.generatedMapLinks);
+        }
     }
 },
 {
@@ -254,7 +245,9 @@ let outputMaps = [
     generate: function(sourceMapData, onSuccess) {
         var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
         var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
-        this.maplinks.wmGeoHack["link"] = geohackBase + mapCentre;
+        var region = (sourceMapData.countryCode.length > 0) ?
+                        "_region:" + sourceMapData.countryCode : "";
+        this.maplinks.wmGeoHack["link"] = geohackBase + mapCentre + region;
 
         var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
         mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;

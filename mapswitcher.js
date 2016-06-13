@@ -35,6 +35,16 @@ $(document).ready(function() {
             file: "dataExtractor.js"
         }, function(result) {
             if (result && result[0] && (result[0].centreCoords != null)) {
+
+              result[0].countryCode = "";
+              CodeGrid.getCode(
+                  Number(result[0].centreCoords.lat),
+                  Number(result[0].centreCoords.lng),
+                  function (error, countryCode) {
+                      if (!error) {
+                          result[0].countryCode = countryCode;
+                      }
+
                 if (result[0].directions != null) {
                     $("#withDirns").append("<h4>Directions</h4>");
                     $("#withoutDirns").append("<h4>Other Maps</h4>");
@@ -48,6 +58,7 @@ $(document).ready(function() {
                         $("#withoutDirns").sortDivs();
                     });
                 }
+              });
             } else {
                 console.log("no coords");
                 console.log(result);
