@@ -38,11 +38,15 @@ function calculateResolutionFromStdZoom(zoom, lat) {
  *
  * @param {number} resn - resolution, in metres per pixel
  * @param {number} lat - latitude, wgs84 decimal
+ * @param {integer} min - minimum zoom to return
+ * @param {integer} max - maximum zoom to return
  * @returns {integer} zoom level integer (normally in the range 0-20)
  */
-function calculateStdZoomFromResolution(resn, lat) {
+function calculateStdZoomFromResolution(resn, lat, min, max) {
     let latAdjCoeff = Math.cos(lat * Math.PI / 180);
     let zoom = Math.log(WORLD_RESOLUTION_MPP * latAdjCoeff / resn) / Math.log(2);
+    if (min > zoom) zoom = min;
+    if ((max > 0) && (max < zoom)) zoom = max;
     return Math.round(zoom);
 }
 

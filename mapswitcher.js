@@ -74,7 +74,7 @@ function run(sourceMapData) {
         $("#withoutDirns").append("<h4>Other Maps</h4>");
     }
     for (outputMap of outputMaps) {
-        (function(outputMap) {
+        (function(outputMap) { //dummy immediately executed fn to save variables
             chrome.storage.sync.get(outputMap.id, function(options) {
                 if (options[outputMap.id]) {
 

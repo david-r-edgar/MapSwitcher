@@ -39,8 +39,9 @@ let outputMaps = [
         }
 
         if ("resolution" in sourceMapData) {
+            //google minimum zoom is 3
             zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat) + "z";
+                sourceMapData.resolution, sourceMapData.centreCoords.lat, 3) + "z";
         }
 
         this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom;
@@ -82,9 +83,11 @@ let outputMaps = [
         var zoom = "&lvl=10";
 
         if ("resolution" in sourceMapData) {
+            //3 <= zoom <=20
             zoom = "&lvl=" + calculateStdZoomFromResolution(
                                 sourceMapData.resolution,
-                                sourceMapData.centreCoords.lat);
+                                sourceMapData.centreCoords.lat,
+                                3, 20);
         }
 
         if ("directions" in sourceMapData) {
@@ -181,8 +184,9 @@ let outputMaps = [
         var directions = "";
 
         if ("resolution" in sourceMapData) {
+            //osm max zoom 19
             zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat) + "/";
+                sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 19) + "/";
         }
 
         if (sourceMapData.directions &&
