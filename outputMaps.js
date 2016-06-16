@@ -151,6 +151,7 @@ let outputMaps = [
     prio: 3,
     image: "osmLogo16x16.png",
     id: "osm",
+    note: "",
     maplinks:
     {
         osmStandard: "Standard",
@@ -190,8 +191,8 @@ let outputMaps = [
         }
 
         if (sourceMapData.directions &&
-                sourceMapData.directions.from &&
-                sourceMapData.directions.to) {
+            sourceMapData.directions.from &&
+            sourceMapData.directions.to) {
             //FIXME if there are only addresses, no coords, how do we handle this?
             if (sourceMapData.directions.from.coords &&
                     sourceMapData.directions.to.coords) {
@@ -215,6 +216,9 @@ let outputMaps = [
                     sourceMapData.directions.from.coords.lng + ";" +
                     sourceMapData.directions.to.coords.lat + "," +
                     sourceMapData.directions.to.coords.lng;
+            } else {
+                this.note = "Directions unvailable because waypoints are not "
+                            + "all specified as coordinates.";
             }
         }
 
@@ -227,9 +231,9 @@ let outputMaps = [
         this.maplinks.osmHumanitarian["link"] = coreLink + "&layers=H";
 
         if (directions.length > 0) {
-            onSuccess(this, this.maplinks, null);
+            onSuccess(this, this.maplinks, null, this.note);
         } else {
-            onSuccess(this, null, this.maplinks);
+            onSuccess(this, null, this.maplinks, this.note);
         }
     }
 },

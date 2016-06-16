@@ -1,11 +1,12 @@
 
 CodeGrid = codegrid.CodeGrid("http://localhost/codegrid-js/tiles/", jsonWorldGrid);
 
-function buildLineOfLinks(mapSite, links) {
+function buildLineOfLinks(id, mapSite, links, note) {
+    console.log(id, mapSite, note);
     var html = "";
     if (links) {
             html =
-            "<div data-sort='" + mapSite.prio + "'>" +
+            "<div id='" + id + "' data-sort='" + mapSite.prio + "'>" +
             "<span><img src=\"image/" + mapSite.image + "\"></span> " +
             "<span>" + mapSite.site + "</span> ";
         Object.keys(links).forEach(link => {
@@ -14,6 +15,10 @@ function buildLineOfLinks(mapSite, links) {
                 links[link].link + "\">" +
                 links[link].name + "</a> ";
         });
+
+        if (note && note.length) {
+            html += "<span class=\"fa fa-sticky-note linknote\" title='" + note + "'></span>";
+        }
         html += "</div>";
     }
     return html;
@@ -79,12 +84,21 @@ function run(sourceMapData) {
                 if (options[outputMap.id]) {
 
                     outputMap.generate(sourceMapData,
-                                        function(mapSite,
-                                                dirnLinks, plainMapLinks) {
-                        $("#withDirns").append(buildLineOfLinks(mapSite, dirnLinks));
+                        function(mapSite, dirnLinks, plainMapLinks, note) {
+                        $("#withDirns").append(buildLineOfLinks(outputMap.id,
+                                                                mapSite,
+                                                                dirnLinks,
+                                                                note));
                         $("#withDirns").sortDivs();
-                        $("#withoutDirns").append(buildLineOfLinks(mapSite, plainMapLinks));
+                        $("#withoutDirns").append(buildLineOfLinks(outputMap.id,
+                                                                   mapSite,
+                                                                   plainMapLinks,
+                                                                   note));
                         $("#withoutDirns").sortDivs();
+
+                        if (note && note.length) {
+                            $(".linknote").tipsy();
+                        }
                     });
                 }
             });

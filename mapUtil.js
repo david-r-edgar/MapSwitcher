@@ -14,7 +14,7 @@
 var WORLD_RESOLUTION_MPP = 156543.03392;
 
 /**
- * I have no idea what the median pixel pitch is, so I just used this one (96ppi).
+ * I have no idea what the median pixel pitch is, so I just used this one (96dpi).
  */
 var MEDIAN_PIXEL_PITCH = 0.264;
 
