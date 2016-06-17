@@ -45,6 +45,13 @@ function validateExtractedData(extractedData) {
 }
 
 
+
+/**
+ * Gets the two letter country code for the current location of the map shown
+ * in the current tab.
+ *
+ * @param {object} extractedData - Data object extracted by the dataExtractor.
+ */
 function getCountryCode(extractedData) {
     return new Promise(function(resolve, reject) {
         if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
@@ -71,7 +78,14 @@ function noCoords(sourceMapData) {
 }
 
 
-
+/**
+ * Main method of the map switcher popup.
+ *
+ * Only run once the dataExtractor has been executed on the current tab.
+ * Iterates throught the map services to request them to generate their links.
+ *
+ * @param sourceMapData
+ */
 function run(sourceMapData) {
 
     if (sourceMapData.directions != null) {
@@ -108,7 +122,14 @@ function run(sourceMapData) {
 
 
 
-
+/**
+ * Entry routine.
+ *
+ * Injects content scripts into the current tab (including the most important, the data
+ * extractor), which reads data from the map service.
+ * Then performs some auxiliary methods before executing the main method run() which
+ * generates all the links.
+ */
 $(document).ready(function() {
 
     new ScriptExecution()

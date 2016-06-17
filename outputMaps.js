@@ -241,6 +241,7 @@ let outputMaps = [
     site: "Wikimedia Labs",
     image: "wmLabsLogo16x16.png",
     id: "wmLabs",
+    prio: 4,
     maplinks:
     {
         wmGeoHack: {

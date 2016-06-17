@@ -51,7 +51,13 @@ function calculateStdZoomFromResolution(resn, lat, min, max) {
 }
 
 
-//pixelPitch in mm per pixel
+/**
+ * Calculates the map scale from the given map resolution and screen pixel pitch.
+ *
+ * @param {number} resn - map resolution in metres per pixel
+ * @param {number} pixelPitch - pixel pitch in mm per pixel
+ * @return {number} map scale
+ */
 function calculateScaleFromResolution(resn, pixelPitch) {
     if (!pixelPitch) {
         pixelPitch = MEDIAN_PIXEL_PITCH;
@@ -59,7 +65,14 @@ function calculateScaleFromResolution(resn, pixelPitch) {
     return resn / (pixelPitch / 1000);
 }
 
-//pixelPitch in mm per pixel
+
+/**
+ * Calculates the map resolution from the given scale and screen pixel pitch.
+ *
+ * @param {number} scale - map scale (where the human-readable scale is 1:scale)
+ * @param {number} pixelPitch - pixel pitch in mm per pixel
+ * @return {number} resolution, in metres per pixel
+ */
 function calculateResolutionFromScale(scale, pixelPitch) {
     if (!pixelPitch) {
         pixelPitch = MEDIAN_PIXEL_PITCH;
