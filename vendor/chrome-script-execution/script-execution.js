@@ -13,14 +13,23 @@
             return exeScript(executor.tabId, file);
         })).then(function (result) {
             return {executor, result};
+        }).catch(function (result) {
+            //catch invalid URL
         });
     };
 
     function promiseTo(fn, tabId, info) {
-        return new Promise(function (resolve) {
-            fn.call(chrome.tabs, tabId, info, function (result) {
-                return resolve(result);
+        return new Promise(function (resolve, reject) {
+            chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+                if (tabs[0].url.match(/^chrome:\/\//)) {
+                    return reject();
+                } else {
+                    fn.call(chrome.tabs, tabId, info, function (result) {
+                        return resolve(result);
+                    });
+                }
             });
+
         });
     }
 

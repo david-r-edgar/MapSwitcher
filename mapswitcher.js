@@ -1,6 +1,16 @@
 
 CodeGrid = codegrid.CodeGrid("http://www.loughrigg.org/codegrid-js/tiles/", jsonWorldGrid);
 
+
+jQuery.fn.sortDivs = function sortDivs() {
+    $("> div", this[0]).sort(dec_sort).appendTo(this[0]);
+    function dec_sort(a, b){
+        if ('undefined' === $(a).data("sort")) { return true; }
+        if ('undefined' === $(b).data("sort")) { return false; }
+        return ($(b).data("sort")) < ($(a).data("sort")) ? 1 : -1; }
+}
+
+
 function buildLineOfLinks(id, mapSite, links, note) {
     var html = "";
     if (links) {
@@ -21,14 +31,6 @@ function buildLineOfLinks(id, mapSite, links, note) {
         html += "</div>";
     }
     return html;
-}
-
-jQuery.fn.sortDivs = function sortDivs() {
-    $("> div", this[0]).sort(dec_sort).appendTo(this[0]);
-    function dec_sort(a, b){
-        if ('undefined' === $(a).data("sort")) { return true; }
-        if ('undefined' === $(b).data("sort")) { return false; }
-        return ($(b).data("sort")) < ($(a).data("sort")) ? 1 : -1; }
 }
 
 
