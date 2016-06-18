@@ -1,8 +1,7 @@
 
-CodeGrid = codegrid.CodeGrid("http://localhost/codegrid-js/tiles/", jsonWorldGrid);
+CodeGrid = codegrid.CodeGrid("http://www.loughrigg.org/codegrid-js/tiles/", jsonWorldGrid);
 
 function buildLineOfLinks(id, mapSite, links, note) {
-    console.log(id, mapSite, note);
     var html = "";
     if (links) {
             html =
@@ -71,8 +70,6 @@ function getCountryCode(extractedData) {
 
 
 function noCoords(sourceMapData) {
-    console.log("no coords");
-    console.log(sourceMapData);
     $("#nomap").show();
     $("#maplinkbox").hide();
 }

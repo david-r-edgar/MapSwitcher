@@ -80,15 +80,25 @@ function calculateResolutionFromScale(scale, pixelPitch) {
     return scale * pixelPitch / 1000;
 }
 
-//pixelPitch in mm per pixel
-//returns screen resolution in pixels per inch
-function calculatePPIFromPixelPitch(pixelPitch) {
+
+/**
+ * Calculates the screen resolution (dpi) from the pixel pitch (mm per pixel).
+ *
+ * @param {number} pixelPitch - in mm per pixel
+ * @return {number} screen resolution - in dots per inch
+ */
+function calculateDPIFromPixelPitch(pixelPitch) {
     return 25.4 / pixelPitch;
 }
 
-//ppi screen resolution in pixels per inch
-//returns pixel pitch in mm per pixel
-function calculatePixelPitchFromPPI(ppi) {
+
+/**
+ * Calculates the pixel pitch (mm per pixel) from the screen resolution (dpi).
+ *
+ * @param {number} screen resolution - in dots per inch
+ * @return {number} pixelPitch - in mm per pixel
+ */
+function calculatePixelPitchFromDPI(ppi) {
     return 25.4 / ppi;
 }
 

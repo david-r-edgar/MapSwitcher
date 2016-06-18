@@ -86,7 +86,7 @@ if (window.location.hostname.indexOf("google.") >= 0) {
             "to": { "address": $(".dirWaypoints input[title='To']").val() }
         }
 
-        var re = /([-0-9.]+)[ ]+,[ ]+([-0-9.]+)/
+        var re = /([-0-9.]+)[ ]*,[ ]*([-0-9.]+)/
         var fromArray = sourceMapData.directions.from.address.match(re);
         if (fromArray && fromArray.length > 2) {
             sourceMapData.directions.from.coords =
