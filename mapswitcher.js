@@ -1,7 +1,13 @@
 
 CodeGrid = codegrid.CodeGrid("http://www.loughrigg.org/codegrid-js/tiles/", jsonWorldGrid);
 
-
+/**
+ * Sorts divs inside the element this is called on, based on the ascending numeric
+ * value of their "data-sort" attribute.
+ *
+ * Divs with no such attribute specified are placed at the end of the list in
+ * arbitrary order.
+ */
 jQuery.fn.sortDivs = function sortDivs() {
     $("> div", this[0]).sort(dec_sort).appendTo(this[0]);
     function dec_sort(a, b){
@@ -11,6 +17,16 @@ jQuery.fn.sortDivs = function sortDivs() {
 }
 
 
+/**
+ * Utility function which builds the HTML for all the map links belonging to a specific
+ * map service.
+ *
+ * @param {string} id - id for the main map service div.
+ * @param {object} mapSite - the output object representing the map service
+ * @param {object} links - the map links to add, containing URLs and names for each
+ * @param {note} note - a note for this map service, if applicable
+ * @return {string} the HTML for the line
+ */
 function buildLineOfLinks(id, mapSite, links, note) {
     var html = "";
     if (links) {
@@ -35,6 +51,12 @@ function buildLineOfLinks(id, mapSite, links, note) {
 
 
 
+/**
+ * Checks the object containing extracted data returned by the content script.
+ *
+ * @param {object} extractedData - Data object extracted by the dataExtractor.
+ * @return Promise which resolves if the data validates, or rejects if not.
+ */
 function validateExtractedData(extractedData) {
     return new Promise(function(resolve, reject) {
         if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
@@ -49,9 +71,11 @@ function validateExtractedData(extractedData) {
 
 /**
  * Gets the two letter country code for the current location of the map shown
- * in the current tab.
+ * in the current tab. If the country code can be found, it is stored in the
+ * extracted data object passed as argument.
  *
  * @param {object} extractedData - Data object extracted by the dataExtractor.
+ * @return Promise which resolves on success with the extracted data object.
  */
 function getCountryCode(extractedData) {
     return new Promise(function(resolve, reject) {
@@ -62,7 +86,7 @@ function getCountryCode(extractedData) {
                 function (error, countryCode) {
                     if (!error) {
                         extractedData[0].countryCode = countryCode;
-                        resolve(extractedData[0]);
+                        resolve(extractedData);
                     }
                 });
         }
@@ -71,7 +95,13 @@ function getCountryCode(extractedData) {
 
 
 
-function noCoords(sourceMapData) {
+/**
+ * Handles cases where no coordinates are available from the page, or another problem
+ * has occured.
+ *
+ * @param {object} sourceMapData - Data object extracted by the dataExtractor.
+ */
+function handleNoCoords(sourceMapData) {
     $("#nomap").show();
     $("#maplinkbox").hide();
 }
@@ -137,7 +167,7 @@ $(document).ready(function() {
                         "dataExtractor.js")
         .then(s => validateExtractedData(s.result[2]))
         .then(s => getCountryCode(s))
-        .then(s => run(s)) //pass the result of the dataExtractor script
-        .catch(s => (noCoords(s)));
+        .then(s => run(s[0])) //pass the result of the dataExtractor script
+        .catch(s => (handleNoCoords(s)));
 });
 
