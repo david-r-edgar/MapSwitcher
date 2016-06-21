@@ -4,14 +4,14 @@
   "name": "Map Switcher",
   "description": "Switch between different maps",
   "version": "0.1",
-  "options_page": "options.html",
+  "options_page": "html/options.html",
 
   "browser_action": {
     "default_icon": {
       "19": "image/mapswitcher19x19.png",
       "38": "image/mapswitcher38x38.png"
     },
-    "default_popup": "mapswitcher.html",
+    "default_popup": "html/mapswitcher.html",
     "default_title": "Map Switcher"
   },
   "permissions": [

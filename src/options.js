@@ -17,7 +17,7 @@ function restore_options() {
     for (outputMap of outputMaps) {
         mapEntry =
             "<li>" +
-            "<label for\"" + outputMap.id + "\"><img src=\"image/" + outputMap.image + "\">"  + outputMap.site + "</label>" +
+            "<label for\"" + outputMap.id + "\"><img src=\"../image/" + outputMap.image + "\">"  + outputMap.site + "</label>" +
             "<input type=\"checkbox\" id=\"" + outputMap.id + "\" />" +
             "</li>";
             $("#mapsTickList").append(mapEntry);

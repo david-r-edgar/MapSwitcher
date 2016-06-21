@@ -32,7 +32,7 @@ function buildLineOfLinks(id, mapSite, links, note) {
     if (links) {
             html =
             "<div id='" + id + "' data-sort='" + mapSite.prio + "'>" +
-            "<span><img src=\"image/" + mapSite.image + "\"></span> " +
+            "<span><img src=\"../image/" + mapSite.image + "\"></span> " +
             "<span>" + mapSite.site + "</span> ";
         Object.keys(links).forEach(link => {
             html += "<a class=\"maplink\" target=\"_blank\" id=\"" +
