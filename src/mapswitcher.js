@@ -116,16 +116,18 @@ function handleNoCoords(sourceMapData) {
  * @param sourceMapData
  */
 function run(sourceMapData) {
-
     if (sourceMapData.directions != null) {
         $("#withDirns").append("<h4>Directions</h4>");
         $("#withoutDirns").append("<h4>Other Maps</h4>");
     }
     for (outputMap of outputMaps) {
         (function(outputMap) { //dummy immediately executed fn to save variables
-            chrome.storage.sync.get(outputMap.id, function(options) {
-                if (options[outputMap.id]) {
 
+            mapOptDefaults = {}
+            mapOptDefaults[outputMap.id] = true;
+
+            chrome.storage.sync.get(mapOptDefaults, function(options) {
+                if (options[outputMap.id]) {
                     outputMap.generate(sourceMapData,
                         function(mapSite, dirnLinks, plainMapLinks, note) {
                         $("#withDirns").append(buildLineOfLinks(outputMap.id,
@@ -160,7 +162,6 @@ function run(sourceMapData) {
  * generates all the links.
  */
 $(document).ready(function() {
-
     new ScriptExecution()
         .executeScripts("vendor/jquery/jquery-2.2.4.min.js",
                         "src/mapUtil.js",
