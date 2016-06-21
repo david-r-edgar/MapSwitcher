@@ -23,9 +23,6 @@ function restore_options() {
             $("#mapsTickList").append(mapEntry);
         mapDefaults[outputMap.id] = true;
     }
-    //$("#mapsTickList input").each(function() {
-    //    mapDefaults[$(this).attr("id")] = true;
-    //});
     chrome.storage.sync.get(mapDefaults, function(items) {
         $("#mapsTickList input").each(function() {
             $(this).prop('checked', items[$(this).attr("id")]);
