@@ -11,8 +11,8 @@ CodeGrid = codegrid.CodeGrid("http://www.loughrigg.org/codegrid-js/tiles/", json
 jQuery.fn.sortDivs = function sortDivs() {
     $("> div", this[0]).sort(dec_sort).appendTo(this[0]);
     function dec_sort(a, b){
-        if ('undefined' === $(a).data("sort")) { return true; }
-        if ('undefined' === $(b).data("sort")) { return false; }
+        if ('undefined' === $(a).data("sort")) { return 1; }
+        if ('undefined' === $(b).data("sort")) { return -1; }
         return ($(b).data("sort")) < ($(a).data("sort")) ? 1 : -1; }
 }
 
@@ -163,8 +163,8 @@ $(document).ready(function() {
 
     new ScriptExecution()
         .executeScripts("vendor/jquery/jquery-2.2.4.min.js",
-                        "mapUtil.js",
-                        "dataExtractor.js")
+                        "src/mapUtil.js",
+                        "src/dataExtractor.js")
         .then(s => validateExtractedData(s.result[2]))
         .then(s => getCountryCode(s))
         .then(s => run(s[0])) //pass the result of the dataExtractor script
