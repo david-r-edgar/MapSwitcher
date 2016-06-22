@@ -14,7 +14,9 @@ OUT_SRC = \
 	$(BUILDDIR)/outputMaps.js
 
 TO_COPY = \
-	$(ODIR)/manifest.json \
+	$(ODIR)/manifest.json
+
+DIRS_TO_COPY = \
 	$(ODIR)/html \
 	$(ODIR)/image \
 	$(ODIR)/vendor
@@ -41,9 +43,12 @@ $(BUILDDIR)/mapswitcher.js: mapswitcher.js
 
 
 $(TO_COPY) : $(ODIR)/% : %
-	$(CP) -r $< $@
+	$(CP) $< $@
 
-extension: $(BUILDDIR) $(OUT_SRC) $(TO_COPY)
+$(DIRS_TO_COPY) : $(ODIR)/% : %
+	$(CP) -r $< $(ODIR)
+
+extension: $(BUILDDIR) $(OUT_SRC) $(TO_COPY) $(DIRS_TO_COPY)
 
 clean:
 	rm -rf $(ODIR)

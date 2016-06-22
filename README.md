@@ -42,4 +42,6 @@ Chrome extension to switch from one online map provider to another, maintaining 
 
 ## Known issues
 
-Where directions are specified by address (not coordinates), different services can geocode these in radically different ways. So the routes may not start or finish where they did on the input mapping service. Where available, coordinates are used instead, but not all services make the coordinates of each waypoint on the route available.
+- Where directions are specified by address (not coordinates), different services can geocode these in radically different ways. So the routes may not start or finish where they did on the input mapping service. Where available, coordinates are used instead, but not all services make the coordinates of each waypoint on the route available.
+- Zoom / scale may not always be exact, depending on the limitations of the input & output map services
+- Directions do not yet handle more than one start point and one end point
