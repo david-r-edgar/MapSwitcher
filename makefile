@@ -1,6 +1,7 @@
 ODIR=release
 
 UGLIFY=~/uglifyjs2harmony/bin/uglifyjs
+UGLIFY_OPTIONS=-c --mangle
 CP=cp
 
 VPATH=src
@@ -27,19 +28,19 @@ $(BUILDDIR):
 
 
 $(BUILDDIR)/dataExtractor.js: dataExtractor.js
-	$(UGLIFY) $< --mangle -o $@
+	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
 $(BUILDDIR)/mapUtil.js: mapUtil.js
-	$(UGLIFY) $< -c --mangle -o $@
+	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
 $(BUILDDIR)/options.js: options.js
-	$(UGLIFY) $< --mangle -o $@
+	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
 $(BUILDDIR)/outputMaps.js: outputMaps.js
-	$(UGLIFY) $< -o $@
+	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
 $(BUILDDIR)/mapswitcher.js: mapswitcher.js
-	$(UGLIFY) $< -c --mangle -o $@
+	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
 
 $(TO_COPY) : $(ODIR)/% : %

@@ -1,4 +1,4 @@
-(function () {
+var runDataExtraction = function () {
     var sourceMapData = {}
 
     if (window.location.hostname.indexOf("google.") >= 0) {
@@ -195,4 +195,6 @@
 
     //return result object to the caller (main extension script)
     return sourceMapData;
-}());
+};
+
+runDataExtraction();

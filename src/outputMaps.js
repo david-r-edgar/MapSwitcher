@@ -1,4 +1,4 @@
-let outputMaps = [
+var outputMaps = [
 {
     site: "Google",
     prio: 1,
@@ -342,3 +342,5 @@ let outputMaps = [
     }
 }
 ];
+
+
