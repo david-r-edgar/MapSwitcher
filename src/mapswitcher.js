@@ -42,7 +42,7 @@ function buildLineOfLinks(id, mapSite, links, note) {
         });
 
         if (note && note.length) {
-            html += "<span class=\"fa fa-sticky-note linknote\" title='" + note + "'></span>";
+            html += "<span class=\"fa fa-sticky-note-o linknote\" title='" + note + "'></span>";
         }
         html += "</div>";
     }
@@ -142,7 +142,7 @@ function run(sourceMapData) {
                         $("#withoutDirns").sortDivs();
 
                         if (note && note.length) {
-                            $(".linknote").tipsy();
+                            $(".linknote").tipsy({gravity: 's'});
                         }
                     });
                 }

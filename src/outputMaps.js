@@ -217,7 +217,7 @@ var outputMaps = [
                     sourceMapData.directions.to.coords.lat + "," +
                     sourceMapData.directions.to.coords.lng;
             } else {
-                this.note = "Directions unvailable because waypoints are not "
+                this.note = "OSM directions unavailable because waypoints are not "
                             + "all specified as coordinates.";
             }
         }
@@ -302,6 +302,7 @@ var outputMaps = [
     site: "Geocaching",
     image: "geocachingLogo16x16.png",
     id: "geocaching",
+    note: "geocaching.com requires login to see the map (free sign-up)",
     maplinks:
     {
         geocaching: {
@@ -320,7 +321,7 @@ var outputMaps = [
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
-        onSuccess(this, null, this.maplinks);
+        onSuccess(this, null, this.maplinks, this.note);
     }
 },
 {
