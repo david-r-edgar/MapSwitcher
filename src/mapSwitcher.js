@@ -120,22 +120,22 @@ function run(sourceMapData) {
         $("#withDirns").append("<h4>Directions</h4>");
         $("#withoutDirns").append("<h4>Other Maps</h4>");
     }
-    for (outputMap of outputMaps) {
-        (function(outputMap) { //dummy immediately executed fn to save variables
+    for (outputMapService of outputMapServices) {
+        (function(outputMapService) { //dummy immediately executed fn to save variables
 
             mapOptDefaults = {}
-            mapOptDefaults[outputMap.id] = true;
+            mapOptDefaults[outputMapService.id] = true;
 
             chrome.storage.sync.get(mapOptDefaults, function(options) {
-                if (options[outputMap.id]) {
-                    outputMap.generate(sourceMapData,
+                if (options[outputMapService.id]) {
+                    outputMapService.generate(sourceMapData,
                         function(mapSite, dirnLinks, plainMapLinks, note) {
-                        $("#withDirns").append(buildLineOfLinks(outputMap.id,
+                        $("#withDirns").append(buildLineOfLinks(outputMapService.id,
                                                                 mapSite,
                                                                 dirnLinks,
                                                                 note));
                         $("#withDirns").sortDivs();
-                        $("#withoutDirns").append(buildLineOfLinks(outputMap.id,
+                        $("#withoutDirns").append(buildLineOfLinks(outputMapService.id,
                                                                    mapSite,
                                                                    plainMapLinks,
                                                                    note));
@@ -147,7 +147,7 @@ function run(sourceMapData) {
                     });
                 }
             });
-        })(outputMap);
+        })(outputMapService);
     }
 }
 

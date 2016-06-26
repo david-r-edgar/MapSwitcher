@@ -1,4 +1,4 @@
-var outputMaps = [
+var outputMapServices = [
 {
     site: "Google",
     prio: 1,

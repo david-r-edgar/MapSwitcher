@@ -14,14 +14,14 @@ function save_options() {
 
 function restore_options() {
     var mapDefaults = {};
-    for (outputMap of outputMaps) {
+    for (outputMapService of outputMapServices) {
         mapEntry =
             "<tr>" +
-            "<label for\"" + outputMap.id + "\"><td class='imgcell'><img src=\"../image/" + outputMap.image + "\"></td>"  + "<td class='mapnamecell'>" + outputMap.site + "</td></label>" +
-            "<td class='chkboxcell'><input type=\"checkbox\" id=\"" + outputMap.id + "\" /></td>" +
+            "<label for\"" + outputMapService.id + "\"><td class='imgcell'><img src=\"../image/" + outputMapService.image + "\"></td>"  + "<td class='mapnamecell'>" + outputMapService.site + "</td></label>" +
+            "<td class='chkboxcell'><input type=\"checkbox\" id=\"" + outputMapService.id + "\" /></td>" +
             "</tr>";
             $("#mapsTickList").append(mapEntry);
-        mapDefaults[outputMap.id] = true;
+        mapDefaults[outputMapService.id] = true;
     }
     chrome.storage.sync.get(mapDefaults, function(items) {
         $("#mapsTickList input").each(function() {
