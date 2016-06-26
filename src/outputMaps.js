@@ -349,7 +349,7 @@ var outputMapServices = [
     maplinks:
     {
         mqOpen: {
-            name: "mapquest open"
+            name: "MapQuest Open"
         }
     },
     generate: function(sourceMapData, onSuccess) {

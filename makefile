@@ -39,7 +39,7 @@ $(BUILDDIR)/options.js: options.js
 $(BUILDDIR)/outputMaps.js: outputMaps.js
 	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
-$(BUILDDIR)/mapSwitcher.js: mapswitcher.js
+$(BUILDDIR)/mapSwitcher.js: mapSwitcher.js
 	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
 
