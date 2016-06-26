@@ -8,7 +8,7 @@ VPATH=src
 BUILDDIR=$(ODIR)/src
 
 OUT_SRC = \
-	$(BUILDDIR)/mapswitcher.js \
+	$(BUILDDIR)/mapSwitcher.js \
 	$(BUILDDIR)/dataExtractor.js \
 	$(BUILDDIR)/mapUtil.js \
 	$(BUILDDIR)/options.js \
@@ -39,7 +39,7 @@ $(BUILDDIR)/options.js: options.js
 $(BUILDDIR)/outputMaps.js: outputMaps.js
 	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
-$(BUILDDIR)/mapswitcher.js: mapswitcher.js
+$(BUILDDIR)/mapSwitcher.js: mapswitcher.js
 	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
 
 

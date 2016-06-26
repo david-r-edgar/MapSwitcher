@@ -11,7 +11,7 @@
       "19": "image/mapswitcher19x19.png",
       "38": "image/mapswitcher38x38.png"
     },
-    "default_popup": "html/mapswitcher.html",
+    "default_popup": "html/mapSwitcher.html",
     "default_title": "Map Switcher"
   },
   "permissions": [
