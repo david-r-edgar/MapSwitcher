@@ -55,6 +55,7 @@ The included makefile allows you to build for release. Currently you may need to
   - WikiMiniAtlas
 - Geocaching
 - what3words
+- MapQuest Open
 
 
 ## Known issues

@@ -341,6 +341,32 @@ var outputMapServices = [
 
         onSuccess(this, null, this.maplinks);
     }
+},
+{
+    site: "MapQuest",
+    image: "mqLogo16x16.png",
+    id: "mapquest",
+    maplinks:
+    {
+        mqOpen: {
+            name: "mapquest open"
+        }
+    },
+    generate: function(sourceMapData, onSuccess) {
+        var mapquestBase = "http://open.mapquest.com/?";
+        var mapCentre = "center=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "zoom=" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
+        this.maplinks.mqOpen["link"] = mapquestBase + mapCentre + '&' + zoom;
+
+        onSuccess(this, null, this.maplinks);
+    }
 }
 ];
 
