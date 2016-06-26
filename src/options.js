@@ -16,10 +16,10 @@ function restore_options() {
     var mapDefaults = {};
     for (outputMap of outputMaps) {
         mapEntry =
-            "<li>" +
-            "<label for\"" + outputMap.id + "\"><img src=\"../image/" + outputMap.image + "\">"  + outputMap.site + "</label>" +
-            "<input type=\"checkbox\" id=\"" + outputMap.id + "\" />" +
-            "</li>";
+            "<tr>" +
+            "<label for\"" + outputMap.id + "\"><td class='imgcell'><img src=\"../image/" + outputMap.image + "\"></td>"  + "<td class='mapnamecell'>" + outputMap.site + "</td></label>" +
+            "<td class='chkboxcell'><input type=\"checkbox\" id=\"" + outputMap.id + "\" /></td>" +
+            "</tr>";
             $("#mapsTickList").append(mapEntry);
         mapDefaults[outputMap.id] = true;
     }

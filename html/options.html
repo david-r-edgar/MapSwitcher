@@ -7,12 +7,15 @@
       font-family: Tahoma, Verdana, sans-serif;
     }
     #titleLine {
-      float: right;
+      margin-bottom: 2em;
     }
     #titleLine h2 {
       display: inline;
-      font-size: 20px;
+      font-size: 22px;
       padding-right: 12px;
+    }
+    h1 {
+        font-size: 18px;
     }
     #titleLine img {
       vertical-align: middle;
@@ -24,6 +27,15 @@
       color: #777;
       margin-top: 0.6em;
     }
+    .imgcell {
+      padding: 0px 6px;
+    }
+    .chkboxcell {
+      padding: 0px 12px;
+    }
+    .mapnamecell {
+      vertical-align: middle;
+    }
   </style>
   <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
   <script src="../src/outputMaps.js"></script>
@@ -31,12 +43,12 @@
 <body>
 <div class=borderBox>
 <div id="titleLine">
-  <h2>Map Switcher</h2> <img src="../image/mapswitcher48x48.png">
+  <img src="../image/mapswitcher48x48.png"> <h2>Map Switcher</h2>
 </div>
 </div>
 <h1>Options</h1>
 
-<p>Output maps to show:</p>
+<p>Output mapping services to show:</p>
 <ul id="mapsTickList"></ul>
 
 
