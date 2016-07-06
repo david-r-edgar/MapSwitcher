@@ -151,6 +151,10 @@ function run(sourceMapData) {
     }
 }
 
+function loaded(s) {
+    $(".loading").hide();
+}
+
 
 
 /**
@@ -169,6 +173,7 @@ $(document).ready(function() {
         .then(s => validateExtractedData(s.result[2]))
         .then(s => getCountryCode(s))
         .then(s => run(s[0])) //pass the result of the dataExtractor script
+        .then(s => loaded(s))
         .catch(s => (handleNoCoords(s)));
 });
 

@@ -2,58 +2,9 @@
 <html>
   <head>
     <title>Map Switcher</title>
-    <style>
-      body {
-        font-family: Tahoma, Verdana, sans-serif;
-        font-size: 80%;
-        background-color: #eee;
-        margin: 4px;
-      }
-      .borderBox {
-        background-color: #fff;
-        padding: 4px;
-      }
-      #mainBorderBox {
-        margin-top: 4px;
-      }
-      #titleLine {
-        min-width: 300px;
-        min-height: 48px;
-        text-align: right;
-      }
-      #titleLine h2 {
-        display: inline;
-        font-size: 20px;
-        padding-right: 12px;
-      }
-      #titleLine img {
-        vertical-align: middle;
-      }
-      #ctrlButtons {
-        font-size: 12px;
-        position: absolute;
-        left: 8px;
-        top: 40px;
-      }
-      #nomap {
-        display: none;
-      }
-      #ctrlButtons a {
-        text-decoration: none;
-        color: #333;
-      }
-      #ctrlButtons a:hover {
-        color: #777;
-      }
-      #linktooltip {
-        position: absolute;
-        top: 100px;
-        left: 20px;
-        background-color: #bbb;
-      }
-    </style>
     <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="../vendor/tipsy/tipsy.css">
+    <link rel="stylesheet" href="../css/stylesheet.css">
     <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
     <script src="../vendor/codegrid/codegrid.js"></script>
     <script src="../vendor/codegrid/worldgrid.js"></script>
@@ -76,6 +27,7 @@
     </div>
     <div class=borderBox id=mainBorderBox>
       <div id="maplinkbox">
+        <div class="loading"><span>.</span><span>.</span><span>.</span></div>
         <div id="withDirns"></div>
         <div id="withoutDirns"></div>
       </div>

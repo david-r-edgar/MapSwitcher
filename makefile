@@ -20,6 +20,7 @@ TO_COPY = \
 DIRS_TO_COPY = \
 	$(ODIR)/html \
 	$(ODIR)/image \
+	$(ODIR)/css \
 	$(ODIR)/vendor
 
 
