@@ -378,18 +378,17 @@ var outputMapServices = [
     }
 },
 {
-    site: "Download GPX",
-    image: "",
+    site: "GPX",
+    image: "gpxFile16x16.png",
     id: "dl_gpx",
-    maplinks:
-    {
-        mapCentre: {
-            name: "map centre"
-        }
-    },
     generate: function(sourceMapData, view) {
 
-        view.addFileDownloadLinks(this);
+        var mapCentre = { id: "gpx_map_centre",
+                          name: "Map Centre",
+                          desc: sourceMapData.centreCoords.lat + ", " + sourceMapData.centreCoords.lng,
+                          lat: sourceMapData.centreCoords.lat,
+                          lng: sourceMapData.centreCoords.lng }
+        view.addFileDownload(this, mapCentre);
     }
 }
 ];

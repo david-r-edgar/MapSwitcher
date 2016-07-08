@@ -17,6 +17,7 @@
   "permissions": [
     "activeTab",
     "storage",
+    "downloads",
     "<all_urls>"
   ],
   "background": {

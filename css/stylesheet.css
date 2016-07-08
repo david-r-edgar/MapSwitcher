@@ -46,6 +46,9 @@ body {
   left: 20px;
   background-color: #bbb;
 }
+.linkLineImg {
+  vertical-align: middle;
+}
 
 /* animated loading dots from https://martinwolf.org/blog/2015/01/pure-css-savingloading-dots-animation */
 

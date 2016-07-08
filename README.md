@@ -57,6 +57,8 @@ The included makefile allows you to build for release. Currently you may need to
 - what3words
 - MapQuest Open
 
+### Download services
+- GPX (no directions)
 
 ## Known issues
 

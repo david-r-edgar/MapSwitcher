@@ -32,6 +32,13 @@ jQuery.fn.sortDivs = function sortDivs() {
  */
 var MapLinksView = {
 
+    /**
+     * Adds links where directions are available
+     *
+     * @param {mapService} Object containing data about the particular map service.
+     * @param {mapLinks} All the map links to be added.
+     * @param {note} Content for an optional explanatory note.
+     */
     addDirectionsLinks: function(mapService, mapLinks, note) {
         $("#withDirns").append(this.buildLineOfLinks(mapService.id,
                                                 mapService,
@@ -44,6 +51,13 @@ var MapLinksView = {
         }
     },
 
+    /**
+     * Adds links where no directions are available
+     *
+     * @param {mapService} Object containing data about the particular map service.
+     * @param {mapLinks} All the map links to be added.
+     * @param {note} Content for an optional explanatory note.
+     */
     addPlainLinks: function(mapService, mapLinks, note) {
         $("#withoutDirns").append(this.buildLineOfLinks(mapService.id,
                                                    mapService,
@@ -56,8 +70,45 @@ var MapLinksView = {
         }
     },
 
-    addFileDownloadLinks: function(mapService, mapLinks, note) {
-        console.log("addFileDownloadLinks");
+    /**
+     * Adds links for file downloads (such as GPX)
+     *
+     * @param {mapService} Object containing data about the particular map service.
+     * @param {note} Content for an optional explanatory note.
+     */
+    addFileDownload: function(mapService, wpt, note) {
+
+        //only add the title once
+        if ($("#downloads").text().length === 0) {
+            $("#downloads").append("<h4>Downloads</h4>");
+        }
+
+        html =  "<div id='" + mapService.id + "' data-sort='" + mapService.prio + "'>" +
+                "<span><img src=\"../image/" + mapService.image + "\"></span> " +
+                "<span>" + mapService.site + "</span> ";
+        html += "<a href='#' id='" + wpt.id + "'>" + wpt.name + "</a>"
+        html += "</div>";
+
+        $("#downloads").append(html);
+
+        $("#" + wpt.id).click(function() {
+            var xml =
+                "<?xml version=\"1.1\"?>" +
+                "<gpx creator=\"MapSwitcher\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\">" +
+                    "<author>MapSwitcher</author>" +
+                    "<wpt lat=\"" + wpt.lat + "\" lon=\"" + wpt.lng + "\">" +
+                        "<name>" + wpt.name + "</name>" +
+                        "<desc>" + wpt.desc + "</desc>" +
+                    "</wpt>" +
+                "</gpx>";
+            var filename = "MapSwitcher.gpx";
+            var contentBlob = new Blob([xml], {type: "text/xml;charset=utf-8"});
+            var gpxURL = URL.createObjectURL(contentBlob);
+            chrome.downloads.download({
+                url: gpxURL,
+                filename: filename
+            });
+        });
 
 
         if (note && note.length) {
@@ -80,7 +131,7 @@ var MapLinksView = {
         if (links) {
                 html =
                 "<div id='" + id + "' data-sort='" + mapSite.prio + "'>" +
-                "<span><img src=\"../image/" + mapSite.image + "\"></span> " +
+                "<span class=\"linkLineImg\"><img src=\"../image/" + mapSite.image + "\"></span> " +
                 "<span>" + mapSite.site + "</span> ";
             Object.keys(links).forEach(link => {
                 html += "<a class=\"maplink\" target=\"_blank\" id=\"" +
@@ -168,6 +219,9 @@ var MapSwitcher = {
         if (sourceMapData.directions != null) {
             $("#withDirns").append("<h4>Directions</h4>");
             $("#withoutDirns").append("<h4>Other Maps</h4>");
+        }
+        else {
+            $("#withoutDirns").append("<h4>Map Services</h4>");
         }
         for (outputMapService of outputMapServices) {
             (function(outputMapService) { //dummy immediately executed fn to save variables
