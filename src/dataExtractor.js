@@ -13,9 +13,12 @@ var runDataExtraction = function () {
                 sourceMapData.resolution =
                     calculateResolutionFromStdZoom(coordArray[3],
                                                 coordArray[1]);
-            } else {
-                console.log("unknown scale system " + coordArray[4]);
-                //FIXME we have to deal with m - normally eg. 7000m - metres?
+            } else if (coordArray[4] === 'm') {
+                //on google satellite / earth, the zoom is specified in the URL not
+                //as the standard 'z' value but as an m value, which is the height of
+                //the displayed map in metres
+                //(i.e. if you resize the window, you'll see the URL updated accordingly)
+                sourceMapData.resolution = coordArray[3] / document.body.offsetHeight;
             }
         }
 
