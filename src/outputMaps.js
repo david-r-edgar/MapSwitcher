@@ -1,3 +1,12 @@
+/**
+ * Array of all output map services
+ *
+ * The most important item for each service is the `generate()` function which accepts
+ * as input an object containing the data from the source map, plus a view object
+ * (representing the extension popup). Each service uses the source map data to
+ * generate appropriate links, and calls the relevant functions on the view object
+ * to render those links to the view.
+ */
 var outputMapServices = [
 {
     site: "Google",
@@ -16,7 +25,7 @@ var outputMapServices = [
             name: "Earth"
         }
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var googleBase = "https://www.google.co.uk/maps/";
         var directions = "";
         var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
@@ -49,9 +58,9 @@ var outputMapServices = [
         this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + zoom + "/data=!3m1!1e3!5m1!1e4";
 
         if (directions.length > 0) {
-            onSuccess(this, this.maplinks, null);
+            view.addDirectionsLinks(this, this.maplinks);
         } else {
-            onSuccess(this, null, this.maplinks);
+            view.addPlainLinks(this, this.maplinks);
         }
     }
 },
@@ -75,7 +84,7 @@ var outputMapServices = [
             name: "Ordnance Survey"
         }
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var bingBase = "https://www.bing.com/maps/?";
         var directions = "";
         var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" +
@@ -140,9 +149,9 @@ var outputMapServices = [
                 link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
         }
         if (directions.length > 0) {
-            onSuccess(self, self.generatedMapLinks, null);
+            view.addDirectionsLinks(this, self.generatedMapLinks);
         } else {
-            onSuccess(self, null, self.generatedMapLinks);
+            view.addPlainLinks(this, self.generatedMapLinks);
         }
     }
 },
@@ -178,7 +187,7 @@ var outputMapServices = [
             name: "Humanitarian"
         },
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var osmBase = "https://www.openstreetmap.org/";
         var zoom = "12/";
         var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
@@ -231,9 +240,9 @@ var outputMapServices = [
         this.maplinks.osmHumanitarian["link"] = coreLink + "&layers=H";
 
         if (directions.length > 0) {
-            onSuccess(this, this.maplinks, null, this.note);
+            view.addDirectionsLinks(this, this.maplinks, this.note);
         } else {
-            onSuccess(this, null, this.maplinks, this.note);
+            view.addPlainLinks(this, this.maplinks, this.note);
         }
     }
 },
@@ -251,7 +260,7 @@ var outputMapServices = [
             name: "Wiki Mini Atlas"
         }
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
         var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
         var region = (sourceMapData.countryCode.length > 0) ?
@@ -265,7 +274,7 @@ var outputMapServices = [
         zoom = "10";
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
-        onSuccess(this, null, this.maplinks);
+        view.addPlainLinks(this, this.maplinks);
     }
 },
 {
@@ -281,7 +290,7 @@ var outputMapServices = [
             name: "Maps"
         }
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var wikimapiaBase = "http://wikimapia.org/#lang=en&";
         var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "z=12";
@@ -295,7 +304,7 @@ var outputMapServices = [
         this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
 
-        onSuccess(this, null, this.maplinks);
+        view.addPlainLinks(this, this.maplinks);
     }
 },
 {
@@ -309,7 +318,7 @@ var outputMapServices = [
             name: "Map"
         }
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var geocachingBase = "https://www.geocaching.com/map/#?";
         var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "z=14";
@@ -321,7 +330,7 @@ var outputMapServices = [
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
-        onSuccess(this, null, this.maplinks, this.note);
+        view.addPlainLinks(this, this.maplinks, this.note);
     }
 },
 {
@@ -334,12 +343,12 @@ var outputMapServices = [
             name: "Map"
         }
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var w3wBase = "https://map.what3words.com/";
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
 
-        onSuccess(this, null, this.maplinks);
+        view.addPlainLinks(this, this.maplinks);
     }
 },
 {
@@ -352,7 +361,7 @@ var outputMapServices = [
             name: "MapQuest Open"
         }
     },
-    generate: function(sourceMapData, onSuccess) {
+    generate: function(sourceMapData, view) {
         var mapquestBase = "http://open.mapquest.com/?";
         var mapCentre = "center=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
@@ -365,7 +374,22 @@ var outputMapServices = [
 
         this.maplinks.mqOpen["link"] = mapquestBase + mapCentre + '&' + zoom;
 
-        onSuccess(this, null, this.maplinks);
+        view.addPlainLinks(this, this.maplinks);
+    }
+},
+{
+    site: "Download GPX",
+    image: "",
+    id: "dl_gpx",
+    maplinks:
+    {
+        mapCentre: {
+            name: "map centre"
+        }
+    },
+    generate: function(sourceMapData, view) {
+
+        view.addFileDownloadLinks(this);
     }
 }
 ];

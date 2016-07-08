@@ -1,4 +1,11 @@
 
+/**
+ * CodeGrid is a service for identifying the country within which a coordinate
+ * falls. The first-level identification tiles are loaded client-side, so most
+ * of the time, no further request is necessary. But in cases where the coordinate
+ * is close to an international boundary, additional levels of tiles, with more
+ * detail,  are reqested from the specified host.
+ */
 CodeGrid = codegrid.CodeGrid("http://www.loughrigg.org/codegrid-js/tiles/", jsonWorldGrid);
 
 /**
@@ -17,144 +24,173 @@ jQuery.fn.sortDivs = function sortDivs() {
 }
 
 
+
+
+
 /**
- * Utility function which builds the HTML for all the map links belonging to a specific
- * map service.
- *
- * @param {string} id - id for the main map service div.
- * @param {object} mapSite - the output object representing the map service
- * @param {object} links - the map links to add, containing URLs and names for each
- * @param {note} note - a note for this map service, if applicable
- * @return {string} the HTML for the line
+ * Main view object for the extension popup.
  */
-function buildLineOfLinks(id, mapSite, links, note) {
-    var html = "";
-    if (links) {
-            html =
-            "<div id='" + id + "' data-sort='" + mapSite.prio + "'>" +
-            "<span><img src=\"../image/" + mapSite.image + "\"></span> " +
-            "<span>" + mapSite.site + "</span> ";
-        Object.keys(links).forEach(link => {
-            html += "<a class=\"maplink\" target=\"_blank\" id=\"" +
-                link + "\" href=\"" +
-                links[link].link + "\">" +
-                links[link].name + "</a> ";
-        });
+var MapLinksView = {
+
+    addDirectionsLinks: function(mapService, mapLinks, note) {
+        $("#withDirns").append(this.buildLineOfLinks(mapService.id,
+                                                mapService,
+                                                mapLinks,
+                                                note));
+        $("#withDirns").sortDivs();
 
         if (note && note.length) {
-            html += "<span class=\"fa fa-sticky-note-o linknote\" title='" + note + "'></span>";
+            $(".linknote").tipsy({gravity: 's'});
         }
-        html += "</div>";
+    },
+
+    addPlainLinks: function(mapService, mapLinks, note) {
+        $("#withoutDirns").append(this.buildLineOfLinks(mapService.id,
+                                                   mapService,
+                                                   mapLinks,
+                                                   note));
+        $("#withoutDirns").sortDivs();
+
+        if (note && note.length) {
+            $(".linknote").tipsy({gravity: 's'});
+        }
+    },
+
+    addFileDownloadLinks: function(mapService, mapLinks, note) {
+        console.log("addFileDownloadLinks");
+
+
+        if (note && note.length) {
+            $(".linknote").tipsy({gravity: 's'});
+        }
+    },
+
+    /**
+    * Utility function which builds the HTML for all the map links belonging to a specific
+    * map service.
+    *
+    * @param {string} id - id for the main map service div.
+    * @param {object} mapSite - the output object representing the map service
+    * @param {object} links - the map links to add, containing URLs and names for each
+    * @param {note} note - a note for this map service, if applicable
+    * @return {string} the HTML for the line
+    */
+    buildLineOfLinks: function (id, mapSite, links, note) {
+        var html = "";
+        if (links) {
+                html =
+                "<div id='" + id + "' data-sort='" + mapSite.prio + "'>" +
+                "<span><img src=\"../image/" + mapSite.image + "\"></span> " +
+                "<span>" + mapSite.site + "</span> ";
+            Object.keys(links).forEach(link => {
+                html += "<a class=\"maplink\" target=\"_blank\" id=\"" +
+                    link + "\" href=\"" +
+                    links[link].link + "\">" +
+                    links[link].name + "</a> ";
+            });
+
+            if (note && note.length) {
+                html += "<span class=\"fa fa-sticky-note-o linknote\" title='" + note + "'></span>";
+            }
+            html += "</div>";
+        }
+        return html;
     }
-    return html;
+
 }
 
 
 
-/**
- * Checks the object containing extracted data returned by the content script.
- *
- * @param {object} extractedData - Data object extracted by the dataExtractor.
- * @return Promise which resolves if the data validates, or rejects if not.
- */
-function validateExtractedData(extractedData) {
-    return new Promise(function(resolve, reject) {
-        if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
-            resolve(extractedData);
-        } else {
-            reject(extractedData);
-        }
-    });
-}
 
 
+var MapSwitcher = {
 
-/**
- * Gets the two letter country code for the current location of the map shown
- * in the current tab. If the country code can be found, it is stored in the
- * extracted data object passed as argument.
- *
- * @param {object} extractedData - Data object extracted by the dataExtractor.
- * @return Promise which resolves on success with the extracted data object.
- */
-function getCountryCode(extractedData) {
-    return new Promise(function(resolve, reject) {
-        if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
-            CodeGrid.getCode(
-                Number(extractedData[0].centreCoords.lat),
-                Number(extractedData[0].centreCoords.lng),
-                function (error, countryCode) {
-                    if (!error) {
-                        extractedData[0].countryCode = countryCode;
-                        resolve(extractedData);
-                    }
-                });
-        }
-    });
-}
+    /**
+    * Checks the object containing extracted data returned by the content script.
+    *
+    * @param {object} extractedData - Data object extracted by the dataExtractor.
+    * @return Promise which resolves if the data validates, or rejects if not.
+    */
+    validateExtractedData: function(extractedData) {
+        return new Promise(function(resolve, reject) {
+            if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
+                resolve(extractedData);
+            } else {
+                reject(extractedData);
+            }
+        });
+    },
 
-
-
-/**
- * Handles cases where no coordinates are available from the page, or another problem
- * has occured.
- *
- * @param {object} sourceMapData - Data object extracted by the dataExtractor.
- */
-function handleNoCoords(sourceMapData) {
-    $("#nomap").show();
-    $("#maplinkbox").hide();
-}
-
-
-/**
- * Main method of the map switcher popup.
- *
- * Only run once the dataExtractor has been executed on the current tab.
- * Iterates throught the map services to request them to generate their links.
- *
- * @param sourceMapData
- */
-function run(sourceMapData) {
-    if (sourceMapData.directions != null) {
-        $("#withDirns").append("<h4>Directions</h4>");
-        $("#withoutDirns").append("<h4>Other Maps</h4>");
-    }
-    for (outputMapService of outputMapServices) {
-        (function(outputMapService) { //dummy immediately executed fn to save variables
-
-            mapOptDefaults = {}
-            mapOptDefaults[outputMapService.id] = true;
-
-            chrome.storage.sync.get(mapOptDefaults, function(options) {
-                if (options[outputMapService.id]) {
-                    outputMapService.generate(sourceMapData,
-                        function(mapSite, dirnLinks, plainMapLinks, note) {
-                        $("#withDirns").append(buildLineOfLinks(outputMapService.id,
-                                                                mapSite,
-                                                                dirnLinks,
-                                                                note));
-                        $("#withDirns").sortDivs();
-                        $("#withoutDirns").append(buildLineOfLinks(outputMapService.id,
-                                                                   mapSite,
-                                                                   plainMapLinks,
-                                                                   note));
-                        $("#withoutDirns").sortDivs();
-
-                        if (note && note.length) {
-                            $(".linknote").tipsy({gravity: 's'});
+    /**
+    * Gets the two letter country code for the current location of the map shown
+    * in the current tab. If the country code can be found, it is stored in the
+    * extracted data object passed as argument.
+    *
+    * @param {object} extractedData - Data object extracted by the dataExtractor.
+    * @return Promise which resolves on success with the extracted data object.
+    */
+    getCountryCode: function(extractedData) {
+        return new Promise(function(resolve, reject) {
+            if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
+                CodeGrid.getCode(
+                    Number(extractedData[0].centreCoords.lat),
+                    Number(extractedData[0].centreCoords.lng),
+                    function (error, countryCode) {
+                        if (!error) {
+                            extractedData[0].countryCode = countryCode;
+                            resolve(extractedData);
                         }
                     });
-                }
-            });
-        })(outputMapService);
+            }
+        });
+    },
+
+    /**
+    * Handles cases where no coordinates are available from the page, or another problem
+    * has occured.
+    *
+    * @param {object} sourceMapData - Data object extracted by the dataExtractor.
+    */
+    handleNoCoords: function(sourceMapData) {
+        $("#nomap").show();
+        $("#maplinkbox").hide();
+    },
+
+    /**
+    * Main method of the map switcher popup.
+    *
+    * Only run once the dataExtractor has been executed on the current tab.
+    * Iterates throught the map services to request them to generate their links.
+    *
+    * @param sourceMapData
+    */
+    run: function(sourceMapData) {
+        if (sourceMapData.directions != null) {
+            $("#withDirns").append("<h4>Directions</h4>");
+            $("#withoutDirns").append("<h4>Other Maps</h4>");
+        }
+        for (outputMapService of outputMapServices) {
+            (function(outputMapService) { //dummy immediately executed fn to save variables
+
+                mapOptDefaults = {}
+                mapOptDefaults[outputMapService.id] = true;
+
+                chrome.storage.sync.get(mapOptDefaults, function(options) {
+                    if (options[outputMapService.id]) {
+                        outputMapService.generate(sourceMapData, MapLinksView);
+                    }
+                });
+            })(outputMapService);
+        }
+    },
+
+    /**
+    * Hide the animated loading dots.
+    */
+    loaded: function(s) {
+        $(".loading").hide();
     }
 }
-
-function loaded(s) {
-    $(".loading").hide();
-}
-
 
 
 /**
@@ -170,10 +206,10 @@ $(document).ready(function() {
         .executeScripts("vendor/jquery/jquery-2.2.4.min.js",
                         "src/mapUtil.js",
                         "src/dataExtractor.js")
-        .then(s => validateExtractedData(s.result[2]))
-        .then(s => getCountryCode(s))
-        .then(s => run(s[0])) //pass the result of the dataExtractor script
-        .then(s => loaded(s))
-        .catch(s => (handleNoCoords(s)));
+        .then(s => MapSwitcher.validateExtractedData(s.result[2]))
+        .then(s => MapSwitcher.getCountryCode(s))
+        .then(s => MapSwitcher.run(s[0])) //pass the result of the dataExtractor script
+        .then(s => MapSwitcher.loaded(s))
+        .catch(s => (MapSwitcher.handleNoCoords(s)));
 });
 
