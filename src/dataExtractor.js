@@ -15,8 +15,8 @@ var runDataExtraction = function () {
                                                 coordArray[1]);
             } else if (coordArray[4] === 'm') {
                 //on google satellite / earth, the zoom is specified in the URL not
-                //as the standard 'z' value but as an m value, which is the height of
-                //the displayed map in metres
+                //as the standard 'z' value but as an m value, which is the height in
+                //metres of the map displayed in the map window.
                 //(i.e. if you resize the window, you'll see the URL updated accordingly)
                 sourceMapData.resolution = coordArray[3] / document.body.offsetHeight;
             }
