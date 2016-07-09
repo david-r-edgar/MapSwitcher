@@ -49,6 +49,19 @@ body {
 .linkLineImg {
   vertical-align: middle;
 }
+a.maplink:hover {
+  background-color: #aae5f5;
+}
+.serviceLine {
+  margin: 1px 0px;
+}
+.serviceName {
+  font-size: 1.05em;
+  padding-right: 3px;
+}
+.maplink {
+  padding: 1px;
+}
 
 /* animated loading dots from https://martinwolf.org/blog/2015/01/pure-css-savingloading-dots-animation */
 

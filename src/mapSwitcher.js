@@ -83,10 +83,10 @@ var MapLinksView = {
             $("#downloads").append("<h4>Downloads</h4>");
         }
 
-        html =  "<div id='" + mapService.id + "' data-sort='" + mapService.prio + "'>" +
-                "<span><img src=\"../image/" + mapService.image + "\"></span> " +
-                "<span>" + mapService.site + "</span> ";
-        html += "<a href='#' id='" + wpt.id + "'>" + wpt.name + "</a>"
+        html =  "<div id='" + mapService.id + "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
+                "<span class=\"linkLineImg\"><img src=\"../image/" + mapService.image + "\"></span> " +
+                "<span class=\"serviceName\">" + mapService.site + "</span> ";
+        html += "<a href='#' class=\"maplink\" id='" + wpt.id + "'>" + wpt.name + "</a>"
         html += "</div>";
 
         $("#downloads").append(html);
@@ -130,9 +130,9 @@ var MapLinksView = {
         var html = "";
         if (links) {
                 html =
-                "<div id='" + id + "' data-sort='" + mapSite.prio + "'>" +
+                "<div id='" + id + "' class='serviceLine' data-sort='" + mapSite.prio + "'>" +
                 "<span class=\"linkLineImg\"><img src=\"../image/" + mapSite.image + "\"></span> " +
-                "<span>" + mapSite.site + "</span> ";
+                "<span class=\"serviceName\">" + mapSite.site + "</span> ";
             Object.keys(links).forEach(link => {
                 html += "<a class=\"maplink\" target=\"_blank\" id=\"" +
                     link + "\" href=\"" +

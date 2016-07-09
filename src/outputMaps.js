@@ -384,7 +384,7 @@ var outputMapServices = [
     generate: function(sourceMapData, view) {
 
         var mapCentre = { id: "gpx_map_centre",
-                          name: "Map Centre",
+                          name: "Centre of map",
                           desc: sourceMapData.centreCoords.lat + ", " + sourceMapData.centreCoords.lng,
                           lat: sourceMapData.centreCoords.lat,
                           lng: sourceMapData.centreCoords.lng }
