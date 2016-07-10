@@ -30,6 +30,7 @@
       "*://www.bing.com/maps/*",
       "*://www.bing.com/mapspreview/*",
       "*://www.openstreetmap.org/*",
+      "*://www.waze.com/*",
       "*://www.geocaching.com/map/*"
     ],
     "js": [

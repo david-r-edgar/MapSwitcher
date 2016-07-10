@@ -194,6 +194,21 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     zoomArray[1], sourceMapData.centreCoords.lat);
         }
+    } else if (window.location.hostname.indexOf("waze.com") >= 0) {
+        var href="";
+        $(".permalink").each(function(index) {
+            href=$(this).attr('href');
+            if (href.length > 0) {
+                return false; //break on first non-empty permalink URL
+            }
+        });
+        var re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/;
+        var coordArray = href.match(re);
+        if (coordArray && coordArray.length >= 4) {
+            sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]}
+            sourceMapData.resolution =
+                calculateResolutionFromStdZoom(coordArray[1], coordArray[2]);
+        }
     } /* else if (window.location.hostname.indexOf("open.mapquest.com") >= 0) {
         var re = /center=([-0-9.]+),([-0-9.]+)/;
         coordArray = window.location.search.match(re);
