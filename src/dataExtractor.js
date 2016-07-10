@@ -196,18 +196,42 @@ var runDataExtraction = function () {
         }
     } else if (window.location.hostname.indexOf("waze.com") >= 0) {
         var href="";
-        $(".permalink").each(function(index) {
+        $(".leaflet-control-permalink .permalink").each(function() {
             href=$(this).attr('href');
             if (href.length > 0) {
-                return false; //break on first non-empty permalink URL
+                return false; //break on first non-empty URL
             }
         });
         var re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/;
         var coordArray = href.match(re);
-        if (coordArray && coordArray.length >= 4) {
+        if (coordArray && coordArray.length > 3) {
             sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]}
             sourceMapData.resolution =
                 calculateResolutionFromStdZoom(coordArray[1], coordArray[2]);
+        }
+
+        var routesHref="";
+        $(".routes-list .permalink").each(function() {
+            routesHref=$(this).attr('href');
+            if (routesHref.length > 0) {
+                return false; //break on first non-empty URL
+            }
+        });
+
+        var re = /from_lat=([-0-9.]+)&from_lon=([-0-9.]+)&to_lat=([-0-9.]+)&to_lon=([-0-9.]+)/;
+        var routeCoordsArray = routesHref.match(re);
+        if (routeCoordsArray && routeCoordsArray.length > 4) {
+
+            sourceMapData.directions = {
+                from: {
+                    coords: { lat: routeCoordsArray[1],
+                              lng: routeCoordsArray[2] }
+                },
+                to: {
+                    coords: { lat: routeCoordsArray[3],
+                              lng: routeCoordsArray[4] }
+                }
+            }
         }
     } /* else if (window.location.hostname.indexOf("open.mapquest.com") >= 0) {
         var re = /center=([-0-9.]+),([-0-9.]+)/;
