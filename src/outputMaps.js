@@ -390,6 +390,32 @@ var outputMapServices = [
                           lng: sourceMapData.centreCoords.lng }
         view.addFileDownload(this, mapCentre);
     }
+},
+{
+    site: "Waze",
+    image: "wazeLogo16x16.png",
+    id: "waze",
+    maplinks:
+    {
+        livemap: {
+            name: "Livemap"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var wazeBase = "https://www.waze.com/livemap?";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "zoom=" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
+        this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre;
+
+        view.addPlainLinks(this, this.maplinks);
+    }
 }
 ];
 
