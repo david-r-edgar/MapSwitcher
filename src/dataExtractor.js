@@ -31,7 +31,7 @@ var runDataExtraction = function () {
                 "to": { "address": routeArray[2] }
             }
 
-            re = /dir\/([-0-9.]+),\+([-0-9.]+)\/([-0-9.]+),\+([-0-9.]+)\//;
+            re = /dir\/([-0-9.]+),[+]?([-0-9.]+)\/([-0-9.]+),[+]?([-0-9.]+)\//;
             var dirnCoordsArray = window.location.pathname.match(re);
             if (dirnCoordsArray && dirnCoordsArray.length > 4) {
                 sourceMapData.directions.from.coords =

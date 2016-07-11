@@ -412,9 +412,26 @@ var outputMapServices = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre;
+        if ("directions" in sourceMapData) {
+            directions = "";
+            if (("coords" in sourceMapData.directions.from) &&
+                ("coords" in sourceMapData.directions.to)) {
+                directions +=
+                    "&from_lat=" + sourceMapData.directions.from.coords.lat +
+                    "&from_lon=" + sourceMapData.directions.from.coords.lng +
+                    "&to_lat=" + sourceMapData.directions.to.coords.lat +
+                    "&to_lon=" + sourceMapData.directions.to.coords.lng +
+                    "&at_req=0&at_text=Now";
+            }
+        }
 
-        view.addPlainLinks(this, this.maplinks);
+        this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre + directions;
+
+        if (directions.length > 0) {
+            view.addDirectionsLinks(this, this.maplinks);
+        } else {
+            view.addPlainLinks(this, this.maplinks);
+        }
     }
 }
 ];
