@@ -33,6 +33,7 @@ The included makefile allows you to build for release. Currently you may need to
 - Google
 - Bing
 - OpenStreetMap
+- Waze
 
 ##### Without directions
 - Wikimapia
@@ -47,6 +48,7 @@ The included makefile allows you to build for release. Currently you may need to
 - Google
 - Bing
 - OpenStreetMap (only for routes with coordinate-specified waypoints)
+- Waze (only for routes with coordinate-specified waypoints)
 
 ##### Without directions
 - Wikimapia

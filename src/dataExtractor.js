@@ -24,7 +24,7 @@ var runDataExtraction = function () {
 
         //window.location.pathname url-encodes other characters so we can ignore them
         re = /dir\/([-A-Za-z0-9%'+,!$_.*()]+)\/([-A-Za-z0-9%'+,!$_.*()]+)\//;
-        routeArray = window.location.pathname.match(re);
+        var routeArray = window.location.pathname.match(re);
         if (routeArray && routeArray.length > 2) {
             sourceMapData.directions = {
                 "from": { "address": routeArray[1] },
@@ -40,7 +40,7 @@ var runDataExtraction = function () {
                     {"lat": dirnCoordsArray[3], "lng": dirnCoordsArray[4]}
             }
 
-            re = /!3e([0-3])/;
+            var re = /!3e([0-3])/;
             var modeArray = window.location.pathname.match(re);
             switch (modeArray && modeArray[1]) {
                 case "0":
@@ -57,6 +57,33 @@ var runDataExtraction = function () {
                     break;
             }
         }
+
+        var re = /dir\/(([-A-Za-z0-9%'+,!$_.*()]+\/){2,})@/
+        var wholeRouteArray = window.location.pathname.match(re);
+        if (wholeRouteArray && wholeRouteArray.length > 1) {
+            sourceMapData.directions.route = new Array();
+            for (var arrWpt of wholeRouteArray[1].split('/')) {
+                if (arrWpt.length > 0) {
+                    var wptObj = { address: arrWpt }
+                    sourceMapData.directions.route.push(wptObj);
+                }
+            }
+        }
+
+        var rteWptIndex = 0;
+        for (var coordSubstr of window.location.pathname.split("!1m5")) {
+            var re = /\!1d([-0-9.]+)\!2d([-0-9.]+)/;
+            var wptCoordArray = coordSubstr.match(re);
+            if (wptCoordArray && wptCoordArray.length > 2) {
+                sourceMapData.directions.route[rteWptIndex].coords =
+                    { lat: wptCoordArray[2], lng: wptCoordArray[1] }
+                rteWptIndex++;
+            }
+        }
+        //should probably error check here in case the URL has more addresses
+        //in the route than coords, or vice versa, but I'm not sure what to
+        //do if that is the case (eg. which one to trust more)
+
     } else if (window.location.hostname.indexOf(".bing.") >= 0) {
 
         //if there's no 'state', it means no scrolling has happened yet.
@@ -86,9 +113,14 @@ var runDataExtraction = function () {
 
         if ($("#directionsPanelRoot").length) {
             sourceMapData.directions = {
-                "from": { "address": $(".dirWaypoints input[title='From']").val() },
-                "to": { "address": $(".dirWaypoints input[title='To']").val() }
+                from: { address: $(".dirWaypoints input[title='From']").val() },
+                to: { address: $(".dirWaypoints input[title='To']").val() },
+                route: [ { address: $(".dirWaypoints input[title='From']").val() } ]
             }
+
+            $(".dirWaypoints input[title='To']").each(function() {
+               sourceMapData.directions.route.push( { address: $(this).val() } );
+            });
 
             var re = /([-0-9.]+)[ ]*,[ ]*([-0-9.]+)/
             var fromArray = sourceMapData.directions.from.address.match(re);
@@ -100,6 +132,15 @@ var runDataExtraction = function () {
             if (toArray && toArray.length > 2) {
                 sourceMapData.directions.to.coords =
                     {"lat": toArray[1], "lng": toArray[2]}
+            }
+
+            for (rteWptIndex in sourceMapData.directions.route) {
+                var wptArray =
+                    sourceMapData.directions.route[rteWptIndex].address.match(re);
+                if (wptArray && wptArray.length > 2) {
+                    sourceMapData.directions.route[rteWptIndex].coords =
+                        {"lat": toArray[1], "lng": toArray[2]}
+                }
             }
 
             switch($(".dirBtnSelected")[0].classList[0]) {
