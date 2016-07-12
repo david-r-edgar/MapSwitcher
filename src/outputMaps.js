@@ -422,15 +422,18 @@ var outputMapServices = [
                     "&to_lat=" + sourceMapData.directions.to.coords.lat +
                     "&to_lon=" + sourceMapData.directions.to.coords.lng +
                     "&at_req=0&at_text=Now";
+            } else {
+                this.note = "Waze directions unavailable because waypoints are not "
+                            + "all specified as coordinates.";
             }
         }
 
         this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre + directions;
 
         if (directions.length > 0) {
-            view.addDirectionsLinks(this, this.maplinks);
+            view.addDirectionsLinks(this, this.maplinks, this.note);
         } else {
-            view.addPlainLinks(this, this.maplinks);
+            view.addPlainLinks(this, this.maplinks, this.note);
         }
     }
 }
