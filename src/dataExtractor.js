@@ -52,11 +52,13 @@ var runDataExtraction = function () {
         //But some of them may only have addresses, not coordinates.
         //So we must parse the data part of the URL to find the coords.
 
+        var dataRouteSubstr = "";
+
         //double 4m identifying the directions part of the data string
         var re = /!4m[0-9]+!4m[0-9]+/;
         var directionsArray = window.location.pathname.match(re);
         if (directionsArray && directionsArray.length >= 1) {
-            var dataRouteSubstr = window.location.pathname.substr(directionsArray.index + directionsArray[0].length);
+            dataRouteSubstr = window.location.pathname.substr(directionsArray.index + directionsArray[0].length);
         }
         var mapDataWptIndex = 0;
         //keep a record of the previous string length we had when entering the loop
