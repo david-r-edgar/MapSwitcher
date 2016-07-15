@@ -219,14 +219,6 @@ var outputMapServices = [
             var lastElem = sourceMapData.directions.route[
                                 sourceMapData.directions.route.length - 1];
 
-
-            console.log(firstElem);
-            console.log(lastElem);
-
-
-
-
-            //FIXME if there are only addresses, no coords, how do we handle this?
             if ("coords" in firstElem && "coords" in lastElem) {
                directions = "directions?" + mode + "route=" +
                     firstElem.coords.lat + "," + firstElem.coords.lng + ";" +
@@ -415,6 +407,7 @@ var outputMapServices = [
         var wazeBase = "https://www.waze.com/livemap?";
         var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
+        var directions = "";
 
         if ("resolution" in sourceMapData) {
             zoom = "zoom=" +
@@ -422,30 +415,32 @@ var outputMapServices = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        console.log("waze hunting directions");
+        if ("directions" in sourceMapData &&
+                "route" in sourceMapData.directions) {
 
+            //Waze appears to only handle single-segment routes.
+            //So we choose to use the first and last point of the route from the source map.
 
+            var firstElem = sourceMapData.directions.route[0];
+            var lastElem = sourceMapData.directions.route[
+                                sourceMapData.directions.route.length - 1];
 
-        //FIXME
-        if ("directions" in sourceMapData) {
-            directions = "";
-            if (("from" in sourceMapData.directions) &&
-                ("to" in sourceMapData.directions) &&
-                ("coords" in sourceMapData.directions.from) &&
-                ("coords" in sourceMapData.directions.to)) {
+            if ("coords" in firstElem && "coords" in lastElem) {
                 directions +=
-                    "&from_lat=" + sourceMapData.directions.from.coords.lat +
-                    "&from_lon=" + sourceMapData.directions.from.coords.lng +
-                    "&to_lat=" + sourceMapData.directions.to.coords.lat +
-                    "&to_lon=" + sourceMapData.directions.to.coords.lng +
+                    "&from_lat=" + firstElem.coords.lat +
+                    "&from_lon=" + firstElem.coords.lng +
+                    "&to_lat=" + lastElem.coords.lat +
+                    "&to_lon=" + lastElem.coords.lng +
                     "&at_req=0&at_text=Now";
+                    if (sourceMapData.directions.route.length > 2) {
+                        this.note = "Omitting intermediate waypoints (not "
+                                    + "supported by Waze).";
+                    }
             } else {
                 this.note = "Waze directions unavailable because waypoints are not "
                             + "all specified as coordinates.";
             }
         }
-
-        console.log("waze passed directions");
 
         this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre + directions;
 

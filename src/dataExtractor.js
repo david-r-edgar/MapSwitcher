@@ -108,112 +108,6 @@ var runDataExtraction = function () {
                     break;
             }
         }
-
-        console.log(sourceMapData.directions);
-
-
-//search for !4m[0-9]+!4m[0-9]+
-//drop it
-//then look for a !1m([0-9]+)       remember r[1]
-//if r[1] == 0, incr wpt index
-//drop matched length
-//make regexp with r[1] instances of (![0-9][a-z][0-9a-z:]*)
-//  if third is !2m2, then grep 4th and 5th for !([12])d([-0-9.]+)d
-//  store coords
-//  incr wpt index
-//drop matched length
-
-
-
-
-
-
-
-/*
-
-
-
-
-
-
-
-
-        //window.location.pathname url-encodes other characters so we can ignore them
-        re = /dir\/([-A-Za-z0-9%'+,!$_.*()]+)\/([-A-Za-z0-9%'+,!$_.*()]+)\//;
-        var routeArray = window.location.pathname.match(re);
-        if (routeArray && routeArray.length > 2) {
-            sourceMapData.directions = {
-                "from": { "address": routeArray[1] },
-                "to": { "address": routeArray[2] }
-            }
-
-            re = /dir\/([-0-9.]+),[+]?([-0-9.]+)\/([-0-9.]+),[+]?([-0-9.]+)\//;
-            var dirnCoordsArray = window.location.pathname.match(re);
-            if (dirnCoordsArray && dirnCoordsArray.length > 4) {
-                sourceMapData.directions.from.coords =
-                    {"lat": dirnCoordsArray[1], "lng": dirnCoordsArray[2]}
-                sourceMapData.directions.to.coords =
-                    {"lat": dirnCoordsArray[3], "lng": dirnCoordsArray[4]}
-            }
-
-            var re = /!3e([0-3])/;
-            var modeArray = window.location.pathname.match(re);
-            switch (modeArray && modeArray[1]) {
-                case "0":
-                    sourceMapData.directions.mode = "car";
-                    break;
-                case "1":
-                    sourceMapData.directions.mode = "bike";
-                    break;
-                case "2":
-                    sourceMapData.directions.mode = "foot";
-                    break;
-                case "3":
-                    sourceMapData.directions.mode = "transit";
-                    break;
-            }
-        }
-
-        var re = /dir\/(([-A-Za-z0-9%'+,!$_.*()]+\/){2,})@/
-        var wholeRouteArray = window.location.pathname.match(re);
-        if (wholeRouteArray && wholeRouteArray.length > 1) {
-            sourceMapData.directions.route = new Array();
-            for (var arrWpt of wholeRouteArray[1].split('/')) {
-                if (arrWpt.length > 0) {
-                    var wptObj = { address: arrWpt }
-
-                    //check if the address looks like a coordinate
-                    //If it does, store it, but it may be overwritten later
-                    //if '!1d' style coordinates are also in the URL
-                    var coordRe = /([-0-9.]+),[+]?([-0-9.]+)/;
-                    var addrIsCoordArr = arrWpt.match(coordRe);
-                    console.log(addrIsCoordArr);
-                    if (addrIsCoordArr && addrIsCoordArr.length > 2) {
-                        wptObj.coords =
-                        { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
-                        console.log("set coords " + wptObj.coords);
-                    }
-                    console.log(wptObj);
-                    sourceMapData.directions.route.push(wptObj);
-                }
-            }
-        }
-
-        var rteWptIndex = 0;
-        for (var coordSubstr of window.location.pathname.split("!1m5")) {
-            var re = /\!1d([-0-9.]+)\!2d([-0-9.]+)/;
-            var wptCoordArray = coordSubstr.match(re);
-            if (wptCoordArray && wptCoordArray.length > 2) {
-                sourceMapData.directions.route[rteWptIndex].coords =
-                    { lat: wptCoordArray[2], lng: wptCoordArray[1] }
-                rteWptIndex++;
-            }
-        }
-        */
-        //should probably error check here in case the URL has more addresses
-        //in the route than coords, or vice versa, but I'm not sure what to
-        //do if that is the case (eg. which one to trust more)
-
     } else if (window.location.hostname.indexOf(".bing.") >= 0) {
 
         //if there's no 'state', it means no scrolling has happened yet.
@@ -242,34 +136,21 @@ var runDataExtraction = function () {
         }
 
         if ($("#directionsPanelRoot").length) {
+            //we expect a single 'From' input, followed by one or more 'To' inputs
             sourceMapData.directions = {
-                from: { address: $(".dirWaypoints input[title='From']").val() },
-                to: { address: $(".dirWaypoints input[title='To']").val() },
                 route: [ { address: $(".dirWaypoints input[title='From']").val() } ]
             }
-
             $(".dirWaypoints input[title='To']").each(function() {
                sourceMapData.directions.route.push( { address: $(this).val() } );
             });
 
             var re = /([-0-9.]+)[ ]*,[ ]*([-0-9.]+)/
-            var fromArray = sourceMapData.directions.from.address.match(re);
-            if (fromArray && fromArray.length > 2) {
-                sourceMapData.directions.from.coords =
-                    {"lat": fromArray[1], "lng": fromArray[2]}
-            }
-            var toArray = sourceMapData.directions.to.address.match(re);
-            if (toArray && toArray.length > 2) {
-                sourceMapData.directions.to.coords =
-                    {"lat": toArray[1], "lng": toArray[2]}
-            }
-
             for (rteWptIndex in sourceMapData.directions.route) {
                 var wptArray =
                     sourceMapData.directions.route[rteWptIndex].address.match(re);
                 if (wptArray && wptArray.length > 2) {
                     sourceMapData.directions.route[rteWptIndex].coords =
-                        {"lat": toArray[1], "lng": toArray[2]}
+                        {"lat": wptArray[1], "lng": wptArray[2]}
                 }
             }
 
@@ -297,18 +178,21 @@ var runDataExtraction = function () {
         if ($(".directions_form").is(':visible')
             && ($("#route_from").val().length > 0)
             && ($("#route_to").val().length > 0)) {
+
             sourceMapData.directions = {
-                "from": { "address": $("#route_from").val() },
-                "to": { "address": $("#route_to").val() }
+                route: [
+                    { address: $("#route_from").val() },
+                    { address: $("#route_to").val() }
+                ]
             }
 
             re = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/;
             var routeCoordsArray = window.location.search.match(re);
             if (routeCoordsArray && routeCoordsArray.length > 4) {
-                sourceMapData.directions.from.coords =
+                sourceMapData.directions.route[0].coords =
                     { "lat": routeCoordsArray[1],
                     "lng": routeCoordsArray[2] }
-                sourceMapData.directions.to.coords =
+                sourceMapData.directions.route[1].coords =
                     { "lat": routeCoordsArray[3],
                     "lng": routeCoordsArray[4] }
             }
@@ -394,14 +278,16 @@ var runDataExtraction = function () {
         if (routeCoordsArray && routeCoordsArray.length > 4) {
 
             sourceMapData.directions = {
-                from: {
-                    coords: { lat: routeCoordsArray[1],
-                              lng: routeCoordsArray[2] }
-                },
-                to: {
-                    coords: { lat: routeCoordsArray[3],
-                              lng: routeCoordsArray[4] }
-                }
+                route: [
+                    {
+                        coords: { lat: routeCoordsArray[1],
+                                lng: routeCoordsArray[2] }
+                    },
+                    {
+                        coords: { lat: routeCoordsArray[3],
+                                lng: routeCoordsArray[4] }
+                    }
+                ]
             }
         }
     } /* else if (window.location.hostname.indexOf("open.mapquest.com") >= 0) {
