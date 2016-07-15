@@ -47,7 +47,7 @@ var MapLinksView = {
         $("#withDirns").sortDivs();
 
         if (note && note.length) {
-            $(".linknote").tipsy({gravity: 's'});
+            $(".linknote").tipsy({gravity: 'se', opacity: 1, fade: true});
         }
     },
 
@@ -66,7 +66,7 @@ var MapLinksView = {
         $("#withoutDirns").sortDivs();
 
         if (note && note.length) {
-            $(".linknote").tipsy({gravity: 's'});
+            $(".linknote").tipsy({gravity: 's', opacity: 1, fade: true});
         }
     },
 
@@ -112,7 +112,7 @@ var MapLinksView = {
 
 
         if (note && note.length) {
-            $(".linknote").tipsy({gravity: 's'});
+            $(".linknote").tipsy({gravity: 's', opacity: 1, fade: true});
         }
     },
 

@@ -22,6 +22,122 @@ var runDataExtraction = function () {
             }
         }
 
+        //google maps URLs have route waypoints specified in two different places
+
+        //first we look for the 'dir' waypoints
+        //these are where any named addresses will be (but maybe coords too)
+        var re = /dir\/(([-A-Za-z0-9%'+,!$_.*()]+\/){2,})@/
+        var wholeRouteArray = window.location.pathname.match(re);
+        if (wholeRouteArray && wholeRouteArray.length > 1) {
+            sourceMapData.directions = {}
+            sourceMapData.directions.route = new Array();
+            for (var arrWpt of wholeRouteArray[1].split('/')) {
+                if (arrWpt.length > 0) {
+                    var wptObj = { address: arrWpt }
+
+                    //check if the address looks like a coordinate
+                    //if so, we put it in the coords sub-object too
+                    var coordRe = /([-0-9.]+),[+]?([-0-9.]+)/;
+                    var addrIsCoordArr = arrWpt.match(coordRe);
+                    if (addrIsCoordArr && addrIsCoordArr.length > 2) {
+                        wptObj.coords =
+                        { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
+                    }
+                    sourceMapData.directions.route.push(wptObj);
+                }
+            }
+        }
+
+        //we expect to have sub-objects for each waypoint now (is this correct?)
+        //But some of them may only have addresses, not coordinates.
+        //So we must parse the data part of the URL to find the coords.
+
+        //double 4m identifying the directions part of the data string
+        var re = /!4m[0-9]+!4m[0-9]+/;
+        var directionsArray = window.location.pathname.match(re);
+        if (directionsArray && directionsArray.length >= 1) {
+            var dataRouteSubstr = window.location.pathname.substr(directionsArray.index + directionsArray[0].length);
+        }
+        var mapDataWptIndex = 0;
+        //keep a record of the previous string length we had when entering the loop
+        //- in case it's the same, we've found no matches, so don't continue
+        var prevSubstrLen = dataRouteSubstr.length + 1;
+        while (dataRouteSubstr.length > 0 && prevSubstrLen > dataRouteSubstr.length) {
+            var prevSubstrLen = dataRouteSubstr.length;
+            var rteWptRe = /^!1m([0-9]+)/;
+            var rteWptArray = dataRouteSubstr.match(rteWptRe);
+            if (rteWptArray && rteWptArray.length > 1) {
+                if ("0" == rteWptArray[1]) {
+                    //we'll match '1m0' when no coord is given in the data
+                    //- quite likely it'll already have been parsed from the address
+                    dataRouteSubstr = dataRouteSubstr.substr(rteWptArray[0].length);
+                    mapDataWptIndex++;
+                } else {
+                    dataRouteSubstr = dataRouteSubstr.substr(rteWptArray[0].length);
+                    //normally we get a '1m5' here indicating the coordinates of
+                    //one of the named waypoints
+                    var wptRe = /![0-9a-z]+![0-9a-z:]+!2m2!1d([-0-9.]+)!2d([-0-9.]+)/
+                    var wptArray = dataRouteSubstr.match(wptRe);
+                    if (wptArray && wptArray.length > 2) {
+                        //oddly longitude is given before latitude
+                        sourceMapData.directions.route[mapDataWptIndex].coords =
+                        { lat: wptArray[2], lng: wptArray[1] }
+                        dataRouteSubstr = dataRouteSubstr.substr(wptArray.index +
+                            wptArray[0].length);
+                        mapDataWptIndex++;
+                    }
+                }
+            }
+        }
+
+        var re = /!3e([0-3])$/;
+        var modeArray = dataRouteSubstr.match(re);
+        if (modeArray && modeArray.length >= 1) {
+            switch (modeArray[1]) {
+                case "0":
+                    sourceMapData.directions.mode = "car";
+                    break;
+                case "1":
+                    sourceMapData.directions.mode = "bike";
+                    break;
+                case "2":
+                    sourceMapData.directions.mode = "foot";
+                    break;
+                case "3":
+                    sourceMapData.directions.mode = "transit";
+                    break;
+            }
+        }
+
+        console.log(sourceMapData.directions);
+
+
+//search for !4m[0-9]+!4m[0-9]+
+//drop it
+//then look for a !1m([0-9]+)       remember r[1]
+//if r[1] == 0, incr wpt index
+//drop matched length
+//make regexp with r[1] instances of (![0-9][a-z][0-9a-z:]*)
+//  if third is !2m2, then grep 4th and 5th for !([12])d([-0-9.]+)d
+//  store coords
+//  incr wpt index
+//drop matched length
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+
+
+
         //window.location.pathname url-encodes other characters so we can ignore them
         re = /dir\/([-A-Za-z0-9%'+,!$_.*()]+)\/([-A-Za-z0-9%'+,!$_.*()]+)\//;
         var routeArray = window.location.pathname.match(re);
@@ -65,6 +181,19 @@ var runDataExtraction = function () {
             for (var arrWpt of wholeRouteArray[1].split('/')) {
                 if (arrWpt.length > 0) {
                     var wptObj = { address: arrWpt }
+
+                    //check if the address looks like a coordinate
+                    //If it does, store it, but it may be overwritten later
+                    //if '!1d' style coordinates are also in the URL
+                    var coordRe = /([-0-9.]+),[+]?([-0-9.]+)/;
+                    var addrIsCoordArr = arrWpt.match(coordRe);
+                    console.log(addrIsCoordArr);
+                    if (addrIsCoordArr && addrIsCoordArr.length > 2) {
+                        wptObj.coords =
+                        { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
+                        console.log("set coords " + wptObj.coords);
+                    }
+                    console.log(wptObj);
                     sourceMapData.directions.route.push(wptObj);
                 }
             }
@@ -80,6 +209,7 @@ var runDataExtraction = function () {
                 rteWptIndex++;
             }
         }
+        */
         //should probably error check here in case the URL has more addresses
         //in the route than coords, or vice versa, but I'm not sure what to
         //do if that is the case (eg. which one to trust more)

@@ -40,12 +40,6 @@ body {
 #ctrlButtons a:hover {
   color: #777;
 }
-#linktooltip {
-  position: absolute;
-  top: 100px;
-  left: 20px;
-  background-color: #bbb;
-}
 .linkLineImg {
   vertical-align: middle;
 }
@@ -98,4 +92,8 @@ a.maplink:hover {
   text-align: center;
   vertical-align: middle;
   margin-bottom: 0.4em;
+}
+
+.tipsy-inner {
+    background-color: #3399dd;
 }

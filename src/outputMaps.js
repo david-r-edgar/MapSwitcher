@@ -99,7 +99,21 @@ var outputMapServices = [
                                 3, 20);
         }
 
-        if ("directions" in sourceMapData) {
+        if ("directions" in sourceMapData &&
+                "route" in sourceMapData.directions) {
+            directions = "rtp=";
+            for (rteWpt of sourceMapData.directions.route) {
+                if ("coords" in rteWpt) {
+                    directions += "pos." + rteWpt.coords.lat + "_" + rteWpt.coords.lng;
+                    if ("address" in rteWpt) {
+                        directions += "_" + rteWpt.address;
+                    }
+                    directions += "~";
+                } else if ("address" in rteWpt) {
+                    directions += "adr." + rteWpt.address + "~";
+                }
+            }
+
             var mode = "";
             if (sourceMapData.directions.mode) {
                 switch (sourceMapData.directions.mode) {
@@ -114,19 +128,7 @@ var outputMapServices = [
                         break;
                 }
             }
-            directions = "rtp=";
-            if ("coords" in sourceMapData.directions.from) {
-                directions += "pos." + sourceMapData.directions.from.coords.lat + "_" +
-                    sourceMapData.directions.from.coords.lng + "~";
-            } else {
-                directions += "adr." + sourceMapData.directions.from.address + "~";
-            }
-            if ("coords" in sourceMapData.directions.to) {
-                directions += "pos." + sourceMapData.directions.to.coords.lat + "_" +
-                    sourceMapData.directions.to.coords.lng;
-            } else {
-                directions += "adr." + sourceMapData.directions.to.address;
-            }
+
             directions += mode;
         }
 
@@ -137,21 +139,14 @@ var outputMapServices = [
         this.maplinks.bingbirdseye["link"] =
             bingBase + directions + "&" + mapCentre + zoom + "&sty=b";
 
-        this.generatedMapLinks = {}
-        this.generatedMapLinks.bingroad = this.maplinks.bingroad;
-        this.generatedMapLinks.bingaerial = this.maplinks.bingaerial;
-        this.generatedMapLinks.bingbirdseye = this.maplinks.bingbirdseye;
-
-
-        var self = this;
         if (sourceMapData.countryCode === "gb") {
-            self.generatedMapLinks.bingos = {name: self.maplinks.bingos.name,
+            this.maplinks.bingos = {name: this.maplinks.bingos.name,
                 link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
         }
         if (directions.length > 0) {
-            view.addDirectionsLinks(this, self.generatedMapLinks);
+            view.addDirectionsLinks(this, this.maplinks);
         } else {
-            view.addPlainLinks(this, self.generatedMapLinks);
+            view.addPlainLinks(this, this.maplinks);
         }
     }
 },
@@ -200,31 +195,46 @@ var outputMapServices = [
         }
 
         if (sourceMapData.directions &&
-            sourceMapData.directions.from &&
-            sourceMapData.directions.to) {
-            //FIXME if there are only addresses, no coords, how do we handle this?
-            if (sourceMapData.directions.from.coords &&
-                    sourceMapData.directions.to.coords) {
-                var mode = "";
-                if (sourceMapData.directions.mode) {
-                    switch (sourceMapData.directions.mode) {
-                        case "foot":
-                            mode = "engine=mapzen_foot&";
-                            break;
-                        case "car":
-                            mode = "engine=osrm_car&";
-                            break;
-                        case "bike":
-                            mode = "engine=graphhopper_bicycle&";
-                            break;
-                    }
-                }
+                "route" in sourceMapData.directions) {
 
-                directions = "directions?" + mode + "route=" +
-                    sourceMapData.directions.from.coords.lat + "," +
-                    sourceMapData.directions.from.coords.lng + ";" +
-                    sourceMapData.directions.to.coords.lat + "," +
-                    sourceMapData.directions.to.coords.lng;
+            var mode = "";
+            if (sourceMapData.directions.mode) {
+                switch (sourceMapData.directions.mode) {
+                    case "foot":
+                        mode = "engine=mapzen_foot&";
+                        break;
+                    case "car":
+                        mode = "engine=osrm_car&";
+                        break;
+                    case "bike":
+                        mode = "engine=graphhopper_bicycle&";
+                        break;
+                }
+            }
+
+            //OSM appears to only handle single-segment routes.
+            //So we choose to use the first and last point of the route from the source map.
+
+            var firstElem = sourceMapData.directions.route[0];
+            var lastElem = sourceMapData.directions.route[
+                                sourceMapData.directions.route.length - 1];
+
+
+            console.log(firstElem);
+            console.log(lastElem);
+
+
+
+
+            //FIXME if there are only addresses, no coords, how do we handle this?
+            if ("coords" in firstElem && "coords" in lastElem) {
+               directions = "directions?" + mode + "route=" +
+                    firstElem.coords.lat + "," + firstElem.coords.lng + ";" +
+                    lastElem.coords.lat + "," + lastElem.coords.lng;
+                    if (sourceMapData.directions.route.length > 2) {
+                        this.note = "Omitting intermediate waypoints (not "
+                                    + "supported by OSM).";
+                    }
             } else {
                 this.note = "OSM directions unavailable because waypoints are not "
                             + "all specified as coordinates.";
@@ -412,9 +422,16 @@ var outputMapServices = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
+        console.log("waze hunting directions");
+
+
+
+        //FIXME
         if ("directions" in sourceMapData) {
             directions = "";
-            if (("coords" in sourceMapData.directions.from) &&
+            if (("from" in sourceMapData.directions) &&
+                ("to" in sourceMapData.directions) &&
+                ("coords" in sourceMapData.directions.from) &&
                 ("coords" in sourceMapData.directions.to)) {
                 directions +=
                     "&from_lat=" + sourceMapData.directions.from.coords.lat +
@@ -427,6 +444,8 @@ var outputMapServices = [
                             + "all specified as coordinates.";
             }
         }
+
+        console.log("waze passed directions");
 
         this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre + directions;
 
