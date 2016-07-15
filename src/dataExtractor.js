@@ -290,19 +290,7 @@ var runDataExtraction = function () {
                 ]
             }
         }
-    } /* else if (window.location.hostname.indexOf("open.mapquest.com") >= 0) {
-        var re = /center=([-0-9.]+),([-0-9.]+)/;
-        coordArray = window.location.search.match(re);
-        if (coordArray && coordArray.length >= 3) {
-            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
-        }
-        re = /zoom=([0-9]+)/;
-        var zoomArray = window.location.search.match(re);
-        if (zoomArray && zoomArray.length > 1) {
-            sourceMapData.resolution = calculateResolutionFromStdZoom(
-                    zoomArray[1], sourceMapData.centreCoords.lat);
-        }
-    } */
+    }
 
     //return result object to the caller (main extension script)
     return sourceMapData;

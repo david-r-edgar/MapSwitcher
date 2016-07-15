@@ -23,6 +23,12 @@ var outputMapServices = [
         },
         googleearth: {
             name: "Earth"
+        },
+        googletraffic: {
+            name: "Traffic"
+        },
+        googlebike: {
+            name: "Cycling"
         }
     },
     generate: function(sourceMapData, view) {
@@ -30,21 +36,56 @@ var outputMapServices = [
         var directions = "";
         var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
         var zoom = "10z";
+        var dataWpts = "";
+        var dataDirnOptions = "";
 
-        if ("directions" in sourceMapData) {
+        if ("directions" in sourceMapData && "route" in sourceMapData.directions) {
             directions = "dir/";
-            if ("coords" in sourceMapData.directions.from) {
-                directions += sourceMapData.directions.from.coords.lat + "," +
-                    sourceMapData.directions.from.coords.lng + "/";
-            } else {
-                directions += sourceMapData.directions.from.address + "/";
+
+            for (rteWpt of sourceMapData.directions.route) {
+                if ("address" in rteWpt) {
+                    //if address specified, add to directions
+                    directions += rteWpt.address + "/";
+
+                    if ("coords" in rteWpt) {
+                        //if coord also specified, add to data
+                        dataWpts += "!1m5!1m1!1s0x0:0x0!2m2!1d" +
+                            rteWpt.coords.lng + "!2d" + rteWpt.coords.lat;
+                    } else {
+                        dataWpts += "!1m0";
+                    }
+
+                } else if ("coords" in rteWpt) {
+                    //else if coord specified, add to directions
+                    directions += rteWpt.coords.lat + "," +  + "/";
+                    dataWpts += "!1m0";
+                }
             }
-            if ("coords" in sourceMapData.directions.to) {
-                directions += sourceMapData.directions.to.coords.lat + "," +
-                    sourceMapData.directions.to.coords.lng + "/";
-            } else {
-                directions += sourceMapData.directions.to.address + "/";
+
+            var mode = "";
+            if (sourceMapData.directions.mode) {
+                switch (sourceMapData.directions.mode) {
+                    case "foot":
+                        mode = "!3e2";
+                        break;
+                    case "bike":
+                        mode = "!3e1";
+                        break;
+                    case "car":
+                        mode = "!3e0";
+                        break;
+                    case "transit":
+                        mode = "!3e3";
+                        break;
+                }
             }
+
+
+            var dataDirnOptions = dataWpts + mode;
+
+            //add elements identifying directions, with counts of all following sub-elements
+            var exclMarkCount = (dataDirnOptions.match(/!/g) || []).length;
+            dataDirnOptions = "!4m" + (exclMarkCount + 1) + "!4m" + exclMarkCount + dataDirnOptions;
         }
 
         if ("resolution" in sourceMapData) {
@@ -53,9 +94,11 @@ var outputMapServices = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 3) + "z";
         }
 
-        this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom;
-        this.maplinks.googleterrain["link"] = googleBase + directions + mapCentre + zoom + "/data=!5m1!1e4";
-        this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + zoom + "/data=!3m1!1e3!5m1!1e4";
+        this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions;
+        this.maplinks.googleterrain["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e4";
+        this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + zoom + "/data=!3m1!1e3" + dataDirnOptions;
+        this.maplinks.googletraffic["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e1";
+        this.maplinks.googlebike["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e3";
 
         if (directions.length > 0) {
             view.addDirectionsLinks(this, this.maplinks);
