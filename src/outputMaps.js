@@ -101,9 +101,9 @@ var outputMapServices = [
         this.maplinks.googlebike["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e3";
 
         if (directions.length > 0) {
-            view.addDirectionsLinks(this, this.maplinks);
+            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks);
         } else {
-            view.addPlainLinks(this, this.maplinks);
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
     }
 },
@@ -187,9 +187,9 @@ var outputMapServices = [
                 link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
         }
         if (directions.length > 0) {
-            view.addDirectionsLinks(this, this.maplinks);
+            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks);
         } else {
-            view.addPlainLinks(this, this.maplinks);
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
     }
 },
@@ -266,10 +266,6 @@ var outputMapServices = [
                directions = "directions?" + mode + "route=" +
                     firstElem.coords.lat + "," + firstElem.coords.lng + ";" +
                     lastElem.coords.lat + "," + lastElem.coords.lng;
-                    if (sourceMapData.directions.route.length > 2) {
-                        this.note = "Omitting intermediate waypoints (not "
-                                    + "supported by OSM).";
-                    }
             } else {
                 this.note = "OSM directions unavailable because waypoints are not "
                             + "all specified as coordinates.";
@@ -285,9 +281,9 @@ var outputMapServices = [
         this.maplinks.osmHumanitarian["link"] = coreLink + "&layers=H";
 
         if (directions.length > 0) {
-            view.addDirectionsLinks(this, this.maplinks, this.note);
+            view.addMapServiceLinks(view.category.singledirns, this, this.maplinks, this.note);
         } else {
-            view.addPlainLinks(this, this.maplinks, this.note);
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
         }
     }
 },
@@ -319,7 +315,7 @@ var outputMapServices = [
         zoom = "10";
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
-        view.addPlainLinks(this, this.maplinks);
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
 },
 {
@@ -349,7 +345,7 @@ var outputMapServices = [
         this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
 
-        view.addPlainLinks(this, this.maplinks);
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
 },
 {
@@ -375,7 +371,7 @@ var outputMapServices = [
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
-        view.addPlainLinks(this, this.maplinks, this.note);
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
     }
 },
 {
@@ -393,7 +389,7 @@ var outputMapServices = [
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
 
-        view.addPlainLinks(this, this.maplinks);
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
 },
 {
@@ -419,7 +415,7 @@ var outputMapServices = [
 
         this.maplinks.mqOpen["link"] = mapquestBase + mapCentre + '&' + zoom;
 
-        view.addPlainLinks(this, this.maplinks);
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
 },
 {
@@ -475,10 +471,6 @@ var outputMapServices = [
                     "&to_lat=" + lastElem.coords.lat +
                     "&to_lon=" + lastElem.coords.lng +
                     "&at_req=0&at_text=Now";
-                    if (sourceMapData.directions.route.length > 2) {
-                        this.note = "Omitting intermediate waypoints (not "
-                                    + "supported by Waze).";
-                    }
             } else {
                 this.note = "Waze directions unavailable because waypoints are not "
                             + "all specified as coordinates.";
@@ -488,9 +480,9 @@ var outputMapServices = [
         this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre + directions;
 
         if (directions.length > 0) {
-            view.addDirectionsLinks(this, this.maplinks, this.note);
+            view.addMapServiceLinks(view.category.singledirns, this, this.maplinks, this.note);
         } else {
-            view.addPlainLinks(this, this.maplinks, this.note);
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
         }
     }
 }

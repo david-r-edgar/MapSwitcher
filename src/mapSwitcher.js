@@ -32,38 +32,86 @@ jQuery.fn.sortDivs = function sortDivs() {
  */
 var MapLinksView = {
 
-    /**
-     * Adds links where directions are available
-     *
-     * @param {mapService} Object containing data about the particular map service.
-     * @param {mapLinks} All the map links to be added.
-     * @param {note} Content for an optional explanatory note.
-     */
-    addDirectionsLinks: function(mapService, mapLinks, note) {
-        $("#withDirns").append(this.buildLineOfLinks(mapService.id,
-                                                mapService,
-                                                mapLinks,
-                                                note));
-        $("#withDirns").sortDivs();
+    /** Enumeration of the type of map service */
+    category: {
+        multidirns: 2,
+        singledirns: 1,
+        plain: 0
+    },
 
-        if (note && note.length) {
-            $(".linknote").tipsy({gravity: 'se', opacity: 1, fade: true});
+    /** Number of direction segments in the source map data. */
+    sourceDirnSegs: 0,
+
+    /**
+     * Returns the appropriate jquery selector for the given map service category, based
+     * on the number of direction segments.
+     */
+    getSelector: function(category) {
+        if (this.category.multidirns === category && this.sourceDirnSegs >= 2) {
+            return "#multiSegDirns";
+        } else if (this.category.multidirns === category && this.sourceDirnSegs === 1) {
+            return "#singleSegDirns";
+        } else if (this.category.singledirns === category && this.sourceDirnSegs > 0) {
+            return "#singleSegDirns";
+        } else {
+            return "#noDirns";
         }
     },
 
     /**
-     * Adds links where no directions are available
+     * Returns the section title for the given map service category, based
+     * on the number of direction segments.
+     */
+    getTitle: function(category) {
+        var title = "";
+        if (this.sourceDirnSegs >= 2) {
+            switch (category) {
+                case this.category.multidirns:
+                    title = "Directions, full";
+                    break;
+                case this.category.singledirns:
+                    title = "Directions, only one segment supported";
+                    break;
+                default:
+                    title = "Other Maps";
+                    break;
+            }
+        } else if (this.sourceDirnSegs === 1) {
+            switch (category) {
+                case this.category.multidirns:
+                case this.category.singledirns:
+                    title = "Directions";
+                    break;
+                default:
+                    title = "Other Maps";
+                    break;
+            }
+        } else {
+            title = "Map Services";
+        }
+        return title;
+    },
+
+    /**
+     * Adds links to a map service to a particular category
      *
+     * @param {category} Category in which to add this map service
      * @param {mapService} Object containing data about the particular map service.
      * @param {mapLinks} All the map links to be added.
      * @param {note} Content for an optional explanatory note.
      */
-    addPlainLinks: function(mapService, mapLinks, note) {
-        $("#withoutDirns").append(this.buildLineOfLinks(mapService.id,
+    addMapServiceLinks: function(category, mapService, mapLinks, note) {
+        var selector = this.getSelector(category);
+
+        if (0 == $(selector).children().length) {
+            $(selector).append("<h4>" + this.getTitle(category) + "</h4>");
+        }
+
+        $(selector).append(this.buildLineOfLinks(mapService.id,
                                                    mapService,
                                                    mapLinks,
                                                    note));
-        $("#withoutDirns").sortDivs();
+        $(selector).sortDivs();
 
         if (note && note.length) {
             $(".linknote").tipsy({gravity: 's', opacity: 1, fade: true});
@@ -216,13 +264,10 @@ var MapSwitcher = {
     * @param sourceMapData
     */
     run: function(sourceMapData) {
-        if (sourceMapData.directions != null) {
-            $("#withDirns").append("<h4>Directions</h4>");
-            $("#withoutDirns").append("<h4>Other Maps</h4>");
+        if (sourceMapData.directions && sourceMapData.directions.route) {
+            MapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1;
         }
-        else {
-            $("#withoutDirns").append("<h4>Map Services</h4>");
-        }
+
         for (outputMapService of outputMapServices) {
             (function(outputMapService) { //dummy immediately executed fn to save variables
 
