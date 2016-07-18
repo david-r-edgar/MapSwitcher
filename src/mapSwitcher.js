@@ -124,7 +124,7 @@ var MapLinksView = {
      * @param {mapService} Object containing data about the particular map service.
      * @param {note} Content for an optional explanatory note.
      */
-    addFileDownload: function(mapService, wpt, note) {
+    addFileDownload: function(mapService, id, name, fileGenerator, note) {
 
         //only add the title once
         if ($("#downloads").text().length === 0) {
@@ -134,30 +134,21 @@ var MapLinksView = {
         html =  "<div id='" + mapService.id + "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
                 "<span class=\"linkLineImg\"><img src=\"../image/" + mapService.image + "\"></span> " +
                 "<span class=\"serviceName\">" + mapService.site + "</span> ";
-        html += "<a href='#' class=\"maplink\" id='" + wpt.id + "'>" + wpt.name + "</a>"
+        html += "<a href='#' class=\"maplink\" id='" + id + "'>" + name + "</a>"
         html += "</div>";
 
         $("#downloads").append(html);
 
-        $("#" + wpt.id).click(function() {
-            var xml =
-                "<?xml version=\"1.1\"?>" +
-                "<gpx creator=\"MapSwitcher\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\">" +
-                    "<author>MapSwitcher</author>" +
-                    "<wpt lat=\"" + wpt.lat + "\" lon=\"" + wpt.lng + "\">" +
-                        "<name>" + wpt.name + "</name>" +
-                        "<desc>" + wpt.desc + "</desc>" +
-                    "</wpt>" +
-                "</gpx>";
-            var filename = "MapSwitcher.gpx";
-            var contentBlob = new Blob([xml], {type: "text/xml;charset=utf-8"});
+        $("#" + id).click(function() {
+            var fileData = fileGenerator();
+            var filename = fileData.name;
+            var contentBlob = new Blob([fileData.content], {type: fileData.type});
             var gpxURL = URL.createObjectURL(contentBlob);
             chrome.downloads.download({
                 url: gpxURL,
                 filename: filename
             });
         });
-
 
         if (note && note.length) {
             $(".linknote").tipsy({gravity: 's', opacity: 1, fade: true});

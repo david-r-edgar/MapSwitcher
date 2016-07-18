@@ -423,13 +423,23 @@ var outputMapServices = [
     image: "gpxFile16x16.png",
     id: "dl_gpx",
     generate: function(sourceMapData, view) {
-
-        var mapCentre = { id: "gpx_map_centre",
-                          name: "Centre of map",
-                          desc: sourceMapData.centreCoords.lat + ", " + sourceMapData.centreCoords.lng,
-                          lat: sourceMapData.centreCoords.lat,
-                          lng: sourceMapData.centreCoords.lng }
-        view.addFileDownload(this, mapCentre);
+        view.addFileDownload(this, "gpx_map_centre", "Centre of map", function() {
+            var fileData = {
+                name: "MapSwitcher.gpx",
+                type: "text/xml;charset=utf-8",
+                content:
+                "<?xml version=\"1.1\"?>\n" +
+                "<gpx creator=\"MapSwitcher\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\">\n" +
+                    "\t<author>MapSwitcher</author>\n" +
+                    "\t<wpt lat=\"" + sourceMapData.centreCoords.lat +
+                        "\" lon=\"" + sourceMapData.centreCoords.lng + "\">\n" +
+                        "\t\t<name>Centre of map</name>\n" +
+                        "\t\t<desc>" + sourceMapData.centreCoords.lat + ", " + sourceMapData.centreCoords.lng + "</desc>\n" +
+                    "\t</wpt>\n" +
+                "</gpx>\n"
+            }
+            return fileData;
+        });
     }
 },
 {
