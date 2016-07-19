@@ -3,7 +3,7 @@
 
   "name": "Map Switcher",
   "description": "Switch between different map services.",
-  "version": "0.1",
+  "version": "0.2",
   "options_page": "html/options.html",
 
   "browser_action": {

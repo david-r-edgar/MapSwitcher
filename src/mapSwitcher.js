@@ -131,13 +131,17 @@ var MapLinksView = {
             $("#downloads").append("<h4>Downloads</h4>");
         }
 
-        html =  "<div id='" + mapService.id + "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
+        //create div for mapService if not one already
+        if (0 === $("#" + mapService.id).length) {
+            mapServiceHtml = "<div id='" + mapService.id +
+                "' class='serviceLine' data-sort='" +mapService.prio + "'>" +
                 "<span class=\"linkLineImg\"><img src=\"../image/" + mapService.image + "\"></span> " +
-                "<span class=\"serviceName\">" + mapService.site + "</span> ";
-        html += "<a href='#' class=\"maplink\" id='" + id + "'>" + name + "</a>"
-        html += "</div>";
+                "<span class=\"serviceName\">" + mapService.site + "</span></div>";
+            $("#downloads").append(mapServiceHtml);
+        }
 
-        $("#downloads").append(html);
+        linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + "</a>";
+        $("#" + mapService.id).append(linkHtml);
 
         $("#" + id).click(function() {
             var fileData = fileGenerator();

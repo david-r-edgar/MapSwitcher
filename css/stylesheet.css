@@ -95,5 +95,9 @@ a.maplink:hover {
 }
 
 .tipsy-inner {
-    background-color: #3399dd;
+  background-color: #3399dd;
+}
+
+h4 {
+  margin: 0.8em 0em 0.5em 0em;
 }
