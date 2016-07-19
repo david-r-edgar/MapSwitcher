@@ -29,7 +29,6 @@ The included makefile allows you to build for release. Currently you may need to
 ### Input mapping services
 
 ##### With directions
-(no intermediate waypoints)
 - Google
 - Bing
 - OpenStreetMap
@@ -44,9 +43,11 @@ The included makefile allows you to build for release. Currently you may need to
 ### Output mapping services
 
 ##### With directions
-(no intermediate waypoints)
 - Google
 - Bing
+
+##### With limited directions
+(These services only support single-segment directions, no 'via' points.)
 - OpenStreetMap (only for routes with coordinate-specified waypoints)
 - Waze (only for routes with coordinate-specified waypoints)
 

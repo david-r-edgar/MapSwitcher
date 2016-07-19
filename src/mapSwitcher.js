@@ -70,7 +70,7 @@ var MapLinksView = {
                     title = "Directions, full";
                     break;
                 case this.category.singledirns:
-                    title = "Directions, only one segment supported";
+                    title = "Directions, single segment only";
                     break;
                 default:
                     title = "Other Maps";

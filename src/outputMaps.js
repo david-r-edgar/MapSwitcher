@@ -440,6 +440,38 @@ var outputMapServices = [
             }
             return fileData;
         });
+        if ("directions" in sourceMapData && "route" in sourceMapData.directions) {
+            view.addFileDownload(this, "gpx_rte", "Route", function() {
+
+                var firstPoint = sourceMapData.directions.route[0];
+                var lastPoint = sourceMapData.directions.route[sourceMapData.directions.route.length - 1];
+
+                var routePoints = "";
+                for (rteIndex in sourceMapData.directions.route) {
+                    var rteWpt = sourceMapData.directions.route[rteIndex];
+                    routePoints +=
+                        "\t\t<rtept lat=\"" + rteWpt.coords.lat + "\" lon=\"" + rteWpt.coords.lng + "\">\n" +
+                        "\t\t\t<name>" + rteWpt + "</name>\n" +
+                        "\t\t</rtept>\n";
+                }
+                var fileData = {
+                    name: "MapSwitcherRoute.gpx",
+                    type:"text/xml;charset=utf-8",
+                    content:
+                    "<?xml version=\"1.1\"?>\n" +
+                    "<gpx creator=\"MapSwitcher\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\">\n" +
+                        "\t<author>MapSwitcher</author>\n" +
+                        "\t<rte>\n" +
+                            "\t\t<name>Map Switcher Route</name>\n" +
+                            "\t\t<desc>From " + firstPoint.coords.lat + ", " + firstPoint.coords.lng + " to " +
+                                lastPoint.coords.lat + ", " + lastPoint.coords.lng + "</desc>\n" +
+                            routePoints +
+                            "\t</rte>\n" +
+                    "</gpx>\n"
+                }
+                return fileData;
+            });
+        }
     }
 },
 {
