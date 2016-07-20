@@ -57,7 +57,7 @@ var outputMapServices = [
 
                 } else if ("coords" in rteWpt) {
                     //else if coord specified, add to directions
-                    directions += rteWpt.coords.lat + "," +  + "/";
+                    directions += rteWpt.coords.lat + "," + rteWpt.coords.lng + "/";
                     dataWpts += "!1m0";
                 }
             }
@@ -423,7 +423,7 @@ var outputMapServices = [
     image: "gpxFile16x16.png",
     id: "dl_gpx",
     generate: function(sourceMapData, view) {
-        view.addFileDownload(this, "gpx_map_centre", "Centre of map", function() {
+        view.addFileDownload(this, "gpx_map_centre", "Map centre waypoint", function() {
             var fileData = {
                 name: "MapSwitcher.gpx",
                 type: "text/xml;charset=utf-8",

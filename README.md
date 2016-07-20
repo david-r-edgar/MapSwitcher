@@ -61,7 +61,7 @@ The included makefile allows you to build for release. Currently you may need to
 - MapQuest Open
 
 ### Download services
-- GPX (no directions)
+- GPX
 
 ## Known issues
 
