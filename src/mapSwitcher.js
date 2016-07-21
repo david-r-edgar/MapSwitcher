@@ -124,7 +124,7 @@ var MapLinksView = {
      * @param {mapService} Object containing data about the particular map service.
      * @param {note} Content for an optional explanatory note.
      */
-    addFileDownload: function(mapService, id, name, fileGenerator, note) {
+    addFileDownload: function(mapService, id, name, fileGenerator) {
 
         //only add the title once
         if ($("#downloads").text().length === 0) {
@@ -153,8 +153,12 @@ var MapLinksView = {
                 filename: filename
             });
         });
+    },
 
+    addNote: function(mapService, note) {
         if (note && note.length) {
+            $("#" + mapService.id).append(" <span class=\"fa fa-sticky-note-o linknote\" title='" + note + "'></span>");
+
             $(".linknote").tipsy({gravity: 's', opacity: 1, fade: true});
         }
     },

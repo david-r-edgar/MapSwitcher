@@ -312,7 +312,9 @@ var outputMapServices = [
 
         var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
         mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
-        zoom = "10";
+        //FIXME this is an approximation of zoom - it's not completely accurate
+        zoom = calculateStdZoomFromResolution(
+                sourceMapData.resolution, sourceMapData.centreCoords.lat, 4, 16) - 1;
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
         view.addMapServiceLinks(view.category.plain, this, this.maplinks);
@@ -441,36 +443,48 @@ var outputMapServices = [
             return fileData;
         });
         if ("directions" in sourceMapData && "route" in sourceMapData.directions) {
-            view.addFileDownload(this, "gpx_rte", "Route", function() {
 
-                var firstPoint = sourceMapData.directions.route[0];
-                var lastPoint = sourceMapData.directions.route[sourceMapData.directions.route.length - 1];
+            var firstPoint = sourceMapData.directions.route[0];
+            var lastPoint = sourceMapData.directions.route[sourceMapData.directions.route.length - 1];
 
-                var routePoints = "";
-                for (rteIndex in sourceMapData.directions.route) {
-                    var rteWpt = sourceMapData.directions.route[rteIndex];
+            var routePoints = "";
+            var pointsWithCoords = 0;
+            for (rteIndex in sourceMapData.directions.route) {
+                var rteWpt = sourceMapData.directions.route[rteIndex];
+                if ("coords" in rteWpt) {
                     routePoints +=
                         "\t\t<rtept lat=\"" + rteWpt.coords.lat + "\" lon=\"" + rteWpt.coords.lng + "\">\n" +
                         "\t\t\t<name>" + rteWpt + "</name>\n" +
                         "\t\t</rtept>\n";
+                    pointsWithCoords++;
                 }
-                var fileData = {
-                    name: "MapSwitcherRoute.gpx",
-                    type:"text/xml;charset=utf-8",
-                    content:
-                    "<?xml version=\"1.1\"?>\n" +
-                    "<gpx creator=\"MapSwitcher\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\">\n" +
-                        "\t<author>MapSwitcher</author>\n" +
-                        "\t<rte>\n" +
-                            "\t\t<name>Map Switcher Route</name>\n" +
-                            "\t\t<desc>From " + firstPoint.coords.lat + ", " + firstPoint.coords.lng + " to " +
-                                lastPoint.coords.lat + ", " + lastPoint.coords.lng + "</desc>\n" +
-                            routePoints +
-                            "\t</rte>\n" +
-                    "</gpx>\n"
-                }
-                return fileData;
-            });
+            }
+            //only provide a gpx route download if all the points in the route have coordinates
+            if (pointsWithCoords === sourceMapData.directions.route.length) {
+                view.addFileDownload(this, "gpx_rte", "Route", function() {
+
+                    var fileData = {
+                        name: "MapSwitcherRoute.gpx",
+                        type:"text/xml;charset=utf-8",
+                        content:
+                        "<?xml version=\"1.1\"?>\n" +
+                        "<gpx creator=\"MapSwitcher\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\">\n" +
+                            "\t<author>MapSwitcher</author>\n" +
+                            "\t<rte>\n" +
+                                "\t\t<name>Map Switcher Route</name>\n" +
+                                "\t\t<desc>From " + firstPoint.coords.lat + ", " + firstPoint.coords.lng + " to " +
+                                    lastPoint.coords.lat + ", " + lastPoint.coords.lng + "</desc>\n" +
+                                routePoints +
+                                "\t</rte>\n" +
+                        "</gpx>\n"
+                    }
+                    return fileData;
+                });
+            }
+            else {
+                view.addNote(this, "GPX directions unavailable because waypoints are not "
+                                   + "all specified as coordinates.");
+            }
         }
     }
 },
