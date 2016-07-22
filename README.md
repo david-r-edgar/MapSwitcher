@@ -47,7 +47,7 @@ The included makefile allows you to build for release. Currently you may need to
 - Bing
 
 ##### With limited directions
-(These services only support single-segment directions, no 'via' points.)
+(These services only support single segment directions, no 'via' points.)
 - OpenStreetMap (only for routes with coordinate-specified waypoints)
 - Waze (only for routes with coordinate-specified waypoints)
 
@@ -67,4 +67,4 @@ The included makefile allows you to build for release. Currently you may need to
 
 - Where directions are specified by address (not coordinates), different services can geocode these in radically different ways. So the routes may not start or finish where they did on the input mapping service. Where available, coordinates are used instead, but not all services make the coordinates of each waypoint on the route available.
 - Zoom / scale may not always be exact, depending on the limitations of the input & output map services
-- Directions do not yet handle more than one start point and one end point
+- Directions handle multi-segment routes (with intermediate specified locations) where possible. Only some services (google, microsoft) support this. In these cases, output services which only support single segments will show maps from the first location to the last location.

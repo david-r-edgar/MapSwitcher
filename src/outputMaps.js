@@ -122,9 +122,6 @@ var outputMapServices = [
         },
         bingbirdseye: {
             name: "Bird's eye"
-        },
-        bingos: {
-            name: "Ordnance Survey"
         }
     },
     generate: function(sourceMapData, view) {
@@ -183,7 +180,7 @@ var outputMapServices = [
             bingBase + directions + "&" + mapCentre + zoom + "&sty=b";
 
         if (sourceMapData.countryCode === "gb") {
-            this.maplinks.bingos = {name: this.maplinks.bingos.name,
+            this.maplinks.bingos = {name: "Ordnance Survey",
                 link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
         }
         if (directions.length > 0) {
