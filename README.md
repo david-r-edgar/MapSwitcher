@@ -39,6 +39,7 @@ The included makefile allows you to build for release. Currently you may need to
 - Wikimedia Labs
   - Geohack info page
 - Geocaching
+- OpenSeaMap
 
 ### Output mapping services
 
@@ -59,6 +60,7 @@ The included makefile allows you to build for release. Currently you may need to
 - Geocaching
 - what3words
 - MapQuest Open
+- OpenSeaMap
 
 ### Download services
 - GPX
