@@ -292,6 +292,20 @@ var runDataExtraction = function () {
                 ]
             }
         }
+    } else if (window.location.hostname.indexOf("openseamap.") >= 0) {
+        var centrePermalink = ($("#OpenLayers_Control_Permalink_13 a").attr("href"));
+
+        var re = /lat=([-0-9.]+)&lon=([-0-9.]+)/;
+        var coordArray = centrePermalink.match(re);
+        if (coordArray && coordArray.length > 2) {
+            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+        }
+        re = /zoom=([0-9]+)/;
+        var zoomArray = centrePermalink.match(re);
+        if (zoomArray && zoomArray.length > 1) {
+            sourceMapData.resolution = calculateResolutionFromStdZoom(
+                    zoomArray[1], sourceMapData.centreCoords.lat);
+        }
     }
 
     //return result object to the caller (main extension script)
