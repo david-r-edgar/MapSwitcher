@@ -538,6 +538,34 @@ var outputMapServices = [
             view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
         }
     }
+},
+{
+    site: "OpenSeaMap",
+    image: "openSeaMapLogo16x16.png",
+    id: "openseamap_map",
+    maplinks:
+    {
+        openSeaMap: {
+            name: "Map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var openSeaMapBase = "http://map.openseamap.org/?";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "zoom=" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
+        var layers = "layers=BFTFFTTFFTF0FFFFFFFFFF";
+
+        this.maplinks.openSeaMap["link"] = openSeaMapBase + zoom + '&' + mapCentre + '&' + layers;
+
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+    }
 }
 ];
 
