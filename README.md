@@ -40,6 +40,7 @@ The included makefile allows you to build for release. Currently you may need to
   - Geohack info page
 - Geocaching
 - OpenSeaMap
+- Stamen
 
 ### Output mapping services
 
@@ -61,6 +62,7 @@ The included makefile allows you to build for release. Currently you may need to
 - what3words
 - MapQuest Open
 - OpenSeaMap
+- Stamen
 
 ### Download services
 - GPX

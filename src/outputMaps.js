@@ -566,6 +566,40 @@ var outputMapServices = [
 
         view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
+},
+{
+    site: "Stamen",
+    image: "greyMarker.png",
+    id: "stamen",
+    maplinks:
+    {
+        stamenWatercolor: {
+            name: "Watercolor"
+        },
+        stamenToner: {
+            name: "Toner"
+        },
+        stamenTerrain: {
+            name: "Terrain"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var stamenBase = "http://maps.stamen.com/";
+        var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
+        var zoom = "12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
+        this.maplinks.stamenWatercolor["link"] = stamenBase + "/watercolor/#" + zoom + '/' + mapCentre;
+        this.maplinks.stamenToner["link"] = stamenBase + "/toner/#" + zoom + '/' + mapCentre;
+        this.maplinks.stamenTerrain["link"] = stamenBase + "/terrain/#" + zoom + '/' + mapCentre;
+
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+    }
 }
 ];
 
