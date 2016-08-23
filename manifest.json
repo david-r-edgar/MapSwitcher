@@ -24,6 +24,7 @@
     "scripts": ["vendor/jquery/jquery-2.2.4.min.js"]
   },
   "content_scripts": [{
+    "matches": ["*://*/*"],
     "js": [
       "vendor/jquery/jquery-2.2.4.min.js",
       "src/mapUtil.js",

@@ -600,6 +600,48 @@ var outputMapServices = [
 
         view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
+},
+{
+    site: "Here",
+    image: "hereLogo16x16.png",
+    id: "here",
+    maplinks:
+    {
+        hereMap: {
+            name: "Map"
+        },
+        hereTerrain: {
+            name: "Terrain"
+        },
+        hereSatellite: {
+            name: "Satellite"
+        },
+        hereTraffic: {
+            name: "Traffic"
+        },
+        herePublicTransport: {
+            name: "Public Transport"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var hereBase = "https://wego.here.com/?";
+        var mapCentre = "map=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        var zoom = "12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
+        this.maplinks.hereMap["link"] = hereBase + mapCentre + ',' + zoom + ',' + "normal";
+        this.maplinks.hereTerrain["link"] = hereBase + mapCentre + ',' + zoom + ',' + "terrain";
+        this.maplinks.hereSatellite["link"] = hereBase + mapCentre + ',' + zoom + ',' + "satellite";
+        this.maplinks.hereTraffic["link"] = hereBase + mapCentre + ',' + zoom + ',' + "traffic";
+        this.maplinks.herePublicTransport["link"] = hereBase + mapCentre + ',' + zoom + ',' + "public_transport";
+
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+    }
 }
 ];
 
