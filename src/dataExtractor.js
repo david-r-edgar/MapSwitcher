@@ -314,6 +314,14 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     coordArray[1], sourceMapData.centreCoords.lat);
         }
+    } else if (window.location.hostname.indexOf("wego.here.com") >= 0) {
+        var re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/;
+        var coordArray = window.location.search.match(re);
+        if (coordArray && coordArray.length > 3) {
+            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+            sourceMapData.resolution = calculateResolutionFromStdZoom(
+                    coordArray[3], sourceMapData.centreCoords.lat);
+        }
     }
 
     //return result object to the caller (main extension script)

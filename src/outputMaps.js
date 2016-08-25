@@ -642,7 +642,35 @@ var outputMapServices = [
 
         view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
-}
+} /*,
+{
+    site: "Streetmap",
+    image: "streetmapLogo16x16.png",
+    id: "streetmap",
+    maplinks:
+    {
+        streetmap: {
+            name: "Map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var streetmapMapBase = "http://www.streetmap.co.uk/map.srf?X=409575&Y=189434&A=Y&Z=150";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "zoom=" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
+        var layers = "layers=BFTFFTTFFTF0FFFFFFFFFF";
+
+        this.maplinks.streetmap["link"] = streetmapMapBase + zoom + '&' + mapCentre + '&' + layers;
+
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+    }
+}*/
 ];
 
 
