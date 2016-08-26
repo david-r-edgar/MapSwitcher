@@ -624,9 +624,10 @@ var outputMapServices = [
         }
     },
     generate: function(sourceMapData, view) {
-        var hereBase = "https://wego.here.com/?";
-        var mapCentre = "map=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        var hereBase = "https://wego.here.com/";
+        var mapCentre = "?map=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "12";
+        var directions = "";
 
         if ("resolution" in sourceMapData) {
             zoom = "" +
@@ -634,13 +635,49 @@ var outputMapServices = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        this.maplinks.hereMap["link"] = hereBase + mapCentre + ',' + zoom + ',' + "normal";
-        this.maplinks.hereTerrain["link"] = hereBase + mapCentre + ',' + zoom + ',' + "terrain";
-        this.maplinks.hereSatellite["link"] = hereBase + mapCentre + ',' + zoom + ',' + "satellite";
-        this.maplinks.hereTraffic["link"] = hereBase + mapCentre + ',' + zoom + ',' + "traffic";
-        this.maplinks.herePublicTransport["link"] = hereBase + mapCentre + ',' + zoom + ',' + "public_transport";
+        if ("directions" in sourceMapData &&
+                "route" in sourceMapData.directions) {
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+            var route = "";
+            for (rteWpt of sourceMapData.directions.route) {
+                route += "/";
+                if ("address" in rteWpt) {
+                    route += rteWpt.address;
+                }
+                if ("coords" in rteWpt) {
+                    route += ":" + rteWpt.coords.lat + "," + rteWpt.coords.lng;
+                }
+            }
+
+            var mode = "mix";
+            if (sourceMapData.directions.mode) {
+                switch (sourceMapData.directions.mode) {
+                    case "foot":
+                        mode = "walk";
+                        break;
+                    case "car":
+                        mode = "drive";
+                        break;
+                    case "transit":
+                        mode = "publicTransport";
+                        break;
+                }
+            }
+
+            directions = "directions/" + mode + route;
+        }
+
+        this.maplinks.hereMap["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "normal";
+        this.maplinks.hereTerrain["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "terrain";
+        this.maplinks.hereSatellite["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "satellite";
+        this.maplinks.hereTraffic["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "traffic";
+        this.maplinks.herePublicTransport["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "public_transport";
+
+        if (directions.length > 0) {
+            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks);
+        } else {
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        }
     }
 } /*,
 {
