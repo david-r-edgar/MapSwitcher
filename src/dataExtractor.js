@@ -322,6 +322,45 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     coordArray[3], sourceMapData.centreCoords.lat);
         }
+    } else if (window.location.hostname.indexOf("streetmap.co.uk") >= 0) {
+        var urlToShare = $("#LinkToInput")[0].innerHTML;
+        var re = /X=([0-9]+)&amp;Y=([0-9]+)/;
+        var osCoordArray = urlToShare.match(re);
+        if (osCoordArray && osCoordArray.length > 2) {
+            sourceMapData.osgbCentreCoords = {"e": osCoordArray[1], "n": osCoordArray[2]}
+        }
+        re = /Z=([0-9]+)/;
+        var zoomArray = urlToShare.match(re);
+        if (zoomArray && zoomArray.length > 1) {
+            var scale = 50000;
+            switch (zoomArray[1]) {
+                case "106":
+                    scale = 2500;
+                    break;
+                case "110":
+                    scale = 5000;
+                    break;
+                case "115":
+                    scale = 25000;
+                    break;
+                case "120":
+                    scale = 50000;
+                    break;
+                case "126":
+                    scale = 100000;
+                    break;
+                case "130":
+                    scale = 200000;
+                    break;
+                case "140":
+                    scale = 500000;
+                    break;
+                case "150":
+                    scale = 1000000;
+                    break;
+            }
+            sourceMapData.resolution = calculateResolutionFromScale(scale);
+        }
     }
 
     //return result object to the caller (main extension script)

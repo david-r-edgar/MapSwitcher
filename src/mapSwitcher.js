@@ -220,6 +220,34 @@ var MapSwitcher = {
     },
 
     /**
+    * Put the extracted data in a standard format.
+    *
+    * The main functionality is to convert from unusual coordinate systems to WGS84.
+    *
+    * @param {object} extractedData - Data object extracted by the dataExtractor.
+    * @return Promise which resolves if the data can be normalised, or rejects if not.
+    */
+    normaliseExtractedData: function(extractedData) {
+        return new Promise(function(resolve, reject) {
+            if (extractedData && extractedData[0] && (extractedData[0].centreCoords == null)) {
+                if (extractedData[0].osgbCentreCoords != null) {
+                    var osGR = new OsGridRef(extractedData[0].osgbCentreCoords.e,
+                                             extractedData[0].osgbCentreCoords.n);
+                    var osLL = OsGridRef.osGridToLatLong(osGR);
+                    var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL);
+                    extractedData[0].centreCoords = {
+                        "lat":wgs84LL._lat,
+                        "lng":wgs84LL._lon
+                    }
+                }
+            }
+            resolve(extractedData);
+            //FIXME in what cases do we reject() ?
+        });
+    },
+
+
+    /**
     * Gets the two letter country code for the current location of the map shown
     * in the current tab. If the country code can be found, it is stored in the
     * extracted data object passed as argument.
@@ -269,7 +297,6 @@ var MapSwitcher = {
 
         for (outputMapService of outputMapServices) {
             (function(outputMapService) { //dummy immediately executed fn to save variables
-
                 mapOptDefaults = {}
                 mapOptDefaults[outputMapService.id] = true;
 
@@ -304,7 +331,8 @@ $(document).ready(function() {
         .executeScripts("vendor/jquery/jquery-2.2.4.min.js",
                         "src/mapUtil.js",
                         "src/dataExtractor.js")
-        .then(s => MapSwitcher.validateExtractedData(s.result[2]))
+        .then(s => MapSwitcher.normaliseExtractedData(s.result[2]))
+        .then(s => MapSwitcher.validateExtractedData(s))
         .then(s => MapSwitcher.getCountryCode(s))
         .then(s => MapSwitcher.run(s[0])) //pass the result of the dataExtractor script
         .then(s => MapSwitcher.loaded(s))
