@@ -179,7 +179,7 @@ var outputMapServices = [
         this.maplinks.bingbirdseye["link"] =
             bingBase + directions + "&" + mapCentre + zoom + "&sty=b";
 
-        if (sourceMapData.countryCode === "gb") {
+        if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
             this.maplinks.bingos = {name: "Ordnance Survey",
                 link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
         }
