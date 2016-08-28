@@ -679,7 +679,7 @@ var outputMapServices = [
             view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
     }
-} /*,
+},
 {
     site: "Streetmap",
     image: "streetmapLogo16x16.png",
@@ -691,23 +691,34 @@ var outputMapServices = [
         }
     },
     generate: function(sourceMapData, view) {
-        var streetmapMapBase = "http://www.streetmap.co.uk/map.srf?X=409575&Y=189434&A=Y&Z=150";
-        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
-        var zoom = "zoom=12";
+        if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
+            var streetmapMapBase = "http://www.streetmap.co.uk/map.srf?";
 
-        if ("resolution" in sourceMapData) {
-            zoom = "zoom=" +
-                calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            var ll = new LatLon(sourceMapData.centreCoords.lat, sourceMapData.centreCoords.lng);
+            var osLL = CoordTransform.convertWGS84toOSGB36(ll);
+            var osGR = OsGridRef.latLongToOsGrid(osLL);
+            var mapCentre = "X=" + osGR.easting + "&Y=" + osGR.northing;
+
+            var zoom = 120;
+            if ("resolution" in sourceMapData) {
+                var scale = calculateScaleFromResolution(sourceMapData.resolution);
+                if (scale < 4000) { zoom = 106; }
+                else if (scale < 15000) { zoom = 110; }
+                else if (scale < 40000) { zoom = 115; }
+                else if (scale < 80000) { zoom = 120; }
+                else if (scale < 160000) { zoom = 126; }
+                else if (scale < 400000) { zoom = 130; }
+                else if (scale < 900000) { zoom = 140; }
+                else { zoom = 150; }
+            }
+            var zoomArg = "Z=" + zoom;
+
+            this.maplinks.streetmap["link"] = streetmapMapBase + mapCentre + "&A=Y&" + zoomArg;
+
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
-
-        var layers = "layers=BFTFFTTFFTF0FFFFFFFFFF";
-
-        this.maplinks.streetmap["link"] = streetmapMapBase + zoom + '&' + mapCentre + '&' + layers;
-
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
-}*/
+}
 ];
 
 
