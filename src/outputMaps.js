@@ -718,6 +718,47 @@ var outputMapServices = [
             view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
     }
+},
+{
+    site: "GPX Editor",
+    image: "gpxed16x16.png",
+    id: "gpxeditor",
+    maplinks:
+    {
+        gpxedmap: {
+            name: "Street Map"
+        },
+        gpxedsatellite: {
+            name: "Satellite"
+        },
+        gpxedosm: {
+            name: "OpenStreetMap"
+        },
+        gpxedos: {
+            name: "Ordnance Survey"
+        },
+        gpxedocm: {
+            name: "OpenCycleMap"
+        },
+    },
+    generate: function(sourceMapData, view) {
+        var gpxEditorBase = "http://www.gpxeditor.co.uk/?";
+        var mapCentre = "location=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = "zoom=" +
+                calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+        this.maplinks.gpxedmap["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=roadmap";
+        this.maplinks.gpxedsatellite["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=satellite";
+        this.maplinks.gpxedosm["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OSM";
+        this.maplinks.gpxedos["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OS";
+        this.maplinks.gpxedocm["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OCM";
+
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
+    }
 }
 ];
 
