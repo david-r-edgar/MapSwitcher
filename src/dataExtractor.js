@@ -322,6 +322,46 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     coordArray[3], sourceMapData.centreCoords.lat);
         }
+
+        //pathname contains directions
+        var state = -1;
+        for (var directions of window.location.pathname.split('/')) {
+            if (state < 0) {
+                if (directions == "directions") {
+                    state = 0;
+                }
+            } else if (0 === state) {
+                switch (directions) {
+                    case "mix":
+                        break;
+                    case "walk":
+                        sourceMapData.directions.mode = "foot";
+                        break;
+                    case "bicycle":
+                        sourceMapData.directions.mode = "bike";
+                        break;
+                    case "drive":
+                        sourceMapData.directions.mode = "car";
+                        break;
+                    case "publicTransport":
+                        sourceMapData.directions.mode = "transit";
+                        break;
+                }
+                state = 1;
+            } else {
+                var re = /([^:]+):([^:]+)/;
+                var dirArray = directions.match(re);
+                console.log(dirArray[1]);
+                console.log(dirArray[2]);
+
+            }
+
+        }
+
+
+
+
+
     } else if (window.location.hostname.indexOf("streetmap.co.uk") >= 0) {
         var urlToShare = $("#LinkToInput")[0].innerHTML;
         var re = /X=([0-9]+)&amp;Y=([0-9]+)/;
