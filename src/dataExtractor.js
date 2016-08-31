@@ -323,11 +323,12 @@ var runDataExtraction = function () {
                     coordArray[3], sourceMapData.centreCoords.lat);
         }
 
-        //pathname contains directions
+        //check if pathname contains directions
         var state = -1;
         for (var directions of window.location.pathname.split('/')) {
             if (state < 0) {
                 if (directions == "directions") {
+                    sourceMapData.directions = {}
                     state = 0;
                 }
             } else if (0 === state) {
@@ -348,20 +349,35 @@ var runDataExtraction = function () {
                         break;
                 }
                 state = 1;
-            } else {
-                var re = /([^:]+):([^:]+)/;
-                var dirArray = directions.match(re);
-                console.log(dirArray[1]);
-                console.log(dirArray[2]);
+                sourceMapData.directions.route = new Array();
+            } else if (0 < state) {
+                var re = /^([^:]+):/;
+                var addrArray = directions.match(re);
+                if (addrArray && addrArray.length > 1) {
+                    var addr = addrArray[1].replace(/-/g , " ");
+                    var wptObj = { address: addr }
 
+                    re = /:loc-([^:]+)/;
+                    var dirArray = directions.match(re);
+                    if (dirArray && dirArray.length > 1) {
+                        var locnFromB64 = atob(dirArray[1]);
+                        re = /lat=([-0-9.]+);lon=([-0-9.]+)/;
+                        var coordsArr = locnFromB64.match(re);
+                        if (coordsArr.length > 2) {
+                            wptObj.coords =
+                                { lat: coordsArr[1], lng: coordsArr[2] }
+                        }
+                    }
+                    re = /:([-0-9.]+),([-0-9.]+)/;
+                    var coordsArray = directions.match(re);
+                    if (coordsArray && coordsArray.length > 2) {
+                        wptObj.coords =
+                            { lat: coordsArray[1], lng: coordsArray[2] }
+                    }
+                }
+                sourceMapData.directions.route.push(wptObj);
             }
-
         }
-
-
-
-
-
     } else if (window.location.hostname.indexOf("streetmap.co.uk") >= 0) {
         var urlToShare = $("#LinkToInput")[0].innerHTML;
         var re = /X=([0-9]+)&amp;Y=([0-9]+)/;
