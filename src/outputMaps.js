@@ -759,6 +759,108 @@ var outputMapServices = [
 
         view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
     }
+},
+{
+    site: "NGI/IGN",
+    image: "ngi_ign_Logo16x16.png",
+    id: "ngi_ign",
+    maplinks: {},
+    generate: function(sourceMapData, view) {
+        if (sourceMapData.countryCode !== "be") {
+            return;
+        }
+
+        var ngiBase = "http://www.ngi.be/topomapviewer/public?";
+        var that = this;
+
+        //NGI uses the Lambert 2008 projection, grs80 ellipsoid
+        //We use an external service to calculate coordinates from the regular WGS84 lat & long
+        $.ajax({
+            url: "http://loughrigg.org/wgs84Lambert/wgs84_lambert/"
+                + sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng,
+        })
+        .done(function( data ) {
+            var mapCentre = "mapcenter={\"x\":" +
+                Math.round(data.easting) + ",\"y\":" + Math.round(data.northing) + "}";
+
+            var level = 4;
+            //we get an approximate zoom level from the resolution
+            //(the values here were derived by manual inspection)
+            if ("resolution" in sourceMapData) {
+                if (sourceMapData.resolution > 1000) { level = 0; }
+                else if (sourceMapData.resolution > 300) { level = 1; }
+                else if (sourceMapData.resolution > 150) { level = 2; }
+                else if (sourceMapData.resolution > 75) { level = 3; }
+                else if (sourceMapData.resolution > 35) { level = 4; }
+                else if (sourceMapData.resolution > 18) { level = 5; }
+                else if (sourceMapData.resolution > 9) { level = 6; }
+                else if (sourceMapData.resolution > 5) { level = 7; }
+                else if (sourceMapData.resolution > 2) { level = 8; }
+                else if (sourceMapData.resolution > 1) { level = 9; }
+                else { level = 10; }
+            }
+            var levelArg = "level=" + level;
+
+            var lang = "";
+            //extract the highest priority language (fr or nl) from chrome preferences
+            chrome.i18n.getAcceptLanguages(function (list) {
+                for (listLang of list) {
+                    if (listLang.match(/^fr/)) {
+                        lang = "&lang=fr";
+                        break;
+                    } else if (listLang.match(/^nl/)) {
+                        lang = "&lang=nl";
+                        break;
+                    }
+                }
+
+                var commonLink = ngiBase + lang + "&" + levelArg + "&" + mapCentre;
+
+                var linkTopo = encodeURI(
+                    commonLink + "&layers={\"autoMap\":true,\"baseMaps\":[[\"cartoweb_topo\",100]],\"aerialMaps\":[],\"overlayMaps\":[]}");
+
+                //some of the resolutions of the classic maps don't work at particular zoom
+                //levels - so we select an appropriate one based on the level
+                if (level <= 4) {
+                    classicName = "Top250";
+                    classicURLcode = "TOPO250";
+                } else if (level == 5) {
+                    classicName = "Top100";
+                    classicURLcode = "TOPO100";
+                } else if (level <= 7) {
+                    classicName = "Top50";
+                    classicURLcode = "TOPO50";
+                } else {
+                    classicName = "Top10";
+                    classicURLcode = "TOPO10";
+                }
+
+                var linkClassic = encodeURI(
+                    commonLink + "&layers={\"autoMap\":true,\"baseMaps\":[[\"" + classicURLcode + "\",100]],\"aerialMaps\":[],\"overlayMaps\":[]}");
+                var linkAerial = encodeURI(
+                    commonLink + "&layers={\"autoMap\":true,\"baseMaps\":[[\"" + classicURLcode + "\",100]],\"aerialMaps\":[[\"ORTHO COLOR (2013-2015)\",100]],\"overlayMaps\":[]}");
+
+                that.maplinks = {
+                    topo: {
+                        name: "Topo",
+                        link: linkTopo
+                    },
+                    classic: {
+                        name: classicName,
+                        link: linkClassic
+                    },
+                    aerial: {
+                        name: "Aerial",
+                        link: linkAerial
+                    }
+                }
+
+                view.addMapServiceLinks(view.category.plain, that, that.maplinks);
+            });
+
+
+        });
+    }
 }
 ];
 
