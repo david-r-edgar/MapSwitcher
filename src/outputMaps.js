@@ -806,15 +806,15 @@ var outputMapServices = [
             chrome.i18n.getAcceptLanguages(function (list) {
                 for (listLang of list) {
                     if (listLang.match(/^fr/)) {
-                        lang = "&lang=fr";
+                        lang = "lang=fr&";
                         break;
                     } else if (listLang.match(/^nl/)) {
-                        lang = "&lang=nl";
+                        lang = "lang=nl&";
                         break;
                     }
                 }
 
-                var commonLink = ngiBase + lang + "&" + levelArg + "&" + mapCentre;
+                var commonLink = ngiBase + lang + levelArg + "&" + mapCentre;
 
                 var linkTopo = encodeURI(
                     commonLink + "&layers={\"autoMap\":true,\"baseMaps\":[[\"cartoweb_topo\",100]],\"aerialMaps\":[],\"overlayMaps\":[]}");
