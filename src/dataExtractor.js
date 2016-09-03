@@ -75,9 +75,13 @@ var runDataExtraction = function () {
                     dataRouteSubstr = dataRouteSubstr.substr(rteWptArray[0].length);
                     mapDataWptIndex++;
                 } else {
+                    //rteWptArray[1] indicates how many points this part contains
+                    //1m5 indicates a single named waypoint
+                    //1m10,1m15 etc. indicate extra unnamed intermediate waypoints
+                    //for the moment we ignore these extra ones
+                    var additionalWaypointsToExpect = (rteWptArray[1] - 5) / 5;
                     dataRouteSubstr = dataRouteSubstr.substr(rteWptArray[0].length);
-                    //normally we get a '1m5' here indicating the coordinates of
-                    //one of the named waypoints
+                    //we expect to match the named waypoint first
                     var wptRe = /![0-9a-z]+![0-9a-z:]+!2m2!1d([-0-9.]+)!2d([-0-9.]+)/
                     var wptArray = dataRouteSubstr.match(wptRe);
                     if (wptArray && wptArray.length > 2) {
@@ -87,6 +91,14 @@ var runDataExtraction = function () {
                         dataRouteSubstr = dataRouteSubstr.substr(wptArray.index +
                             wptArray[0].length);
                         mapDataWptIndex++;
+                    }
+                    for (var i=0; i<additionalWaypointsToExpect; i++) {
+                        var extraWptRe = /!3m4!1m2+!1d[-0-9.]+!2d[-0-9.]+!3s[0-9a-fx:]+/;
+                        var extraWptArray = dataRouteSubstr.match(extraWptRe);
+                        if (extraWptArray) {
+                            dataRouteSubstr = dataRouteSubstr.substr(extraWptArray.index +
+                            extraWptArray[0].length);
+                        }
                     }
                 }
             }
