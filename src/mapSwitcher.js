@@ -204,23 +204,8 @@ var MapLinksView = {
 var MapSwitcher = {
 
     /**
-    * Checks the object containing extracted data returned by the content script.
-    *
-    * @param {object} extractedData - Data object extracted by the dataExtractor.
-    * @return Promise which resolves if the data validates, or rejects if not.
-    */
-    validateExtractedData: function(extractedData) {
-        return new Promise(function(resolve, reject) {
-            if (extractedData && extractedData.centreCoords != null) {
-                resolve(extractedData);
-            } else {
-                reject(extractedData);
-            }
-        });
-    },
-
-    /**
-    * Put the extracted data in a standard format.
+    * Put the extracted data in a standard format, and perform any necessary checks
+    * to ensure the extracted data object is suitable for output use.
     *
     * The main functionality is to convert from unusual coordinate systems to WGS84.
     *
@@ -229,8 +214,17 @@ var MapSwitcher = {
     */
     normaliseExtractedData: function(extractedData) {
         return new Promise(function(resolve, reject) {
-            if (extractedData && (extractedData.centreCoords == null)) {
-                if (extractedData.osgbCentreCoords != null) {
+            if (!extractedData) {
+                reject(extractedData);
+            } else if (extractedData.centreCoords != null) {
+                //regular wgs84 coords extracted
+                resolve(extractedData);
+            } else {
+                if (extractedData.osgbCentreCoords == null) {
+                    //no centre coords of any recognised format
+                    reject(extractedData);
+                } else {
+                    //osgb36 coords specified
                     var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
                                              extractedData.osgbCentreCoords.n);
                     var osLL = OsGridRef.osGridToLatLong(osGR);
@@ -239,10 +233,9 @@ var MapSwitcher = {
                         "lat":wgs84LL._lat,
                         "lng":wgs84LL._lon
                     }
+                    resolve(extractedData);
                 }
             }
-            resolve(extractedData);
-            //FIXME in what cases do we reject() ?
         });
     },
 
@@ -341,9 +334,9 @@ $(document).ready(function() {
                         "src/dataExtractor.js");
 
     Promise.all([sourceDataListener, scriptExec])
+        .then(s => s[0])
         //the following functions use the result of the dataExtractor script
-        .then(s => MapSwitcher.normaliseExtractedData(s[0]))
-        .then(s => MapSwitcher.validateExtractedData(s))
+        .then(s => MapSwitcher.normaliseExtractedData(s))
         .then(s => MapSwitcher.getCountryCode(s))
         .then(s => MapSwitcher.run(s))
         .then(s => MapSwitcher.loaded(s))

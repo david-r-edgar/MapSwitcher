@@ -473,6 +473,8 @@ var runDataExtraction = function () {
 
             });
         });
+    } else {
+        chrome.runtime.sendMessage({sourceMapData: null});
     }
 };
 
