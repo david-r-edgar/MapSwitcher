@@ -211,7 +211,7 @@ var MapSwitcher = {
     */
     validateExtractedData: function(extractedData) {
         return new Promise(function(resolve, reject) {
-            if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
+            if (extractedData && extractedData.centreCoords != null) {
                 resolve(extractedData);
             } else {
                 reject(extractedData);
@@ -229,13 +229,13 @@ var MapSwitcher = {
     */
     normaliseExtractedData: function(extractedData) {
         return new Promise(function(resolve, reject) {
-            if (extractedData && extractedData[0] && (extractedData[0].centreCoords == null)) {
-                if (extractedData[0].osgbCentreCoords != null) {
-                    var osGR = new OsGridRef(extractedData[0].osgbCentreCoords.e,
-                                             extractedData[0].osgbCentreCoords.n);
+            if (extractedData && (extractedData.centreCoords == null)) {
+                if (extractedData.osgbCentreCoords != null) {
+                    var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
+                                             extractedData.osgbCentreCoords.n);
                     var osLL = OsGridRef.osGridToLatLong(osGR);
                     var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL);
-                    extractedData[0].centreCoords = {
+                    extractedData.centreCoords = {
                         "lat":wgs84LL._lat,
                         "lng":wgs84LL._lon
                     }
@@ -257,13 +257,13 @@ var MapSwitcher = {
     */
     getCountryCode: function(extractedData) {
         return new Promise(function(resolve, reject) {
-            if (extractedData && extractedData[0] && (extractedData[0].centreCoords != null)) {
+            if (extractedData && extractedData.centreCoords != null) {
                 CodeGrid.getCode(
-                    Number(extractedData[0].centreCoords.lat),
-                    Number(extractedData[0].centreCoords.lng),
+                    Number(extractedData.centreCoords.lat),
+                    Number(extractedData.centreCoords.lng),
                     function (error, countryCode) {
                         if (!error) {
-                            extractedData[0].countryCode = countryCode;
+                            extractedData.countryCode = countryCode;
                             resolve(extractedData);
                         }
                     });
@@ -318,6 +318,7 @@ var MapSwitcher = {
 }
 
 
+
 /**
  * Entry routine.
  *
@@ -327,14 +328,24 @@ var MapSwitcher = {
  * generates all the links.
  */
 $(document).ready(function() {
-    new ScriptExecution()
+
+    var sourceDataListener = new Promise(function(resolve,reject) {
+            chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+                resolve(request.sourceMapData);
+            });
+        });
+
+    var scriptExec = new ScriptExecution()
         .executeScripts("vendor/jquery/jquery-2.2.4.min.js",
                         "src/mapUtil.js",
-                        "src/dataExtractor.js")
-        .then(s => MapSwitcher.normaliseExtractedData(s.result[2]))
+                        "src/dataExtractor.js");
+
+    Promise.all([sourceDataListener, scriptExec])
+        //the following functions use the result of the dataExtractor script
+        .then(s => MapSwitcher.normaliseExtractedData(s[0]))
         .then(s => MapSwitcher.validateExtractedData(s))
         .then(s => MapSwitcher.getCountryCode(s))
-        .then(s => MapSwitcher.run(s[0])) //pass the result of the dataExtractor script
+        .then(s => MapSwitcher.run(s))
         .then(s => MapSwitcher.loaded(s))
         .catch(s => (MapSwitcher.handleNoCoords(s)));
 });

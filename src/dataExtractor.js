@@ -96,6 +96,8 @@ var runDataExtraction = function () {
                         var extraWptRe = /!3m4!1m2+!1d[-0-9.]+!2d[-0-9.]+!3s[0-9a-fx:]+/;
                         var extraWptArray = dataRouteSubstr.match(extraWptRe);
                         if (extraWptArray) {
+                            //currently we ignore the extra unnamed waypoints
+                            //so we drop the matched waypoint prior to the next search
                             dataRouteSubstr = dataRouteSubstr.substr(extraWptArray.index +
                             extraWptArray[0].length);
                         }
@@ -122,6 +124,8 @@ var runDataExtraction = function () {
                     break;
             }
         }
+
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf(".bing.") >= 0) {
 
         //if there's no 'state', it means no scrolling has happened yet.
@@ -180,6 +184,7 @@ var runDataExtraction = function () {
                     break;
             }
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("openstreetmap.") >= 0) {
         var re = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
         var coordArray = window.location.hash.match(re);
@@ -227,6 +232,7 @@ var runDataExtraction = function () {
                 }
             }
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("tools.wmflabs.org") >= 0) {
         var re = /params=([-0-9.]+)_N_([-0-9.]+)_E/;
         var coordArray = window.location.search.match(re);
@@ -239,6 +245,7 @@ var runDataExtraction = function () {
         if (scaleMatch && scaleMatch.length > 1) {
             sourceMapData.resolution = calculateResolutionFromScale(scaleMatch[1]);
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("geocaching.") >= 0) {
         var re = /ll=([-0-9.]+),([-0-9.]+)/;
         var coordArray = window.location.hash.match(re);
@@ -251,6 +258,7 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     zoomArray[1], sourceMapData.centreCoords.lat);
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("wikimapia.org") >= 0) {
         var re = /&lat=([-0-9.]+)&lon=([-0-9.]+)&/;
         coordArray = window.location.hash.match(re);
@@ -263,6 +271,7 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     zoomArray[1], sourceMapData.centreCoords.lat);
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("waze.com") >= 0) {
         var href="";
         $(".leaflet-control-permalink .permalink").each(function() {
@@ -304,6 +313,7 @@ var runDataExtraction = function () {
                 ]
             }
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("openseamap.") >= 0) {
         var centrePermalink = ($("#OpenLayers_Control_Permalink_13 a").attr("href"));
 
@@ -318,6 +328,7 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     zoomArray[1], sourceMapData.centreCoords.lat);
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("maps.stamen.com") >= 0) {
         var re = /#([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
         var coordArray = window.location.hash.match(re);
@@ -326,6 +337,7 @@ var runDataExtraction = function () {
             sourceMapData.resolution = calculateResolutionFromStdZoom(
                     coordArray[1], sourceMapData.centreCoords.lat);
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("wego.here.com") >= 0) {
         var re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/;
         var coordArray = window.location.search.match(re);
@@ -390,6 +402,7 @@ var runDataExtraction = function () {
                 sourceMapData.directions.route.push(wptObj);
             }
         }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
     } else if (window.location.hostname.indexOf("streetmap.co.uk") >= 0) {
         var urlToShare = $("#LinkToInput")[0].innerHTML;
         var re = /X=([0-9]+)&amp;Y=([0-9]+)/;
@@ -429,10 +442,38 @@ var runDataExtraction = function () {
             }
             sourceMapData.resolution = calculateResolutionFromScale(scale);
         }
-    }
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
+    } else if (window.location.hostname.indexOf("map.what3words.com") >= 0) {
+        $(".display").each(function() {
+            $(this).click();
+            $("#word-view .share").each(function() {
+                $(this).click();
+                var gpsElem = document.getElementsByClassName("gps")[0];
+                //We have to remove the href to prevent the click following the link.
+                //(I think normally jquery would have prevented this, but we can't use jquery here.)
+                gpsElem.removeAttribute("href");
+                gpsElem.dispatchEvent(new MouseEvent("click"));
+                setTimeout(function() {
+                    var coordsElem = document.getElementsByClassName("coords")[0];
+                    if (coordsElem) {
+                        var coords = coordsElem.getAttribute("value");
+                        document.getElementById("popup-container").dispatchEvent(new MouseEvent("click"));
+                        document.getElementsByClassName("close")[0].dispatchEvent(new MouseEvent("click"));
+                        var re = /([-0-9.]+),[ ]+([-0-9.]+)/;
+                        var coordArray = coords.match(re);
+                        if (coordArray && coordArray.length > 2) {
+                            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                            sourceMapData.resolution = calculateResolutionFromStdZoom(
+                                16, sourceMapData.centreCoords.lat);
+                            chrome.runtime.sendMessage({sourceMapData: sourceMapData});
+                        }
+                    }
+                    gpsElem.setAttribute("href", "/");
+                }, 300); //FIXME we should retry or find a way to avoid the timeout
 
-    //return result object to the caller (main extension script)
-    return sourceMapData;
+            });
+        });
+    }
 };
 
 runDataExtraction();
