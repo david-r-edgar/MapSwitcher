@@ -539,23 +539,31 @@ extractors.push({
                     //(I think normally jquery would have prevented this, but we can't use jquery here.)
                     gpsElem.removeAttribute("href");
                     gpsElem.dispatchEvent(new MouseEvent("click"));
-                    setTimeout(function() {
-                        var coordsElem = document.getElementsByClassName("coords")[0];
-                        if (coordsElem) {
-                            var coords = coordsElem.getAttribute("value");
-                            document.getElementById("popup-container").dispatchEvent(new MouseEvent("click"));
-                            document.getElementsByClassName("close")[0].dispatchEvent(new MouseEvent("click"));
-                            var re = /([-0-9.]+),[ ]+([-0-9.]+)/;
-                            var coordArray = coords.match(re);
-                            if (coordArray && coordArray.length > 2) {
-                                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
-                                sourceMapData.resolution = calculateResolutionFromStdZoom(
-                                    16, sourceMapData.centreCoords.lat);
-                                resolve(sourceMapData);
-                            }
+
+                    var waitForElemByClass = function(name, onSuccess, repeats, calls) {
+                        if (calls == undefined) calls = 0;
+                        var elem = document.getElementsByClassName(name)[0];
+                        if (elem) { onSuccess(elem); }
+                        else if (calls++ < repeats) {
+                            setTimeout(function()
+                                {waitForElemByClass(name, onSuccess, repeats, calls)}, 20 * calls);
+                        }
+                    }
+
+                    waitForElemByClass("coords", function(coordsElem) {
+                        var coords = coordsElem.getAttribute("value");
+                        document.getElementById("popup-container").dispatchEvent(new MouseEvent("click"));
+                        document.getElementsByClassName("close")[0].dispatchEvent(new MouseEvent("click"));
+                        var re = /([-0-9.]+),[ ]+([-0-9.]+)/;
+                        var coordArray = coords.match(re);
+                        if (coordArray && coordArray.length > 2) {
+                            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                            sourceMapData.resolution = calculateResolutionFromStdZoom(
+                                16, sourceMapData.centreCoords.lat);
+                            resolve(sourceMapData);
                         }
                         gpsElem.setAttribute("href", "/");
-                    }, 300); //FIXME we should retry or find a way to avoid the timeout
+                    }, 30);
                 });
             })
         }
