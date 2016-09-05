@@ -101,3 +101,58 @@ a.maplink:hover {
 h4 {
   margin: 0.8em 0em 0.5em 0em;
 }
+
+#maplinkbox {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  position: relative;
+}
+
+#warningModal {
+  display: none;
+  z-index: 1;
+  top: 0px;
+  overflow: auto;
+  background-color: rgb(256,256,256);
+  background-color: rgba(256,256,256,0.7);
+  position: absolute;
+  height: 100%;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 70%;
+}
+
+.modalClose {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modalClose:hover,
+.modalClose:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#nonUpdatingHost {
+  font-family: monospace;
+  font-size: larger;
+  color: #666;
+}
+
+.warning {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#nonupdating div {
+  margin-bottom: 0.4em
+}

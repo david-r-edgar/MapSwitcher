@@ -284,6 +284,27 @@ var MapSwitcher = {
     * @param sourceMapData
     */
     run: function(sourceMapData) {
+        if (sourceMapData.nonUpdating !== undefined) {
+            console.log("nonUpdating", sourceMapData.nonUpdating);
+
+            var modal = document.getElementById('warningModal');
+            modal.style.display = "block";
+
+            document.getElementById("nonUpdatingHost").textContent = sourceMapData.nonUpdating;
+
+            var close = document.getElementsByClassName("modalClose")[0];
+
+            close.onclick = function() {
+                modal.style.display = "none";
+            }
+            modal.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+        }
+
         if (sourceMapData.directions && sourceMapData.directions.route) {
             MapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1;
         }
@@ -309,6 +330,29 @@ var MapSwitcher = {
         $(".loading").hide();
     }
 }
+
+
+
+
+
+
+
+// Get the modal
+var modal = document.getElementById('myModal');
+
+
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+
+
+
 
 
 

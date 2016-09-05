@@ -588,6 +588,42 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "open.mapquest.com",
+    extract:
+        function(resolve) {
+            var re = /center=([-0-9.]+),([-0-9.]+)&zoom=([0-9]+)/;
+            var coordArray = window.location.search.match(re);
+            if (coordArray && coordArray.length > 3) {
+                resolve({
+                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    nonUpdating: window.location.hostname
+                });
+            }
+        }
+});
+
+
+
+extractors.push({
+    host: "www.gpxeditor.co.uk",
+    extract:
+        function(resolve) {
+            var re = /location=([-0-9.]+),([-0-9.]+)&zoom=([0-9]+)/;
+            var coordArray = window.location.search.match(re);
+            if (coordArray && coordArray.length > 3) {
+                resolve({
+                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    nonUpdating: window.location.hostname
+                });
+            }
+        }
+});
+
+
+
 
 
 var runDataExtraction = function () {
