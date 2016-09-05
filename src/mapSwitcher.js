@@ -322,7 +322,7 @@ var MapSwitcher = {
  */
 $(document).ready(function() {
 
-    var sourceDataListener = new Promise(function(resolve,reject) {
+    var sourceDataListener = new Promise(function(resolve, reject) {
             chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 resolve(request.sourceMapData);
             });

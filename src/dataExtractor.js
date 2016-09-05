@@ -5,6 +5,10 @@ extractors.push({
     host: "google.",
     extract:
         function(resolve) {
+            if (window.location.pathname.indexOf("/maps/") !== 0) {
+                return resolve(null);
+            }
+
             var sourceMapData = {}
             var re = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/;
             var coordArray = window.location.pathname.match(re);
@@ -578,21 +582,22 @@ extractors.push({
 
 
 
-
 var runDataExtraction = function () {
-    var matched = false;
-    for (extractor of extractors) {
-        if (window.location.hostname.indexOf(extractor.host) >= 0) {
-            new Promise(extractor.extract).then(function(sourceMapData) {
-                chrome.runtime.sendMessage({sourceMapData: sourceMapData});
-            });
-            matched = true;
+    //default null extractor
+    var extractor = {
+        extract: resolve => { resolve(null); }
+    };
+    //we iterate through our extractors to find a matching host
+    for (extr of extractors) {
+        if (window.location.hostname.indexOf(extr.host) >= 0) {
+            var extractor = extr;
             break;
         }
     }
-    if (!matched) {
-        chrome.runtime.sendMessage({sourceMapData: null});
-    }
+    //execute the extraction and send the result to the main script
+    new Promise(extractor.extract).then(function(sourceMapData) {
+        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
+    });
 }
 
 runDataExtraction();
