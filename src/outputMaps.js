@@ -594,9 +594,9 @@ var outputMapServices = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        this.maplinks.stamenWatercolor["link"] = stamenBase + "/watercolor/#" + zoom + '/' + mapCentre;
-        this.maplinks.stamenToner["link"] = stamenBase + "/toner/#" + zoom + '/' + mapCentre;
-        this.maplinks.stamenTerrain["link"] = stamenBase + "/terrain/#" + zoom + '/' + mapCentre;
+        this.maplinks.stamenWatercolor["link"] = stamenBase + "watercolor/#" + zoom + '/' + mapCentre;
+        this.maplinks.stamenToner["link"] = stamenBase + "toner/#" + zoom + '/' + mapCentre;
+        this.maplinks.stamenTerrain["link"] = stamenBase + "terrain/#" + zoom + '/' + mapCentre;
 
         view.addMapServiceLinks(view.category.plain, this, this.maplinks);
     }
