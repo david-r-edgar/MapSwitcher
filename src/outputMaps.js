@@ -410,6 +410,7 @@ var outputMapServices = [
             zoom = calculateStdZoomFromResolution(
                 sourceMapData.resolution, sourceMapData.centreCoords.lat);
             if (zoom < 2) zoom = 2;
+            if (zoom > 18) zoom = 18;
             zoom = "zoom=" + zoom;
         }
 
@@ -742,9 +743,6 @@ var outputMapServices = [
         gpxedosm: {
             name: "OpenStreetMap"
         },
-        gpxedos: {
-            name: "Ordnance Survey"
-        },
         gpxedocm: {
             name: "OpenCycleMap"
         },
@@ -763,7 +761,12 @@ var outputMapServices = [
         this.maplinks.gpxedmap["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=roadmap";
         this.maplinks.gpxedsatellite["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=satellite";
         this.maplinks.gpxedosm["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OSM";
-        this.maplinks.gpxedos["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OS";
+        if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
+            this.maplinks.gpxedos = {
+                name: "Ordnance Survey",
+                link: gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OS"
+            }
+        }
         this.maplinks.gpxedocm["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OCM";
 
         view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
