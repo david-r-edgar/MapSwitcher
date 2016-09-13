@@ -403,13 +403,14 @@ var outputMapServices = [
     },
     generate: function(sourceMapData, view) {
         var mapquestBase = "http://open.mapquest.com/?";
-        var mapCentre = "center=" + sourceMapData.centreCoords.lng + "," + sourceMapData.centreCoords.lat;
+        var mapCentre = "center=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
 
         if ("resolution" in sourceMapData) {
-            zoom = "zoom=" +
-                calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            zoom = calculateStdZoomFromResolution(
+                sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            if (zoom < 2) zoom = 2;
+            zoom = "zoom=" + zoom;
         }
 
         this.maplinks.mqOpen["link"] = mapquestBase + mapCentre + '&' + zoom;
