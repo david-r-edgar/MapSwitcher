@@ -33,6 +33,7 @@ The included makefile allows you to build for release. Currently you may need to
 - Bing
 - OpenStreetMap
 - Waze
+- Here
 
 ##### Without directions
 - Wikimapia
@@ -41,12 +42,14 @@ The included makefile allows you to build for release. Currently you may need to
 - Geocaching
 - OpenSeaMap
 - Stamen
+- Streetmap.co.uk
 
 ### Output mapping services
 
 ##### With directions
 - Google
 - Bing
+- Here
 
 ##### With limited directions
 (These services only support single segment directions, no 'via' points.)
@@ -63,6 +66,9 @@ The included makefile allows you to build for release. Currently you may need to
 - MapQuest Open
 - OpenSeaMap
 - Stamen
+- GPX Editor
+- Streetmap.co.uk
+- NGI / IGN (Belgium)
 
 ### Download services
 - GPX

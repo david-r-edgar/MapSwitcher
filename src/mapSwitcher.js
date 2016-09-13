@@ -285,7 +285,6 @@ var MapSwitcher = {
     */
     run: function(sourceMapData) {
         if (sourceMapData.nonUpdating !== undefined) {
-            console.log("nonUpdating", sourceMapData.nonUpdating);
 
             var modal = document.getElementById('warningModal');
             modal.style.display = "block";
@@ -367,10 +366,15 @@ window.onclick = function(event) {
 $(document).ready(function() {
 
     var sourceDataListener = new Promise(function(resolve, reject) {
-            chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-                resolve(request.sourceMapData);
-            });
+        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+            resolve(request.sourceMapData);
         });
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs[0].url.indexOf("chrome://") >= 0) {
+                reject(null);
+            }
+        });
+    });
 
     var scriptExec = new ScriptExecution()
         .executeScripts("vendor/jquery/jquery-2.2.4.min.js",

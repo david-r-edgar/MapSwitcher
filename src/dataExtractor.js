@@ -482,6 +482,7 @@ extractors.push({
     extract:
         function(resolve) {
             var sourceMapData = {}
+            var urlToShare = $("#LinkToInput")[0].innerHTML;
             var re = /X=([0-9]+)&amp;Y=([0-9]+)/;
             var osCoordArray = urlToShare.match(re);
             if (osCoordArray && osCoordArray.length > 2) {
