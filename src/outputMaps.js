@@ -403,7 +403,7 @@ var outputMapServices = [
     },
     generate: function(sourceMapData, view) {
         var mapquestBase = "http://open.mapquest.com/?";
-        var mapCentre = "center=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        var mapCentre = "center=" + sourceMapData.centreCoords.lng + "," + sourceMapData.centreCoords.lat;
         var zoom = "zoom=12";
 
         if ("resolution" in sourceMapData) {
@@ -555,9 +555,10 @@ var outputMapServices = [
         var zoom = "zoom=12";
 
         if ("resolution" in sourceMapData) {
-            zoom = "zoom=" +
-                calculateStdZoomFromResolution(
+            zoom = calculateStdZoomFromResolution(
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            if (zoom > 18) zoom = 18;
+            zoom = "zoom=" + zoom;
         }
 
         var layers = "layers=BFTFFTTFFTF0FFFFFFFFFF";
@@ -589,9 +590,10 @@ var outputMapServices = [
         var zoom = "12";
 
         if ("resolution" in sourceMapData) {
-            zoom = "" +
-                calculateStdZoomFromResolution(
+            zoom = calculateStdZoomFromResolution(
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            if (zoom > 17) zoom = 17;
+            zoom = "" + zoom;
         }
 
         this.maplinks.stamenWatercolor["link"] = stamenBase + "watercolor/#" + zoom + '/' + mapCentre;
@@ -747,9 +749,10 @@ var outputMapServices = [
         var zoom = "zoom=12";
 
         if ("resolution" in sourceMapData) {
-            zoom = "zoom=" +
-                calculateStdZoomFromResolution(
+            zoom = calculateStdZoomFromResolution(
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            if (zoom < 1) zoom = 1;
+            zoom = "zoom=" + zoom;
         }
         this.maplinks.gpxedmap["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=roadmap";
         this.maplinks.gpxedsatellite["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=satellite";
