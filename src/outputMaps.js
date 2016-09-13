@@ -631,6 +631,7 @@ var outputMapServices = [
         var mapCentre = "?map=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "12";
         var directions = "";
+        var note = "";
 
         if ("resolution" in sourceMapData) {
             zoom = "" +
@@ -668,6 +669,10 @@ var outputMapServices = [
             }
 
             directions = "directions/" + mode + route;
+
+            if (sourceMapData.directions.route.length > 10) {
+                note = "Here limited to 10 waypoints";
+            }
         }
 
         this.maplinks.hereMap["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "normal";
@@ -677,7 +682,7 @@ var outputMapServices = [
         this.maplinks.herePublicTransport["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "public_transport";
 
         if (directions.length > 0) {
-            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks);
+            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks, note);
         } else {
             view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
