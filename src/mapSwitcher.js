@@ -305,7 +305,8 @@ var MapSwitcher = {
         }
 
         document.getElementById("sourceLocnVal").textContent =
-            sourceMapData.centreCoords.lat +  ", " + sourceMapData.centreCoords.lng;
+            Number(sourceMapData.centreCoords.lat).toFixed(7) +  ", " +
+            Number(sourceMapData.centreCoords.lng).toFixed(7);
         if (undefined === sourceMapData.locationDescr) {
             document.getElementById("sourceExtrFromVal").textContent = "current on-screen map";
         } else {
