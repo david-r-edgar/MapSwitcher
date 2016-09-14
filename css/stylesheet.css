@@ -156,3 +156,28 @@ h4 {
 #nonupdating div {
   margin-bottom: 0.4em
 }
+
+#sourceDescr {
+  background-color: #e8e8e8;
+  color: #999;
+  padding: 2px 4px;
+  line-height: 1.5em;
+  display: none;
+}
+
+#sourceDescr .lbl {
+  font-style: italic;
+}
+
+#sourceDescr .descrVal {
+  color: #666;
+}
+
+#sourceLocnVal {
+  font-family: monospace;
+  font-size: 11px;
+}
+
+#sourceDirn {
+  display: none;
+}

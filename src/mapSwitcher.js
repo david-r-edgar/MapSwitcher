@@ -304,6 +304,29 @@ var MapSwitcher = {
 
         }
 
+        document.getElementById("sourceLocnVal").textContent =
+            sourceMapData.centreCoords.lat +  ", " + sourceMapData.centreCoords.lng;
+        if (undefined === sourceMapData.locationDescr) {
+            document.getElementById("sourceExtrFromVal").textContent = "current on-screen map";
+        } else {
+            document.getElementById("sourceExtrFromVal").textContent = sourceMapData.locationDescr;
+        }
+        if ("directions" in sourceMapData) {
+            var numWpts = 0;
+            var mode = "";
+            if ("route" in sourceMapData.directions) {
+                numWpts = sourceMapData.directions.route.length;
+            }
+            var dirnDescr = numWpts + " waypoint route";
+            if ("mode" in sourceMapData.directions) {
+                var mode = ("transit" == sourceMapData.directions.mode) ?
+                                "public transport" : sourceMapData.directions.mode;
+                dirnDescr += ", travelling by " + mode;
+            }
+            $("#sourceDirn").show();
+            document.getElementById("sourceDirnVal").textContent = dirnDescr;
+        }
+
         if (sourceMapData.directions && sourceMapData.directions.route) {
             MapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1;
         }
@@ -327,6 +350,7 @@ var MapSwitcher = {
     */
     loaded: function(s) {
         $(".loading").hide();
+        $("#sourceDescr").show();
     }
 }
 

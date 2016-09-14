@@ -279,6 +279,7 @@ extractors.push({
             if (scaleMatch && scaleMatch.length > 1) {
                 sourceMapData.resolution = calculateResolutionFromScale(scaleMatch[1]);
             }
+            sourceMapData.locationDescr = "primary page coordinates";
             resolve(sourceMapData);
         }
 });
@@ -561,6 +562,7 @@ extractors.push({
                             sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
                             sourceMapData.resolution = calculateResolutionFromStdZoom(
                                 16, sourceMapData.centreCoords.lat);
+                            sourceMapData.locationDescr = "current 'Pin' location";
                             resolve(sourceMapData);
                         }
                         gpsElem.setAttribute("href", "/");
@@ -599,7 +601,8 @@ extractors.push({
                 resolve({
                     centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
                     resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
-                    nonUpdating: window.location.hostname
+                    nonUpdating: window.location.hostname,
+                    locationDescr: "non-updating URL"
                 });
             }
         }
@@ -617,7 +620,8 @@ extractors.push({
                 resolve({
                     centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
                     resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
-                    nonUpdating: window.location.hostname
+                    nonUpdating: window.location.hostname,
+                    locationDescr: "non-updating URL"
                 });
             }
         }
