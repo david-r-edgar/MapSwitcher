@@ -308,7 +308,7 @@ var MapSwitcher = {
             Number(sourceMapData.centreCoords.lat).toFixed(7) +  ", " +
             Number(sourceMapData.centreCoords.lng).toFixed(7);
         if (undefined === sourceMapData.locationDescr) {
-            document.getElementById("sourceExtrFromVal").textContent = "current on-screen map";
+            document.getElementById("sourceExtrFromVal").textContent = "currently displayed map";
         } else {
             document.getElementById("sourceExtrFromVal").textContent = sourceMapData.locationDescr;
         }
