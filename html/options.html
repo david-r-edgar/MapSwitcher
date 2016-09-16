@@ -22,6 +22,14 @@
     }
     #mapsTickList {
       list-style-type: none;
+      border-collapse: collapse;
+    }
+    #mapsTickList th {
+      border-bottom: 2px solid #999;
+    }
+    #mapsTickList td {
+      padding-top: 3px;
+      padding-bottom: 3px;
     }
     #status {
       color: #777;
@@ -49,8 +57,11 @@
 <h1>Options</h1>
 
 <p>Output mapping services to show:</p>
-<ul id="mapsTickList"></ul>
-
+<table id="mapsTickList">
+    <thead>
+      <th colspan=2>Service</th><th><input type="checkbox" id="selectAllNone" /> </th>
+    </thead>
+</table>
 
 <button id="save">Save</button>
 <div id="status"></div>
