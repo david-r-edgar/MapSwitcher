@@ -640,7 +640,7 @@ extractors.push({
     host: "wma.wmflabs.org",
     extract:
         function(resolve, reject) {
-            var re = /\?([-0-9.]+)_([-0-9.]+)_[0-9]+_[0-9]+_[a-z]{0,3}_([0-9]+)/;
+            var re = /\?(?:wma=)?([-0-9.]+)_([-0-9.]+)_[0-9]+_[0-9]+_[a-z]{0,3}_([0-9]+)/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
