@@ -27,23 +27,23 @@ function save_options() {
         mapChecks[$(this).attr("id")] = $(this).is(":checked");
     });
     chrome.storage.sync.set(mapChecks, function() {
-        var status = document.getElementById("status");
-        status.textContent = "Options saved.";
+        $("#status").text("Options saved.");
         setTimeout(function() {
-            status.textContent = "";
+            $("#status").text("");
         }, 1500);
     });
 }
 
 function restore_options() {
     var mapDefaults = {};
+    $("#mapsTickList tbody").html("");
     for (outputMapService of outputMapServices) {
         mapEntry =
             "<tr>" +
             "<label for\"" + outputMapService.id + "\"><td class='imgcell'><img src=\"../image/" + outputMapService.image + "\"></td>"  + "<td class='mapnamecell'>" + outputMapService.site + "</td></label>" +
             "<td class='chkboxcell'><input type=\"checkbox\" class='outpServiceEnabledChk' id=\"" + outputMapService.id + "\" /></td>" +
             "</tr>";
-            $("#mapsTickList").append(mapEntry);
+            $("#mapsTickList tbody").append(mapEntry);
         mapDefaults[outputMapService.id] = true;
     }
     chrome.storage.sync.get(mapDefaults, function(items) {
@@ -55,4 +55,5 @@ function restore_options() {
     $("#mapsTickList .outpServiceEnabledChk").change(updateSelectAllNone);
 }
 $(document).ready(restore_options);
+$("#cancel").click(restore_options);
 document.getElementById("save").addEventListener("click", save_options);

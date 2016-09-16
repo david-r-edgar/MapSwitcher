@@ -44,6 +44,12 @@
     .mapnamecell {
       vertical-align: middle;
     }
+    article.options {
+      margin: 1em 2em 1em 3em;
+    }
+    section.services {
+      margin: 2em 0em 2em 0em;
+    }
   </style>
   <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
   <script src="../src/outputMaps.js"></script>
@@ -54,17 +60,25 @@
   <img src="../image/mapswitcher48x48.png"> <h2>Map Switcher</h2>
 </div>
 </div>
+
+<article class="options">
 <h1>Options</h1>
 
+<section class="services">
 <p>Output mapping services to show:</p>
 <table id="mapsTickList">
     <thead>
       <th colspan=2>Service</th><th><input type="checkbox" id="selectAllNone" /> </th>
     </thead>
+    <tbody>
+    </tbody>
 </table>
+</section>
 
 <button id="save">Save</button>
+<button id="cancel">Discard changes</button>
 <div id="status"></div>
+</article>
 
 <script src="../src/options.js"></script>
 </body>
