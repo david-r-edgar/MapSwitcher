@@ -530,7 +530,7 @@ extractors.push({
 extractors.push({
     host: "map.what3words.com",
     extract:
-        function(resolve) {
+        function(resolve, reject) {
             var sourceMapData = {}
             $(".display").each(function() {
                 $(this).click();
@@ -568,7 +568,8 @@ extractors.push({
                         gpsElem.setAttribute("href", "/");
                     }, 30);
                 });
-            })
+            });
+            //FIXME need to reject on failure cases
         }
 });
 
@@ -577,7 +578,7 @@ extractors.push({
 extractors.push({
     host: "maps.stamen.com",
     extract:
-        function(resolve) {
+        function(resolve, reject) {
             var re = /#[a-zA-Z]*\/?([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length > 3) {
@@ -585,6 +586,8 @@ extractors.push({
                     centreCoords: {"lat": coordArray[2], "lng": coordArray[3]},
                     resolution: calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
                 });
+            } else {
+                reject();
             }
         }
 });
@@ -594,7 +597,7 @@ extractors.push({
 extractors.push({
     host: "open.mapquest.com",
     extract:
-        function(resolve) {
+        function(resolve, reject) {
             var re = /center=([-0-9.]+),([-0-9.]+)&zoom=([0-9]+)/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
@@ -604,6 +607,8 @@ extractors.push({
                     nonUpdating: window.location.hostname,
                     locationDescr: "non-updating URL"
                 });
+            } else {
+                reject();
             }
         }
 });
@@ -613,7 +618,7 @@ extractors.push({
 extractors.push({
     host: "www.gpxeditor.co.uk",
     extract:
-        function(resolve) {
+        function(resolve, reject) {
             var re = /location=([-0-9.]+),([-0-9.]+)&zoom=([0-9]+)/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
@@ -623,10 +628,32 @@ extractors.push({
                     nonUpdating: window.location.hostname,
                     locationDescr: "non-updating URL"
                 });
+            } else {
+                reject();
             }
         }
 });
 
+
+
+extractors.push({
+    host: "wma.wmflabs.org",
+    extract:
+        function(resolve, reject) {
+            var re = /\?([-0-9.]+)_([-0-9.]+)_[0-9]+_[0-9]+_[a-z]{0,3}_([0-9]+)/;
+            var coordArray = window.location.search.match(re);
+            if (coordArray && coordArray.length > 3) {
+                resolve({
+                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    nonUpdating: window.location.hostname,
+                    locationDescr: "non-updating URL"
+                });
+            } else {
+                reject();
+            }
+        }
+});
 
 
 
@@ -646,6 +673,9 @@ var runDataExtraction = function () {
     //execute the extraction and send the result to the main script
     new Promise(extractor.extract).then(function(sourceMapData) {
         chrome.runtime.sendMessage({sourceMapData: sourceMapData});
+    }).catch(function(result) {
+        //if an extractor fails, just send a null message to the main script to indicate failure
+        chrome.runtime.sendMessage({});
     });
 }
 
