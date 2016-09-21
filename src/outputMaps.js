@@ -873,6 +873,40 @@ var outputMapServices = [
 
         });
     }
+},
+{
+    site: "SunCalc",
+    image: "suncalcLogo16x16.png",
+    id: "suncalc",
+    maplinks:
+    {
+        suncalc: {
+            name: "Sunrise / Sunset Map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var suncalcBase = "http://suncalc.net/#/";
+        var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        var zoom = "12";
+
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth()+1;
+        var dayOfMonth = now.getDate();
+        var hours = now.getHours();
+        var mins = now.getMinutes();
+        var date = year + "." + month + "." + dayOfMonth;
+        var time = hours + ":" + mins;
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+
+        this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time;
+
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+    }
 }
 ];
 
