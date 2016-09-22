@@ -881,7 +881,7 @@ var outputMapServices = [
     maplinks:
     {
         suncalc: {
-            name: "Sunrise / Sunset Map"
+            name: "Sunrise + sunset times"
         }
     },
     generate: function(sourceMapData, view) {
@@ -905,7 +905,7 @@ var outputMapServices = [
 
         this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time;
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(view.category.utility, this, this.maplinks);
     }
 }
 ];

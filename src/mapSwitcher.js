@@ -36,7 +36,8 @@ var MapLinksView = {
     category: {
         multidirns: 2,
         singledirns: 1,
-        plain: 0
+        plain: 0,
+        utility: 3
     },
 
     /** Number of direction segments in the source map data. */
@@ -53,6 +54,8 @@ var MapLinksView = {
             return "#singleSegDirns";
         } else if (this.category.singledirns === category && this.sourceDirnSegs > 0) {
             return "#singleSegDirns";
+        } else if (this.category.utility === category) {
+            return "#utilities";
         } else {
             return "#noDirns";
         }
@@ -64,30 +67,31 @@ var MapLinksView = {
      */
     getTitle: function(category) {
         var title = "";
-        if (this.sourceDirnSegs >= 2) {
-            switch (category) {
+        switch (category) {
                 case this.category.multidirns:
-                    title = "Directions, full";
+                    if (this.sourceDirnSegs >= 2) {
+                        title = "Directions, full";
+                    } else {
+                        title = "Directions";
+                    }
                     break;
                 case this.category.singledirns:
-                    title = "Directions, single segment only";
+                    if (this.sourceDirnSegs >= 2) {
+                        title = "Directions, single segment only";
+                    } else {
+                        title = "Directions";
+                    }
+                    break;
+                case this.category.utility:
+                    title = "Miscellaneous";
                     break;
                 default:
-                    title = "Other Maps";
+                    if (this.sourceDirnSegs >= 1) {
+                        title = "Other Maps";
+                    } else {
+                        title = "Map Services";
+                    }
                     break;
-            }
-        } else if (this.sourceDirnSegs === 1) {
-            switch (category) {
-                case this.category.multidirns:
-                case this.category.singledirns:
-                    title = "Directions";
-                    break;
-                default:
-                    title = "Other Maps";
-                    break;
-            }
-        } else {
-            title = "Map Services";
         }
         return title;
     },
