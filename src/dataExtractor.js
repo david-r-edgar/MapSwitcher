@@ -39,7 +39,6 @@ extractors.push({
                     for (var arrWpt of wholeRouteArray[1].split('/')) {
                         if (arrWpt.length > 0) {
                             var wptObj = { address: arrWpt }
-
                             //check if the address looks like a coordinate
                             //if so, we put it in the coords sub-object too
                             var coordRe = /([-0-9.]+),[+]?([-0-9.]+)/;
@@ -74,10 +73,15 @@ extractors.push({
                     var rteWptRe = /^!1m([0-9]+)/;
                     var rteWptArray = dataRouteSubstr.match(rteWptRe);
                     if (rteWptArray && rteWptArray.length > 1) {
-                        if ("0" == rteWptArray[1]) {
-                            //we'll match '1m0' when no coord is given in the data
-                            //- quite likely it'll already have been parsed from the address
+                        if (parseInt(rteWptArray[1]) < 5) {
                             dataRouteSubstr = dataRouteSubstr.substr(rteWptArray[0].length);
+                            for (var i=0; i < parseInt(rteWptArray[1]); i++) {
+                                var elemRe = /![0-9][a-z][0-9]+/;
+                                var elemArr = dataRouteSubstr.match(elemRe);
+                                if (elemArr && elemArr.length >= 1) {
+                                    dataRouteSubstr = dataRouteSubstr.substr(elemArr[0].length);
+                                }
+                            }
                             mapDataWptIndex++;
                         } else {
                             //rteWptArray[1] indicates how many points this part contains
