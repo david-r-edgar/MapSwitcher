@@ -311,19 +311,41 @@ extractors.push({
     host: "geocaching.",
     extract:
         function(resolve) {
-            var sourceMapData = {}
-            var re = /ll=([-0-9.]+),([-0-9.]+)/;
-            var coordArray = window.location.hash.match(re);
-            if (coordArray && coordArray.length >= 3) {
-                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+            if (window.location.pathname.indexOf("/map/") === 0) {
+                var sourceMapData = {}
+                var re = /ll=([-0-9.]+),([-0-9.]+)/;
+                var coordArray = window.location.hash.match(re);
+                if (coordArray && coordArray.length >= 3) {
+                    sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                }
+                re = /z=([0-9]+)/;
+                var zoomArray = window.location.hash.match(re);
+                if (zoomArray && zoomArray.length > 1) {
+                    sourceMapData.resolution = calculateResolutionFromStdZoom(
+                            zoomArray[1], sourceMapData.centreCoords.lat);
+                }
+                resolve(sourceMapData);
             }
-            re = /z=([0-9]+)/;
-            var zoomArray = window.location.hash.match(re);
-            if (zoomArray && zoomArray.length > 1) {
-                sourceMapData.resolution = calculateResolutionFromStdZoom(
-                        zoomArray[1], sourceMapData.centreCoords.lat);
+            else if (window.location.pathname.indexOf("/geocache/") === 0) {
+                var dmLatLng = document.getElementById("uxLatLon").innerText
+                var re = /([NS])\s+([0-9]+)[^0-9]\s+([0-9.]+)\s+([EW])\s+([0-9]+)[^0-9]\s+([0-9.]+)/;
+                var dmCoordArray = dmLatLng.match(re);
+                if (dmCoordArray && dmCoordArray.length > 6) {
+                    var lat = parseInt(dmCoordArray[2]) + (dmCoordArray[3] / 60);
+                    var lng = parseInt(dmCoordArray[5]) + (dmCoordArray[6] / 60);
+                    if ('S' == dmCoordArray[1]) {
+                        lat = -lat;
+                    }
+                    if ('W' == dmCoordArray[4]) {
+                        lng = -lng;
+                    }
+                    resolve({
+                        centreCoords: {"lat": lat, "lng": lng},
+                        resolution: calculateResolutionFromStdZoom(15, lat),
+                        locationDescr: "primary geocache coordinates"
+                    });
+                }
             }
-            resolve(sourceMapData);
         }
 });
 
