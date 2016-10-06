@@ -907,6 +907,36 @@ var outputMapServices = [
 
         view.addMapServiceLinks(view.category.utility, this, this.maplinks);
     }
+},
+{
+    site: "TopoZone",
+    image: "topozone16x16.png",
+    id: "topozone",
+    maplinks:
+    {
+        topozoneMap: {
+            name: "Topographic"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        if (sourceMapData.countryCode === "us") {
+            var topozoneBase = "http://www.topozone.com/";
+            var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+            var zoom = "&zoom=12";
+
+            if ("resolution" in sourceMapData) {
+                zoom = calculateStdZoomFromResolution(
+                        sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                if (zoom < 1) zoom = 1;
+                if (zoom > 16) zoom = 16;
+                zoom = "&zoom=" + zoom;
+            }
+
+            this.maplinks.topozoneMap["link"] = topozoneBase + "map/?" + mapCentre + zoom;
+
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        }
+    }
 }
 ];
 
