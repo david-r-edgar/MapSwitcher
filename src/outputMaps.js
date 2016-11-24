@@ -1,4 +1,13 @@
 /**
+ * The Web Extension API is implemented on different root objects in different browsers.
+ * Firefox uses 'browser'. Chrome uses 'chrome'.
+ * Checking here allows us to use a common 'browser' everywhere.
+ */
+if ("undefined" === typeof browser) {
+    browser = chrome;
+}
+
+/**
  * Array of all output map services
  *
  * The most important item for each service is the `generate()` function which accepts
@@ -814,8 +823,8 @@ var outputMapServices = [
             var levelArg = "level=" + level;
 
             var lang = "";
-            //extract the highest priority language (fr or nl) from chrome preferences
-            chrome.i18n.getAcceptLanguages(function (list) {
+            //extract the highest priority language (fr or nl) from browser preferences
+            browser.i18n.getAcceptLanguages(function (list) {
                 for (listLang of list) {
                     if (listLang.match(/^fr/)) {
                         lang = "lang=fr&";

@@ -20,11 +20,11 @@
 
     function promiseTo(fn, tabId, info) {
         return new Promise(function (resolve, reject) {
-            chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+            browser.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
                 if (tabs[0].url.match(/^chrome:\/\//)) {
                     return reject();
                 } else {
-                    fn.call(chrome.tabs, tabId, info, function (result) {
+                    fn.call(browser.tabs, tabId, info, function (result) {
                         return resolve(result);
                     });
                 }
@@ -35,7 +35,7 @@
 
     function exeScript(tabId, path) {
         var info = { file: path, runAt: 'document_end' };
-        return promiseTo(chrome.tabs.executeScript, tabId, info);
+        return promiseTo(browser.tabs.executeScript, tabId, info);
     }
 
     window.ScriptExecution = ScriptExecution;

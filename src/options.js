@@ -1,4 +1,11 @@
-
+/**
+ * The Web Extension API is implemented on different root objects in different browsers.
+ * Firefox uses 'browser'. Chrome uses 'chrome'.
+ * Checking here allows us to use a common 'browser' everywhere.
+ */
+if ("undefined" === typeof browser) {
+    browser = chrome;
+}
 
 function updateSelectAllNone() {
     var totalServices = $("#mapsTickList .outpServiceEnabledChk").length;
@@ -20,13 +27,15 @@ $("#selectAllNone").change(function(ev) {
 });
 
 
-
+/**
+ * Saves the extension options in browser storage.
+ */
 function save_options() {
     var mapChecks = {};
     $("#mapsTickList .outpServiceEnabledChk").each(function() {
         mapChecks[$(this).attr("id")] = $(this).is(":checked");
     });
-    chrome.storage.sync.set(mapChecks, function() {
+    browser.storage.local.set(mapChecks, function() {
         $("#status").text("Options saved.");
         setTimeout(function() {
             $("#status").text("");
@@ -34,6 +43,9 @@ function save_options() {
     });
 }
 
+/**
+ * Loads the extension options from browser storage.
+ */
 function restore_options() {
     var mapDefaults = {};
     $("#mapsTickList tbody").html("");
@@ -46,7 +58,7 @@ function restore_options() {
             $("#mapsTickList tbody").append(mapEntry);
         mapDefaults[outputMapService.id] = true;
     }
-    chrome.storage.sync.get(mapDefaults, function(items) {
+    browser.storage.local.get(mapDefaults, function(items) {
         $("#mapsTickList .outpServiceEnabledChk").each(function() {
             $(this).prop("checked", items[$(this).attr("id")]);
         });

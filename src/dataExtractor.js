@@ -1,3 +1,12 @@
+/**
+ * The Web Extension API is implemented on different root objects in different browsers.
+ * Firefox uses 'browser'. Chrome uses 'chrome'.
+ * Checking here allows us to use a common 'browser' everywhere.
+ */
+if ("undefined" === typeof browser) {
+    browser = chrome;
+}
+
 
 var extractors = [];
 
@@ -741,10 +750,10 @@ var runDataExtraction = function () {
     }
     //execute the extraction and send the result to the main script
     new Promise(extractor.extract).then(function(sourceMapData) {
-        chrome.runtime.sendMessage({sourceMapData: sourceMapData});
+        browser.runtime.sendMessage({sourceMapData: sourceMapData});
     }).catch(function(result) {
         //if an extractor fails, just send a null message to the main script to indicate failure
-        chrome.runtime.sendMessage({});
+        browser.runtime.sendMessage({});
     });
 }
 
