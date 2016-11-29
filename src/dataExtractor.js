@@ -65,6 +65,33 @@ extractors.push({
                 //But some of them may only have addresses, not coordinates.
                 //So we must parse the data part of the URL to find the coords.
 
+                var gmdp = new Gmdp(window.location.href);
+                var gmdpRoute = gmdp.getRoute();
+                var mapDataWptIndex = 0; //index into sourceMapData wpts
+                //FIXME we should do a count here - number of gmdp primary wpts should be equal to
+                //number of sourceMapData wpts
+                for (var gmdpWpt of gmdpRoute.getAllWaypoints()) {
+                    if (gmdpWpt.primary) {
+                        console.log("primary:", gmdpWpt.lat, gmdpWpt.lng);
+                        sourceMapData.directions.route[mapDataWptIndex].coords =
+                                { lat: gmdpWpt.lat, lng: gmdpWpt.lng }
+                        mapDataWptIndex++;
+                    }
+                    else {
+                        console.log("secondary:", gmdpWpt.lat, gmdpWpt.lng);
+                    }
+                }
+
+
+
+
+
+
+
+/*
+
+
+
                 var dataRouteSubstr = "";
 
                 //double 4m identifying the directions part of the data string
@@ -123,7 +150,8 @@ extractors.push({
                         }
                     }
                 }
-
+*/
+                /*
                 var re = /!3e([0-3])$/;
                 var modeArray = dataRouteSubstr.match(re);
                 if (modeArray && modeArray.length >= 1) {
@@ -142,6 +170,8 @@ extractors.push({
                             break;
                     }
                 }
+                */
+                sourceMapData.directions.mode = gmdpRoute.getTransportation();
 
                 resolve(sourceMapData);
             }
