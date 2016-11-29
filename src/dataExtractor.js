@@ -61,7 +61,7 @@ extractors.push({
                     }
                 }
 
-                //we expect to have sub-objects for each waypoint now (is this correct?)
+                //we expect to have sub-objects for each waypoint now
                 //But some of them may only have addresses, not coordinates.
                 //So we must parse the data part of the URL to find the coords.
 
@@ -91,90 +91,6 @@ extractors.push({
                     }
                 }
 
-
-/*
-
-
-
-                var dataRouteSubstr = "";
-
-                //double 4m identifying the directions part of the data string
-                var re = /!4m[0-9]+!4m[0-9]+/;
-                var directionsArray = window.location.pathname.match(re);
-                if (directionsArray && directionsArray.length >= 1) {
-                    dataRouteSubstr = window.location.pathname.substr(directionsArray.index + directionsArray[0].length);
-                }
-                var mapDataWptIndex = 0;
-                //keep a record of the previous string length we had when entering the loop
-                //- in case it's the same, we've found no matches, so don't continue
-                var prevSubstrLen = dataRouteSubstr.length + 1;
-                while (dataRouteSubstr.length > 0 && prevSubstrLen > dataRouteSubstr.length) {
-                    var prevSubstrLen = dataRouteSubstr.length;
-                    var rteWptRe = /^!1m([0-9]+)/;
-                    var rteWptArray = dataRouteSubstr.match(rteWptRe);
-                    if (rteWptArray && rteWptArray.length > 1) {
-                        if (parseInt(rteWptArray[1]) < 5) {
-                            dataRouteSubstr = dataRouteSubstr.substr(rteWptArray[0].length);
-                            for (var i=0; i < parseInt(rteWptArray[1]); i++) {
-                                var elemRe = /![0-9][a-z][0-9]+/;
-                                var elemArr = dataRouteSubstr.match(elemRe);
-                                if (elemArr && elemArr.length >= 1) {
-                                    dataRouteSubstr = dataRouteSubstr.substr(elemArr[0].length);
-                                }
-                            }
-                            mapDataWptIndex++;
-                        } else {
-                            //rteWptArray[1] indicates how many points this part contains
-                            //1m5 indicates a single named waypoint
-                            //1m10,1m15 etc. indicate extra unnamed intermediate waypoints
-                            //for the moment we ignore these extra ones
-                            var additionalWaypointsToExpect = (rteWptArray[1] - 5) / 5;
-                            dataRouteSubstr = dataRouteSubstr.substr(rteWptArray[0].length);
-                            //we expect to match the named waypoint first
-                            var wptRe = /![0-9a-z]+![0-9a-z:]+!2m2!1d([-0-9.]+)!2d([-0-9.]+)/
-                            var wptArray = dataRouteSubstr.match(wptRe);
-                            if (wptArray && wptArray.length > 2) {
-                                //oddly longitude is given before latitude
-                                sourceMapData.directions.route[mapDataWptIndex].coords =
-                                { lat: wptArray[2], lng: wptArray[1] }
-                                dataRouteSubstr = dataRouteSubstr.substr(wptArray.index +
-                                    wptArray[0].length);
-                                mapDataWptIndex++;
-                            }
-                            for (var i=0; i<additionalWaypointsToExpect; i++) {
-                                var extraWptRe = /!3m4!1m2+!1d[-0-9.]+!2d[-0-9.]+!3s[0-9a-fx:]+/;
-                                var extraWptArray = dataRouteSubstr.match(extraWptRe);
-                                if (extraWptArray) {
-                                    //currently we ignore the extra unnamed waypoints
-                                    //so we drop the matched waypoint prior to the next search
-                                    dataRouteSubstr = dataRouteSubstr.substr(extraWptArray.index +
-                                    extraWptArray[0].length);
-                                }
-                            }
-                        }
-                    }
-                }
-*/
-                /*
-                var re = /!3e([0-3])$/;
-                var modeArray = dataRouteSubstr.match(re);
-                if (modeArray && modeArray.length >= 1) {
-                    switch (modeArray[1]) {
-                        case "0":
-                            sourceMapData.directions.mode = "car";
-                            break;
-                        case "1":
-                            sourceMapData.directions.mode = "bike";
-                            break;
-                        case "2":
-                            sourceMapData.directions.mode = "foot";
-                            break;
-                        case "3":
-                            sourceMapData.directions.mode = "transit";
-                            break;
-                    }
-                }
-                */
                 sourceMapData.directions.mode = gmdpRoute.getTransportation();
 
                 resolve(sourceMapData);
