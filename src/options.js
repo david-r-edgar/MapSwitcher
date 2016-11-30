@@ -52,6 +52,7 @@ function restore_options() {
     for (outputMapService of outputMapServices) {
         mapEntry =
             "<tr>" +
+            "<td class=\"fa fa-bars dragcell\"></td>" +
             "<label for\"" + outputMapService.id + "\"><td class='imgcell'><img src=\"../image/" + outputMapService.image + "\"></td>"  + "<td class='mapnamecell'>" + outputMapService.site + "</td></label>" +
             "<td class='chkboxcell'><input type=\"checkbox\" class='outpServiceEnabledChk' id=\"" + outputMapService.id + "\" /></td>" +
             "</tr>";
@@ -66,6 +67,10 @@ function restore_options() {
     });
     $("#mapsTickList .outpServiceEnabledChk").change(updateSelectAllNone);
 }
-$(document).ready(restore_options);
+$(document).ready(function() {
+    restore_options();
+    $( "#sortable" ).sortable();
+    //$( "#sortable" ).disableSelection();
+});
 $("#cancel").click(restore_options);
 document.getElementById("save").addEventListener("click", save_options);

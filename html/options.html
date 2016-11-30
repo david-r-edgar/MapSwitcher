@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Options - Map Switcher</title>
+  <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
   <style>
     body {
       font-family: Tahoma, Verdana, sans-serif;
@@ -51,9 +52,20 @@
     section.services {
       margin: 2em 0em 2em 0em;
     }
+    #mapsTickList td.dragcell {
+      color: #ddd;
+      padding: 5px 0px 5px 0px;
+    }
   </style>
   <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
   <script src="../src/outputMaps.js"></script>
+  <style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+  </style>
+  <link rel="stylesheet" href="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.css">
+  <script src="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 </head>
 <body>
 <div class=borderBox>
@@ -69,9 +81,9 @@
 <p>Output services to show:</p>
 <table id="mapsTickList">
     <thead>
-      <th colspan=2>Service</th><th><input type="checkbox" id="selectAllNone" /> </th>
+      <th></th><th colspan=2>Service</th><th><input type="checkbox" id="selectAllNone" /> </th>
     </thead>
-    <tbody>
+    <tbody id="sortable">
     </tbody>
 </table>
 </section>
