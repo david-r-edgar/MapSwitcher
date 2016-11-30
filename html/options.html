@@ -45,6 +45,7 @@
     }
     .mapnamecell {
       vertical-align: middle;
+      min-width: 110px;
     }
     article.options {
       margin: 1em 2em 1em 3em;
@@ -55,6 +56,11 @@
     #mapsTickList td.dragcell {
       color: #ddd;
       padding: 5px 0px 5px 0px;
+      display: table-cell;
+    }
+    #mapsTickList th.srvTitle {
+      text-align: left;
+      padding-left: 28px;
     }
   </style>
   <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
@@ -81,7 +87,7 @@
 <p>Output services to show:</p>
 <table id="mapsTickList">
     <thead>
-      <th></th><th colspan=2>Service</th><th><input type="checkbox" id="selectAllNone" /> </th>
+      <th></th><th colspan=2 class=srvTitle>Service</th><th><input type="checkbox" id="selectAllNone" /> </th>
     </thead>
     <tbody id="sortable">
     </tbody>
