@@ -202,6 +202,19 @@ GmdpRoute.prototype.getAllWaypoints = function() {
     return this.route;
 }
 
+
+function GmdpException(message) {
+    this.message = message;
+    // Use V8's native method if available, otherwise fallback
+    if ("captureStackTrace" in Error)
+        Error.captureStackTrace(this, GmdpException);
+    else
+        this.stack = (new Error()).stack;
+}
+
+GmdpException.prototype = Object.create(Error.prototype);
+GmdpException.prototype.name = "GmdpException";
+
 /**
  * Represents a google maps data parameter, constructed from the passed URL.
  *
@@ -211,6 +224,10 @@ GmdpRoute.prototype.getAllWaypoints = function() {
 var Gmdp = function(url) {
     this.prBufRoot = PrBufNode.create(url);
     this.mapType = "map";
+
+    if (this.prBufRoot == null) {
+        throw new GmdpException("no parsable data parameter");
+    }
 
     //the main top node for routes is 4m; other urls (eg. streetview) feature 3m etc.
     var routeTop = null;

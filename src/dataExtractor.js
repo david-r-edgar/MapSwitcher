@@ -64,36 +64,44 @@ extractors.push({
                 //we expect to have sub-objects for each waypoint now
                 //But some of them may only have addresses, not coordinates.
                 //So we must parse the data part of the URL to find the coords.
-
-                var gmdp = new Gmdp(window.location.href);
-                var gmdpRoute = gmdp.getRoute();
-                var mapDataWptIndex = 0; //index into sourceMapData wpts
-                //FIXME we should do a count here - number of gmdp primary wpts should be equal to
-                //number of sourceMapData wpts
-                for (var gmdpWpt of gmdpRoute.getAllWaypoints()) {
-                    if (gmdpWpt.primary) {
-                        var mapDataWptCoords = sourceMapData.directions.route[mapDataWptIndex].coords;
-                        //if coords are not yet specified, insert them
-                        //- but don't overwrite them if they're already there
-                        if ((!mapDataWptCoords) ||
-                            (mapDataWptCoords.lat === undefined) ||
-                            (mapDataWptCoords === undefined)) {
-                            sourceMapData.directions.route[mapDataWptIndex].coords =
-                                    { lat: gmdpWpt.lat, lng: gmdpWpt.lng }
+                try {
+                    var gmdp = new Gmdp(window.location.href);
+                    var gmdpRoute = gmdp.getRoute();
+                    var mapDataWptIndex = 0; //index into sourceMapData wpts
+                    //FIXME we should do a count here - number of gmdp primary wpts should be equal to
+                    //number of sourceMapData wpts
+                    for (var gmdpWpt of gmdpRoute.getAllWaypoints()) {
+                        if (gmdpWpt.primary) {
+                            var mapDataWptCoords = sourceMapData.directions.route[mapDataWptIndex].coords;
+                            //if coords are not yet specified, insert them
+                            //- but don't overwrite them if they're already there
+                            if ((!mapDataWptCoords) ||
+                                (mapDataWptCoords.lat === undefined) ||
+                                (mapDataWptCoords === undefined)) {
+                                sourceMapData.directions.route[mapDataWptIndex].coords =
+                                        { lat: gmdpWpt.lat, lng: gmdpWpt.lng }
+                            }
+                            mapDataWptIndex++;
                         }
-                        mapDataWptIndex++;
+                        else {
+                            var newSecondaryWpt =
+                                { coords: { lat: gmdpWpt.lat, lng: gmdpWpt.lng } }
+                            sourceMapData.directions.route.splice(mapDataWptIndex, 0, newSecondaryWpt);
+                            mapDataWptIndex++;
+                        }
                     }
-                    else {
-                        var newSecondaryWpt =
-                            { coords: { lat: gmdpWpt.lat, lng: gmdpWpt.lng } }
-                        sourceMapData.directions.route.splice(mapDataWptIndex, 0, newSecondaryWpt);
-                        mapDataWptIndex++;
+
+                    sourceMapData.directions.mode = gmdpRoute.getTransportation();
+
+                }
+                catch (ex) {
+                    if (ex instanceof GmdpException) {
+                        //console.log(ex);
                     }
                 }
-
-                sourceMapData.directions.mode = gmdpRoute.getTransportation();
-
-                resolve(sourceMapData);
+                finally {
+                    resolve(sourceMapData);
+                }
             }
             else if (window.location.pathname.indexOf("/search") === 0 ||
                     window.location.pathname.indexOf("/webhp") === 0) {
