@@ -119,9 +119,6 @@ function optionsSorted(event, ui) {
     });
 }
 
-    //browser.storage.local.clear();
-    //browser.storage.sync.clear();
-
 $(document).ready(function() {
     restore_options();
     $( "#sortable" ).sortable({
