@@ -114,21 +114,29 @@ var MapLinksView = {
      * @param {note} Content for an optional explanatory note.
      */
     addMapServiceLinks: function(category, mapService, mapLinks, note) {
+        var thisView = this;
         var selector = this.getSelector(category);
 
         if (0 == $(selector).children().length) {
             $(selector).append("<h4>" + this.getTitle(category) + "</h4>");
         }
 
-        $(selector).append(this.buildLineOfLinks(mapService.id,
-                                                   mapService,
-                                                   mapLinks,
-                                                   note));
-        $(selector).sortDivs();
+        prioDefaults = {}
+        prioDefaults["prio/" + mapService.id] = mapService.prio !== undefined ? mapService.prio : 0;
 
-        if (note && note.length) {
-            $(".linknote").tipsy({gravity: 's', opacity: 1, fade: true});
-        }
+        browser.storage.local.get(prioDefaults, function(prio) {
+            mapService.prio = prio["prio/" + mapService.id];
+
+            $(selector).append(thisView.buildLineOfLinks(mapService.id,
+                                                         mapService,
+                                                         mapLinks,
+                                                         note));
+            $(selector).sortDivs();
+
+            if (note && note.length) {
+                $(".linknote").tipsy({gravity: 's', opacity: 1, fade: true});
+            }
+        });
     },
 
     /**
