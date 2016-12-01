@@ -119,10 +119,10 @@ function optionsSorted(event, ui) {
     });
 }
 
+    //browser.storage.local.clear();
+    //browser.storage.sync.clear();
 
 $(document).ready(function() {
-    browser.storage.local.clear();
-    browser.storage.sync.clear();
     restore_options();
     $( "#sortable" ).sortable({
         stop: optionsSorted
