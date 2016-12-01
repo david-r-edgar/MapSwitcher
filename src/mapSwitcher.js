@@ -122,7 +122,7 @@ var MapLinksView = {
         }
 
         prioDefaults = {}
-        prioDefaults["prio/" + mapService.id] = mapService.prio !== undefined ? mapService.prio : 0;
+        prioDefaults["prio/" + mapService.id] = mapService.prio !== undefined ? mapService.prio : 999;
 
         browser.storage.local.get(prioDefaults, function(prio) {
             mapService.prio = prio["prio/" + mapService.id];
