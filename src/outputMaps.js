@@ -675,6 +675,8 @@ var outputMapServices = [
                     case "transit":
                         mode = "publicTransport";
                         break;
+                    case "bike":
+                        mode = "bicycle";
                 }
             }
 
