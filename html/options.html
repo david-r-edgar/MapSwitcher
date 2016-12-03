@@ -34,8 +34,11 @@
       padding-bottom: 3px;
     }
     #status {
-      color: #777;
+      color: #666;
       margin-top: 0.6em;
+    }
+    .services p {
+      color: #555;
     }
     .imgcell {
       padding: 0px 6px;
@@ -61,6 +64,9 @@
     #mapsTickList th.srvTitle {
       text-align: left;
       padding-left: 28px;
+    }
+    button#reset {
+      margin-top: 4em;
     }
   </style>
   <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
@@ -94,10 +100,9 @@
 </table>
 </section>
 
-<button id="save">Save</button>
-<button id="cancel">Discard changes</button>
-<button id="reset">Reset to defaults</button>
 <div id="status"></div>
+<!--<button id="save">Save</button>-->
+<button id="reset" class="fa fa-undo"> Reset to defaults...</button>
 </article>
 
 <script src="../src/options.js"></script>
