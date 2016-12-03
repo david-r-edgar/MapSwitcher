@@ -47,7 +47,7 @@ $("#selectAllNone").change(function(ev) {
 /**
  * Saves the extension options in browser storage.
  */
-function save_options() {
+function saveOptions() {
     var mapChecks = {};
     $("#mapsTickList .outpServiceEnabledChk").each(function() {
         mapChecks[$(this).attr("id")] = $(this).is(":checked");
@@ -63,7 +63,7 @@ function save_options() {
 /**
  * Loads the extension options from browser storage.
  */
-function restore_options() {
+function restoreOptions() {
     var mapEnabledDefaults = {};
     var prioDefaults = {};
     $("#mapsTickList tbody").html("");
@@ -99,6 +99,11 @@ function restore_options() {
     });
 }
 
+function resetToDefaults() {
+    browser.storage.local.clear();
+    restoreOptions();
+}
+
 function optionsSorted(event, ui) {
     var mapPriorities = {};
     var newPriority = 1;
@@ -120,10 +125,11 @@ function optionsSorted(event, ui) {
 }
 
 $(document).ready(function() {
-    restore_options();
+    restoreOptions();
     $( "#sortable" ).sortable({
         stop: optionsSorted
     });
 });
-$("#cancel").click(restore_options);
-document.getElementById("save").addEventListener("click", save_options);
+$("#cancel").click(restoreOptions);
+document.getElementById("save").addEventListener("click", saveOptions);
+$("#reset").click(resetToDefaults);
