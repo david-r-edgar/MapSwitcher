@@ -747,6 +747,22 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "wikipedia.org",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            $("#coordinates .geo").first().each(function() {
+                var coordArray = this.innerText.split(';');
+                if (coordArray.length === 2) {
+                    sourceMapData.centreCoords = {"lat": coordArray[0].trim(), "lng": coordArray[1].trim()}
+                    sourceMapData.locationDescr = "primary article coordinates";
+                }
+            });
+            resolve(sourceMapData);
+        }
+});
+
 
 
 var runDataExtraction = function () {
