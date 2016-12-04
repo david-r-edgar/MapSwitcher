@@ -725,6 +725,30 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "sysmaps.co.uk",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            if (window.location.pathname.indexOf("/sysmaps_os.html") === 0) {
+                $(".style1").each(function() {
+                    var re = /Map Centre: East: ([0-9.]+) : North: ([0-9.]+)/;
+                    var mapCentreArr = this.innerText.match(re);
+                    if (mapCentreArr && mapCentreArr.length > 2) {
+                        sourceMapData.osgbCentreCoords = {"e": mapCentreArr[1], "n": mapCentreArr[2]}
+                        sourceMapData.locationDescr = "map centre";
+                        return false; //just to break out of jquery each loop
+                    }
+                });
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
+
+
+
 var runDataExtraction = function () {
     //default null extractor
     var extractor = {

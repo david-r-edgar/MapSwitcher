@@ -948,6 +948,27 @@ var outputMapServices = [
             view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
     }
+},
+{
+    site: "SysMaps",
+    image: "sysmaps16x16.png",
+    id: "sysmaps",
+    maplinks:
+    {
+        sysmapsOS: {
+            name: "OS"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
+            var sysmapsBase = "http://www.sysmaps.co.uk/sysmaps_os.html?";
+            var mapCentre = "!" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
+
+            this.maplinks.sysmapsOS["link"] = sysmapsBase + mapCentre;
+
+            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        }
+    }
 }
 ];
 
