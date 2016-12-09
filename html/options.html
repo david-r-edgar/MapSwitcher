@@ -22,6 +22,8 @@
       vertical-align: middle;
     }
     .srvTickList {
+      float: left;
+      margin: 0.4em 2.4em 1.8em 2.4em;
       list-style-type: none;
       border-collapse: collapse;
     }
@@ -36,6 +38,8 @@
     #status {
       color: #666;
       margin-top: 0.6em;
+      clear: both;
+      min-height: 1.1em;
     }
     .services p {
       color: #555;
@@ -87,10 +91,9 @@
 </div>
 
 <article class="options">
-<h1>Options</h1>
+<h3>Output service options</h3>
 
 <section class="services">
-<p>Output services to show:</p>
 <table id="mapsTickList" class=srvTickList>
     <thead>
       <th></th><th colspan=2 class=srvTitle>Mapping services</th><th><input type="checkbox" id="mapsSelectAllNone" class=selectAllNone cat="mapsTickList"/> </th>

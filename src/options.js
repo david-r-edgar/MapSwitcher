@@ -103,8 +103,7 @@ function restoreOptions() {
         });
         updateSelectAllNone();
     });
-    $("#mapsTickList .outpServiceEnabledChk").change(updateSelectAllNone);
-    $("#utilsTickList .outpServiceEnabledChk").change(updateSelectAllNone);
+    $(".srvTickList .outpServiceEnabledChk").change(updateSelectAllNone);
 
     browser.storage.local.get(prioDefaults, function(prio) {
         //iterate through all rows; look up new prio, set data-sort attrib on tr
