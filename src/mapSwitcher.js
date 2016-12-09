@@ -41,29 +41,23 @@ jQuery.fn.sortDivs = function sortDivs() {
  */
 var MapLinksView = {
 
-    /** Enumeration of the type of map service */
-    category: {
-        multidirns: 2,
-        singledirns: 1,
-        plain: 0,
-        utility: 3
-    },
-
     /** Number of direction segments in the source map data. */
     sourceDirnSegs: 0,
 
     /**
-     * Returns the appropriate jquery selector for the given map service category, based
-     * on the number of direction segments.
+     * Returns the appropriate jquery selector for the given map service category,
+     * based on the number of direction segments.
+     *
+     * @param {category} OutputMaps category for which the selector is requested.
      */
     getSelector: function(category) {
-        if (this.category.multidirns === category && this.sourceDirnSegs >= 2) {
+        if (OutputMaps.category.multidirns === category && this.sourceDirnSegs >= 2) {
             return "#multiSegDirns";
-        } else if (this.category.multidirns === category && this.sourceDirnSegs === 1) {
+        } else if (OutputMaps.category.multidirns === category && this.sourceDirnSegs === 1) {
             return "#singleSegDirns";
-        } else if (this.category.singledirns === category && this.sourceDirnSegs > 0) {
+        } else if (OutputMaps.category.singledirns === category && this.sourceDirnSegs > 0) {
             return "#singleSegDirns";
-        } else if (this.category.utility === category) {
+        } else if (OutputMaps.category.utility === category) {
             return "#utilities";
         } else {
             return "#noDirns";
@@ -73,25 +67,27 @@ var MapLinksView = {
     /**
      * Returns the section title for the given map service category, based
      * on the number of direction segments.
+     *
+     * @param {category} OutputMaps category for which the title is requested.
      */
     getTitle: function(category) {
         var title = "";
         switch (category) {
-                case this.category.multidirns:
+                case OutputMaps.category.multidirns:
                     if (this.sourceDirnSegs >= 2) {
                         title = "Directions, full";
                     } else {
                         title = "Directions";
                     }
                     break;
-                case this.category.singledirns:
+                case OutputMaps.category.singledirns:
                     if (this.sourceDirnSegs >= 2) {
                         title = "Directions, single segment only";
                     } else {
                         title = "Directions";
                     }
                     break;
-                case this.category.utility:
+                case OutputMaps.category.utility:
                     title = "Miscellaneous";
                     break;
                 default:
@@ -108,7 +104,7 @@ var MapLinksView = {
     /**
      * Adds links to a map service to a particular category
      *
-     * @param {category} Category in which to add this map service
+     * @param {category} Category in which to add this map service.
      * @param {mapService} Object containing data about the particular map service.
      * @param {mapLinks} All the map links to be added.
      * @param {note} Content for an optional explanatory note.
@@ -143,7 +139,9 @@ var MapLinksView = {
      * Adds links for file downloads (such as GPX)
      *
      * @param {mapService} Object containing data about the particular map service.
-     * @param {note} Content for an optional explanatory note.
+     * @param {id} Identifying string for this link.
+     * @param {name} Display name for the link.
+     * @param {fileGenerator} Function to invoke to create the file contents.
      */
     addFileDownload: function(mapService, id, name, fileGenerator) {
 
@@ -176,6 +174,12 @@ var MapLinksView = {
         });
     },
 
+    /**
+     * Adds a note for a map service.
+     *
+     * @param {mapService} Object representing the map service.
+     * @param {note} Text content of the note to be displayed.
+     */
     addNote: function(mapService, note) {
         if (note && note.length) {
             $("#" + mapService.id).append(" <span class=\"fa fa-sticky-note-o linknote\" title='" + note + "'></span>");
@@ -353,7 +357,7 @@ var MapSwitcher = {
             MapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1;
         }
 
-        for (outputMapService of outputMapServices) {
+        for (outputMapService of OutputMaps.services) {
             (function(outputMapService) { //dummy immediately executed fn to save variables
                 mapOptDefaults = {}
                 mapOptDefaults[outputMapService.id] = true;

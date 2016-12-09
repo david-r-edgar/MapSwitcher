@@ -7,6 +7,20 @@ if ("undefined" === typeof browser) {
     browser = chrome;
 }
 
+
+
+var OutputMaps = {
+
+/** Enumeration of the type of map service */
+    category: {
+        multidirns: 2,
+        singledirns: 1,
+        plain: 0,
+        utility: 3
+    }
+
+}
+
 /**
  * Array of all output map services
  *
@@ -16,12 +30,13 @@ if ("undefined" === typeof browser) {
  * generate appropriate links, and calls the relevant functions on the view object
  * to render those links to the view.
  */
-var outputMapServices = [
+OutputMaps.services = [
 {
     site: "Google",
     prio: 1,
     image: "googleMapsLogo16x16.png",
     id: "google",
+    cat: OutputMaps.category.multidirns,
     maplinks:
     {
         googlemaps: {
@@ -110,9 +125,9 @@ var outputMapServices = [
         this.maplinks.googlebike["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e3";
 
         if (directions.length > 0) {
-            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks);
         } else {
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
         }
     }
 },
@@ -121,6 +136,7 @@ var outputMapServices = [
     prio: 2,
     image: "bingLogo16x16.png",
     id: "bing",
+    cat: OutputMaps.category.multidirns,
     maplinks:
     {
         bingroad: {
@@ -193,9 +209,9 @@ var outputMapServices = [
                 link: (bingBase + directions + "&" + mapCentre + zoom + "&sty=s")}
         }
         if (directions.length > 0) {
-            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks);
         } else {
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
         }
     }
 },
@@ -204,6 +220,7 @@ var outputMapServices = [
     prio: 3,
     image: "osmLogo16x16.png",
     id: "osm",
+    cat: OutputMaps.category.singledirns,
     note: "",
     maplinks:
     {
@@ -287,9 +304,9 @@ var outputMapServices = [
         this.maplinks.osmHumanitarian["link"] = coreLink + "&layers=H";
 
         if (directions.length > 0) {
-            view.addMapServiceLinks(view.category.singledirns, this, this.maplinks, this.note);
+            view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinks, this.note);
         } else {
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
         }
     }
 },
@@ -297,6 +314,7 @@ var outputMapServices = [
     site: "Wikimedia Labs",
     image: "wmLabsLogo16x16.png",
     id: "wmLabs",
+    cat: OutputMaps.category.plain,
     prio: 4,
     maplinks:
     {
@@ -323,13 +341,14 @@ var outputMapServices = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 4, 16) - 1;
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
 },
 {
     site: "Wikimapia",
     image: "wikimapiaLogo16x16.png",
     id: "wikimapia",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         wikimapiaSatellite: {
@@ -353,7 +372,7 @@ var outputMapServices = [
         this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
 },
 {
@@ -361,6 +380,7 @@ var outputMapServices = [
     image: "geocachingLogo16x16.png",
     id: "geocaching",
     note: "geocaching.com requires login to see the map (free sign-up)",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         geocaching: {
@@ -379,13 +399,14 @@ var outputMapServices = [
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
     }
 },
 {
     site: "what3words",
     image: "w3wLogo.png",
     id: "w3w",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         what3words: {
@@ -397,13 +418,14 @@ var outputMapServices = [
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
 },
 {
     site: "MapQuest",
     image: "mqLogo16x16.png",
     id: "mapquest",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         mqOpen: {
@@ -425,13 +447,14 @@ var outputMapServices = [
 
         this.maplinks.mqOpen["link"] = mapquestBase + mapCentre + '&' + zoom;
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
 },
 {
     site: "GPX",
     image: "gpxFile16x16.png",
     id: "dl_gpx",
+    cat: OutputMaps.category.download,
     generate: function(sourceMapData, view) {
         view.addFileDownload(this, "gpx_map_centre", "Map centre waypoint", function() {
             var fileData = {
@@ -500,6 +523,7 @@ var outputMapServices = [
     site: "Waze",
     image: "wazeLogo16x16.png",
     id: "waze",
+    cat: OutputMaps.category.singledirns,
     maplinks:
     {
         livemap: {
@@ -544,9 +568,9 @@ var outputMapServices = [
         this.maplinks.livemap["link"] = wazeBase + zoom + '&' + mapCentre + directions;
 
         if (directions.length > 0) {
-            view.addMapServiceLinks(view.category.singledirns, this, this.maplinks, this.note);
+            view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinks, this.note);
         } else {
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
         }
     }
 },
@@ -554,6 +578,7 @@ var outputMapServices = [
     site: "OpenSeaMap",
     image: "openSeaMapLogo16x16.png",
     id: "openseamap_map",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         openSeaMap: {
@@ -576,13 +601,14 @@ var outputMapServices = [
 
         this.maplinks.openSeaMap["link"] = openSeaMapBase + zoom + '&' + mapCentre + '&' + layers;
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
 },
 {
     site: "Stamen",
     image: "greyMarker.png",
     id: "stamen",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         stamenWatercolor: {
@@ -611,13 +637,14 @@ var outputMapServices = [
         this.maplinks.stamenToner["link"] = stamenBase + "toner/#" + zoom + '/' + mapCentre;
         this.maplinks.stamenTerrain["link"] = stamenBase + "terrain/#" + zoom + '/' + mapCentre;
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
 },
 {
     site: "Here",
     image: "hereLogo16x16.png",
     id: "here",
+    cat: OutputMaps.category.multidirns,
     maplinks:
     {
         hereMap: {
@@ -694,9 +721,9 @@ var outputMapServices = [
         this.maplinks.herePublicTransport["link"] = hereBase + directions + mapCentre + ',' + zoom + ',' + "public_transport";
 
         if (directions.length > 0) {
-            view.addMapServiceLinks(view.category.multidirns, this, this.maplinks, note);
+            view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks, note);
         } else {
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
         }
     }
 },
@@ -704,6 +731,7 @@ var outputMapServices = [
     site: "Streetmap",
     image: "streetmapLogo16x16.png",
     id: "streetmap",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         streetmap: {
@@ -735,7 +763,7 @@ var outputMapServices = [
 
             this.maplinks.streetmap["link"] = streetmapMapBase + mapCentre + "&A=Y&" + zoomArg;
 
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
         }
     }
 },
@@ -743,6 +771,7 @@ var outputMapServices = [
     site: "GPX Editor",
     image: "gpxed16x16.png",
     id: "gpxeditor",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         gpxedmap: {
@@ -780,13 +809,14 @@ var outputMapServices = [
         }
         this.maplinks.gpxedocm["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OCM";
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks, this.note);
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
     }
 },
 {
     site: "NGI/IGN",
     image: "ngi_ign_Logo16x16.png",
     id: "ngi_ign",
+    cat: OutputMaps.category.plain,
     maplinks: {},
     generate: function(sourceMapData, view) {
         if (sourceMapData.countryCode !== "be") {
@@ -878,7 +908,7 @@ var outputMapServices = [
                     }
                 }
 
-                view.addMapServiceLinks(view.category.plain, that, that.maplinks);
+                view.addMapServiceLinks(OutputMaps.category.plain, that, that.maplinks);
             });
 
 
@@ -889,6 +919,7 @@ var outputMapServices = [
     site: "SunCalc",
     image: "suncalcLogo16x16.png",
     id: "suncalc",
+    cat: OutputMaps.category.utility,
     maplinks:
     {
         suncalc: {
@@ -916,13 +947,14 @@ var outputMapServices = [
 
         this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time;
 
-        view.addMapServiceLinks(view.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
     }
 },
 {
     site: "TopoZone",
     image: "topozone16x16.png",
     id: "topozone",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         topozoneMap: {
@@ -945,7 +977,7 @@ var outputMapServices = [
 
             this.maplinks.topozoneMap["link"] = topozoneBase + "map/?" + mapCentre + zoom;
 
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
         }
     }
 },
@@ -953,6 +985,7 @@ var outputMapServices = [
     site: "SysMaps",
     image: "sysmaps16x16.png",
     id: "sysmaps",
+    cat: OutputMaps.category.plain,
     maplinks:
     {
         sysmapsOS: {
@@ -966,7 +999,7 @@ var outputMapServices = [
 
             this.maplinks.sysmapsOS["link"] = sysmapsBase + mapCentre;
 
-            view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
         }
     }
 },
@@ -974,6 +1007,7 @@ var outputMapServices = [
     site: "Boulter",
     image: "boulterIcon.png",
     id: "boulter",
+    cat: OutputMaps.category.utility,
     maplinks:
     {
         boulterConverter: {
@@ -986,7 +1020,7 @@ var outputMapServices = [
 
         this.maplinks.boulterConverter["link"] = boulterBase + mapCentre;
 
-        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
     }
 }
 ];
