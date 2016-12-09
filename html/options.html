@@ -21,15 +21,15 @@
     #titleLine img {
       vertical-align: middle;
     }
-    #mapsTickList {
+    .srvTickList {
       list-style-type: none;
       border-collapse: collapse;
     }
-    #mapsTickList th {
+    .srvTickList th {
       border-bottom: 2px solid #999;
       padding-bottom: 4px;
     }
-    #mapsTickList td {
+    .srvTickList td {
       padding-top: 3px;
       padding-bottom: 3px;
     }
@@ -56,12 +56,12 @@
     section.services {
       margin: 2em 0em 2em 0em;
     }
-    #mapsTickList td.dragcell {
+    .srvTickList td.dragcell {
       color: #ddd;
       padding: 5px 0px 5px 0px;
       display: table-cell;
     }
-    #mapsTickList th.srvTitle {
+    .srvTickList th.srvTitle {
       text-align: left;
       padding-left: 28px;
     }
@@ -72,9 +72,9 @@
   <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
   <script src="../src/outputMaps.js"></script>
   <style>
-  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-  #sortable li span { position: absolute; margin-left: -1.3em; }
+  .sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  .sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  .sortable li span { position: absolute; margin-left: -1.3em; }
   </style>
   <link rel="stylesheet" href="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.css">
   <script src="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
@@ -91,11 +91,18 @@
 
 <section class="services">
 <p>Output services to show:</p>
-<table id="mapsTickList">
+<table id="mapsTickList" class=srvTickList>
     <thead>
-      <th></th><th colspan=2 class=srvTitle>Service</th><th><input type="checkbox" id="selectAllNone" /> </th>
+      <th></th><th colspan=2 class=srvTitle>Mapping services</th><th><input type="checkbox" id="mapsSelectAllNone" class=selectAllNone cat="mapsTickList"/> </th>
     </thead>
-    <tbody id="sortable">
+    <tbody class="sortable">
+    </tbody>
+</table>
+<table id="utilsTickList" class=srvTickList>
+    <thead>
+      <th></th><th colspan=2 class=srvTitle>Utilities</th><th><input type="checkbox" id="utilsSelectAllNone" class=selectAllNone cat="utilsTickList"/> </th>
+    </thead>
+    <tbody class="sortable">
     </tbody>
 </table>
 </section>

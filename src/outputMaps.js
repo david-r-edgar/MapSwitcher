@@ -16,7 +16,8 @@ var OutputMaps = {
         multidirns: 2,
         singledirns: 1,
         plain: 0,
-        utility: 3
+        utility: 3,
+        download: 4
     }
 
 }
