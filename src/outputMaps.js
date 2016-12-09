@@ -969,6 +969,25 @@ var outputMapServices = [
             view.addMapServiceLinks(view.category.plain, this, this.maplinks);
         }
     }
+},
+{
+    site: "Boulter",
+    image: "boulterIcon.png",
+    id: "boulter",
+    maplinks:
+    {
+        boulterConverter: {
+            name: "Coordinate Converter"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var boulterBase = "http://boulter.com/gps/";
+        var mapCentre = "#" + sourceMapData.centreCoords.lat + "%2C" + sourceMapData.centreCoords.lng;
+
+        this.maplinks.boulterConverter["link"] = boulterBase + mapCentre;
+
+        view.addMapServiceLinks(view.category.plain, this, this.maplinks);
+    }
 }
 ];
 
