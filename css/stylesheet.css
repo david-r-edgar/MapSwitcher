@@ -181,3 +181,98 @@ h4 {
 #sourceDirn {
   display: none;
 }
+
+
+
+
+/******** Options **********/
+
+
+body#optionsPage {
+    font-family: Tahoma, Verdana, sans-serif;
+    font-size: 75%;
+    background-color: white;
+    margin: 0px;
+}
+article.options {
+    margin: 1em 2em 1em 3em;
+}
+#optionsPage .borderBox {
+  padding: 0px;
+}
+#optionsTitleLine {
+    margin-bottom: 2em;
+}
+#optionsTitleLine h2 {
+    display: inline;
+    font-size: 22px;
+    padding-right: 12px;
+}
+#optionsTitleLine img {
+    vertical-align: middle;
+}
+.srvTickList {
+    float: left;
+    margin: 0.4em 2.4em 1.8em 2.4em;
+    list-style-type: none;
+    border-collapse: collapse;
+}
+.srvTickList th {
+    border-bottom: 2px solid #999;
+    padding-bottom: 4px;
+}
+.srvTickList td {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+#status {
+    color: #666;
+    margin-top: 0.6em;
+    clear: both;
+    min-height: 1.1em;
+}
+.services p {
+    color: #555;
+}
+.imgcell {
+    padding: 0px 6px;
+}
+.chkboxcell {
+    padding: 0px 12px;
+}
+.mapnamecell {
+    vertical-align: middle;
+    min-width: 110px;
+}
+section.services {
+    margin: 2em 0em 2em 0em;
+}
+.srvTickList td.dragcell {
+    color: #ddd;
+    padding: 5px 0px 5px 0px;
+    display: table-cell;
+}
+.srvTickList th.srvTitle {
+    text-align: left;
+    padding-left: 28px;
+}
+button#reset {
+    margin-top: 4em;
+}
+.sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 60%;
+}
+.sortable li {
+    margin: 0 3px 3px 3px;
+    padding: 0.4em;
+    padding-left: 1.5em;
+    font-size: 1.4em;
+    height: 18px;
+}
+.sortable li span {
+    position: absolute;
+    margin-left: -1.3em;
+}

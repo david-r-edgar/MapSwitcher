@@ -2,90 +2,16 @@
 <html>
 <head>
   <title>Options - Map Switcher</title>
-  <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
-  <style>
-    body {
-      font-family: Tahoma, Verdana, sans-serif;
-    }
-    #titleLine {
-      margin-bottom: 2em;
-    }
-    #titleLine h2 {
-      display: inline;
-      font-size: 22px;
-      padding-right: 12px;
-    }
-    h1 {
-        font-size: 18px;
-    }
-    #titleLine img {
-      vertical-align: middle;
-    }
-    .srvTickList {
-      float: left;
-      margin: 0.4em 2.4em 1.8em 2.4em;
-      list-style-type: none;
-      border-collapse: collapse;
-    }
-    .srvTickList th {
-      border-bottom: 2px solid #999;
-      padding-bottom: 4px;
-    }
-    .srvTickList td {
-      padding-top: 3px;
-      padding-bottom: 3px;
-    }
-    #status {
-      color: #666;
-      margin-top: 0.6em;
-      clear: both;
-      min-height: 1.1em;
-    }
-    .services p {
-      color: #555;
-    }
-    .imgcell {
-      padding: 0px 6px;
-    }
-    .chkboxcell {
-      padding: 0px 12px;
-    }
-    .mapnamecell {
-      vertical-align: middle;
-      min-width: 110px;
-    }
-    article.options {
-      margin: 1em 2em 1em 3em;
-    }
-    section.services {
-      margin: 2em 0em 2em 0em;
-    }
-    .srvTickList td.dragcell {
-      color: #ddd;
-      padding: 5px 0px 5px 0px;
-      display: table-cell;
-    }
-    .srvTickList th.srvTitle {
-      text-align: left;
-      padding-left: 28px;
-    }
-    button#reset {
-      margin-top: 4em;
-    }
-  </style>
   <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
-  <script src="../src/outputMaps.js"></script>
-  <style>
-  .sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-  .sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-  .sortable li span { position: absolute; margin-left: -1.3em; }
-  </style>
-  <link rel="stylesheet" href="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.css">
   <script src="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+  <script src="../src/outputMaps.js"></script>
+  <link rel="stylesheet" href="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.css">
+  <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../css/stylesheet.css">
 </head>
-<body>
+<body id="optionsPage">
 <div class=borderBox>
-<div id="titleLine">
+<div id="optionsTitleLine">
   <img src="../image/mapswitcher48x48.png"> <h2>Map Switcher</h2>
 </div>
 </div>
@@ -111,7 +37,6 @@
 </section>
 
 <div id="status"></div>
-<!--<button id="save">Save</button>-->
 <button id="reset" class="fa fa-undo"> Reset to defaults...</button>
 </article>
 
