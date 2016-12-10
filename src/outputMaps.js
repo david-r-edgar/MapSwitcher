@@ -349,6 +349,7 @@ OutputMaps.services = [
     site: "Wikimapia",
     image: "wikimapiaLogo16x16.png",
     id: "wikimapia",
+    prio: 10,
     cat: OutputMaps.category.plain,
     maplinks:
     {
@@ -426,6 +427,7 @@ OutputMaps.services = [
     site: "MapQuest",
     image: "mqLogo16x16.png",
     id: "mapquest",
+    prio: 9,
     cat: OutputMaps.category.plain,
     maplinks:
     {
@@ -524,6 +526,7 @@ OutputMaps.services = [
     site: "Waze",
     image: "wazeLogo16x16.png",
     id: "waze",
+    prio: 6,
     cat: OutputMaps.category.singledirns,
     maplinks:
     {
@@ -579,6 +582,7 @@ OutputMaps.services = [
     site: "OpenSeaMap",
     image: "openSeaMapLogo16x16.png",
     id: "openseamap_map",
+    prio: 7,
     cat: OutputMaps.category.plain,
     maplinks:
     {
@@ -645,6 +649,7 @@ OutputMaps.services = [
     site: "Here",
     image: "hereLogo16x16.png",
     id: "here",
+    prio: 5,
     cat: OutputMaps.category.multidirns,
     maplinks:
     {
@@ -732,6 +737,7 @@ OutputMaps.services = [
     site: "Streetmap",
     image: "streetmapLogo16x16.png",
     id: "streetmap",
+    prio: 11,
     cat: OutputMaps.category.plain,
     maplinks:
     {
@@ -817,6 +823,7 @@ OutputMaps.services = [
     site: "NGI/IGN",
     image: "ngi_ign_Logo16x16.png",
     id: "ngi_ign",
+    prio: 13,
     cat: OutputMaps.category.plain,
     maplinks: {},
     generate: function(sourceMapData, view) {
@@ -955,6 +962,7 @@ OutputMaps.services = [
     site: "TopoZone",
     image: "topozone16x16.png",
     id: "topozone",
+    prio: 12,
     cat: OutputMaps.category.plain,
     maplinks:
     {
@@ -986,6 +994,7 @@ OutputMaps.services = [
     site: "SysMaps",
     image: "sysmaps16x16.png",
     id: "sysmaps",
+    prio: 14,
     cat: OutputMaps.category.plain,
     maplinks:
     {
@@ -1028,6 +1037,7 @@ OutputMaps.services = [
     site: "OpenCycleMap",
     image: "openCycleMapLogo.png",
     id: "openCycleMap",
+    prio: 8,
     cat: OutputMaps.category.plain,
     maplinks:
     {
