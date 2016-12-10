@@ -1023,7 +1023,57 @@ OutputMaps.services = [
 
         view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
     }
+},
+{
+    site: "OpenCycleMap",
+    image: "openCycleMapLogo.png",
+    id: "openCycleMap",
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        ocmOpenCycleMap: {
+            name: "OpenCycleMap"
+        },
+        ocmTransport: {
+            name: "Transport"
+        },
+        ocmLandscape: {
+            name: "Landscape"
+        },
+        ocmOutdoors: {
+            name: "Outdoors"
+        },
+        ocmTransportDark: {
+            name: "Transport Dark"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var openCycleMapBase = "http://www.opencyclemap.org/?";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            if (zoom > 18) zoom = 18;
+            zoom = "zoom=" + zoom;
+        }
+
+        this.maplinks.ocmOpenCycleMap["link"] = openCycleMapBase + zoom + '&' + mapCentre +
+            '&layers=B0000';
+        this.maplinks.ocmTransport["link"] = openCycleMapBase + zoom + '&' + mapCentre +
+            '&layers=0B000';
+        this.maplinks.ocmLandscape["link"] = openCycleMapBase + zoom + '&' + mapCentre +
+            '&layers=00B00';
+        this.maplinks.ocmOutdoors["link"] = openCycleMapBase + zoom + '&' + mapCentre +
+            '&layers=000B0';
+        this.maplinks.ocmTransportDark["link"] = openCycleMapBase + zoom + '&' + mapCentre +
+            '&layers=0000B';
+
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+    }
 }
+
 ];
 
 
