@@ -765,6 +765,25 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "opencyclemap.org",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var href = $("#permalink").attr("href");
+            var re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
+            var dataArray = href.match(re);
+            if (dataArray && dataArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": dataArray[2], "lng": dataArray[3]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(dataArray[1], dataArray[2]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
+
 var runDataExtraction = function () {
     //default null extractor
     var extractor = {
