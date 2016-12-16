@@ -1082,7 +1082,39 @@ OutputMaps.services = [
 
         view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
+},
+{
+    site: "OpenWeatherMap",
+    image: "openWeatherMap16x16.png",
+    id: "openweathermap",
+    prio: 12,
+    cat: OutputMaps.category.utility,
+    maplinks:
+    {
+        owmWeatherMap: {
+            name: "Weather Map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var owmBase = "https://openweathermap.org/weathermap?";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=6";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            if (zoom < 1) zoom = 1;
+            zoom = "zoom=" + zoom;
+        }
+
+        this.maplinks.owmWeatherMap["link"] = owmBase + zoom + '&' + mapCentre;
+
+        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+    }
 }
+
+
+
 
 ];
 
