@@ -1,5 +1,5 @@
 body {
-  font-family: Tahoma, Verdana, sans-serif;
+  font-family: sans-serif;
   font-size: 80%;
   background-color: #eee;
   margin: 4px;
@@ -189,7 +189,7 @@ h4 {
 
 
 body#optionsPage {
-    font-family: Tahoma, Verdana, sans-serif;
+    font-family: sans-serif;
     font-size: 75%;
     background-color: white;
     margin: 4px;

@@ -43,6 +43,12 @@ The included makefile allows you to build for release. Currently you may need to
 - OpenSeaMap
 - Stamen
 - Streetmap.co.uk
+- MapQuest Open
+- GPX Editor
+- TopoZone
+- SunCalc
+- SysMaps
+- OpenCycleMap
 
 ### Output mapping services
 
@@ -67,11 +73,17 @@ The included makefile allows you to build for release. Currently you may need to
 - OpenSeaMap
 - Stamen
 - GPX Editor
-- Streetmap.co.uk
+- Streetmap.co.uk (UK)
 - NGI / IGN (Belgium)
+- OpenCycleMap
+- TopoZone (US)
+- SysMaps (UK)
 
-### Download services
-- GPX
+### Utilities
+- GPX download
+- OpenWeatherMap
+- SunCalc
+- Boulter (coordinate conversion)
 
 ## Known issues
 
