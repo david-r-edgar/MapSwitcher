@@ -60,7 +60,7 @@ OutputMaps.services = [
         var googleBase = "https://www.google.co.uk/maps/";
         var directions = "";
         var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
-        var zoom = "10z";
+        var zoom = "13z";
         var dataWpts = "";
         var dataDirnOptions = "";
 
