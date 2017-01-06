@@ -483,16 +483,18 @@ extractors.push({
                     sourceMapData.directions.route.push(wptObj);
                 }
             }
-            for (wptIndex in sourceMapData.directions.route) {
-                //URL can contain empty waypoints, when locations have not yet been entered
-                //into the search box. So we need to do a bit of clean-up.
-                if (undefined == sourceMapData.directions.route[wptIndex]) {
-                    sourceMapData.directions.route.splice(wptIndex, 1);
+            if (sourceMapData.directions && sourceMapData.directions.route) {
+                for (wptIndex in sourceMapData.directions.route) {
+                    //URL can contain empty waypoints, when locations have not yet been entered
+                    //into the search box. So we need to do a bit of clean-up.
+                    if (undefined == sourceMapData.directions.route[wptIndex]) {
+                        sourceMapData.directions.route.splice(wptIndex, 1);
+                    }
                 }
-            }
-            if (sourceMapData.directions.route.length < 2) {
-                //if directions don't contain at least two points, they are considered invalid
-                delete sourceMapData.directions;
+                if (sourceMapData.directions.route.length < 2) {
+                    //if directions don't contain at least two points, they are considered invalid
+                    delete sourceMapData.directions;
+                }
             }
             resolve(sourceMapData);
         }
