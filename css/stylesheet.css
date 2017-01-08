@@ -46,6 +46,9 @@ body {
 a.maplink:hover {
   background-color: #aae5f5;
 }
+a.maplink:active {
+  color: #110066;
+}
 .serviceLine {
   margin: 1px 0px;
 }
