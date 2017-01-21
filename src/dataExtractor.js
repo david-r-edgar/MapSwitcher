@@ -14,7 +14,19 @@ extractors.push({
     host: ".google.",
     extract:
         function(resolve, reject) {
-            if (window.location.pathname.indexOf("/maps/") === 0) {
+            //exceptional case for custom maps
+            if ("/maps/d/viewer" == window.location.pathname) {
+                var sourceMapData = {}
+                var re = /ll=([-0-9.]+)%2C([-0-9.]+)&z=([0-9.]+)/;
+                var coordArray = window.location.search.match(re);
+                if (coordArray && coordArray.length > 3) {
+                    sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                    sourceMapData.resolution =
+                        calculateResolutionFromStdZoom(coordArray[3], coordArray[1]);
+                }
+                resolve(sourceMapData);
+            }
+            else if (window.location.pathname.indexOf("/maps/") === 0) {
 
                 var sourceMapData = {}
                 var re = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/;
