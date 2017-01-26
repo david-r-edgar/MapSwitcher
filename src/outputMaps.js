@@ -1111,9 +1111,34 @@ OutputMaps.services = [
 
         view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
     }
+},
+{
+    site: "Flickr",
+    image: "flickr16x16.png",
+    id: "flickr",
+    cat: OutputMaps.category.utility,
+    maplinks:
+    {
+        flickr: {
+            name: "World map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var base = "http://www.flickr.com/map/";
+        var mapCentre = "fLat=" + sourceMapData.centreCoords.lat + "&fLon=" + sourceMapData.centreCoords.lng;
+        var zoom = "12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+        }
+        zoom = "zl=" + zoom;
+
+        this.maplinks.flickr["link"] = base + "?" + mapCentre + "&" + zoom + "&everyone_nearby=1";
+
+        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+    }
 }
-
-
 
 
 ];
