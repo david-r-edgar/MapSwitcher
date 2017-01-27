@@ -315,7 +315,7 @@ OutputMaps.services = [
     site: "Wikimedia Labs",
     image: "wmLabsLogo16x16.png",
     id: "wmLabs",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.utility,
     prio: 4,
     maplinks:
     {
@@ -342,7 +342,7 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 4, 16) - 1;
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
     }
 },
 {
