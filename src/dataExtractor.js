@@ -798,6 +798,32 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "facebook.com",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+
+            var eventMapImages = $(".fbPlaceFlyoutWrap img");
+            var re = /center=([-0-9.]+)%2C([-0-9.]+)&zoom=([0-9]+)/;
+            for (var imgEl of eventMapImages) {
+                var matchArr = imgEl.currentSrc.match(re);
+                //we expect there to be more than one image; we assume that only one will contain
+                //coords (i.e. the map thumbnail), so use the first such one we find
+                if (matchArr && matchArr.length > 3) {
+                    sourceMapData.centreCoords = {"lat": matchArr[1], "lng": matchArr[2]}
+                    sourceMapData.resolution =
+                        calculateResolutionFromStdZoom(matchArr[3], matchArr[1]);
+                    break;
+                }
+            }
+
+            resolve(sourceMapData);
+        }
+});
+
+
+
 var runDataExtraction = function () {
     //default null extractor
     var extractor = {
