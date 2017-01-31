@@ -804,17 +804,54 @@ extractors.push({
         function(resolve) {
             var sourceMapData = {}
 
-            var eventMapImages = $(".fbPlaceFlyoutWrap img");
-            var re = /center=([-0-9.]+)%2C([-0-9.]+)&zoom=([0-9]+)/;
-            for (var imgEl of eventMapImages) {
-                var matchArr = imgEl.currentSrc.match(re);
-                //we expect there to be more than one image; we assume that only one will contain
-                //coords (i.e. the map thumbnail), so use the first such one we find
-                if (matchArr && matchArr.length > 3) {
-                    sourceMapData.centreCoords = {"lat": matchArr[1], "lng": matchArr[2]}
-                    sourceMapData.resolution =
-                        calculateResolutionFromStdZoom(matchArr[3], matchArr[1]);
-                    break;
+            ///// Generic map image (relying on the obfuscated class name continuing to be used) /////
+            var mapImages = $("._a3f.img");
+            if (mapImages.length > 0) {
+                if (mapImages[0].currentSrc) {
+                    var re = /zoom=([0-9]+)&markers=([-0-9.]+)%2C([-0-9.]+)/;
+                    for (var imgEl of mapImages) {
+                        var matchArr = imgEl.currentSrc.match(re);
+                        if (matchArr && matchArr.length > 3) {
+                            sourceMapData.centreCoords = {"lat": matchArr[2], "lng": matchArr[3]}
+                            sourceMapData.resolution =
+                                calculateResolutionFromStdZoom(matchArr[1], matchArr[2]);
+                            break;
+                        }
+                    }
+                }
+            }
+            ///// Events /////
+            else if (window.location.pathname.indexOf("/events/") === 0) {
+                var eventMapImages = $(".fbPlaceFlyoutWrap img");
+                if (eventMapImages.length > 0) {
+                    var re = /center=([-0-9.]+)%2C([-0-9.]+)&zoom=([0-9]+)/;
+                    for (var imgEl of eventMapImages) {
+                        var matchArr = imgEl.currentSrc.match(re);
+                        //we expect there to be more than one image; we assume that only one will contain
+                        //coords (i.e. the map thumbnail), so use the first such one we find
+                        if (matchArr && matchArr.length > 3) {
+                            sourceMapData.centreCoords = {"lat": matchArr[1], "lng": matchArr[2]}
+                            sourceMapData.resolution =
+                                calculateResolutionFromStdZoom(matchArr[3], matchArr[1]);
+                            break;
+                        }
+                    }
+                }
+            }
+            else {
+                ///// Pages /////
+                var pageSidebarImages = $("#pages_side_column img");
+                if (pageSidebarImages.length > 0) {
+                    var re = /zoom=([0-9]+)&markers=([-0-9.]+)%2C([-0-9.]+)/;
+                    for (var imgEl of pageSidebarImages) {
+                        var matchArr = imgEl.currentSrc.match(re);
+                        if (matchArr && matchArr.length > 3) {
+                            sourceMapData.centreCoords = {"lat": matchArr[2], "lng": matchArr[3]}
+                            sourceMapData.resolution =
+                                calculateResolutionFromStdZoom(matchArr[1], matchArr[2]);
+                            break;
+                        }
+                    }
                 }
             }
 
