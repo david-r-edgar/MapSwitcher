@@ -49,6 +49,7 @@ The included makefile allows you to build for release. Currently you may need to
 - SunCalc
 - SysMaps
 - OpenCycleMap
+- Facebook (pages and events)
 
 ### Output mapping services
 
@@ -84,6 +85,7 @@ The included makefile allows you to build for release. Currently you may need to
 - OpenWeatherMap
 - SunCalc
 - Boulter (coordinate conversion)
+- Flickr (map of nearby photos)
 
 ## Known issues
 
