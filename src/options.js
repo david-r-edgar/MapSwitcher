@@ -74,7 +74,6 @@ function restoreOptions() {
     $("#mapsTickList tbody").html("");
     $("#utilsTickList tbody").html("");
     for (outputMapService of OutputMaps.services) {
-        var listSel = "";
         switch(outputMapService.cat) {
             case OutputMaps.category.utility:
             case OutputMaps.category.download:

@@ -598,7 +598,7 @@ extractors.push({
                             sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
                             sourceMapData.resolution = calculateResolutionFromStdZoom(
                                 16, sourceMapData.centreCoords.lat);
-                            sourceMapData.locationDescr = "current 'Pin' location";
+                            sourceMapData.locationDescr = "current map centre";
                             resolve(sourceMapData);
                         }
                         gpsElem.setAttribute("href", "/");

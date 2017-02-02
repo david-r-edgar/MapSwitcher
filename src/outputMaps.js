@@ -916,7 +916,11 @@ OutputMaps.services = [
                     }
                 }
 
-                view.addMapServiceLinks(OutputMaps.category.plain, that, that.maplinks);
+                this.note = "Due to NGI/IGN limitations, you should first go to " +
+                            "http://www.ngi.be/topomapviewer and accept the " +
+                            "conditions.\nThis should then work properly in future.";
+
+                view.addMapServiceLinks(OutputMaps.category.plain, that, that.maplinks, this.note);
             });
 
 
