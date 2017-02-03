@@ -1,45 +1,46 @@
 <!doctype html>
-<html>
-<head>
-  <title>Options - Map Switcher</title>
-  <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
-  <script src="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-  <script src="../src/outputMaps.js"></script>
-  <link rel="stylesheet" href="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.css">
-  <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="../css/stylesheet.css">
-</head>
-<body id="optionsPage">
-<div class=borderBox>
-<div id="optionsTitleLine">
-  <img src="../image/mapswitcher48x48.png"> <h2>Map Switcher</h2>
-</div>
-</div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Options - Map Switcher</title>
+    <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
+    <script src="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="../src/outputMaps.js"></script>
+    <link rel="stylesheet" href="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.css">
+    <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/stylesheet.css">
+  </head>
+  <body id="optionsPage">
+    <div class=borderBox>
+    <div id="optionsTitleLine">
+      <img src="../image/mapswitcher48x48.png"> <h2>Map Switcher</h2>
+    </div>
+    </div>
 
-<article class="options">
-<h3>Output service options</h3>
+    <article class="options">
+      <h3>Output service options</h3>
 
-<section class="services">
-<table id="mapsTickList" class=srvTickList>
-    <thead>
-      <th></th><th colspan=2 class=srvTitle>Mapping services</th><th><input type="checkbox" id="mapsSelectAllNone" class=selectAllNone cat="mapsTickList"/> </th>
-    </thead>
-    <tbody class="sortable">
-    </tbody>
-</table>
-<table id="utilsTickList" class=srvTickList>
-    <thead>
-      <th></th><th colspan=2 class=srvTitle>Utilities</th><th><input type="checkbox" id="utilsSelectAllNone" class=selectAllNone cat="utilsTickList"/> </th>
-    </thead>
-    <tbody class="sortable">
-    </tbody>
-</table>
-</section>
+      <section class="services">
+        <table id="mapsTickList" class=srvTickList>
+          <thead>
+            <th></th><th colspan=2 class=srvTitle>Mapping services</th><th><input type="checkbox" id="mapsSelectAllNone" class=selectAllNone cat="mapsTickList"/> </th>
+          </thead>
+          <tbody class="sortable">
+          </tbody>
+        </table>
+        <table id="utilsTickList" class=srvTickList>
+          <thead>
+            <th></th><th colspan=2 class=srvTitle>Utilities</th><th><input type="checkbox" id="utilsSelectAllNone" class=selectAllNone cat="utilsTickList"/> </th>
+          </thead>
+          <tbody class="sortable">
+          </tbody>
+        </table>
+      </section>
 
-<div id="status"></div>
-<button id="reset" class="fa fa-undo"> Reset to defaults...</button>
-</article>
+      <div id="status"></div>
+      <button id="reset" class="fa fa-undo"> Reset to defaults...</button>
+    </article>
 
-<script src="../src/options.js"></script>
-</body>
+    <script src="../src/options.js"></script>
+  </body>
 </html>
