@@ -1,3 +1,5 @@
+SHELL = /bin/sh
+
 ODIR=release
 
 UGLIFY=~/uglifyjs2harmony/bin/uglifyjs
@@ -23,10 +25,10 @@ DIRS_TO_COPY = \
 	$(ODIR)/css \
 	$(ODIR)/vendor
 
+all: extension
 
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
-
 
 $(BUILDDIR)/dataExtractor.js: dataExtractor.js
 	$(UGLIFY) $< $(UGLIFY_OPTIONS) -o $@
@@ -57,4 +59,3 @@ clean:
 
 .PHONY: clean
 
-all: extension
