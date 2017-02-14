@@ -25,7 +25,11 @@
                     return reject();
                 } else {
                     fn.call(browser.tabs, tabId, info, function (result) {
-                        return resolve(result);
+                        if (undefined === chrome.runtime.lastError) {
+                            return resolve(result);
+                        } else {
+                            return reject();
+                        }
                     });
                 }
             });

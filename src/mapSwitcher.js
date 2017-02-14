@@ -229,6 +229,54 @@ var MapLinksView = {
 var MapSwitcher = {
 
     /**
+     * Checks if we should continue attempting to extract data from the current tab.
+     *
+     * @return Promise which fulfils if OK to continue, otherwise rejects.
+     */
+    validateCurrentTab: function() {
+        return new Promise (function(resolve, reject) {
+            browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                if ((tabs[0].url.indexOf("chrome://") >= 0) ||
+                    (tabs[0].url.indexOf("chrome-extension://") >= 0) ||
+                    (tabs[0].url.indexOf("//chrome.google.com/") >= 0)) {
+                    reject(null);
+                } else {
+                    resolve(null);
+                }
+            });
+        });
+    },
+
+    /**
+     * Runs the content scripts which handle the extraction of coordinate data from the current tab.
+     *
+     * @return Promise which fulfils when complete
+     */
+    runExtraction: function() {
+        return new Promise (function(resolve, reject) {
+            new ScriptExecution().executeScripts(
+                "/vendor/jquery/jquery-2.2.4.min.js",
+                "/vendor/google-maps-data-parameter-parser/src/googleMapsDataParameter.js",
+                "/src/mapUtil.js",
+                "/src/dataExtractor.js");
+            resolve();
+        });
+    },
+
+    /**
+     * Sets up message listener to receive results from content script
+     *
+     * @return Promise which fulfils with the source map data
+     */
+    listenForExtraction: function() {
+        return new Promise(function(resolve, reject) {
+            browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+                resolve(request.sourceMapData);
+            });
+        });
+    },
+
+    /**
     * Put the extracted data in a standard format, and perform any necessary checks
     * to ensure the extracted data object is suitable for output use.
     *
@@ -301,14 +349,14 @@ var MapSwitcher = {
     },
 
     /**
-    * Main method of the map switcher popup.
+    * Constructs the outputs to be shown in the extension popup.
     *
-    * Only run once the dataExtractor has been executed on the current tab.
+    * Run once the dataExtractor has been executed on the current tab.
     * Iterates throught the map services to request them to generate their links.
     *
     * @param sourceMapData
     */
-    run: function(sourceMapData) {
+    constructOutputs: function(sourceMapData) {
         if (sourceMapData.nonUpdating !== undefined) {
 
             var modal = document.getElementById('warningModal');
@@ -397,31 +445,18 @@ var MapSwitcher = {
  */
 $(document).ready(function() {
 
-    var sourceDataListener = new Promise(function(resolve, reject) {
-        browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-            resolve(request.sourceMapData);
-        });
-        browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            if ((tabs[0].url.indexOf("chrome://") >= 0) ||
-                (tabs[0].url.indexOf("chrome-extension://") >= 0)) {
-                reject(null);
-            }
-        });
-    });
-
-    var scriptExec = new ScriptExecution()
-        .executeScripts("vendor/jquery/jquery-2.2.4.min.js",
-                        "vendor/google-maps-data-parameter-parser/src/googleMapsDataParameter.js",
-                        "src/mapUtil.js",
-                        "src/dataExtractor.js");
-
-    Promise.all([sourceDataListener, scriptExec])
+    MapSwitcher.validateCurrentTab().then(function() {
+        Promise.all([MapSwitcher.listenForExtraction(), MapSwitcher.runExtraction()])
+        //s[0] refers to the source map data received from the dataExtractor script
         .then(s => s[0])
-        //the following functions use the result of the dataExtractor script
+        //the following functions use the extracted source map data to build the view
         .then(s => MapSwitcher.normaliseExtractedData(s))
         .then(s => MapSwitcher.getCountryCode(s))
-        .then(s => MapSwitcher.run(s))
+        .then(s => MapSwitcher.constructOutputs(s))
         .then(s => MapSwitcher.loaded(s))
         .catch(s => (MapSwitcher.handleNoCoords(s)));
+    }, function() {
+        MapSwitcher.handleNoCoords();
+    });
 });
 
