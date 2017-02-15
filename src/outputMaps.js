@@ -57,7 +57,7 @@ OutputMaps.services = [
         }
     },
     generate: function(sourceMapData, view) {
-        var googleBase = "https://www.google.co.uk/maps/";
+        var googleBase = "https://www.google.com/maps/";
         var directions = "";
         var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
         var zoom = "13z";
