@@ -110,21 +110,15 @@ h4 {
   /*flex: 2;*/
   flex-direction: column;
   flex-wrap: wrap;
-  position: relative;
-  max-height: 480px;
-  width: 530px;
+/*  position: relative;*/
+  max-height: 440px;
+  width: 538px;
+  overflow-x: auto;
 }
 
-.maplinkcat#multiSegDirns,
-.maplinkcat#singleSegDirns,
-.maplinkcat#noDirns {
-    max-width: 284px;
-    margin: 0px 4px;
-}
-.maplinkcat#utilities,
-.maplinkcat#downloads {
-    max-width: 230px;
-    margin: 0px 4px;
+.maplinkcat {
+  max-width: 260px;
+  margin: 0px 4px;
 }
 
 #warningModal {

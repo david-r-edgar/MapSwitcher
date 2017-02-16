@@ -35,7 +35,6 @@ jQuery.fn.sortDivs = function sortDivs() {
 
 
 
-
 /**
  * Main view object for the extension popup.
  */
@@ -59,6 +58,8 @@ var MapLinksView = {
             return "#singleSegDirns";
         } else if (OutputMaps.category.utility === category) {
             return "#utilities";
+        } else if (OutputMaps.category.special === category) {
+            return "#special";
         } else {
             return "#noDirns";
         }
@@ -89,6 +90,9 @@ var MapLinksView = {
                     break;
                 case OutputMaps.category.utility:
                     title = "Miscellaneous";
+                    break;
+                case OutputMaps.category.special:
+                    title = "Special";
                     break;
                 default:
                     if (this.sourceDirnSegs >= 1) {
@@ -146,7 +150,7 @@ var MapLinksView = {
     addFileDownload: function(mapService, id, name, fileGenerator) {
 
         //only add the title once
-        if ($("#downloads").text().length === 0) {
+         if ($("#downloads").text().length === 0) {
             $("#downloads").append("<h4>Downloads</h4>");
         }
 

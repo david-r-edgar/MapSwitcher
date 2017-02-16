@@ -16,6 +16,7 @@ var OutputMaps = {
         multidirns: 2,
         singledirns: 1,
         plain: 0,
+        special: 5,
         utility: 3,
         download: 4
     }
@@ -342,7 +343,7 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 4, 16) - 1;
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -374,7 +375,7 @@ OutputMaps.services = [
         this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -382,7 +383,7 @@ OutputMaps.services = [
     image: "geocachingLogo16x16.png",
     id: "geocaching",
     note: "geocaching.com requires login to see the map (free sign-up)",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         geocaching: {
@@ -401,14 +402,14 @@ OutputMaps.services = [
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
+        view.addMapServiceLinks(this.cat, this, this.maplinks, this.note);
     }
 },
 {
     site: "what3words",
     image: "w3wLogo.png",
     id: "w3w",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         what3words: {
@@ -420,7 +421,7 @@ OutputMaps.services = [
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -450,7 +451,7 @@ OutputMaps.services = [
 
         this.maplinks.mqOpen["link"] = mapquestBase + mapCentre + '&' + zoom;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -606,14 +607,14 @@ OutputMaps.services = [
 
         this.maplinks.openSeaMap["link"] = openSeaMapBase + zoom + '&' + mapCentre + '&' + layers;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
     site: "Stamen",
     image: "greyMarker.png",
     id: "stamen",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         stamenWatercolor: {
@@ -642,7 +643,7 @@ OutputMaps.services = [
         this.maplinks.stamenToner["link"] = stamenBase + "toner/#" + zoom + '/' + mapCentre;
         this.maplinks.stamenTerrain["link"] = stamenBase + "terrain/#" + zoom + '/' + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -770,7 +771,7 @@ OutputMaps.services = [
 
             this.maplinks.streetmap["link"] = streetmapMapBase + mapCentre + "&A=Y&" + zoomArg;
 
-            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
 },
@@ -778,7 +779,7 @@ OutputMaps.services = [
     site: "GPX Editor",
     image: "gpxed16x16.png",
     id: "gpxeditor",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         gpxedmap: {
@@ -816,7 +817,7 @@ OutputMaps.services = [
         }
         this.maplinks.gpxedocm["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OCM";
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
+        view.addMapServiceLinks(this.cat, this, this.maplinks, this.note);
     }
 },
 {
@@ -920,7 +921,7 @@ OutputMaps.services = [
                             "http://www.ngi.be/topomapviewer and accept the " +
                             "conditions.\nThis should then work properly in future.";
 
-                view.addMapServiceLinks(OutputMaps.category.plain, that, that.maplinks, this.note);
+                view.addMapServiceLinks(this.cat, that, that.maplinks, this.note);
             });
 
 
@@ -959,7 +960,7 @@ OutputMaps.services = [
 
         this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time;
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -990,7 +991,7 @@ OutputMaps.services = [
 
             this.maplinks.topozoneMap["link"] = topozoneBase + "map/?" + mapCentre + zoom;
 
-            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
 },
@@ -1013,7 +1014,7 @@ OutputMaps.services = [
 
             this.maplinks.sysmapsOS["link"] = sysmapsBase + mapCentre;
 
-            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
 },
@@ -1034,7 +1035,7 @@ OutputMaps.services = [
 
         this.maplinks.boulterConverter["link"] = boulterBase + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -1084,7 +1085,7 @@ OutputMaps.services = [
         this.maplinks.ocmTransportDark["link"] = openCycleMapBase + zoom + '&' + mapCentre +
             '&layers=0000B';
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -1113,7 +1114,7 @@ OutputMaps.services = [
 
         this.maplinks.owmWeatherMap["link"] = owmBase + zoom + '&' + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -1140,10 +1141,9 @@ OutputMaps.services = [
 
         this.maplinks.flickr["link"] = base + "?" + mapCentre + "&" + zoom + "&everyone_nearby=1";
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 }
-
 
 ];
 
