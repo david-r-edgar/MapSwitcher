@@ -66,10 +66,6 @@ OutputMaps.services = [
         var dataWpts = "";
         var dataDirnOptions = "";
 
-        if ("address" in sourceMapData) {
-            place = "place/" + sourceMapData.address + "/";
-        }
-
         if ("directions" in sourceMapData && "route" in sourceMapData.directions) {
             directions = "dir/";
 
@@ -117,6 +113,11 @@ OutputMaps.services = [
             //add elements identifying directions, with counts of all following sub-elements
             var exclMarkCount = (dataDirnOptions.match(/!/g) || []).length;
             dataDirnOptions = "!4m" + (exclMarkCount + 1) + "!4m" + exclMarkCount + dataDirnOptions;
+        }
+        //only insert a named individual place if there are no directions
+        // - google maps doesn't expect both
+        else if ("address" in sourceMapData) {
+            place = "place/" + sourceMapData.address + "/";
         }
 
         if ("resolution" in sourceMapData) {
