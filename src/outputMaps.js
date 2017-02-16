@@ -126,12 +126,13 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 3) + "z";
         }
 
-        var commonLink = googleBase + place + directions + mapCentre + zoom;
-        this.maplinks.googlemaps["link"] = commonLink + "/data=" + dataDirnOptions;
-        this.maplinks.googleterrain["link"] = commonLink + "/data=" + dataDirnOptions + "!5m1!1e4";
-        this.maplinks.googleearth["link"] = commonLink + "/data=!3m1!1e3" + dataDirnOptions;
-        this.maplinks.googletraffic["link"] = commonLink + "/data=" + dataDirnOptions + "!5m1!1e1";
-        this.maplinks.googlebike["link"] = commonLink + "/data=" + dataDirnOptions + "!5m1!1e3";
+        var coreLink = googleBase + place + directions + mapCentre + zoom;
+
+        this.maplinks.googlemaps["link"] = coreLink + "/data=" + dataDirnOptions;
+        this.maplinks.googleterrain["link"] = coreLink + "/data=" + dataDirnOptions + "!5m1!1e4";
+        this.maplinks.googleearth["link"] = coreLink + "/data=!3m1!1e3" + dataDirnOptions;
+        this.maplinks.googletraffic["link"] = coreLink + "/data=" + dataDirnOptions + "!5m1!1e1";
+        this.maplinks.googlebike["link"] = coreLink + "/data=" + dataDirnOptions + "!5m1!1e3";
 
         if (directions.length > 0) {
             view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks);
@@ -205,6 +206,9 @@ OutputMaps.services = [
 
             directions += mode;
         }
+        else if ("address" in sourceMapData) {
+            directions = "q=" + sourceMapData.address + "&mkt=en&FORM=HDRSC4";
+        }
 
         this.maplinks.bingroad["link"] =
             bingBase + directions + "&" + mapCentre + zoom;
@@ -269,8 +273,7 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 19) + "/";
         }
 
-        if (sourceMapData.directions &&
-                "route" in sourceMapData.directions) {
+        if (sourceMapData.directions && "route" in sourceMapData.directions) {
 
             var mode = "";
             if (sourceMapData.directions.mode) {
@@ -303,6 +306,9 @@ OutputMaps.services = [
                             + "all specified as coordinates.";
             }
         }
+        //else if ("address" in sourceMapData) {
+        //    directions = "search?query=" + sourceMapData.address;
+        //}
 
         var coreLink = osmBase + directions + "#map=" + zoom + mapCentre;
 
