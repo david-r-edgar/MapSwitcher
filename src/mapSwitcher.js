@@ -378,7 +378,6 @@ var MapSwitcher = {
                     modal.style.display = "none";
                 }
             }
-
         }
 
         document.getElementById("sourceLocnVal").textContent =

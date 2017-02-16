@@ -48,12 +48,18 @@ extractors.push({
                     }
                 }
 
+                var addrRe = /\/place\/([^\/]+)\//;
+                var addrArray = window.location.pathname.match(addrRe);
+                if (addrArray && addrArray.length > 1) {
+                    sourceMapData.address = addrArray[1];
+                }
+
                 //google maps URLs have route waypoints specified in two different places
 
                 //first we look for the 'dir' waypoints
                 //these are where any named addresses will be (but maybe coords too)
-                var re = /dir\/(([-A-Za-z0-9%'+,!$_.*()]+\/){2,})@/
-                var wholeRouteArray = window.location.pathname.match(re);
+                var dirnRe = /dir\/(([-A-Za-z0-9%'+,!$_.*()]+\/){2,})@/
+                var wholeRouteArray = window.location.pathname.match(dirnRe);
                 if (wholeRouteArray && wholeRouteArray.length > 1) {
                     sourceMapData.directions = {}
                     sourceMapData.directions.route = new Array();

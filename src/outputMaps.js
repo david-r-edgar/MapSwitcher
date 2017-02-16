@@ -60,10 +60,15 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         var googleBase = "https://www.google.com/maps/";
         var directions = "";
+        var place = "";
         var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
         var zoom = "13z";
         var dataWpts = "";
         var dataDirnOptions = "";
+
+        if ("address" in sourceMapData) {
+            place = "place/" + sourceMapData.address + "/";
+        }
 
         if ("directions" in sourceMapData && "route" in sourceMapData.directions) {
             directions = "dir/";
@@ -120,11 +125,12 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 3) + "z";
         }
 
-        this.maplinks.googlemaps["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions;
-        this.maplinks.googleterrain["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e4";
-        this.maplinks.googleearth["link"] = googleBase + directions + mapCentre + zoom + "/data=!3m1!1e3" + dataDirnOptions;
-        this.maplinks.googletraffic["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e1";
-        this.maplinks.googlebike["link"] = googleBase + directions + mapCentre + zoom + "/data=" + dataDirnOptions + "!5m1!1e3";
+        var commonLink = googleBase + place + directions + mapCentre + zoom;
+        this.maplinks.googlemaps["link"] = commonLink + "/data=" + dataDirnOptions;
+        this.maplinks.googleterrain["link"] = commonLink + "/data=" + dataDirnOptions + "!5m1!1e4";
+        this.maplinks.googleearth["link"] = commonLink + "/data=!3m1!1e3" + dataDirnOptions;
+        this.maplinks.googletraffic["link"] = commonLink + "/data=" + dataDirnOptions + "!5m1!1e1";
+        this.maplinks.googlebike["link"] = commonLink + "/data=" + dataDirnOptions + "!5m1!1e3";
 
         if (directions.length > 0) {
             view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks);
