@@ -380,6 +380,13 @@ var MapSwitcher = {
             }
         }
 
+        if ("alternativeCoords" in sourceMapData) {
+            $("#alternativeSource>a").show();
+            $("#alternativeSource>a").click(function() {
+                console.log("switch source");
+            });
+        }
+
         document.getElementById("sourceLocnVal").textContent =
             Number(sourceMapData.centreCoords.lat).toFixed(7) +  ", " +
             Number(sourceMapData.centreCoords.lng).toFixed(7);

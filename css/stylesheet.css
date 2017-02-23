@@ -294,3 +294,7 @@ button#reset {
     margin-left: -1.3em;
 }
 
+#alternativeSource>a {
+    color: black;
+    display: none;
+}
