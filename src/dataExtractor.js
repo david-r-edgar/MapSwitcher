@@ -61,8 +61,13 @@ extractors.push({
                 var dirnRe = /dir\/(([-A-Za-z0-9%'+,!$_.*()]+\/){2,})@/
                 var wholeRouteArray = window.location.pathname.match(dirnRe);
                 if (wholeRouteArray && wholeRouteArray.length > 1) {
-                    sourceMapData.directions = {}
-                    sourceMapData.directions.route = new Array();
+                    sourceMapData.searches =
+                    [
+                        {
+                            directions: {}
+                        }
+                    ]
+                    sourceMapData.searches[0].directions.route = new Array();
                     for (var arrWpt of wholeRouteArray[1].split('/')) {
                         if (arrWpt.length > 0) {
                             var wptObj = { address: arrWpt }
@@ -74,7 +79,7 @@ extractors.push({
                                 wptObj.coords =
                                 { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
                             }
-                            sourceMapData.directions.route.push(wptObj);
+                            sourceMapData.searches[0].directions.route.push(wptObj);
                         }
                     }
                 }
@@ -91,13 +96,13 @@ extractors.push({
                         //be equal to number of sourceMapData wpts
                         for (var gmdpWpt of gmdpRoute.getAllWaypoints()) {
                             if (gmdpWpt.primary) {
-                                var mapDataWptCoords = sourceMapData.directions.route[mapDataWptIndex].coords;
+                                var mapDataWptCoords = sourceMapData.searches[0].directions.route[mapDataWptIndex].coords;
                                 //if coords are not yet specified, insert them
                                 //- but don't overwrite them if they're already there
                                 if ((!mapDataWptCoords) ||
                                     (mapDataWptCoords.lat === undefined) ||
                                     (mapDataWptCoords === undefined)) {
-                                    sourceMapData.directions.route[mapDataWptIndex].coords =
+                                    sourceMapData.searches[0].directions.route[mapDataWptIndex].coords =
                                             { lat: gmdpWpt.lat, lng: gmdpWpt.lng }
                                 }
                                 mapDataWptIndex++;
@@ -105,11 +110,11 @@ extractors.push({
                             else {
                                 var newSecondaryWpt =
                                     { coords: { lat: gmdpWpt.lat, lng: gmdpWpt.lng } }
-                                sourceMapData.directions.route.splice(mapDataWptIndex, 0, newSecondaryWpt);
+                                sourceMapData.searches[0].directions.route.splice(mapDataWptIndex, 0, newSecondaryWpt);
                                 mapDataWptIndex++;
                             }
                         }
-                        sourceMapData.directions.mode = gmdpRoute.getTransportation();
+                        sourceMapData.searches[0].directions.mode = gmdpRoute.getTransportation();
                     }
                     var gmdpPins = gmdp.getPins();
                     if (gmdpPins && gmdpPins.length > 0) {
@@ -184,32 +189,40 @@ extractors.push({
 
             if ($("#directionsPanelRoot").length) {
                 //we expect a single 'From' input, followed by one or more 'To' inputs
-                sourceMapData.directions = {
-                    route: [ { address: $(".dirWaypoints input[title='From']").val() } ]
-                }
+
+                sourceMapData.searches =
+                [
+                    {
+                        directions:
+                        {
+                            route: [ { address: $(".dirWaypoints input[title='From']").val() } ]
+                        }
+                    }
+                ]
+
                 $(".dirWaypoints input[title='To']").each(function() {
-                sourceMapData.directions.route.push( { address: $(this).val() } );
+                    sourceMapData.searches[0].directions.route.push( { address: $(this).val() } );
                 });
 
                 var re = /([-0-9.]+)[ ]*,[ ]*([-0-9.]+)/
-                for (rteWptIndex in sourceMapData.directions.route) {
+                for (rteWptIndex in sourceMapData.searches[0].directions.route) {
                     var wptArray =
-                        sourceMapData.directions.route[rteWptIndex].address.match(re);
+                        sourceMapData.searches[0].directions.route[rteWptIndex].address.match(re);
                     if (wptArray && wptArray.length > 2) {
-                        sourceMapData.directions.route[rteWptIndex].coords =
+                        sourceMapData.searches[0].directions.route[rteWptIndex].coords =
                             {"lat": wptArray[1], "lng": wptArray[2]}
                     }
                 }
 
                 switch($(".dirBtnSelected")[0].classList[0]) {
                     case "dirBtnDrive":
-                        sourceMapData.directions.mode = "car";
+                        sourceMapData.searches[0].directions.mode = "car";
                         break;
                     case "dirBtnTransit":
-                        sourceMapData.directions.mode = "transit";
+                        sourceMapData.searches[0].directions.mode = "transit";
                         break;
                     case "dirBtnWalk":
-                        sourceMapData.directions.mode = "foot";
+                        sourceMapData.searches[0].directions.mode = "foot";
                         break;
                 }
             }
@@ -237,20 +250,27 @@ extractors.push({
                 && ($("#route_from").val().length > 0)
                 && ($("#route_to").val().length > 0)) {
 
-                sourceMapData.directions = {
-                    route: [
-                        { address: $("#route_from").val() },
-                        { address: $("#route_to").val() }
-                    ]
-                }
+                sourceMapData.searches =
+                [
+                    {
+                        directions:
+                        {
+                            route:
+                            [
+                                { address: $("#route_from").val() },
+                                { address: $("#route_to").val() }
+                            ]
+                        }
+                    }
+                ]
 
                 re = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/;
                 var routeCoordsArray = window.location.search.match(re);
                 if (routeCoordsArray && routeCoordsArray.length > 4) {
-                    sourceMapData.directions.route[0].coords =
+                    sourceMapData.searches[0].directions.route[0].coords =
                         { "lat": routeCoordsArray[1],
                         "lng": routeCoordsArray[2] }
-                    sourceMapData.directions.route[1].coords =
+                    sourceMapData.searches[0].directions.route[1].coords =
                         { "lat": routeCoordsArray[3],
                         "lng": routeCoordsArray[4] }
                 }
@@ -260,13 +280,13 @@ extractors.push({
                 if (modeArray && modeArray.length > 1) {
                     switch (modeArray[1]) {
                         case "bicycle":
-                            sourceMapData.directions.mode = "bike";
+                            sourceMapData.searches[0].directions.mode = "bike";
                             break;
                         case "car":
-                            sourceMapData.directions.mode = "car";
+                            sourceMapData.searches[0].directions.mode = "car";
                             break;
                         case "foot":
-                            sourceMapData.directions.mode = "foot";
+                            sourceMapData.searches[0].directions.mode = "foot";
                             break;
                     }
                 }
@@ -398,18 +418,25 @@ extractors.push({
             var routeCoordsArray = routesHref.match(re);
             if (routeCoordsArray && routeCoordsArray.length > 4) {
 
-                sourceMapData.directions = {
-                    route: [
+                sourceMapData.searches =
+                [
+                    {
+                        directions:
                         {
-                            coords: { lat: routeCoordsArray[1],
-                                    lng: routeCoordsArray[2] }
-                        },
-                        {
-                            coords: { lat: routeCoordsArray[3],
-                                    lng: routeCoordsArray[4] }
+                            route:
+                            [
+                                {
+                                    coords: { lat: routeCoordsArray[1],
+                                            lng: routeCoordsArray[2] }
+                                },
+                                {
+                                    coords: { lat: routeCoordsArray[3],
+                                            lng: routeCoordsArray[4] }
+                                }
+                            ]
                         }
-                    ]
-                }
+                    }
+                ]
             }
             resolve(sourceMapData);
         }
@@ -455,41 +482,41 @@ extractors.push({
 
             //check if pathname contains directions
             var state = -1;
-            for (var directions of window.location.pathname.split('/')) {
+            for (var dirnPart of window.location.pathname.split('/')) {
                 if (state < 0) {
-                    if (directions == "directions") {
-                        sourceMapData.directions = {}
+                    if (dirnPart == "directions") {
+                        var smdDirs = {}
                         state = 0;
                     }
                 } else if (0 === state) {
-                    switch (directions) {
+                    switch (dirnPart) {
                         case "mix":
                             break;
                         case "walk":
-                            sourceMapData.directions.mode = "foot";
+                            smdDirs.mode = "foot";
                             break;
                         case "bicycle":
-                            sourceMapData.directions.mode = "bike";
+                            smdDirs.mode = "bike";
                             break;
                         case "drive":
-                            sourceMapData.directions.mode = "car";
+                            smdDirs.mode = "car";
                             break;
                         case "publicTransport":
-                            sourceMapData.directions.mode = "transit";
+                            smdDirs.mode = "transit";
                             break;
                     }
                     state = 1;
-                    sourceMapData.directions.route = new Array();
+                    smdDirs.route = new Array();
                 } else if (0 < state) {
                     var wptObj = undefined;
                     var re = /^([^:]+):/;
-                    var addrArray = directions.match(re);
+                    var addrArray = dirnPart.match(re);
                     if (addrArray && addrArray.length > 1) {
                         var addr = addrArray[1].replace(/-/g , " ");
                         wptObj = { address: addr }
 
                         re = /:loc-([^:]+)/;
-                        var dirArray = directions.match(re);
+                        var dirArray = dirnPart.match(re);
                         if (dirArray && dirArray.length > 1) {
                             var locnFromB64 = atob(dirArray[1]);
                             re = /lat=([-0-9.]+);lon=([-0-9.]+)/;
@@ -500,26 +527,27 @@ extractors.push({
                             }
                         }
                         re = /:([-0-9.]+),([-0-9.]+)/;
-                        var coordsArray = directions.match(re);
+                        var coordsArray = dirnPart.match(re);
                         if (coordsArray && coordsArray.length > 2) {
                             wptObj.coords =
                                 { lat: coordsArray[1], lng: coordsArray[2] }
                         }
                     }
-                    sourceMapData.directions.route.push(wptObj);
+                    smdDirs.route.push(wptObj);
                 }
             }
-            if (sourceMapData.directions && sourceMapData.directions.route) {
-                for (wptIndex in sourceMapData.directions.route) {
+            if (smdDirs && smdDirs.route) {
+                for (wptIndex in smdDirs.route) {
                     //URL can contain empty waypoints, when locations have not yet been entered
                     //into the search box. So we need to do a bit of clean-up.
-                    if (undefined == sourceMapData.directions.route[wptIndex]) {
-                        sourceMapData.directions.route.splice(wptIndex, 1);
+                    if (undefined == smdDirs.route[wptIndex]) {
+                        smdDirs.route.splice(wptIndex, 1);
                     }
                 }
-                if (sourceMapData.directions.route.length < 2) {
-                    //if directions don't contain at least two points, they are considered invalid
-                    delete sourceMapData.directions;
+                //if directions don't contain at least two points, they are considered invalid
+                if (smdDirs.route.length >= 2) {
+                    var directions = smdDirs;
+                    sourceMapData.searches = [ { directions } ]
                 }
             }
             resolve(sourceMapData);

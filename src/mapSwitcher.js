@@ -290,6 +290,7 @@ var MapSwitcher = {
     * @return Promise which resolves if the data can be normalised, or rejects if not.
     */
     normaliseExtractedData: function(extractedData) {
+        console.log(extractedData);
         return new Promise(function(resolve, reject) {
             if (!extractedData) {
                 reject(extractedData);
