@@ -66,10 +66,15 @@ OutputMaps.services = [
         var dataWpts = "";
         var dataDirnOptions = "";
 
-        if ("directions" in sourceMapData && "route" in sourceMapData.directions) {
+        var smdDirns = null;
+        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
+            "directions" in sourceMapData.searches[0]) {
+            smdDirns = sourceMapData.searches[0].directions;
+        }
+        if ("route" in smdDirns) {
             directions = "dir/";
 
-            for (rteWpt of sourceMapData.directions.route) {
+            for (rteWpt of smdDirns.route) {
                 if ("address" in rteWpt) {
                     //if address specified, add to directions
                     directions += rteWpt.address + "/";
@@ -90,8 +95,8 @@ OutputMaps.services = [
             }
 
             var mode = "";
-            if (sourceMapData.directions.mode) {
-                switch (sourceMapData.directions.mode) {
+            if (smdDirns.mode) {
+                switch (smdDirns.mode) {
                     case "foot":
                         mode = "!3e2";
                         break;
@@ -174,10 +179,14 @@ OutputMaps.services = [
                                 3, 20);
         }
 
-        if ("directions" in sourceMapData &&
-                "route" in sourceMapData.directions) {
+        var smdDirns = null;
+        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
+            "directions" in sourceMapData.searches[0]) {
+            smdDirns = sourceMapData.searches[0].directions;
+        }
+        if ("route" in smdDirns) {
             directions = "rtp=";
-            for (rteWpt of sourceMapData.directions.route) {
+            for (rteWpt of smdDirns.route) {
                 if ("coords" in rteWpt) {
                     directions += "pos." + rteWpt.coords.lat + "_" + rteWpt.coords.lng;
                     if ("address" in rteWpt) {
@@ -190,8 +199,8 @@ OutputMaps.services = [
             }
 
             var mode = "";
-            if (sourceMapData.directions.mode) {
-                switch (sourceMapData.directions.mode) {
+            if (smdDirns.mode) {
+                switch (smdDirns.mode) {
                     case "foot":
                         mode = "&mode=w";
                         break;
@@ -273,11 +282,16 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 19) + "/";
         }
 
-        if (sourceMapData.directions && "route" in sourceMapData.directions) {
+        var smdDirns = null;
+        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
+            "directions" in sourceMapData.searches[0]) {
+            smdDirns = sourceMapData.searches[0].directions;
+        }
+        if ("route" in smdDirns) {
 
             var mode = "";
-            if (sourceMapData.directions.mode) {
-                switch (sourceMapData.directions.mode) {
+            if (smdDirns.mode) {
+                switch (smdDirns.mode) {
                     case "foot":
                         mode = "engine=mapzen_foot&";
                         break;
@@ -293,9 +307,8 @@ OutputMaps.services = [
             //OSM appears to only handle single-segment routes.
             //So we choose to use the first and last point of the route from the source map.
 
-            var firstElem = sourceMapData.directions.route[0];
-            var lastElem = sourceMapData.directions.route[
-                                sourceMapData.directions.route.length - 1];
+            var firstElem = smdDirns.route[0];
+            var lastElem = smdDirns.route[smdDirns.route.length - 1];
 
             if ("coords" in firstElem && "coords" in lastElem) {
                directions = "directions?" + mode + "route=" +
@@ -490,15 +503,21 @@ OutputMaps.services = [
             }
             return fileData;
         });
-        if ("directions" in sourceMapData && "route" in sourceMapData.directions) {
 
-            var firstPoint = sourceMapData.directions.route[0];
-            var lastPoint = sourceMapData.directions.route[sourceMapData.directions.route.length - 1];
+        var smdDirns = null;
+        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
+            "directions" in sourceMapData.searches[0]) {
+            smdDirns = sourceMapData.searches[0].directions;
+        }
+        if ("route" in smdDirns) {
+
+            var firstPoint = smdDirns.route[0];
+            var lastPoint = smdDirns.route[smdDirns.route.length - 1];
 
             var routePoints = "";
             var pointsWithCoords = 0;
-            for (rteIndex in sourceMapData.directions.route) {
-                var rteWpt = sourceMapData.directions.route[rteIndex];
+            for (rteIndex in smdDirns.route) {
+                var rteWpt = smdDirns.route[rteIndex];
                 if ("coords" in rteWpt) {
                     routePoints +=
                         "\t\t<rtept lat=\"" + rteWpt.coords.lat + "\" lon=\"" + rteWpt.coords.lng + "\">\n" +
@@ -508,7 +527,7 @@ OutputMaps.services = [
                 }
             }
             //only provide a gpx route download if all the points in the route have coordinates
-            if (pointsWithCoords === sourceMapData.directions.route.length) {
+            if (pointsWithCoords === smdDirns.route.length) {
                 view.addFileDownload(this, "gpx_rte", "Route", function() {
 
                     var fileData = {
@@ -560,15 +579,18 @@ OutputMaps.services = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        if ("directions" in sourceMapData &&
-                "route" in sourceMapData.directions) {
+        var smdDirns = null;
+        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
+            "directions" in sourceMapData.searches[0]) {
+            smdDirns = sourceMapData.searches[0].directions;
+        }
+        if ("route" in smdDirns) {
 
             //Waze appears to only handle single-segment routes.
             //So we choose to use the first and last point of the route from the source map.
 
-            var firstElem = sourceMapData.directions.route[0];
-            var lastElem = sourceMapData.directions.route[
-                                sourceMapData.directions.route.length - 1];
+            var firstElem = smdDirns.route[0];
+            var lastElem = smdDirns.route[smdDirns.route.length - 1];
 
             if ("coords" in firstElem && "coords" in lastElem) {
                 directions +=
@@ -696,11 +718,15 @@ OutputMaps.services = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        if ("directions" in sourceMapData &&
-                "route" in sourceMapData.directions) {
+        var smdDirns = null;
+        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
+            "directions" in sourceMapData.searches[0]) {
+            smdDirns = sourceMapData.searches[0].directions;
+        }
+        if ("route" in smdDirns) {
 
             var route = "";
-            for (rteWpt of sourceMapData.directions.route) {
+            for (rteWpt of smdDirns.route) {
                 route += "/";
                 if ("address" in rteWpt) {
                     route += rteWpt.address;
@@ -711,8 +737,8 @@ OutputMaps.services = [
             }
 
             var mode = "mix";
-            if (sourceMapData.directions.mode) {
-                switch (sourceMapData.directions.mode) {
+            if (smdDirns.mode) {
+                switch (smdDirns.mode) {
                     case "foot":
                         mode = "walk";
                         break;
@@ -729,7 +755,7 @@ OutputMaps.services = [
 
             directions = "directions/" + mode + route;
 
-            if (sourceMapData.directions.route.length > 10) {
+            if (smdDirns.route.length > 10) {
                 note = "Here limited to 10 waypoints";
             }
         }

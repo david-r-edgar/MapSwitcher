@@ -290,7 +290,6 @@ var MapSwitcher = {
     * @return Promise which resolves if the data can be normalised, or rejects if not.
     */
     normaliseExtractedData: function(extractedData) {
-        console.log(extractedData);
         return new Promise(function(resolve, reject) {
             if (!extractedData) {
                 reject(extractedData);
@@ -396,24 +395,26 @@ var MapSwitcher = {
         } else {
             document.getElementById("sourceExtrFromVal").textContent = sourceMapData.locationDescr;
         }
-        if ("directions" in sourceMapData) {
+        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
+            "directions" in sourceMapData.searches[0]) {
             var numWpts = 0;
             var mode = "";
-            if ("route" in sourceMapData.directions) {
-                numWpts = sourceMapData.directions.route.length;
+            if ("route" in sourceMapData.searches[0].directions) {
+                numWpts = sourceMapData.searches[0].directions.route.length;
             }
             var dirnDescr = numWpts + " waypoint route";
-            if ("mode" in sourceMapData.directions) {
-                var mode = ("transit" == sourceMapData.directions.mode) ?
-                                "public transport" : sourceMapData.directions.mode;
+            if ("mode" in sourceMapData.searches[0].directions) {
+                var mode = ("transit" == sourceMapData.searches[0].directions.mode) ?
+                                "public transport" : sourceMapData.searches[0].directions.mode;
                 dirnDescr += ", travelling by " + mode;
             }
             $("#sourceDirn").show();
             document.getElementById("sourceDirnVal").textContent = dirnDescr;
         }
 
-        if (sourceMapData.directions && sourceMapData.directions.route) {
-            MapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1;
+        //FIXME can it not go inside the block above?
+        if (sourceMapData.searches[0].directions && sourceMapData.searches[0].directions.route) {
+            MapLinksView.sourceDirnSegs = sourceMapData.searches[0].directions.route.length - 1;
         }
 
         for (outputMapService of OutputMaps.services) {
