@@ -808,13 +808,29 @@ extractors.push({
     extract:
         function(resolve) {
             var sourceMapData = {}
-            $("#coordinates .geo").first().each(function() {
-                var coordArray = this.innerText.split(';');
-                if (coordArray.length === 2) {
-                    sourceMapData.centreCoords = {"lat": coordArray[0].trim(), "lng": coordArray[1].trim()}
-                    sourceMapData.locationDescr = "primary article coordinates";
-                }
-            });
+            //FIXME can we just use the #coordinates .external block below for EN too, in future?
+            // - but we would also need to handle things like params=38_45_S_72_40_W (for Temuco)
+            if ($("#coordinates .geo").length) {
+                $("#coordinates .geo").first().each(function() {
+                    var coordArray = this.innerText.split(';');
+                    if (coordArray.length === 2) {
+                        sourceMapData.centreCoords = {"lat": coordArray[0].trim(), "lng": coordArray[1].trim()}
+                        sourceMapData.locationDescr = "primary article coordinates";
+                    }
+                });
+            }
+            if (!("centreCoords" in sourceMapData)) {
+                $("#coordinates .external").first().each(function() {
+                    var href = $(this).attr("href");
+                    var re = /params=([-0-9.]+)_([NS])_([-0-9.]+)_([EW])/;
+                    var coordArray = href.match(re);
+                    if (coordArray && coordArray.length > 4) {
+                        var lat = coordArray[2] == 'N' ? coordArray[1] : (-coordArray[1]);
+                        var lng = coordArray[4] == 'E' ? coordArray[3] : (-coordArray[3]);
+                        sourceMapData.centreCoords = {"lat": lat, "lng": lng}
+                    }
+                });
+            }
             resolve(sourceMapData);
         }
 });
