@@ -1188,7 +1188,7 @@ OutputMaps.services = [
     image: "wtpLogo16x16.png",
     id: "wheresthepath",
     prio: 14,
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         wheresthepath: {
