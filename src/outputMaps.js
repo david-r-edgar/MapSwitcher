@@ -1149,11 +1149,39 @@ OutputMaps.services = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
             zoom = "z=" + zoom;
         }
-
         this.maplinks.yandexMap["link"] = yandexBase + "?" + mapCentre + "&" + zoom;
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
+},
+{
+  site: "Where's The Path",
+  image: "wtpLogo16x16.png",
+  id: "wheresthepath",
+  prio: 14,
+  cat: OutputMaps.category.plain,
+  maplinks:
+  {
+      wheresthepath: {
+          name: "OS & Google Satellite"
+      }
+  },
+  generate: function(sourceMapData, view) {
+      if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
+          var wtpBase = "https://wtp2.appspot.com/wheresthepath.htm";
+          var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+
+          if ("resolution" in sourceMapData) {
+              zoom = calculateStdZoomFromResolution(
+                      sourceMapData.resolution, sourceMapData.centreCoords.lat);
+          }
+          var zoomParams = "&lz=" + zoom + "&rz=" + zoom;
+          var tiles = "&lt=OS&rt=satellite";
+          this.maplinks.wheresthepath["link"] = wtpBase + "?" + mapCentre + zoomParams + tiles;
+
+          view.addMapServiceLinks(this.cat, this, this.maplinks);
+      }
+  }
 }
 
 ];
