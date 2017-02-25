@@ -71,7 +71,7 @@ OutputMaps.services = [
             "directions" in sourceMapData.searches[0]) {
             smdDirns = sourceMapData.searches[0].directions;
         }
-        if ("route" in smdDirns) {
+        if (smdDirns && "route" in smdDirns) {
             directions = "dir/";
 
             for (rteWpt of smdDirns.route) {
@@ -184,7 +184,7 @@ OutputMaps.services = [
             "directions" in sourceMapData.searches[0]) {
             smdDirns = sourceMapData.searches[0].directions;
         }
-        if ("route" in smdDirns) {
+        if (smdDirns && "route" in smdDirns) {
             directions = "rtp=";
             for (rteWpt of smdDirns.route) {
                 if ("coords" in rteWpt) {
@@ -287,7 +287,7 @@ OutputMaps.services = [
             "directions" in sourceMapData.searches[0]) {
             smdDirns = sourceMapData.searches[0].directions;
         }
-        if ("route" in smdDirns) {
+        if (smdDirns && "route" in smdDirns) {
 
             var mode = "";
             if (smdDirns.mode) {
@@ -509,7 +509,7 @@ OutputMaps.services = [
             "directions" in sourceMapData.searches[0]) {
             smdDirns = sourceMapData.searches[0].directions;
         }
-        if ("route" in smdDirns) {
+        if (smdDirns && "route" in smdDirns) {
 
             var firstPoint = smdDirns.route[0];
             var lastPoint = smdDirns.route[smdDirns.route.length - 1];
@@ -584,7 +584,7 @@ OutputMaps.services = [
             "directions" in sourceMapData.searches[0]) {
             smdDirns = sourceMapData.searches[0].directions;
         }
-        if ("route" in smdDirns) {
+        if (smdDirns && "route" in smdDirns) {
 
             //Waze appears to only handle single-segment routes.
             //So we choose to use the first and last point of the route from the source map.
@@ -723,7 +723,7 @@ OutputMaps.services = [
             "directions" in sourceMapData.searches[0]) {
             smdDirns = sourceMapData.searches[0].directions;
         }
-        if ("route" in smdDirns) {
+        if (smdDirns && "route" in smdDirns) {
 
             var route = "";
             for (rteWpt of smdDirns.route) {
