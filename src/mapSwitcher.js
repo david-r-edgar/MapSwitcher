@@ -401,6 +401,7 @@ var MapSwitcher = {
             var mode = "";
             if ("route" in sourceMapData.searches[0].directions) {
                 numWpts = sourceMapData.searches[0].directions.route.length;
+                MapLinksView.sourceDirnSegs = sourceMapData.searches[0].directions.route.length - 1;
             }
             var dirnDescr = numWpts + " waypoint route";
             if ("mode" in sourceMapData.searches[0].directions) {
@@ -410,11 +411,6 @@ var MapSwitcher = {
             }
             $("#sourceDirn").show();
             document.getElementById("sourceDirnVal").textContent = dirnDescr;
-        }
-
-        //FIXME can it not go inside the block above?
-        if (sourceMapData.searches[0].directions && sourceMapData.searches[0].directions.route) {
-            MapLinksView.sourceDirnSegs = sourceMapData.searches[0].directions.route.length - 1;
         }
 
         for (outputMapService of OutputMaps.services) {
