@@ -1211,7 +1211,36 @@ OutputMaps.services = [
             view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
+},
+{
+    site: "Yandex",
+    image: "yandex16x16.png",
+    id: "yandex",
+    prio: 12,
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        yandexMap: {
+            name: "Maps"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var yandexBase = "https://yandex.com/maps/";
+        var mapCentre = "ll=" + sourceMapData.centreCoords.lng + "," + sourceMapData.centreCoords.lat;
+        var zoom = "z=6";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            zoom = "z=" + zoom;
+        }
+
+        this.maplinks.yandexMap["link"] = yandexBase + "?" + mapCentre + "&" + zoom;
+
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
+    }
 }
+
 ];
 
 
