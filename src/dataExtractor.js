@@ -145,6 +145,18 @@ extractors.push({
                         nonUpdating: window.location.hostname + window.location.pathname
                     });
                 } else {
+                    $("#media_result_group a").each(function() {
+                        var re = /@([-0-9.]+),([-0-9.]+),([0-9.]+)z/;
+                        var coordArray = $(this).attr("href").match(re);
+                        if (coordArray && coordArray.length > 3) {
+                            resolve({
+                                centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                                locationDescr: "default map of search results",
+                                resolution: calculateResolutionFromStdZoom(
+                                    coordArray[3], coordArray[1])
+                            });
+                        }
+                    });
                     resolve(null);
                 }
             }
