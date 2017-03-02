@@ -1040,19 +1040,26 @@ OutputMaps.services = [
     id: "sysmaps",
     prio: 14,
     cat: OutputMaps.category.plain,
-    maplinks:
-    {
-        sysmapsOS: {
-            name: "OS"
-        }
-    },
+    maplinks: {},
     generate: function(sourceMapData, view) {
         if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
             var sysmapsBase = "http://www.sysmaps.co.uk/sysmaps_os.html?";
             var mapCentre = "!" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
 
-            this.maplinks.sysmapsOS["link"] = sysmapsBase + mapCentre;
+            this.maplinks["sysmapsOS"] = {
+                name: "OS",
+                link: sysmapsBase + mapCentre
+            }
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
+        }
+        else if (sourceMapData.countryCode === "fr") {
+            var sysmapsBase = "http://www.sysmaps.co.uk/sysmaps_ign.html?";
+            var mapCentre = "!" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
 
+            this.maplinks["sysmapsFR_IGN"] = {
+                name: "IGN",
+                link: sysmapsBase + mapCentre
+            }
             view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
