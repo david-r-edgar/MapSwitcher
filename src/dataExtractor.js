@@ -859,6 +859,74 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "yandex.com",
+    extract:
+        function(resolve) {
+            var re = /ll=([-0-9.]+)%2C([-0-9.]+)/;
+            var coordArray = window.location.search.match(re);
+            if (coordArray && coordArray.length > 2) {
+                var sourceMapData = {
+                    centreCoords: {"lat": coordArray[2], "lng": coordArray[1]},
+                    locationDescr: "map centre specified in URL"
+                }
+                var zoomRe = /z=([0-9]+)/;
+                var zoomArray = window.location.search.match(zoomRe);
+                if (zoomArray && zoomArray.length > 1) {
+                    sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[2]);
+                }
+                resolve(sourceMapData);
+            } else {
+                reject();
+            }
+        }
+});
+
+
+
+extractors.push({
+    host: "caltopo.com",
+    extract:
+        function(resolve) {
+            var re = /ll=([-0-9.]+),([-0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 2) {
+                var sourceMapData = {
+                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                    locationDescr: "map centre specified in URL"
+                }
+                var zoomRe = /z=([0-9]+)/;
+                var zoomArray = window.location.hash.match(zoomRe);
+                if (zoomArray && zoomArray.length > 1) {
+                    sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[1]);
+                }
+                resolve(sourceMapData);
+            } else {
+                reject();
+            }
+        }
+});
+
+
+
+extractors.push({
+    host: "labs.strava.com",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var re = /\#([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[3], "lng": coordArray[2]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[1], coordArray[3]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
+
 var runDataExtraction = function () {
     //default null extractor
     var extractor = {

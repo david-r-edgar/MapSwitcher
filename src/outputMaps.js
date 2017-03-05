@@ -558,8 +558,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom > 18) zoom = 18;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
 
@@ -594,8 +593,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom > 17) zoom = 17;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 17);
             zoom = "" + zoom;
         }
 
@@ -762,8 +760,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom < 1) zoom = 1;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
         this.maplinks.gpxedmap["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=roadmap";
@@ -943,9 +940,7 @@ OutputMaps.services = [
 
             if ("resolution" in sourceMapData) {
                 zoom = calculateStdZoomFromResolution(
-                        sourceMapData.resolution, sourceMapData.centreCoords.lat);
-                if (zoom < 1) zoom = 1;
-                if (zoom > 16) zoom = 16;
+                        sourceMapData.resolution, sourceMapData.centreCoords.lat, 1, 16);
                 zoom = "&zoom=" + zoom;
             }
 
@@ -1029,8 +1024,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom > 18) zoom = 18;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
 
@@ -1067,8 +1061,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom < 1) zoom = 1;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
 
@@ -1102,6 +1095,36 @@ OutputMaps.services = [
         this.maplinks.flickr["link"] = base + "?" + mapCentre + "&" + zoom + "&everyone_nearby=1";
 
         view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+    }
+},
+{
+    site: "Strava Global Heatmap",
+    image: "stravaLogo16x16.png",
+    id: "strava",
+    cat: OutputMaps.category.special,
+    maplinks:
+    {
+        stravaBike: {
+            name: "Bike"
+        },
+        stravaRun: {
+            name: "Run"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var siteBase = "http://labs.strava.com/heatmap/#";
+        var zoom = "12";
+        var mapCentre = sourceMapData.centreCoords.lng + "/" + sourceMapData.centreCoords.lat;
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
+        }
+
+        this.maplinks.stravaBike["link"] = siteBase + zoom + "/" + mapCentre + "/blue/bike";
+        this.maplinks.stravaRun["link"] = siteBase + zoom + "/" + mapCentre + "/yellow/run";
+
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 }
 
