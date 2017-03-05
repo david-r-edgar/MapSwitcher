@@ -1002,6 +1002,23 @@ extractors.push({
 });
 
 
+extractors.push({
+    host: "labs.strava.com",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var re = /\#([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[3], "lng": coordArray[2]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[1], coordArray[3]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
 
 
 var runDataExtraction = function () {
