@@ -1019,6 +1019,28 @@ extractors.push({
 });
 
 
+extractors.push({
+    host: "peakbagger.com",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+
+
+            console.log($("#Gmap").attr("src"));
+
+
+            var re = /cy=([-0-9.]+)&cx=([-0-9.]+)&z=([0-9]+)/;
+            var coordArray = $("#Gmap").attr("src").match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[3], coordArray[1]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
 
 
 var runDataExtraction = function () {
