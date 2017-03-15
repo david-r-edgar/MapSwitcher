@@ -1024,11 +1024,6 @@ extractors.push({
     extract:
         function(resolve) {
             var sourceMapData = {}
-
-
-            console.log($("#Gmap").attr("src"));
-
-
             var re = /cy=([-0-9.]+)&cx=([-0-9.]+)&z=([0-9]+)/;
             var coordArray = $("#Gmap").attr("src").match(re);
             if (coordArray && coordArray.length > 3) {
