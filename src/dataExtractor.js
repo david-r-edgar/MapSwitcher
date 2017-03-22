@@ -27,7 +27,6 @@ extractors.push({
                 resolve(sourceMapData);
             }
             else if (window.location.pathname.indexOf("/maps/") === 0) {
-
                 var sourceMapData = {}
                 var re = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/;
                 var coordArray = window.location.pathname.match(re);
@@ -136,11 +135,33 @@ extractors.push({
             }
             else if (window.location.pathname.indexOf("/search") === 0 ||
                     window.location.pathname.indexOf("/webhp") === 0) {
-                var re = /&rllag=([-0-9]+),([-0-9]+)/;
+                try {
+                    var gmdp = new Gmdp(window.location.href);
+                    var lsm = gmdp.getLocalSearchMap();
+                    if (lsm) {
+                        resolve({
+                            centreCoords: {"lat": lsm.centre.lat, "lng": lsm.centre.lng},
+                            resolution: lsm.resolution / 1500
+                            //FIXME how is the resoution specified? Why do we apparently need this 1500 coefficient? Where does it come from? Is it correct?
+                        });
+                    }
+                }
+                catch(ex) {
+                    if (!ex instanceof GmdpException) {
+                        throw ex;
+                    }
+                }
+                var re = /&rllag=([-0-9]+),([-0-9]+),([0-9]+)/;
                 var coordArray = window.location.hash.match(re);
-                if (coordArray && coordArray.length > 2) {
+                //'rllag' can be specified in either the hash or the search
+                if (!coordArray) {
+                    var coordArray = window.location.search.match(re);
+                }
+                if (coordArray && coordArray.length > 3) {
                     resolve({
                         centreCoords: {"lat": coordArray[1] / 1000000, "lng": coordArray[2] / 1000000},
+                        //FIXME what's the justification behind this coefficient '3'? Is it at all correct?
+                        resolution: coordArray[3] / 3,
                         locationDescr: "default map of search results",
                         nonUpdating: window.location.hostname + window.location.pathname
                     });
