@@ -1023,6 +1023,7 @@ extractors.push({
 });
 
 
+
 extractors.push({
     host: "labs.strava.com",
     extract:
@@ -1038,6 +1039,7 @@ extractors.push({
             resolve(sourceMapData);
         }
 });
+
 
 
 extractors.push({
@@ -1056,6 +1058,22 @@ extractors.push({
         }
 });
 
+
+
+extractors.push({
+    host: "summitpost.org",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var databoxLatlng = $("#main_data_box a[rel='noindex']").first();
+            var re = /distance_lat_[0-9]+=([-0-9.]+)&distance_lon_[0-9]+=([-0-9.]+)/;
+            var coordArray = $(databoxLatlng).attr("href").match(re);
+            if (coordArray && coordArray.length > 2) {
+                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+            }
+            resolve(sourceMapData);
+        }
+});
 
 
 
