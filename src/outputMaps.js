@@ -1306,6 +1306,41 @@ OutputMaps.services = [
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
+},
+{
+    site: "Geograph",
+    image: "geograph16x16.png",
+    id: "geograph",
+    cat: OutputMaps.category.special,
+    maplinks:
+    {
+        geographMapper: {
+            name: "Photo map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
+            var siteBase = "http://www.geograph.org.uk/mapper/?";
+
+            var ll = new LatLon(sourceMapData.centreCoords.lat, sourceMapData.centreCoords.lng);
+            var osLL = CoordTransform.convertWGS84toOSGB36(ll);
+            var osGR = OsGridRef.latLongToOsGrid(osLL);
+            var mapCentre = "lat=" + osGR.northing + "&lon=" + osGR.easting;
+
+            var zoom = "zoom=2";
+            if ("resolution" in sourceMapData) {
+                if (sourceMapData.resolution < 9) {
+                    zoom = "zoom=3";
+                } else if (sourceMapData.resolution > 100) {
+                    zoom = "zoom=0";
+                }
+            }
+
+            this.maplinks.geographMapper["link"] = siteBase + mapCentre + "&" + zoom + "&layers=BFFFTF&centi=1";
+
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
+        }
+    }
 }
 ];
 
