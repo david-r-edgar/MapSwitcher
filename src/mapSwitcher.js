@@ -291,6 +291,19 @@ var MapSwitcher = {
     */
     normaliseExtractedData: function(extractedData) {
         return new Promise(function(resolve, reject) {
+
+            //FIXME temporary data structure conversion
+            if (extractedData &&
+                (extractedData.centreCoords != null || extractedData.osgbCentreCoords != null)) {
+                dmObj = {displayedMap: {centreCoords: extractedData.centreCoords}}
+                if (extractedData && extractedData.resolution != null) {
+                    dmObj.displayedMap.resolution = extractedData.resolution;
+                }
+                extractedData.searches.unshift(dmObj);
+            }
+
+            //console.log(extractedData);
+
             if (!extractedData) {
                 reject(extractedData);
             } else if (extractedData.centreCoords != null) {
