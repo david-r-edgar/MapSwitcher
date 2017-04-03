@@ -299,10 +299,12 @@ var MapSwitcher = {
                 if (extractedData && extractedData.resolution != null) {
                     dmObj.displayedMap.resolution = extractedData.resolution;
                 }
-                extractedData.searches.unshift(dmObj);
+                if ("searches" in extractedData) {
+                    extractedData.searches.unshift(dmObj);
+                } else {
+                    extractedData.searches = [{"displayedMap": dmObj.displayedMap}];
+                }
             }
-
-            //console.log(extractedData);
 
             if (!extractedData) {
                 reject(extractedData);
