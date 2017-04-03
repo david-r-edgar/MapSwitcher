@@ -575,11 +575,7 @@ OutputMaps.services = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        var smdDirns = null;
-        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
-            "directions" in sourceMapData.searches[0]) {
-            smdDirns = sourceMapData.searches[0].directions;
-        }
+        var smdDirns = getDirections(sourceMapData);
         if (smdDirns && "route" in smdDirns) {
 
             //Waze appears to only handle single-segment routes.
@@ -712,11 +708,7 @@ OutputMaps.services = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        var smdDirns = null;
-        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
-            "directions" in sourceMapData.searches[0]) {
-            smdDirns = sourceMapData.searches[0].directions;
-        }
+        var smdDirns = getDirections(sourceMapData);
         if (smdDirns && "route" in smdDirns) {
 
             var route = "";
