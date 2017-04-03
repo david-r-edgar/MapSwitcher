@@ -25,9 +25,9 @@ var OutputMaps = {
 
 
 //FIXME refactor
-var getDirections = function(outputMaps) {
-    if ("searches" in outputMaps) {
-        for (var searchObj of outputMaps.searches) {
+var getDirections = function(sourceMapData) {
+    if ("searches" in sourceMapData) {
+        for (var searchObj of sourceMapData.searches) {
             if (searchObj.directions) {
                 return searchObj.directions;
             }

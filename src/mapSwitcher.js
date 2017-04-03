@@ -408,18 +408,19 @@ var MapSwitcher = {
         } else {
             document.getElementById("sourceExtrFromVal").textContent = sourceMapData.locationDescr;
         }
-        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
-            "directions" in sourceMapData.searches[0]) {
+        var smdDirns = getDirections(sourceMapData);
+        if (smdDirns) {
             var numWpts = 0;
             var mode = "";
-            if ("route" in sourceMapData.searches[0].directions) {
-                numWpts = sourceMapData.searches[0].directions.route.length;
-                MapLinksView.sourceDirnSegs = sourceMapData.searches[0].directions.route.length - 1;
+
+            if ("route" in smdDirns) {
+                numWpts = smdDirns.route.length;
+                MapLinksView.sourceDirnSegs = smdDirns.route.length - 1;
             }
             var dirnDescr = numWpts + " waypoint route";
-            if ("mode" in sourceMapData.searches[0].directions) {
-                var mode = ("transit" == sourceMapData.searches[0].directions.mode) ?
-                                "public transport" : sourceMapData.searches[0].directions.mode;
+            if ("mode" in smdDirns) {
+                var mode = ("transit" == smdDirns.mode) ?
+                                "public transport" : smdDirns.mode;
                 dirnDescr += ", travelling by " + mode;
             }
             $("#sourceDirn").show();
