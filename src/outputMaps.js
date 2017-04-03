@@ -23,6 +23,20 @@ var OutputMaps = {
 
 }
 
+
+//FIXME refactor
+var getDirections = function(outputMaps) {
+    if ("searches" in outputMaps) {
+        for (var searchObj of outputMaps.searches) {
+            if (searchObj.directions) {
+                return searchObj.directions;
+            }
+        }
+    }
+    return null;
+}
+
+
 /**
  * Array of all output map services
  *
@@ -66,11 +80,7 @@ OutputMaps.services = [
         var dataWpts = "";
         var dataDirnOptions = "";
 
-        var smdDirns = null;
-        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
-            "directions" in sourceMapData.searches[0]) {
-            smdDirns = sourceMapData.searches[0].directions;
-        }
+        var smdDirns = getDirections(sourceMapData);
         if (smdDirns && "route" in smdDirns) {
             directions = "dir/";
 
@@ -179,11 +189,7 @@ OutputMaps.services = [
                                 3, 20);
         }
 
-        var smdDirns = null;
-        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
-            "directions" in sourceMapData.searches[0]) {
-            smdDirns = sourceMapData.searches[0].directions;
-        }
+        var smdDirns = getDirections(sourceMapData);
         if (smdDirns && "route" in smdDirns) {
             directions = "rtp=";
             for (rteWpt of smdDirns.route) {
@@ -282,11 +288,7 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 19) + "/";
         }
 
-        var smdDirns = null;
-        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
-            "directions" in sourceMapData.searches[0]) {
-            smdDirns = sourceMapData.searches[0].directions;
-        }
+        var smdDirns = getDirections(sourceMapData);
         if (smdDirns && "route" in smdDirns) {
 
             var mode = "";
@@ -502,11 +504,7 @@ OutputMaps.services = [
             return fileData;
         });
 
-        var smdDirns = null;
-        if ("searches" in sourceMapData && sourceMapData.searches.length > 0 &&
-            "directions" in sourceMapData.searches[0]) {
-            smdDirns = sourceMapData.searches[0].directions;
-        }
+        var smdDirns = getDirections(sourceMapData);
         if (smdDirns && "route" in smdDirns) {
 
             var firstPoint = smdDirns.route[0];
