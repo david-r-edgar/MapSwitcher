@@ -36,6 +36,20 @@ var getDirections = function(sourceMapData) {
     return null;
 }
 
+//FIXME refactor
+var getDisplayedMap = function(sourceMapData) {
+    if ("searches" in sourceMapData) {
+        for (var searchObj of sourceMapData.searches) {
+            if (searchObj.displayedMap) {
+                return searchObj.displayedMap;
+            }
+        }
+    }
+    return null;
+}
+
+
+
 
 /**
  * Array of all output map services
@@ -75,7 +89,8 @@ OutputMaps.services = [
         var googleBase = "https://www.google.com/maps/";
         var directions = "";
         var place = "";
-        var mapCentre = "@" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng + ",";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "@" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng + ",";
         var zoom = "13z";
         var dataWpts = "";
         var dataDirnOptions = "";
@@ -135,10 +150,10 @@ OutputMaps.services = [
             place = "place/" + sourceMapData.address + "/";
         }
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             //google minimum zoom is 3
             zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat, 3) + "z";
+                displayedMap.resolution, displayedMap.centreCoords.lat, 3) + "z";
         }
 
         var coreLink = googleBase + place + directions + mapCentre + zoom;
@@ -177,15 +192,16 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         var bingBase = "https://www.bing.com/maps/?";
         var directions = "";
-        var mapCentre = "cp=" + sourceMapData.centreCoords.lat + "~" +
-                                sourceMapData.centreCoords.lng;
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "cp=" + displayedMap.centreCoords.lat + "~" +
+                                displayedMap.centreCoords.lng;
         var zoom = "&lvl=10";
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             //3 <= zoom <=20
             zoom = "&lvl=" + calculateStdZoomFromResolution(
-                                sourceMapData.resolution,
-                                sourceMapData.centreCoords.lat,
+                                displayedMap.resolution,
+                                displayedMap.centreCoords.lat,
                                 3, 20);
         }
 
@@ -279,13 +295,14 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         var osmBase = "https://www.openstreetmap.org/";
         var zoom = "12/";
-        var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
         var directions = "";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = displayedMap.centreCoords.lat + "/" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             //osm max zoom 19
             zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 19) + "/";
+                displayedMap.resolution, displayedMap.centreCoords.lat, 0, 19) + "/";
         }
 
         var smdDirns = getDirections(sourceMapData);
@@ -357,18 +374,19 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var geohackBase = "https://tools.wmflabs.org/geohack/geohack.php?params=";
-        var mapCentre = sourceMapData.centreCoords.lat + "_N_" + sourceMapData.centreCoords.lng + "_E";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = displayedMap.centreCoords.lat + "_N_" + displayedMap.centreCoords.lng + "_E";
         var region = (sourceMapData.countryCode.length > 0) ?
                         "_region:" + sourceMapData.countryCode : "";
 
-        var scale = calculateScaleFromResolution(sourceMapData.resolution);
+        var scale = calculateScaleFromResolution(displayedMap.resolution);
         this.maplinks.wmGeoHack["link"] = geohackBase + mapCentre + region + "_scale:" + scale;
 
         var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
-        mapCentre = sourceMapData.centreCoords.lat + "_" + sourceMapData.centreCoords.lng;
+        mapCentre = displayedMap.centreCoords.lat + "_" + displayedMap.centreCoords.lng;
         //FIXME this is an approximation of zoom - it's not completely accurate
         zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat, 4, 16) - 1;
+                displayedMap.resolution, displayedMap.centreCoords.lat, 4, 16) - 1;
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
@@ -391,13 +409,14 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var wikimapiaBase = "http://wikimapia.org/#lang=en&";
-        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "z=12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = "z=" +
                 calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                    displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
         this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
@@ -420,13 +439,14 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var geocachingBase = "https://www.geocaching.com/map/#?";
-        var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "z=14";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "ll=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = "z=" +
                 calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                    displayedMap.resolution, displayedMap.centreCoords.lat);
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
@@ -446,7 +466,8 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var w3wBase = "https://map.what3words.com/";
-        var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
@@ -466,12 +487,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var mapquestBase = "http://open.mapquest.com/?";
-        var mapCentre = "center=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "center=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat, 2, 18);
+                displayedMap.resolution, displayedMap.centreCoords.lat, 2, 18);
             zoom = "zoom=" + zoom;
         }
 
@@ -486,6 +508,7 @@ OutputMaps.services = [
     id: "dl_gpx",
     cat: OutputMaps.category.download,
     generate: function(sourceMapData, view) {
+        var displayedMap = getDisplayedMap(sourceMapData);
         view.addFileDownload(this, "gpx_map_centre", "Map centre waypoint", function() {
             var fileData = {
                 name: "MapSwitcher.gpx",
@@ -494,10 +517,10 @@ OutputMaps.services = [
                 "<?xml version=\"1.1\"?>\n" +
                 "<gpx creator=\"MapSwitcher\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\">\n" +
                     "\t<author>MapSwitcher</author>\n" +
-                    "\t<wpt lat=\"" + sourceMapData.centreCoords.lat +
-                        "\" lon=\"" + sourceMapData.centreCoords.lng + "\">\n" +
+                    "\t<wpt lat=\"" + displayedMap.centreCoords.lat +
+                        "\" lon=\"" + displayedMap.centreCoords.lng + "\">\n" +
                         "\t\t<name>Centre of map</name>\n" +
-                        "\t\t<desc>" + sourceMapData.centreCoords.lat + ", " + sourceMapData.centreCoords.lng + "</desc>\n" +
+                        "\t\t<desc>" + displayedMap.centreCoords.lat + ", " + displayedMap.centreCoords.lng + "</desc>\n" +
                     "\t</wpt>\n" +
                 "</gpx>\n"
             }
@@ -565,14 +588,15 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var wazeBase = "https://www.waze.com/livemap?";
-        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
         var directions = "";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = "zoom=" +
                 calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                    displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
         var smdDirns = getDirections(sourceMapData);
@@ -620,12 +644,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var openSeaMapBase = "http://map.openseamap.org/?";
-        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18);
+                    displayedMap.resolution, displayedMap.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
 
@@ -655,12 +680,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var stamenBase = "http://maps.stamen.com/";
-        var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
         var zoom = "12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = displayedMap.centreCoords.lat + "/" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 17);
+                    displayedMap.resolution, displayedMap.centreCoords.lat, 0, 17);
             zoom = "" + zoom;
         }
 
@@ -697,15 +723,16 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var hereBase = "https://wego.here.com/";
-        var mapCentre = "?map=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "12";
         var directions = "";
         var note = "";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "?map=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = "" +
                 calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                    displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
         var smdDirns = getDirections(sourceMapData);
@@ -775,14 +802,15 @@ OutputMaps.services = [
         if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
             var streetmapMapBase = "http://www.streetmap.co.uk/map.srf?";
 
-            var ll = new LatLon(sourceMapData.centreCoords.lat, sourceMapData.centreCoords.lng);
+            var displayedMap = getDisplayedMap(sourceMapData);
+            var ll = new LatLon(displayedMap.centreCoords.lat, displayedMap.centreCoords.lng);
             var osLL = CoordTransform.convertWGS84toOSGB36(ll);
             var osGR = OsGridRef.latLongToOsGrid(osLL);
             var mapCentre = "X=" + osGR.easting + "&Y=" + osGR.northing;
 
             var zoom = 120;
-            if ("resolution" in sourceMapData) {
-                var scale = calculateScaleFromResolution(sourceMapData.resolution);
+            if ("resolution" in displayedMap) {
+                var scale = calculateScaleFromResolution(displayedMap.resolution);
                 if (scale < 4000) { zoom = 106; }
                 else if (scale < 15000) { zoom = 110; }
                 else if (scale < 40000) { zoom = 115; }
@@ -822,12 +850,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var gpxEditorBase = "http://www.gpxeditor.co.uk/?";
-        var mapCentre = "location=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "location=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
+                    displayedMap.resolution, displayedMap.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
         this.maplinks.gpxedmap["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=roadmap";
@@ -859,11 +888,13 @@ OutputMaps.services = [
         var ngiBase = "http://www.ngi.be/topomapviewer/public?";
         var that = this;
 
+        var displayedMap = getDisplayedMap(sourceMapData);
+
         //NGI uses the Lambert 2008 projection, grs80 ellipsoid
         //We use an external service to calculate coordinates from the regular WGS84 lat & long
         $.ajax({
             url: "http://loughrigg.org/wgs84Lambert/wgs84_lambert/"
-                + sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng,
+                + displayedMap.centreCoords.lat + "/" + displayedMap.centreCoords.lng,
         })
         .done(function( data ) {
             var mapCentre = "mapcenter={\"x\":" +
@@ -872,17 +903,17 @@ OutputMaps.services = [
             var level = 4;
             //we get an approximate zoom level from the resolution
             //(the values here were derived by manual inspection)
-            if ("resolution" in sourceMapData) {
-                if (sourceMapData.resolution > 1000) { level = 0; }
-                else if (sourceMapData.resolution > 300) { level = 1; }
-                else if (sourceMapData.resolution > 150) { level = 2; }
-                else if (sourceMapData.resolution > 75) { level = 3; }
-                else if (sourceMapData.resolution > 35) { level = 4; }
-                else if (sourceMapData.resolution > 18) { level = 5; }
-                else if (sourceMapData.resolution > 9) { level = 6; }
-                else if (sourceMapData.resolution > 5) { level = 7; }
-                else if (sourceMapData.resolution > 2) { level = 8; }
-                else if (sourceMapData.resolution > 1) { level = 9; }
+            if ("resolution" in displayedMap) {
+                if (displayedMap.resolution > 1000) { level = 0; }
+                else if (displayedMap.resolution > 300) { level = 1; }
+                else if (displayedMap.resolution > 150) { level = 2; }
+                else if (displayedMap.resolution > 75) { level = 3; }
+                else if (displayedMap.resolution > 35) { level = 4; }
+                else if (displayedMap.resolution > 18) { level = 5; }
+                else if (displayedMap.resolution > 9) { level = 6; }
+                else if (displayedMap.resolution > 5) { level = 7; }
+                else if (displayedMap.resolution > 2) { level = 8; }
+                else if (displayedMap.resolution > 1) { level = 9; }
                 else { level = 10; }
             }
             var levelArg = "level=" + level;
@@ -965,8 +996,9 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var suncalcBase = "http://suncalc.net/#/";
-        var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
         var now = new Date();
         var year = now.getFullYear();
@@ -977,9 +1009,9 @@ OutputMaps.services = [
         var date = year + "." + month + "." + dayOfMonth;
         var time = hours + ":" + mins;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                    displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
         this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time;
@@ -1002,12 +1034,13 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         if (sourceMapData.countryCode === "us") {
             var topozoneBase = "http://www.topozone.com/";
-            var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
             var zoom = "&zoom=12";
+            var displayedMap = getDisplayedMap(sourceMapData);
+            var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
-            if ("resolution" in sourceMapData) {
+            if ("resolution" in displayedMap) {
                 zoom = calculateStdZoomFromResolution(
-                        sourceMapData.resolution, sourceMapData.centreCoords.lat, 1, 16);
+                        displayedMap.resolution, displayedMap.centreCoords.lat, 1, 16);
                 zoom = "&zoom=" + zoom;
             }
 
@@ -1027,7 +1060,8 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
             var sysmapsBase = "http://www.sysmaps.co.uk/sysmaps_os.html?";
-            var mapCentre = "!" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
+            var displayedMap = getDisplayedMap(sourceMapData);
+            var mapCentre = "!" + displayedMap.centreCoords.lat + "~" + displayedMap.centreCoords.lng;
 
             this.maplinks["sysmapsOS"] = {
                 name: "OS",
@@ -1037,7 +1071,8 @@ OutputMaps.services = [
         }
         else if (sourceMapData.countryCode === "fr") {
             var sysmapsBase = "http://www.sysmaps.co.uk/sysmaps_ign.html?";
-            var mapCentre = "!" + sourceMapData.centreCoords.lat + "~" + sourceMapData.centreCoords.lng;
+            var displayedMap = getDisplayedMap(sourceMapData);
+            var mapCentre = "!" + displayedMap.centreCoords.lat + "~" + displayedMap.centreCoords.lng;
 
             this.maplinks["sysmapsFR_IGN"] = {
                 name: "IGN",
@@ -1060,7 +1095,8 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var boulterBase = "http://boulter.com/gps/";
-        var mapCentre = "#" + sourceMapData.centreCoords.lat + "%2C" + sourceMapData.centreCoords.lng;
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "#" + displayedMap.centreCoords.lat + "%2C" + displayedMap.centreCoords.lng;
 
         this.maplinks.boulterConverter["link"] = boulterBase + mapCentre;
 
@@ -1093,12 +1129,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var openCycleMapBase = "http://www.opencyclemap.org/?";
-        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "zoom=12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18);
+                    displayedMap.resolution, displayedMap.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
 
@@ -1130,12 +1167,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var owmBase = "https://openweathermap.org/weathermap?";
-        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
         var zoom = "zoom=6";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
+                    displayedMap.resolution, displayedMap.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
 
@@ -1157,12 +1195,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var base = "http://www.flickr.com/map/";
-        var mapCentre = "fLat=" + sourceMapData.centreCoords.lat + "&fLon=" + sourceMapData.centreCoords.lng;
         var zoom = "12";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "fLat=" + displayedMap.centreCoords.lat + "&fLon=" + displayedMap.centreCoords.lng;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                    displayedMap.resolution, displayedMap.centreCoords.lat);
         }
         zoom = "zl=" + zoom;
 
@@ -1185,11 +1224,12 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
             var wtpBase = "https://wtp2.appspot.com/wheresthepath.htm";
-            var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+            var displayedMap = getDisplayedMap(sourceMapData);
+            var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
-            if ("resolution" in sourceMapData) {
+            if ("resolution" in displayedMap) {
                 zoom = calculateStdZoomFromResolution(
-                        sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                        displayedMap.resolution, displayedMap.centreCoords.lat);
             }
             var zoomParams = "&lz=" + zoom + "&rz=" + zoom;
             var tiles = "&lt=OS&rt=satellite";
@@ -1212,12 +1252,13 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         var yandexBase = "https://yandex.com/maps/";
-        var mapCentre = "ll=" + sourceMapData.centreCoords.lng + "," + sourceMapData.centreCoords.lat;
         var zoom = "z=6";
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = "ll=" + displayedMap.centreCoords.lng + "," + displayedMap.centreCoords.lat;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                    displayedMap.resolution, displayedMap.centreCoords.lat);
             zoom = "z=" + zoom;
         }
 
@@ -1249,12 +1290,13 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         if ((sourceMapData.countryCode === "us") || (sourceMapData.countryCode === "ca")) {
             var calTopoBase = "http://caltopo.com/map.html";
-            var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
             var zoom = "z=12";
+            var displayedMap = getDisplayedMap(sourceMapData);
+            var mapCentre = "ll=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
-            if ("resolution" in sourceMapData) {
+            if ("resolution" in displayedMap) {
                 zoom = calculateStdZoomFromResolution(
-                        sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                        displayedMap.resolution, displayedMap.centreCoords.lat);
                 zoom = "z=" + zoom;
             }
 
@@ -1284,11 +1326,12 @@ OutputMaps.services = [
     generate: function(sourceMapData, view) {
         var siteBase = "http://labs.strava.com/heatmap/#";
         var zoom = "12";
-        var mapCentre = sourceMapData.centreCoords.lng + "/" + sourceMapData.centreCoords.lat;
+        var displayedMap = getDisplayedMap(sourceMapData);
+        var mapCentre = displayedMap.centreCoords.lng + "/" + displayedMap.centreCoords.lat;
 
-        if ("resolution" in sourceMapData) {
+        if ("resolution" in displayedMap) {
             zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
+                displayedMap.resolution, displayedMap.centreCoords.lat, 1);
         }
 
         this.maplinks.stravaBike["link"] = siteBase + zoom + "/" + mapCentre + "/blue/bike";
@@ -1312,16 +1355,17 @@ OutputMaps.services = [
         if (sourceMapData.countryCode === "gb" || sourceMapData.countryCode === "im") {
             var siteBase = "http://www.geograph.org.uk/mapper/?";
 
-            var ll = new LatLon(sourceMapData.centreCoords.lat, sourceMapData.centreCoords.lng);
+            var displayedMap = getDisplayedMap(sourceMapData);
+            var ll = new LatLon(displayedMap.centreCoords.lat, displayedMap.centreCoords.lng);
             var osLL = CoordTransform.convertWGS84toOSGB36(ll);
             var osGR = OsGridRef.latLongToOsGrid(osLL);
             var mapCentre = "lat=" + osGR.northing + "&lon=" + osGR.easting;
 
             var zoom = "zoom=2";
             if ("resolution" in sourceMapData) {
-                if (sourceMapData.resolution < 9) {
+                if (displayedMap.resolution < 9) {
                     zoom = "zoom=3";
-                } else if (sourceMapData.resolution > 100) {
+                } else if (displayedMap.resolution > 100) {
                     zoom = "zoom=0";
                 }
             }
