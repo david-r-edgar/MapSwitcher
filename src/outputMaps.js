@@ -24,31 +24,6 @@ var OutputMaps = {
 }
 
 
-//FIXME refactor
-var getDirections = function(sourceMapData) {
-    if ("searches" in sourceMapData) {
-        for (var searchObj of sourceMapData.searches) {
-            if (searchObj.directions) {
-                return searchObj.directions;
-            }
-        }
-    }
-    return null;
-}
-
-//FIXME refactor
-var getDisplayedMap = function(sourceMapData) {
-    if ("searches" in sourceMapData) {
-        for (var searchObj of sourceMapData.searches) {
-            if (searchObj.displayedMap) {
-                return searchObj.displayedMap;
-            }
-        }
-    }
-    return null;
-}
-
-
 
 
 /**

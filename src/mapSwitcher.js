@@ -34,6 +34,31 @@ jQuery.fn.sortDivs = function sortDivs() {
 
 
 
+//FIXME refactor
+var getDirections = function(sourceMapData) {
+    if ("searches" in sourceMapData) {
+        for (var searchObj of sourceMapData.searches) {
+            if (searchObj.directions) {
+                return searchObj.directions;
+            }
+        }
+    }
+    return null;
+}
+
+//FIXME refactor
+var getDisplayedMap = function(sourceMapData) {
+    if ("searches" in sourceMapData) {
+        for (var searchObj of sourceMapData.searches) {
+            if (searchObj.displayedMap) {
+                return searchObj.displayedMap;
+            }
+        }
+    }
+    return null;
+}
+
+
 
 /**
  * Main view object for the extension popup.
@@ -293,40 +318,48 @@ var MapSwitcher = {
         return new Promise(function(resolve, reject) {
 
             //FIXME temporary data structure conversion
-            if (extractedData &&
-                (extractedData.centreCoords != null || extractedData.osgbCentreCoords != null)) {
-                dmObj = {displayedMap: {centreCoords: extractedData.centreCoords}}
-                if (extractedData && extractedData.resolution != null) {
-                    dmObj.displayedMap.resolution = extractedData.resolution;
+            if (extractedData) {
+                if ((extractedData.centreCoords != null || extractedData.osgbCentreCoords != null)) {
+                    var dmObj = {displayedMap: {}}
+                    if (extractedData.centreCoords) {
+                        dmObj.displayedMap.centreCoords = extractedData.centreCoords;
+                    }
+                    if (extractedData.osgbCentreCoords) {
+                        dmObj.displayedMap.osgbCentreCoords = extractedData.osgbCentreCoords;
+                    }
+                    if (extractedData.resolution != null) {
+                        dmObj.displayedMap.resolution = extractedData.resolution;
+                    }
+                    if ("searches" in extractedData) {
+                        extractedData.searches.unshift(dmObj);
+                    } else {
+                        extractedData.searches = [{"displayedMap": dmObj.displayedMap}];
+                    }
                 }
-                if ("searches" in extractedData) {
-                    extractedData.searches.unshift(dmObj);
-                } else {
-                    extractedData.searches = [{"displayedMap": dmObj.displayedMap}];
-                }
+                delete extractedData.centreCoords;
+                delete extractedData.resolution;
             }
 
-            if (!extractedData) {
+            var dmObj = getDisplayedMap(extractedData);
+            if (!dmObj) {
                 reject(extractedData);
-            } else if (extractedData.centreCoords != null) {
+            } else if ((dmObj.centreCoords == null && dmObj.osgbCentreCoords == null)) {
+                //no centre coords of any recognised format
+                reject (extractedData);
+            } else if (dmObj.centreCoords != null) {
                 //regular wgs84 coords extracted
                 resolve(extractedData);
-            } else {
-                if (extractedData.osgbCentreCoords == null) {
-                    //no centre coords of any recognised format
-                    reject(extractedData);
-                } else {
-                    //osgb36 coords specified
-                    var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
-                                             extractedData.osgbCentreCoords.n);
-                    var osLL = OsGridRef.osGridToLatLong(osGR);
-                    var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL);
-                    extractedData.centreCoords = {
-                        "lat":wgs84LL._lat,
-                        "lng":wgs84LL._lon
-                    }
-                    resolve(extractedData);
+            } else { //i.e. dmObj.osgbCentreCoords != null
+                //osgb36 coords specified
+                var osGR = new OsGridRef(dmObj.osgbCentreCoords.e,
+                                            dmObj.osgbCentreCoords.n);
+                var osLL = OsGridRef.osGridToLatLong(osGR);
+                var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL);
+                dmObj.centreCoords = {
+                    "lat":wgs84LL._lat,
+                    "lng":wgs84LL._lon
                 }
+                resolve(extractedData);
             }
         });
     },
@@ -342,10 +375,11 @@ var MapSwitcher = {
     */
     getCountryCode: function(extractedData) {
         return new Promise(function(resolve, reject) {
-            if (extractedData && extractedData.centreCoords != null) {
+            var dmObj = getDisplayedMap(extractedData);
+            if (dmObj && dmObj.centreCoords != null) {
                 CodeGrid.getCode(
-                    Number(extractedData.centreCoords.lat),
-                    Number(extractedData.centreCoords.lng),
+                    Number(dmObj.centreCoords.lat),
+                    Number(dmObj.centreCoords.lng),
                     function (error, countryCode) {
                         if (!error) {
                             extractedData.countryCode = countryCode;
@@ -402,9 +436,10 @@ var MapSwitcher = {
             });
         }
 
+        var dmObj = getDisplayedMap(sourceMapData);
         document.getElementById("sourceLocnVal").textContent =
-            Number(sourceMapData.centreCoords.lat).toFixed(7) +  ", " +
-            Number(sourceMapData.centreCoords.lng).toFixed(7);
+            Number(dmObj.centreCoords.lat).toFixed(7) +  ", " +
+            Number(dmObj.centreCoords.lng).toFixed(7);
         if (undefined === sourceMapData.locationDescr) {
             document.getElementById("sourceExtrFromVal").textContent = "currently displayed map";
         } else {
