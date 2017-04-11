@@ -1046,14 +1046,19 @@ extractors.push({
     host: "peakbagger.com",
     extract:
         function(resolve) {
-            var sourceMapData = {}
             var re = /cy=([-0-9.]+)&cx=([-0-9.]+)&z=([0-9]+)/;
             var coordArray = $("#Gmap").attr("src").match(re);
             if (coordArray && coordArray.length > 3) {
-                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
-                sourceMapData.resolution =
+                var centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                var resolution =
                     calculateResolutionFromStdZoom(coordArray[3], coordArray[1]);
+                var nonUpdating = window.location.hostname;
+                var locationDescr = "original inset map location";
             }
+            var sourceMapData = {"searches": [{"displayedMap": {centreCoords,
+                                                                resolution,
+                                                                nonUpdating,
+                                                                locationDescr}}]}
             resolve(sourceMapData);
         }
 });
@@ -1064,13 +1069,13 @@ extractors.push({
     host: "summitpost.org",
     extract:
         function(resolve) {
-            var sourceMapData = {}
             var databoxLatlng = $("#main_data_box a[rel='noindex']").first();
             var re = /distance_lat_[0-9]+=([-0-9.]+)&distance_lon_[0-9]+=([-0-9.]+)/;
             var coordArray = $(databoxLatlng).attr("href").match(re);
             if (coordArray && coordArray.length > 2) {
-                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                 var centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
             }
+            var sourceMapData = {"searches": [{"displayedMap": {centreCoords}}]}
             resolve(sourceMapData);
         }
 });
