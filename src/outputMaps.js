@@ -127,7 +127,7 @@ OutputMaps.services = [
 
         if ("resolution" in displayedMap) {
             //google minimum zoom is 3
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                 displayedMap.resolution, displayedMap.centreCoords.lat, 3) + "z";
         }
 
@@ -174,7 +174,7 @@ OutputMaps.services = [
 
         if ("resolution" in displayedMap) {
             //3 <= zoom <=20
-            zoom = "&lvl=" + calculateStdZoomFromResolution(
+            zoom = "&lvl=" + calcStdZoomFromRes(
                                 displayedMap.resolution,
                                 displayedMap.centreCoords.lat,
                                 3, 20);
@@ -276,7 +276,7 @@ OutputMaps.services = [
 
         if ("resolution" in displayedMap) {
             //osm max zoom 19
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                 displayedMap.resolution, displayedMap.centreCoords.lat, 0, 19) + "/";
         }
 
@@ -360,7 +360,7 @@ OutputMaps.services = [
         var wikiminiatlasBase = "https://wma.wmflabs.org/iframe.html?";
         mapCentre = displayedMap.centreCoords.lat + "_" + displayedMap.centreCoords.lng;
         //FIXME this is an approximation of zoom - it's not completely accurate
-        zoom = calculateStdZoomFromResolution(
+        zoom = calcStdZoomFromRes(
                 displayedMap.resolution, displayedMap.centreCoords.lat, 4, 16) - 1;
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
@@ -390,7 +390,7 @@ OutputMaps.services = [
 
         if ("resolution" in displayedMap) {
             zoom = "z=" +
-                calculateStdZoomFromResolution(
+                calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
@@ -420,7 +420,7 @@ OutputMaps.services = [
 
         if ("resolution" in displayedMap) {
             zoom = "z=" +
-                calculateStdZoomFromResolution(
+                calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat);
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
@@ -467,7 +467,7 @@ OutputMaps.services = [
         var mapCentre = "center=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                 displayedMap.resolution, displayedMap.centreCoords.lat, 2, 18);
             zoom = "zoom=" + zoom;
         }
@@ -570,7 +570,7 @@ OutputMaps.services = [
 
         if ("resolution" in displayedMap) {
             zoom = "zoom=" +
-                calculateStdZoomFromResolution(
+                calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
@@ -624,7 +624,7 @@ OutputMaps.services = [
         var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
@@ -660,7 +660,7 @@ OutputMaps.services = [
         var mapCentre = displayedMap.centreCoords.lat + "/" + displayedMap.centreCoords.lng;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat, 0, 17);
             zoom = "" + zoom;
         }
@@ -706,7 +706,7 @@ OutputMaps.services = [
 
         if ("resolution" in displayedMap) {
             zoom = "" +
-                calculateStdZoomFromResolution(
+                calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
@@ -830,7 +830,7 @@ OutputMaps.services = [
         var mapCentre = "location=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
@@ -985,7 +985,7 @@ OutputMaps.services = [
         var time = hours + ":" + mins;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat);
         }
 
@@ -1014,7 +1014,7 @@ OutputMaps.services = [
             var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
             if ("resolution" in displayedMap) {
-                zoom = calculateStdZoomFromResolution(
+                zoom = calcStdZoomFromRes(
                         displayedMap.resolution, displayedMap.centreCoords.lat, 1, 16);
                 zoom = "&zoom=" + zoom;
             }
@@ -1109,7 +1109,7 @@ OutputMaps.services = [
         var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
@@ -1147,7 +1147,7 @@ OutputMaps.services = [
         var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
@@ -1175,7 +1175,7 @@ OutputMaps.services = [
         var mapCentre = "fLat=" + displayedMap.centreCoords.lat + "&fLon=" + displayedMap.centreCoords.lng;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat);
         }
         zoom = "zl=" + zoom;
@@ -1203,7 +1203,7 @@ OutputMaps.services = [
             var mapCentre = "lat=" + displayedMap.centreCoords.lat + "&lon=" + displayedMap.centreCoords.lng;
 
             if ("resolution" in displayedMap) {
-                zoom = calculateStdZoomFromResolution(
+                zoom = calcStdZoomFromRes(
                         displayedMap.resolution, displayedMap.centreCoords.lat);
             }
             var zoomParams = "&lz=" + zoom + "&rz=" + zoom;
@@ -1232,7 +1232,7 @@ OutputMaps.services = [
         var mapCentre = "ll=" + displayedMap.centreCoords.lng + "," + displayedMap.centreCoords.lat;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                     displayedMap.resolution, displayedMap.centreCoords.lat);
             zoom = "z=" + zoom;
         }
@@ -1270,7 +1270,7 @@ OutputMaps.services = [
             var mapCentre = "ll=" + displayedMap.centreCoords.lat + "," + displayedMap.centreCoords.lng;
 
             if ("resolution" in displayedMap) {
-                zoom = calculateStdZoomFromResolution(
+                zoom = calcStdZoomFromRes(
                         displayedMap.resolution, displayedMap.centreCoords.lat);
                 zoom = "z=" + zoom;
             }
@@ -1305,7 +1305,7 @@ OutputMaps.services = [
         var mapCentre = displayedMap.centreCoords.lng + "/" + displayedMap.centreCoords.lat;
 
         if ("resolution" in displayedMap) {
-            zoom = calculateStdZoomFromResolution(
+            zoom = calcStdZoomFromRes(
                 displayedMap.resolution, displayedMap.centreCoords.lat, 1);
         }
 

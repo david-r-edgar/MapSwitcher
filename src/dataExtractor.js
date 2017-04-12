@@ -20,9 +20,9 @@ extractors.push({
                 var re = /ll=([-0-9.]+)%2C([-0-9.]+)&z=([0-9.]+)/;
                 var coordArray = window.location.search.match(re);
                 if (coordArray && coordArray.length > 3) {
-                    sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                    sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
                     sourceMapData.resolution =
-                        calculateResolutionFromStdZoom(coordArray[3], coordArray[1]);
+                        calcResFromStdZoom(coordArray[3], coordArray[1]);
                 }
                 resolve(sourceMapData);
             }
@@ -31,12 +31,12 @@ extractors.push({
                 var re = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/;
                 var coordArray = window.location.pathname.match(re);
                 if (coordArray && coordArray.length >= 3) {
-                    sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                    sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
                 }
                 if (coordArray && coordArray.length >= 5) {
                     if (coordArray[4] === 'z') {
                         sourceMapData.resolution =
-                            calculateResolutionFromStdZoom(coordArray[3],
+                            calcResFromStdZoom(coordArray[3],
                                                         coordArray[1]);
                     } else if (coordArray[4] === 'm') {
                         //on google satellite / earth, the zoom is specified in the URL not
@@ -140,7 +140,7 @@ extractors.push({
                     var lsm = gmdp.getLocalSearchMap();
                     if (lsm) {
                         resolve({
-                            centreCoords: {"lat": lsm.centre.lat, "lng": lsm.centre.lng},
+                            centreCoords: {lat: lsm.centre.lat, lng: lsm.centre.lng},
                             resolution: lsm.resolution / 1500
                             //FIXME how is the resoution specified? Why do we apparently need this 1500 coefficient? Where does it come from? Is it correct?
                         });
@@ -159,7 +159,7 @@ extractors.push({
                 }
                 if (coordArray && coordArray.length > 3) {
                     resolve({
-                        centreCoords: {"lat": coordArray[1] / 1000000, "lng": coordArray[2] / 1000000},
+                        centreCoords: {lat: coordArray[1] / 1000000, lng: coordArray[2] / 1000000},
                         //FIXME what's the justification behind this coefficient '3'? Is it at all correct?
                         resolution: coordArray[3] / 3,
                         locationDescr: "default map of search results",
@@ -171,9 +171,9 @@ extractors.push({
                         var coordArray = $(this).attr("href").match(re);
                         if (coordArray && coordArray.length > 3) {
                             resolve({
-                                centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                                centreCoords: {lat: coordArray[1], lng: coordArray[2]},
                                 locationDescr: "default map of search results",
-                                resolution: calculateResolutionFromStdZoom(
+                                resolution: calcResFromStdZoom(
                                     coordArray[3], coordArray[1])
                             });
                         }
@@ -201,22 +201,22 @@ extractors.push({
                 var re = /cp=([-0-9.]+)~([-0-9.]+)/;
                 var coordArray = window.location.search.match(re);
                 if (coordArray && coordArray.length >= 3) {
-                    sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                    sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
                 }
                 re = /lvl=([0-9]+)/;
                 var levelArray = window.location.search.match(re);
                 if (levelArray && levelArray.length > 1) {
-                    sourceMapData.resolution = calculateResolutionFromStdZoom(
+                    sourceMapData.resolution = calcResFromStdZoom(
                         levelArray[1], sourceMapData.centreCoords.lat);
                 }
             } else {
                 //scrolling has happened, but bing doesn't update its URL. So we pull
                 //the coords from the'MapModeStateHistory'
                 sourceMapData.centreCoords = {
-                    "lat": window.history.state.MapModeStateHistory.centerPoint.latitude, "lng": window.history.state.MapModeStateHistory.centerPoint.longitude}
+                    lat: window.history.state.MapModeStateHistory.centerPoint.latitude, lng: window.history.state.MapModeStateHistory.centerPoint.longitude}
 
                 var level = history.state.MapModeStateHistory.level;
-                sourceMapData.resolution = calculateResolutionFromStdZoom(
+                sourceMapData.resolution = calcResFromStdZoom(
                     level, sourceMapData.centreCoords.lat);
             }
 
@@ -243,7 +243,7 @@ extractors.push({
                         sourceMapData.searches[0].directions.route[rteWptIndex].address.match(re);
                     if (wptArray && wptArray.length > 2) {
                         sourceMapData.searches[0].directions.route[rteWptIndex].coords =
-                            {"lat": wptArray[1], "lng": wptArray[2]}
+                            {lat: wptArray[1], lng: wptArray[2]}
                     }
                 }
 
@@ -274,8 +274,8 @@ extractors.push({
             var re = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length >= 4) {
-                sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]}
-                sourceMapData.resolution = calculateResolutionFromStdZoom(
+                sourceMapData.centreCoords = {lat: coordArray[2], lng: coordArray[3]}
+                sourceMapData.resolution = calcResFromStdZoom(
                         coordArray[1], sourceMapData.centreCoords.lat);
             }
 
@@ -301,11 +301,11 @@ extractors.push({
                 var routeCoordsArray = window.location.search.match(re);
                 if (routeCoordsArray && routeCoordsArray.length > 4) {
                     sourceMapData.searches[0].directions.route[0].coords =
-                        { "lat": routeCoordsArray[1],
-                        "lng": routeCoordsArray[2] }
+                        { lat: routeCoordsArray[1],
+                        lng: routeCoordsArray[2] }
                     sourceMapData.searches[0].directions.route[1].coords =
-                        { "lat": routeCoordsArray[3],
-                        "lng": routeCoordsArray[4] }
+                        { lat: routeCoordsArray[3],
+                        lng: routeCoordsArray[4] }
                 }
 
                 re = /engine=[a-zA-Z]+_([a-z]+)/;
@@ -338,7 +338,7 @@ extractors.push({
             var re = /params=([-0-9.]+)_N_([-0-9.]+)_E/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length >= 3) {
-                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
             }
             var scaleElem = $(".toccolours th:contains('Scale')").next();
             var re = /1:([0-9]+)/;
@@ -362,12 +362,12 @@ extractors.push({
                 var re = /ll=([-0-9.]+),([-0-9.]+)/;
                 var coordArray = window.location.hash.match(re);
                 if (coordArray && coordArray.length >= 3) {
-                    sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                    sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
                 }
                 re = /z=([0-9]+)/;
                 var zoomArray = window.location.hash.match(re);
                 if (zoomArray && zoomArray.length > 1) {
-                    sourceMapData.resolution = calculateResolutionFromStdZoom(
+                    sourceMapData.resolution = calcResFromStdZoom(
                             zoomArray[1], sourceMapData.centreCoords.lat);
                 }
                 resolve(sourceMapData);
@@ -386,8 +386,8 @@ extractors.push({
                         lng = -lng;
                     }
                     resolve({
-                        centreCoords: {"lat": lat, "lng": lng},
-                        resolution: calculateResolutionFromStdZoom(15, lat),
+                        centreCoords: {lat: lat, lng: lng},
+                        resolution: calcResFromStdZoom(15, lat),
                         locationDescr: "primary geocache coordinates"
                     });
                 }
@@ -405,12 +405,12 @@ extractors.push({
             var re = /&lat=([-0-9.]+)&lon=([-0-9.]+)&/;
             coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length >= 3) {
-                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
             }
             re = /z=([0-9]+)/;
             var zoomArray = window.location.hash.match(re);
             if (zoomArray && zoomArray.length > 1) {
-                sourceMapData.resolution = calculateResolutionFromStdZoom(
+                sourceMapData.resolution = calcResFromStdZoom(
                         zoomArray[1], sourceMapData.centreCoords.lat);
             }
             resolve(sourceMapData);
@@ -434,9 +434,9 @@ extractors.push({
             var re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/;
             var coordArray = href.match(re);
             if (coordArray && coordArray.length > 3) {
-                sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]}
+                sourceMapData.centreCoords = {lat: coordArray[2], lng: coordArray[3]}
                 sourceMapData.resolution =
-                    calculateResolutionFromStdZoom(coordArray[1], coordArray[2]);
+                    calcResFromStdZoom(coordArray[1], coordArray[2]);
             }
 
             var routesHref="";
@@ -486,12 +486,12 @@ extractors.push({
             var re = /lat=([-0-9.]+)&lon=([-0-9.]+)/;
             var coordArray = centrePermalink.match(re);
             if (coordArray && coordArray.length > 2) {
-                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
             }
             re = /zoom=([0-9]+)/;
             var zoomArray = centrePermalink.match(re);
             if (zoomArray && zoomArray.length > 1) {
-                sourceMapData.resolution = calculateResolutionFromStdZoom(
+                sourceMapData.resolution = calcResFromStdZoom(
                         zoomArray[1], sourceMapData.centreCoords.lat);
             }
             resolve(sourceMapData);
@@ -508,8 +508,8 @@ extractors.push({
             var re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
-                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
-                sourceMapData.resolution = calculateResolutionFromStdZoom(
+                sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
+                sourceMapData.resolution = calcResFromStdZoom(
                         coordArray[3], sourceMapData.centreCoords.lat);
             }
 
@@ -598,7 +598,7 @@ extractors.push({
             var re = /X=([0-9]+)&amp;Y=([0-9]+)/;
             var osCoordArray = urlToShare.match(re);
             if (osCoordArray && osCoordArray.length > 2) {
-                sourceMapData.osgbCentreCoords = {"e": osCoordArray[1], "n": osCoordArray[2]}
+                sourceMapData.osgbCentreCoords = {e: osCoordArray[1], n: osCoordArray[2]}
             }
             re = /Z=([0-9]+)/;
             var zoomArray = urlToShare.match(re);
@@ -670,8 +670,8 @@ extractors.push({
                         var re = /([-0-9.]+),[ ]+([-0-9.]+)/;
                         var coordArray = coords.match(re);
                         if (coordArray && coordArray.length > 2) {
-                            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
-                            sourceMapData.resolution = calculateResolutionFromStdZoom(
+                            sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
+                            sourceMapData.resolution = calcResFromStdZoom(
                                 16, sourceMapData.centreCoords.lat);
                             sourceMapData.locationDescr = "current map centre";
                             resolve(sourceMapData);
@@ -694,8 +694,8 @@ extractors.push({
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {"lat": coordArray[2], "lng": coordArray[3]},
-                    resolution: calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
+                    centreCoords: {lat: coordArray[2], lng: coordArray[3]},
+                    resolution: calcResFromStdZoom(coordArray[1], coordArray[2])
                 });
             } else {
                 reject();
@@ -713,8 +713,8 @@ extractors.push({
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
-                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
                     nonUpdating: window.location.hostname,
                     locationDescr: "non-updating URL"
                 });
@@ -734,8 +734,8 @@ extractors.push({
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
-                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
                     nonUpdating: window.location.hostname,
                     locationDescr: "non-updating URL"
                 });
@@ -755,8 +755,8 @@ extractors.push({
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
-                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
                     nonUpdating: window.location.hostname,
                     locationDescr: "non-updating URL"
                 });
@@ -776,14 +776,14 @@ extractors.push({
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 2) {
                 var sourceMapData = {
-                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
                     nonUpdating: window.location.hostname,
                     locationDescr: "non-updating URL"
                 }
                 var zoomRe = /zoom=([0-9]+)/;
                 var zoomArray = window.location.search.match(zoomRe);
                 if (zoomArray && zoomArray.length > 1) {
-                    sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[1]);
+                    sourceMapData.resolution = calcResFromStdZoom(zoomArray[1], coordArray[1]);
                 }
                 resolve(sourceMapData);
             } else {
@@ -802,8 +802,8 @@ extractors.push({
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length >= 3) {
                 resolve({
-                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
-                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
                     locationDescr: "current pin location"
                 });
             } else {
@@ -824,7 +824,7 @@ extractors.push({
                     var re = /Map Centre: East: ([0-9.]+) : North: ([0-9.]+)/;
                     var mapCentreArr = this.innerText.match(re);
                     if (mapCentreArr && mapCentreArr.length > 2) {
-                        sourceMapData.osgbCentreCoords = {"e": mapCentreArr[1], "n": mapCentreArr[2]}
+                        sourceMapData.osgbCentreCoords = {e: mapCentreArr[1], n: mapCentreArr[2]}
                         sourceMapData.locationDescr = "map centre";
                         return false; //just to break out of jquery each loop
                     }
@@ -834,7 +834,7 @@ extractors.push({
                         var re = /Click Marker Position: East: ([0-9.]+) : North: ([0-9.]+)/;
                         var mapCentreArr = this.innerText.match(re);
                         if (mapCentreArr && mapCentreArr.length > 2) {
-                            sourceMapData.osgbCentreCoords = {"e": mapCentreArr[1], "n": mapCentreArr[2]}
+                            sourceMapData.osgbCentreCoords = {e: mapCentreArr[1], n: mapCentreArr[2]}
                             sourceMapData.locationDescr = "initial marker position";
                             return false; //just to break out of jquery each loop
                         }
@@ -846,7 +846,7 @@ extractors.push({
                     var re = /Centre Position: Long: ([0-9.]+)E : Lat: ([0-9.]+)N/;
                     var mapCentreArr = this.innerText.match(re);
                     if (mapCentreArr && mapCentreArr.length > 2) {
-                        sourceMapData.centreCoords = {"lat": mapCentreArr[2], "lng": mapCentreArr[1]}
+                        sourceMapData.centreCoords = {lat: mapCentreArr[2], lng: mapCentreArr[1]}
                         sourceMapData.locationDescr = "map centre";
                         return false; //just to break out of jquery each loop
                     }
@@ -869,7 +869,7 @@ extractors.push({
                 $("#coordinates .geo").first().each(function() {
                     var coordArray = this.innerText.split(';');
                     if (coordArray.length === 2) {
-                        sourceMapData.centreCoords = {"lat": coordArray[0].trim(), "lng": coordArray[1].trim()}
+                        sourceMapData.centreCoords = {lat: coordArray[0].trim(), lng: coordArray[1].trim()}
                         sourceMapData.locationDescr = "primary article coordinates";
                     }
                 });
@@ -882,7 +882,7 @@ extractors.push({
                     if (coordArray && coordArray.length > 4) {
                         var lat = coordArray[2] == 'N' ? coordArray[1] : (-coordArray[1]);
                         var lng = coordArray[4] == 'E' ? coordArray[3] : (-coordArray[3]);
-                        sourceMapData.centreCoords = {"lat": lat, "lng": lng}
+                        sourceMapData.centreCoords = {lat: lat, lng: lng}
                     }
                 });
             }
@@ -901,11 +901,15 @@ extractors.push({
             var re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
             var dataArray = href.match(re);
             if (dataArray && dataArray.length > 3) {
-                sourceMapData.centreCoords = {"lat": dataArray[2], "lng": dataArray[3]}
-                sourceMapData.resolution =
-                    calculateResolutionFromStdZoom(dataArray[1], dataArray[2]);
+                var centreCoords = {lat: dataArray[2], lng: dataArray[3]}
+                var resolution =
+                    calcResFromStdZoom(dataArray[1], dataArray[2]);
             }
-            resolve(sourceMapData);
+            resolve({
+                searches: [{
+                    displayedMap: {centreCoords, resolution}
+                }]
+            });
         }
 });
 
@@ -915,8 +919,6 @@ extractors.push({
     host: "facebook.com",
     extract:
         function(resolve) {
-            var sourceMapData = {}
-
             ///// Generic map image (relying on the obfuscated class name continuing to be used) /////
             var mapImages = $("._a3f.img");
             if (mapImages.length > 0) {
@@ -925,9 +927,9 @@ extractors.push({
                     for (var imgEl of mapImages) {
                         var matchArr = imgEl.currentSrc.match(re);
                         if (matchArr && matchArr.length > 3) {
-                            sourceMapData.centreCoords = {"lat": matchArr[2], "lng": matchArr[3]}
-                            sourceMapData.resolution =
-                                calculateResolutionFromStdZoom(matchArr[1], matchArr[2]);
+                            var centreCoords = {lat: matchArr[2], lng: matchArr[3]}
+                            var resolution =
+                                calcResFromStdZoom(matchArr[1], matchArr[2]);
                             break;
                         }
                     }
@@ -943,9 +945,9 @@ extractors.push({
                         //we expect there to be more than one image; we assume that only one will contain
                         //coords (i.e. the map thumbnail), so use the first such one we find
                         if (matchArr && matchArr.length > 3) {
-                            sourceMapData.centreCoords = {"lat": matchArr[1], "lng": matchArr[2]}
-                            sourceMapData.resolution =
-                                calculateResolutionFromStdZoom(matchArr[3], matchArr[1]);
+                            var centreCoords = {lat: matchArr[1], lng: matchArr[2]}
+                            var resolution =
+                                calcResFromStdZoom(matchArr[3], matchArr[1]);
                             break;
                         }
                     }
@@ -959,16 +961,20 @@ extractors.push({
                     for (var imgEl of pageSidebarImages) {
                         var matchArr = imgEl.currentSrc.match(re);
                         if (matchArr && matchArr.length > 3) {
-                            sourceMapData.centreCoords = {"lat": matchArr[2], "lng": matchArr[3]}
-                            sourceMapData.resolution =
-                                calculateResolutionFromStdZoom(matchArr[1], matchArr[2]);
+                            var centreCoords = {lat: matchArr[2], lng: matchArr[3]}
+                            var resolution =
+                                calcResFromStdZoom(matchArr[1], matchArr[2]);
                             break;
                         }
                     }
                 }
             }
 
-            resolve(sourceMapData);
+            resolve({
+                searches: [{
+                    displayedMap: {centreCoords, resolution}
+                }]
+            });
         }
 });
 
@@ -981,16 +987,18 @@ extractors.push({
             var re = /ll=([-0-9.]+)%2C([-0-9.]+)/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 2) {
-                var sourceMapData = {
-                    centreCoords: {"lat": coordArray[2], "lng": coordArray[1]},
-                    locationDescr: "map centre specified in URL"
-                }
+                var centreCoords = {lat: coordArray[2], lng: coordArray[1]}
+                var locationDescr = "map centre specified in URL";
                 var zoomRe = /z=([0-9]+)/;
                 var zoomArray = window.location.search.match(zoomRe);
                 if (zoomArray && zoomArray.length > 1) {
-                    sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[2]);
+                    var resolution = calcResFromStdZoom(zoomArray[1], coordArray[2]);
                 }
-                resolve(sourceMapData);
+                resolve({
+                    searches: [{
+                        displayedMap: {centreCoords, locationDescr, resolution}
+                    }]
+                });
             } else {
                 reject();
             }
@@ -1006,16 +1014,18 @@ extractors.push({
             var re = /ll=([-0-9.]+),([-0-9.]+)/;
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length > 2) {
-                var sourceMapData = {
-                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
-                    locationDescr: "map centre specified in URL"
-                }
+                var centreCoords = {lat: coordArray[1], lng: coordArray[2]};
+                var locationDescr = "map centre specified in URL";
                 var zoomRe = /z=([0-9]+)/;
                 var zoomArray = window.location.hash.match(zoomRe);
                 if (zoomArray && zoomArray.length > 1) {
-                    sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[1]);
+                    var resolution = calcResFromStdZoom(zoomArray[1], coordArray[1]);
                 }
-                resolve(sourceMapData);
+                resolve({
+                    searches: [{
+                        displayedMap: {centreCoords, locationDescr, resolution}
+                    }]
+                });
             } else {
                 reject();
             }
@@ -1028,15 +1038,17 @@ extractors.push({
     host: "labs.strava.com",
     extract:
         function(resolve) {
-            var sourceMapData = {}
             var re = /\#([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length > 3) {
-                sourceMapData.centreCoords = {"lat": coordArray[3], "lng": coordArray[2]}
-                sourceMapData.resolution =
-                    calculateResolutionFromStdZoom(coordArray[1], coordArray[3]);
+                var centreCoords = {lat: coordArray[3], lng: coordArray[2]}
+                var resolution = calcResFromStdZoom(coordArray[1], coordArray[3]);
             }
-            resolve(sourceMapData);
+            resolve({
+                searches: [{
+                    displayedMap: {centreCoords, resolution}
+                }]
+            });
         }
 });
 
@@ -1049,17 +1061,20 @@ extractors.push({
             var re = /cy=([-0-9.]+)&cx=([-0-9.]+)&z=([0-9]+)/;
             var coordArray = $("#Gmap").attr("src").match(re);
             if (coordArray && coordArray.length > 3) {
-                var centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                var centreCoords = {lat: coordArray[1], lng: coordArray[2]}
                 var resolution =
-                    calculateResolutionFromStdZoom(coordArray[3], coordArray[1]);
+                    calcResFromStdZoom(coordArray[3], coordArray[1]);
                 var nonUpdating = window.location.hostname;
                 var locationDescr = "original inset map location";
             }
-            var sourceMapData = {"searches": [{"displayedMap": {centreCoords,
-                                                                resolution,
-                                                                nonUpdating,
-                                                                locationDescr}}]}
-            resolve(sourceMapData);
+            resolve({
+                searches: [{
+                    displayedMap: {centreCoords,
+                                   resolution,
+                                   nonUpdating,
+                                   locationDescr}
+                }]
+            });
         }
 });
 
@@ -1073,10 +1088,13 @@ extractors.push({
             var re = /distance_lat_[0-9]+=([-0-9.]+)&distance_lon_[0-9]+=([-0-9.]+)/;
             var coordArray = $(databoxLatlng).attr("href").match(re);
             if (coordArray && coordArray.length > 2) {
-                 var centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                 var centreCoords = {lat: coordArray[1], lng: coordArray[2]}
             }
-            var sourceMapData = {"searches": [{"displayedMap": {centreCoords}}]}
-            resolve(sourceMapData);
+            resolve({
+                searches: [{
+                    displayedMap: {centreCoords}
+                }]
+            });
         }
 });
 
