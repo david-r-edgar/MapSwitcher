@@ -21,8 +21,7 @@ extractors.push({
                 var coordArray = window.location.search.match(re);
                 if (coordArray && coordArray.length > 3) {
                     sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
-                    sourceMapData.resolution =
-                        calcResFromStdZoom(coordArray[3], coordArray[1]);
+                    sourceMapData.resolution = calcResFromStdZoom(coordArray[3], coordArray[1]);
                 }
                 resolve(sourceMapData);
             }
@@ -35,9 +34,7 @@ extractors.push({
                 }
                 if (coordArray && coordArray.length >= 5) {
                     if (coordArray[4] === 'z') {
-                        sourceMapData.resolution =
-                            calcResFromStdZoom(coordArray[3],
-                                                        coordArray[1]);
+                        sourceMapData.resolution = calcResFromStdZoom(coordArray[3], coordArray[1]);
                     } else if (coordArray[4] === 'm') {
                         //on google satellite / earth, the zoom is specified in the URL not
                         //as the standard 'z' value but as an m value, which is the height in
@@ -173,8 +170,7 @@ extractors.push({
                             resolve({
                                 centreCoords: {lat: coordArray[1], lng: coordArray[2]},
                                 locationDescr: "default map of search results",
-                                resolution: calcResFromStdZoom(
-                                    coordArray[3], coordArray[1])
+                                resolution: calcResFromStdZoom(coordArray[3], coordArray[1])
                             });
                         }
                     });
@@ -435,8 +431,7 @@ extractors.push({
             var coordArray = href.match(re);
             if (coordArray && coordArray.length > 3) {
                 sourceMapData.centreCoords = {lat: coordArray[2], lng: coordArray[3]}
-                sourceMapData.resolution =
-                    calcResFromStdZoom(coordArray[1], coordArray[2]);
+                sourceMapData.resolution = calcResFromStdZoom(coordArray[1], coordArray[2]);
             }
 
             var routesHref="";
@@ -902,8 +897,7 @@ extractors.push({
             var dataArray = href.match(re);
             if (dataArray && dataArray.length > 3) {
                 var centreCoords = {lat: dataArray[2], lng: dataArray[3]}
-                var resolution =
-                    calcResFromStdZoom(dataArray[1], dataArray[2]);
+                var resolution = calcResFromStdZoom(dataArray[1], dataArray[2]);
             }
             resolve({
                 searches: [{
@@ -928,8 +922,7 @@ extractors.push({
                         var matchArr = imgEl.currentSrc.match(re);
                         if (matchArr && matchArr.length > 3) {
                             var centreCoords = {lat: matchArr[2], lng: matchArr[3]}
-                            var resolution =
-                                calcResFromStdZoom(matchArr[1], matchArr[2]);
+                            var resolution = calcResFromStdZoom(matchArr[1], matchArr[2]);
                             break;
                         }
                     }
@@ -946,8 +939,7 @@ extractors.push({
                         //coords (i.e. the map thumbnail), so use the first such one we find
                         if (matchArr && matchArr.length > 3) {
                             var centreCoords = {lat: matchArr[1], lng: matchArr[2]}
-                            var resolution =
-                                calcResFromStdZoom(matchArr[3], matchArr[1]);
+                            var resolution = calcResFromStdZoom(matchArr[3], matchArr[1]);
                             break;
                         }
                     }
@@ -962,8 +954,7 @@ extractors.push({
                         var matchArr = imgEl.currentSrc.match(re);
                         if (matchArr && matchArr.length > 3) {
                             var centreCoords = {lat: matchArr[2], lng: matchArr[3]}
-                            var resolution =
-                                calcResFromStdZoom(matchArr[1], matchArr[2]);
+                            var resolution = calcResFromStdZoom(matchArr[1], matchArr[2]);
                             break;
                         }
                     }
@@ -1062,8 +1053,7 @@ extractors.push({
             var coordArray = $("#Gmap").attr("src").match(re);
             if (coordArray && coordArray.length > 3) {
                 var centreCoords = {lat: coordArray[1], lng: coordArray[2]}
-                var resolution =
-                    calcResFromStdZoom(coordArray[3], coordArray[1]);
+                var resolution = calcResFromStdZoom(coordArray[3], coordArray[1]);
                 var nonUpdating = window.location.hostname;
                 var locationDescr = "original inset map location";
             }
