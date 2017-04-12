@@ -857,15 +857,21 @@ extractors.push({
     host: "wikipedia.org",
     extract:
         function(resolve) {
-            var sourceMapData = {}
+            var sourceMapData = {
+                searches: [{
+                    displayedMap: {}
+                }]
+            }
             //FIXME can we just use the #coordinates .external block below for EN too, in future?
             // - but we would also need to handle things like params=38_45_S_72_40_W (for Temuco)
             if ($("#coordinates .geo").length) {
                 $("#coordinates .geo").first().each(function() {
                     var coordArray = this.innerText.split(';');
                     if (coordArray.length === 2) {
-                        sourceMapData.centreCoords = {lat: coordArray[0].trim(), lng: coordArray[1].trim()}
-                        sourceMapData.locationDescr = "primary article coordinates";
+                        sourceMapData.searches[0].displayedMap.centreCoords =
+                            {lat: coordArray[0].trim(), lng: coordArray[1].trim()}
+                        sourceMapData.searches[0].displayedMap.locationDescr =
+                            "primary article coordinates";
                     }
                 });
             }
@@ -877,7 +883,7 @@ extractors.push({
                     if (coordArray && coordArray.length > 4) {
                         var lat = coordArray[2] == 'N' ? coordArray[1] : (-coordArray[1]);
                         var lng = coordArray[4] == 'E' ? coordArray[3] : (-coordArray[3]);
-                        sourceMapData.centreCoords = {lat: lat, lng: lng}
+                        sourceMapData.searches[0].displayedMap.centreCoords = {lat, lng}
                     }
                 });
             }
