@@ -797,9 +797,13 @@ extractors.push({
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length >= 3) {
                 resolve({
-                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
-                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
-                    locationDescr: "current pin location"
+                    searches: [{
+                        displayedMap: {
+                            centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                            resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
+                            locationDescr: "current pin location"
+                        }
+                    }]
                 });
             } else {
                 reject();
@@ -813,14 +817,19 @@ extractors.push({
     host: "sysmaps.co.uk",
     extract:
         function(resolve) {
-            var sourceMapData = {}
+            var sourceMapData = {
+                searches: [{
+                    displayedMap: {}
+                }]
+            }
             if (window.location.pathname.indexOf("/sysmaps_os.html") === 0) {
                 $(".style1").each(function() {
                     var re = /Map Centre: East: ([0-9.]+) : North: ([0-9.]+)/;
                     var mapCentreArr = this.innerText.match(re);
                     if (mapCentreArr && mapCentreArr.length > 2) {
-                        sourceMapData.osgbCentreCoords = {e: mapCentreArr[1], n: mapCentreArr[2]}
-                        sourceMapData.locationDescr = "map centre";
+                        sourceMapData.searches[0].displayedMap.osgbCentreCoords =
+                            {e: mapCentreArr[1], n: mapCentreArr[2]}
+                        sourceMapData.searches[0].displayedMap.locationDescr = "map centre";
                         return false; //just to break out of jquery each loop
                     }
                 });
@@ -829,8 +838,10 @@ extractors.push({
                         var re = /Click Marker Position: East: ([0-9.]+) : North: ([0-9.]+)/;
                         var mapCentreArr = this.innerText.match(re);
                         if (mapCentreArr && mapCentreArr.length > 2) {
-                            sourceMapData.osgbCentreCoords = {e: mapCentreArr[1], n: mapCentreArr[2]}
-                            sourceMapData.locationDescr = "initial marker position";
+                            sourceMapData.searches[0].displayedMap.osgbCentreCoords =
+                                {e: mapCentreArr[1], n: mapCentreArr[2]}
+                            sourceMapData.searches[0].displayedMap.locationDescr =
+                                "initial marker position";
                             return false; //just to break out of jquery each loop
                         }
                     });
@@ -841,8 +852,9 @@ extractors.push({
                     var re = /Centre Position: Long: ([0-9.]+)E : Lat: ([0-9.]+)N/;
                     var mapCentreArr = this.innerText.match(re);
                     if (mapCentreArr && mapCentreArr.length > 2) {
-                        sourceMapData.centreCoords = {lat: mapCentreArr[2], lng: mapCentreArr[1]}
-                        sourceMapData.locationDescr = "map centre";
+                        sourceMapData.searches[0].displayedMap.centreCoords =
+                            {lat: mapCentreArr[2], lng: mapCentreArr[1]}
+                        sourceMapData.searches[0].displayedMap.locationDescr = "map centre";
                         return false; //just to break out of jquery each loop
                     }
                 });
