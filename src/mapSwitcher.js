@@ -410,12 +410,13 @@ var MapSwitcher = {
     * @param sourceMapData
     */
     constructOutputs: function(sourceMapData) {
-        if (sourceMapData.nonUpdating !== undefined) {
+        var dmObj = getDisplayedMap(sourceMapData);
+        if (dmObj.nonUpdating !== undefined) {
 
             var modal = document.getElementById('warningModal');
             modal.style.display = "block";
 
-            document.getElementById("nonUpdatingHost").textContent = sourceMapData.nonUpdating;
+            document.getElementById("nonUpdatingHost").textContent = dmObj.nonUpdating;
 
             var close = document.getElementsByClassName("modalClose")[0];
 
@@ -436,7 +437,6 @@ var MapSwitcher = {
             });
         }
 
-        var dmObj = getDisplayedMap(sourceMapData);
         document.getElementById("sourceLocnVal").textContent =
             Number(dmObj.centreCoords.lat).toFixed(7) +  ", " +
             Number(dmObj.centreCoords.lng).toFixed(7);

@@ -770,7 +770,7 @@ extractors.push({
             var re = /lat=([-0-9.]+)&lon=([-0-9.]+)/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 2) {
-                var sourceMapData = {
+                var displayedMap = {
                     centreCoords: {lat: coordArray[1], lng: coordArray[2]},
                     nonUpdating: window.location.hostname,
                     locationDescr: "non-updating URL"
@@ -778,9 +778,11 @@ extractors.push({
                 var zoomRe = /zoom=([0-9]+)/;
                 var zoomArray = window.location.search.match(zoomRe);
                 if (zoomArray && zoomArray.length > 1) {
-                    sourceMapData.resolution = calcResFromStdZoom(zoomArray[1], coordArray[1]);
+                    displayedMap.resolution = calcResFromStdZoom(zoomArray[1], coordArray[1]);
                 }
-                resolve(sourceMapData);
+                resolve({
+                    searches: [{displayedMap}]
+                });
             } else {
                 reject();
             }
