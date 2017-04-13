@@ -476,20 +476,22 @@ extractors.push({
     host: "openseamap.",
     extract:
         function(resolve) {
-            var sourceMapData = {}
             var centrePermalink = ($("#OpenLayers_Control_Permalink_13 a").attr("href"));
             var re = /lat=([-0-9.]+)&lon=([-0-9.]+)/;
             var coordArray = centrePermalink.match(re);
             if (coordArray && coordArray.length > 2) {
-                sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
+                var centreCoords = {lat: coordArray[1], lng: coordArray[2]}
             }
             re = /zoom=([0-9]+)/;
             var zoomArray = centrePermalink.match(re);
             if (zoomArray && zoomArray.length > 1) {
-                sourceMapData.resolution = calcResFromStdZoom(
-                        zoomArray[1], sourceMapData.centreCoords.lat);
+                var resolution = calcResFromStdZoom(zoomArray[1], centreCoords.lat);
             }
-            resolve(sourceMapData);
+            resolve({
+                searches: [{
+                    displayedMap: {centreCoords, resolution}
+                }]
+            });
         }
 });
 
@@ -499,13 +501,14 @@ extractors.push({
     host: "wego.here.com",
     extract:
         function(resolve) {
-            var sourceMapData = {}
+            var sourceMapData = {searches: []}
             var re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/;
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
-                sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
-                sourceMapData.resolution = calcResFromStdZoom(
-                        coordArray[3], sourceMapData.centreCoords.lat);
+                var displayedMap = {}
+                displayedMap.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
+                displayedMap.resolution = calcResFromStdZoom(
+                        coordArray[3], displayedMap.centreCoords.lat);
             }
 
             //check if pathname contains directions
@@ -575,9 +578,11 @@ extractors.push({
                 //if directions don't contain at least two points, they are considered invalid
                 if (smdDirs.route.length >= 2) {
                     var directions = smdDirs;
-                    sourceMapData.searches = [ { directions } ]
+                    sourceMapData.searches.push({directions});
                 }
             }
+            //directions have higher precedence, so only push the displayedMap object at the end
+            sourceMapData.searches.push({displayedMap});
             resolve(sourceMapData);
         }
 });
@@ -588,12 +593,11 @@ extractors.push({
     host: "streetmap.co.uk",
     extract:
         function(resolve) {
-            var sourceMapData = {}
             var urlToShare = $("#LinkToInput")[0].innerHTML;
             var re = /X=([0-9]+)&amp;Y=([0-9]+)/;
             var osCoordArray = urlToShare.match(re);
             if (osCoordArray && osCoordArray.length > 2) {
-                sourceMapData.osgbCentreCoords = {e: osCoordArray[1], n: osCoordArray[2]}
+                var osgbCentreCoords = {e: osCoordArray[1], n: osCoordArray[2]}
             }
             re = /Z=([0-9]+)/;
             var zoomArray = urlToShare.match(re);
@@ -625,9 +629,13 @@ extractors.push({
                         scale = 1000000;
                         break;
                 }
-                sourceMapData.resolution = calculateResolutionFromScale(scale);
+                var resolution = calculateResolutionFromScale(scale);
             }
-            resolve(sourceMapData);
+            resolve({
+                searches: [{
+                    displayedMap: {osgbCentreCoords, resolution}
+                }]
+            });
         }
 });
 
