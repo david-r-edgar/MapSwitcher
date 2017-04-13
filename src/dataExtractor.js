@@ -637,7 +637,7 @@ extractors.push({
     host: "map.what3words.com",
     extract:
         function(resolve, reject) {
-            var sourceMapData = {}
+            var displayedMap = {}
             $(".display").each(function() {
                 $(this).click();
                 $("#word-view .share").each(function() {
@@ -665,11 +665,13 @@ extractors.push({
                         var re = /([-0-9.]+),[ ]+([-0-9.]+)/;
                         var coordArray = coords.match(re);
                         if (coordArray && coordArray.length > 2) {
-                            sourceMapData.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
-                            sourceMapData.resolution = calcResFromStdZoom(
-                                16, sourceMapData.centreCoords.lat);
-                            sourceMapData.locationDescr = "current map centre";
-                            resolve(sourceMapData);
+                            displayedMap.centreCoords = {lat: coordArray[1], lng: coordArray[2]}
+                            displayedMap.resolution = calcResFromStdZoom(
+                                16, displayedMap.centreCoords.lat);
+                            displayedMap.locationDescr = "current map centre";
+                            resolve({
+                                searches: [{displayedMap}]
+                            });
                         }
                         gpsElem.setAttribute("href", "/");
                     }, 30);
@@ -689,8 +691,12 @@ extractors.push({
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {lat: coordArray[2], lng: coordArray[3]},
-                    resolution: calcResFromStdZoom(coordArray[1], coordArray[2])
+                    searches: [{
+                        displayedMap: {
+                            centreCoords: {lat: coordArray[2], lng: coordArray[3]},
+                            resolution: calcResFromStdZoom(coordArray[1], coordArray[2])
+                        }
+                    }]
                 });
             } else {
                 reject();
@@ -708,10 +714,14 @@ extractors.push({
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
-                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
-                    nonUpdating: window.location.hostname,
-                    locationDescr: "non-updating URL"
+                    searches: [{
+                        displayedMap: {
+                            centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                            resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
+                            nonUpdating: window.location.hostname,
+                            locationDescr: "non-updating URL"
+                        }
+                    }]
                 });
             } else {
                 reject();
@@ -729,10 +739,14 @@ extractors.push({
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
-                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
-                    nonUpdating: window.location.hostname,
-                    locationDescr: "non-updating URL"
+                    searches: [{
+                        displayedMap: {
+                            centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                            resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
+                            nonUpdating: window.location.hostname,
+                            locationDescr: "non-updating URL"
+                        }
+                    }]
                 });
             } else {
                 reject();
@@ -750,10 +764,14 @@ extractors.push({
             var coordArray = window.location.search.match(re);
             if (coordArray && coordArray.length > 3) {
                 resolve({
-                    centreCoords: {lat: coordArray[1], lng: coordArray[2]},
-                    resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
-                    nonUpdating: window.location.hostname,
-                    locationDescr: "non-updating URL"
+                    searches: [{
+                        displayedMap: {
+                            centreCoords: {lat: coordArray[1], lng: coordArray[2]},
+                            resolution: calcResFromStdZoom(coordArray[3], coordArray[1]),
+                            nonUpdating: window.location.hostname,
+                            locationDescr: "non-updating URL"
+                        }
+                    }]
                 });
             } else {
                 reject();
