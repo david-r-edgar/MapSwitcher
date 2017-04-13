@@ -405,7 +405,7 @@ var MapSwitcher = {
     * Constructs the outputs to be shown in the extension popup.
     *
     * Run once the dataExtractor has been executed on the current tab.
-    * Iterates throught the map services to request them to generate their links.
+    * Iterates through the map services to request them to generate their links.
     *
     * @param sourceMapData
     */
