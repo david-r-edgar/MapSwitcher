@@ -929,7 +929,7 @@ OutputMaps.services = [
 },
 {
     site: "SunCalc",
-    image: "suncalcLogo16x16.png",
+    image: "suncalc_org16x16.png",
     id: "suncalc",
     cat: OutputMaps.category.utility,
     maplinks:
@@ -939,7 +939,7 @@ OutputMaps.services = [
         }
     },
     generate: function(sourceMapData, view) {
-        var suncalcBase = "http://suncalc.net/#/";
+        var suncalcBase = "http://suncalc.org/#/";
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         var zoom = "12";
 
@@ -957,7 +957,7 @@ OutputMaps.services = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time;
+        this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time + '/1/0';
 
         view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
     }
@@ -1146,5 +1146,3 @@ OutputMaps.services = [
 
 
 ];
-
-
