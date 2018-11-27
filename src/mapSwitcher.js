@@ -34,30 +34,6 @@ jQuery.fn.sortDivs = function sortDivs() {
 
 
 
-//FIXME refactor
-var getDirections = function(sourceMapData) {
-    if ("searches" in sourceMapData) {
-        for (var searchObj of sourceMapData.searches) {
-            if (searchObj.directions) {
-                return searchObj.directions;
-            }
-        }
-    }
-    return null;
-}
-
-//FIXME refactor
-var getDisplayedMap = function(sourceMapData) {
-    if ("searches" in sourceMapData) {
-        for (var searchObj of sourceMapData.searches) {
-            if (searchObj.displayedMap) {
-                return searchObj.displayedMap;
-            }
-        }
-    }
-    return null;
-}
-
 
 
 /**
@@ -83,8 +59,6 @@ var MapLinksView = {
             return "#singleSegDirns";
         } else if (OutputMaps.category.utility === category) {
             return "#utilities";
-        } else if (OutputMaps.category.special === category) {
-            return "#special";
         } else {
             return "#noDirns";
         }
@@ -115,9 +89,6 @@ var MapLinksView = {
                     break;
                 case OutputMaps.category.utility:
                     title = "Miscellaneous";
-                    break;
-                case OutputMaps.category.special:
-                    title = "Special";
                     break;
                 default:
                     if (this.sourceDirnSegs >= 1) {
@@ -175,7 +146,7 @@ var MapLinksView = {
     addFileDownload: function(mapService, id, name, fileGenerator) {
 
         //only add the title once
-         if ($("#downloads").text().length === 0) {
+        if ($("#downloads").text().length === 0) {
             $("#downloads").append("<h4>Downloads</h4>");
         }
 
@@ -316,50 +287,27 @@ var MapSwitcher = {
     */
     normaliseExtractedData: function(extractedData) {
         return new Promise(function(resolve, reject) {
-
-            //FIXME temporary data structure conversion
-            if (extractedData) {
-                if ((extractedData.centreCoords != null || extractedData.osgbCentreCoords != null)) {
-                    var dmObj = {displayedMap: {}}
-                    if (extractedData.centreCoords) {
-                        dmObj.displayedMap.centreCoords = extractedData.centreCoords;
-                    }
-                    if (extractedData.osgbCentreCoords) {
-                        dmObj.displayedMap.osgbCentreCoords = extractedData.osgbCentreCoords;
-                    }
-                    if (extractedData.resolution != null) {
-                        dmObj.displayedMap.resolution = extractedData.resolution;
-                    }
-                    if ("searches" in extractedData) {
-                        extractedData.searches.unshift(dmObj);
-                    } else {
-                        extractedData.searches = [{"displayedMap": dmObj.displayedMap}];
-                    }
-                }
-                delete extractedData.centreCoords;
-                delete extractedData.resolution;
-            }
-
-            var dmObj = getDisplayedMap(extractedData);
-            if (!dmObj) {
+            if (!extractedData) {
                 reject(extractedData);
-            } else if ((dmObj.centreCoords == null && dmObj.osgbCentreCoords == null)) {
-                //no centre coords of any recognised format
-                reject (extractedData);
-            } else if (dmObj.centreCoords != null) {
+            } else if (extractedData.centreCoords != null) {
                 //regular wgs84 coords extracted
                 resolve(extractedData);
-            } else { //i.e. dmObj.osgbCentreCoords != null
-                //osgb36 coords specified
-                var osGR = new OsGridRef(dmObj.osgbCentreCoords.e,
-                                            dmObj.osgbCentreCoords.n);
-                var osLL = OsGridRef.osGridToLatLong(osGR);
-                var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL);
-                dmObj.centreCoords = {
-                    "lat":wgs84LL._lat,
-                    "lng":wgs84LL._lon
+            } else {
+                if (extractedData.osgbCentreCoords == null) {
+                    //no centre coords of any recognised format
+                    reject(extractedData);
+                } else {
+                    //osgb36 coords specified
+                    var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
+                                             extractedData.osgbCentreCoords.n);
+                    var osLL = OsGridRef.osGridToLatLong(osGR);
+                    var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL);
+                    extractedData.centreCoords = {
+                        "lat":wgs84LL._lat,
+                        "lng":wgs84LL._lon
+                    }
+                    resolve(extractedData);
                 }
-                resolve(extractedData);
             }
         });
     },
@@ -375,11 +323,10 @@ var MapSwitcher = {
     */
     getCountryCode: function(extractedData) {
         return new Promise(function(resolve, reject) {
-            var dmObj = getDisplayedMap(extractedData);
-            if (dmObj && dmObj.centreCoords != null) {
+            if (extractedData && extractedData.centreCoords != null) {
                 CodeGrid.getCode(
-                    Number(dmObj.centreCoords.lat),
-                    Number(dmObj.centreCoords.lng),
+                    Number(extractedData.centreCoords.lat),
+                    Number(extractedData.centreCoords.lng),
                     function (error, countryCode) {
                         if (!error) {
                             extractedData.countryCode = countryCode;
@@ -405,18 +352,17 @@ var MapSwitcher = {
     * Constructs the outputs to be shown in the extension popup.
     *
     * Run once the dataExtractor has been executed on the current tab.
-    * Iterates through the map services to request them to generate their links.
+    * Iterates throught the map services to request them to generate their links.
     *
     * @param sourceMapData
     */
     constructOutputs: function(sourceMapData) {
-        var dmObj = getDisplayedMap(sourceMapData);
-        if (dmObj.nonUpdating !== undefined) {
+        if (sourceMapData.nonUpdating !== undefined) {
 
             var modal = document.getElementById('warningModal');
             modal.style.display = "block";
 
-            document.getElementById("nonUpdatingHost").textContent = dmObj.nonUpdating;
+            document.getElementById("nonUpdatingHost").textContent = sourceMapData.nonUpdating;
 
             var close = document.getElementsByClassName("modalClose")[0];
 
@@ -428,40 +374,35 @@ var MapSwitcher = {
                     modal.style.display = "none";
                 }
             }
-        }
 
-        if ("alternativeCoords" in sourceMapData) {
-            $("#alternativeSource>a").show();
-            $("#alternativeSource>a").click(function() {
-                console.log("switch source");
-            });
         }
 
         document.getElementById("sourceLocnVal").textContent =
-            Number(dmObj.centreCoords.lat).toFixed(7) +  ", " +
-            Number(dmObj.centreCoords.lng).toFixed(7);
+            Number(sourceMapData.centreCoords.lat).toFixed(7) +  ", " +
+            Number(sourceMapData.centreCoords.lng).toFixed(7);
         if (undefined === sourceMapData.locationDescr) {
             document.getElementById("sourceExtrFromVal").textContent = "currently displayed map";
         } else {
             document.getElementById("sourceExtrFromVal").textContent = sourceMapData.locationDescr;
         }
-        var smdDirns = getDirections(sourceMapData);
-        if (smdDirns) {
+        if ("directions" in sourceMapData) {
             var numWpts = 0;
             var mode = "";
-
-            if ("route" in smdDirns) {
-                numWpts = smdDirns.route.length;
-                MapLinksView.sourceDirnSegs = smdDirns.route.length - 1;
+            if ("route" in sourceMapData.directions) {
+                numWpts = sourceMapData.directions.route.length;
             }
             var dirnDescr = numWpts + " waypoint route";
-            if ("mode" in smdDirns) {
-                var mode = ("transit" == smdDirns.mode) ?
-                                "public transport" : smdDirns.mode;
+            if ("mode" in sourceMapData.directions) {
+                var mode = ("transit" == sourceMapData.directions.mode) ?
+                                "public transport" : sourceMapData.directions.mode;
                 dirnDescr += ", travelling by " + mode;
             }
             $("#sourceDirn").show();
             document.getElementById("sourceDirnVal").textContent = dirnDescr;
+        }
+
+        if (sourceMapData.directions && sourceMapData.directions.route) {
+            MapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1;
         }
 
         for (outputMapService of OutputMaps.services) {

@@ -26,7 +26,7 @@ var MEDIAN_PIXEL_PITCH = 0.264;
  * @param {number} lat - latitude, wgs84 decimal
  * @returns {number} resolution returned in metres per pixel
  */
-function calcResFromStdZoom(zoom, lat) {
+function calculateResolutionFromStdZoom(zoom, lat) {
     let latAdjCoeff = Math.cos(lat * Math.PI / 180);
     return WORLD_RESOLUTION_MPP * latAdjCoeff / Math.pow(2, zoom);
 }
@@ -42,7 +42,7 @@ function calcResFromStdZoom(zoom, lat) {
  * @param {integer} max - maximum zoom to return
  * @returns {integer} zoom level integer (normally in the range 0-20)
  */
-function calcStdZoomFromRes(resn, lat, min, max) {
+function calculateStdZoomFromResolution(resn, lat, min, max) {
     let latAdjCoeff = Math.cos(lat * Math.PI / 180);
     let zoom = Math.log(WORLD_RESOLUTION_MPP * latAdjCoeff / resn) / Math.log(2);
     if (min > zoom) zoom = min;
