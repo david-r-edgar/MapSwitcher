@@ -228,7 +228,6 @@ OutputMaps.services = [
         osmStandard: "Standard",
         osmCycle: "Cycle Map",
         osmTransport: "Transport",
-        osmMapQuestOpen: "MapQuest Open",
         osmHumanitarian: "Humanitarian"
     },
     maplinks:
@@ -241,9 +240,6 @@ OutputMaps.services = [
         },
         osmTransport: {
             name: "Transport"
-        },
-        osmMapQuestOpen: {
-            name: "MapQuest Open"
         },
         osmHumanitarian: {
             name: "Humanitarian"
@@ -301,7 +297,6 @@ OutputMaps.services = [
         this.maplinks.osmStandard["link"] = coreLink;
         this.maplinks.osmCycle["link"] = coreLink + "&layers=C";
         this.maplinks.osmTransport["link"] = coreLink + "&layers=T";
-        this.maplinks.osmMapQuestOpen["link"] = coreLink + "&layers=Q";
         this.maplinks.osmHumanitarian["link"] = coreLink + "&layers=H";
 
         if (directions.length > 0) {
@@ -419,36 +414,6 @@ OutputMaps.services = [
         var w3wBase = "https://map.what3words.com/";
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
-
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
-    }
-},
-{
-    site: "MapQuest",
-    image: "mqLogo16x16.png",
-    id: "mapquest",
-    prio: 9,
-    cat: OutputMaps.category.plain,
-    maplinks:
-    {
-        mqOpen: {
-            name: "MapQuest Open"
-        }
-    },
-    generate: function(sourceMapData, view) {
-        var mapquestBase = "http://open.mapquest.com/?";
-        var mapCentre = "center=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
-        var zoom = "zoom=12";
-
-        if ("resolution" in sourceMapData) {
-            zoom = calculateStdZoomFromResolution(
-                sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom < 2) zoom = 2;
-            if (zoom > 18) zoom = 18;
-            zoom = "zoom=" + zoom;
-        }
-
-        this.maplinks.mqOpen["link"] = mapquestBase + mapCentre + '&' + zoom;
 
         view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
     }
