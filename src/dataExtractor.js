@@ -740,6 +740,25 @@ extractors.push({
 
 
 extractors.push({
+    host: "suncalc.org",
+    extract:
+        function(resolve, reject) {
+            var re = /#\/([-0-9.]+),([-0-9.]+),([0-9]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length >= 3) {
+                resolve({
+                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                    resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
+                    locationDescr: "current pin location"
+                });
+            } else {
+                reject();
+            }
+        }
+});
+
+
+extractors.push({
     host: "sysmaps.co.uk",
     extract:
         function(resolve) {
