@@ -348,9 +348,6 @@ OutputMaps.services = [
     cat: OutputMaps.category.plain,
     maplinks:
     {
-        wikimapiaSatellite: {
-            name: "Satellite"
-        },
         wikimapiaMap: {
             name: "Maps"
         }
@@ -366,7 +363,6 @@ OutputMaps.services = [
                     sourceMapData.resolution, sourceMapData.centreCoords.lat);
         }
 
-        this.maplinks.wikimapiaSatellite["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=b"; //m=b seems to be an optional default anyway
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
 
         view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
