@@ -43,7 +43,6 @@ The included makefile allows you to build for release. Currently you may need to
 - OpenSeaMap
 - Stamen
 - Streetmap.co.uk
-- MapQuest Open
 - GPX Editor
 - TopoZone
 - SunCalc
@@ -70,7 +69,6 @@ The included makefile allows you to build for release. Currently you may need to
   - WikiMiniAtlas
 - Geocaching
 - what3words
-- MapQuest Open
 - OpenSeaMap
 - Stamen
 - GPX Editor
