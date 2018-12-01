@@ -910,11 +910,11 @@ extractors.push({
 
 
 extractors.push({
-    host: "labs.strava.com",
+    host: "strava.com",
     extract:
         function(resolve) {
             var sourceMapData = {}
-            var re = /\#([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
+            var re = /\#([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/;
             var coordArray = window.location.hash.match(re);
             if (coordArray && coordArray.length > 3) {
                 sourceMapData.centreCoords = {"lat": coordArray[3], "lng": coordArray[2]}

@@ -1098,21 +1098,18 @@ OutputMaps.services = [
     }
 },
 {
-    site: "Strava Global Heatmap",
+    site: "Strava",
     image: "stravaLogo16x16.png",
     id: "strava",
     cat: OutputMaps.category.special,
     maplinks:
     {
         stravaBike: {
-            name: "Bike"
-        },
-        stravaRun: {
-            name: "Run"
+            name: "Global Heatmap"
         }
     },
     generate: function(sourceMapData, view) {
-        var siteBase = "http://labs.strava.com/heatmap/#";
+        var siteBase = "https://www.strava.com/heatmap#";
         var zoom = "12";
         var mapCentre = sourceMapData.centreCoords.lng + "/" + sourceMapData.centreCoords.lat;
 
@@ -1121,8 +1118,7 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
         }
 
-        this.maplinks.stravaBike["link"] = siteBase + zoom + "/" + mapCentre + "/blue/bike";
-        this.maplinks.stravaRun["link"] = siteBase + zoom + "/" + mapCentre + "/yellow/run";
+        this.maplinks.stravaBike["link"] = siteBase + zoom + "/" + mapCentre + "/hot/all";
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
