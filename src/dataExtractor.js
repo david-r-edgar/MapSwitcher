@@ -926,8 +926,6 @@ extractors.push({
 });
 
 
-=======
->>>>>>> 7a2b31f... Extract from yandex when coords are given in URL.
 
 var runDataExtraction = function () {
     //default null extractor
