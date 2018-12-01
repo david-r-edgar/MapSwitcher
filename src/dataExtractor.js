@@ -564,54 +564,6 @@ extractors.push({
 
 
 extractors.push({
-    host: "map.what3words.com",
-    extract:
-        function(resolve, reject) {
-            var sourceMapData = {}
-            $(".display").each(function() {
-                $(this).click();
-                $("#word-view .share").each(function() {
-                    $(this).click();
-                    var gpsElem = document.getElementsByClassName("gps")[0];
-                    //We have to remove the href to prevent the click following the link.
-                    //(I think normally jquery would have prevented this, but we can't use jquery here.)
-                    gpsElem.removeAttribute("href");
-                    gpsElem.dispatchEvent(new MouseEvent("click"));
-
-                    var waitForElemByClass = function(name, onSuccess, repeats, calls) {
-                        if (calls == undefined) calls = 0;
-                        var elem = document.getElementsByClassName(name)[0];
-                        if (elem) { onSuccess(elem); }
-                        else if (calls++ < repeats) {
-                            setTimeout(function()
-                                {waitForElemByClass(name, onSuccess, repeats, calls)}, 20 * calls);
-                        }
-                    }
-
-                    waitForElemByClass("coords", function(coordsElem) {
-                        var coords = coordsElem.getAttribute("value");
-                        document.getElementById("popup-container").dispatchEvent(new MouseEvent("click"));
-                        document.getElementsByClassName("close")[0].dispatchEvent(new MouseEvent("click"));
-                        var re = /([-0-9.]+),[ ]+([-0-9.]+)/;
-                        var coordArray = coords.match(re);
-                        if (coordArray && coordArray.length > 2) {
-                            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
-                            sourceMapData.resolution = calculateResolutionFromStdZoom(
-                                16, sourceMapData.centreCoords.lat);
-                            sourceMapData.locationDescr = "current map centre";
-                            resolve(sourceMapData);
-                        }
-                        gpsElem.setAttribute("href", "/");
-                    }, 30);
-                });
-            });
-            //FIXME need to reject on failure cases
-        }
-});
-
-
-
-extractors.push({
     host: "maps.stamen.com",
     extract:
         function(resolve, reject) {
