@@ -1133,6 +1133,12 @@ OutputMaps.services = [
     {
         yandexMap: {
             name: "Maps"
+        },
+        yandexSatellite: {
+            name: "Satellite"
+        },
+        yandexHybrid: {
+            name: "Hybrid"
         }
     },
     generate: function(sourceMapData, view) {
@@ -1146,6 +1152,8 @@ OutputMaps.services = [
             zoom = "z=" + zoom;
         }
         this.maplinks.yandexMap["link"] = yandexBase + "?" + mapCentre + "&" + zoom;
+        this.maplinks.yandexSatellite["link"] = yandexBase + "?l=sat&" + mapCentre + "&" + zoom;
+        this.maplinks.yandexHybrid["link"] = yandexBase + "?l=sat%2Cskl&" + mapCentre + "&" + zoom;
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
