@@ -1157,6 +1157,37 @@ OutputMaps.services = [
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
+},
+{
+    site: "F4map",
+    image: "f4logo16x16.png",
+    id: "F4map",
+    prio: 12,
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        f4reg: {
+            name: "Regular"
+        },
+        f4_3d: {
+            name: "3d"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var base = "https://demo.f4map.com/";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 21);
+            zoom = "zoom=" + zoom;
+        }
+        this.maplinks.f4reg["link"] = base + "#" + mapCentre + "&" + zoom + '&3d=false&camera.theta=0.9';
+        this.maplinks.f4_3d["link"] = base + "#" + mapCentre + "&" + zoom;
+
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
+    }
 }
 
 ];

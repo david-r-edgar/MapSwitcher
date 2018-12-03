@@ -879,6 +879,24 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "f4map.com",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var re = /#lat=([-0-9.]+)&lon=([-0-9.]+)&zoom=([0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[3], coordArray[1]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
+
 var runDataExtraction = function () {
     //default null extractor
     var extractor = {
