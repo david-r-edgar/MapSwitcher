@@ -1188,6 +1188,33 @@ OutputMaps.services = [
 
         view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
+},
+{
+    site: "OpenTopoMap",
+    image: "opentopomap16x16.png",
+    id: "opentopomap",
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        opentopomap: {
+            name: "Topographic map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var base = "https://opentopomap.org/#map=";
+        var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
+        var zoom = "12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            zoom = "" + zoom;
+        }
+
+        this.maplinks.opentopomap["link"] = base + zoom + '/' + mapCentre;
+
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+    }
 }
 
 ];

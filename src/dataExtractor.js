@@ -897,6 +897,24 @@ extractors.push({
 
 
 
+extractors.push({
+    host: "opentopomap.org",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var re = /#map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[1], coordArray[2]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
+
 var runDataExtraction = function () {
     //default null extractor
     var extractor = {
