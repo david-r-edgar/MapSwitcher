@@ -49,6 +49,11 @@ The included makefile allows you to build for release. Currently you may need to
 - SysMaps
 - OpenCycleMap
 - Facebook (pages and events)
+- Yandex
+- CalTopo
+- Strava (global heatmap)
+- F4map
+- OpenTopoMap
 
 ### Output mapping services
 
@@ -77,6 +82,12 @@ The included makefile allows you to build for release. Currently you may need to
 - OpenCycleMap
 - TopoZone (US)
 - SysMaps (UK)
+- Strava
+  - Global Heatmap
+- Yandex
+- F4map
+- OpenTopoMap
+- CalTopo (US + CA)
 
 ### Utilities
 - GPX download
