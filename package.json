@@ -1,0 +1,28 @@
+{
+  "name": "mapswitcher",
+  "description": "Switch between different map services. Convert coordinates and directions and jump to the same location on another map.",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:resources": "",
+    "build:js": "",
+    "clean:release": "rm -rf release",
+    "build:release": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/david-r-edgar/MapSwitcher.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "chrome",
+    "maps",
+    "mapping"
+  ],
+  "author": "David R Edgar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/david-r-edgar/MapSwitcher/issues"
+  },
+  "homepage": "https://github.com/david-r-edgar/MapSwitcher#readme"
+}
