@@ -420,15 +420,15 @@ OutputMaps.services = [
           name: 'MapSwitcher.gpx',
           type: 'text/xml;charset=utf-8',
           content:
-                '<?xml version="1.1"?>\n' +
-                '<gpx creator="MapSwitcher" version="1.1" xmlns="http://www.topografix.com/GPX/1/1">\n' +
-                    '\t<author>MapSwitcher</author>\n' +
-                    '\t<wpt lat="' + sourceMapData.centreCoords.lat +
-                        '" lon="' + sourceMapData.centreCoords.lng + '">\n' +
-                        '\t\t<name>Centre of map</name>\n' +
-                        '\t\t<desc>' + sourceMapData.centreCoords.lat + ', ' + sourceMapData.centreCoords.lng + '</desc>\n' +
-                    '\t</wpt>\n' +
-                '</gpx>\n'
+            '<?xml version="1.1"?>\n' +
+            '<gpx creator="MapSwitcher" version="1.1" xmlns="http://www.topografix.com/GPX/1/1">\n' +
+              '\t<author>MapSwitcher</author>\n' +
+              '\t<wpt lat="' + sourceMapData.centreCoords.lat +
+                '" lon="' + sourceMapData.centreCoords.lng + '">\n' +
+                '\t\t<name>Centre of map</name>\n' +
+                '\t\t<desc>' + sourceMapData.centreCoords.lat + ', ' + sourceMapData.centreCoords.lng + '</desc>\n' +
+              '\t</wpt>\n' +
+            '</gpx>\n'
         }
         return fileData
       })
@@ -442,9 +442,9 @@ OutputMaps.services = [
           var rteWpt = sourceMapData.directions.route[rteIndex]
           if ('coords' in rteWpt) {
             routePoints +=
-                        '\t\t<rtept lat="' + rteWpt.coords.lat + '" lon="' + rteWpt.coords.lng + '">\n' +
-                        '\t\t\t<name>' + rteWpt + '</name>\n' +
-                        '\t\t</rtept>\n'
+              '\t\t<rtept lat="' + rteWpt.coords.lat + '" lon="' + rteWpt.coords.lng + '">\n' +
+              '\t\t\t<name>' + rteWpt + '</name>\n' +
+              '\t\t</rtept>\n'
             pointsWithCoords++
           }
         }
@@ -628,8 +628,8 @@ OutputMaps.services = [
 
       if ('resolution' in sourceMapData) {
         zoom = '' +
-                calculateStdZoomFromResolution(
-                  sourceMapData.resolution, sourceMapData.centreCoords.lat)
+          calculateStdZoomFromResolution(
+            sourceMapData.resolution, sourceMapData.centreCoords.lat)
       }
 
       if ('directions' in sourceMapData &&
@@ -850,9 +850,10 @@ OutputMaps.services = [
               }
             }
 
-            this.note = 'Due to NGI/IGN limitations, you should first go to ' +
-                            'http://www.ngi.be/topomapviewer and accept the ' +
-                            'conditions.\nThis should then work properly in future.'
+            this.note =
+              'Due to NGI/IGN limitations, you should first go to ' +
+              'http://www.ngi.be/topomapviewer and accept the ' +
+              'conditions.\nThis should then work properly in future.'
 
             view.addMapServiceLinks(this.cat, that, that.maplinks, this.note)
           })
