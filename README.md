@@ -21,7 +21,7 @@ The included makefile allows you to build for release. Currently you may need to
 
 ## Browsers supported
 - Chromium - Tested
-- Chrome -  Partially tested
+- Chrome - Partially tested
 - Opera - Unknown
 
 ## Mapping services supported

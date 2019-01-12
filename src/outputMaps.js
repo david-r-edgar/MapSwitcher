@@ -1242,7 +1242,7 @@ OutputMaps.services = [
     },
     generate: function(sourceMapData, view) {
         if ((sourceMapData.countryCode === "us") || (sourceMapData.countryCode === "ca")) {
-            var calTopoBase = "http://caltopo.com/map.html";
+            var base = "http://caltopo.com/map.html";
             var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
             var zoom = "z=12";
 
@@ -1252,11 +1252,11 @@ OutputMaps.services = [
                 zoom = "z=" + zoom;
             }
 
-            this.maplinks.caltopo_mbt["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=mbt";
-            this.maplinks.caltopo_7_5["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=t&o=r&n=0.25";
-            this.maplinks.caltopo_fs["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=t&o=f16a%2Cr&n=1,0.25"
-            this.maplinks.caltopo_aerial_topo["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=sat&o=t&n=0.5";
-            this.maplinks.caltopo_hybrid_sat["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=sat&o=r&n=0.3&a=c,mba";
+            this.maplinks.caltopo_mbt["link"] = base + '#' + mapCentre + '&' + zoom + "&b=mbt";
+            this.maplinks.caltopo_7_5["link"] = base + '#' + mapCentre + '&' + zoom + "&b=t&o=r&n=0.25";
+            this.maplinks.caltopo_fs["link"] = base + '#' + mapCentre + '&' + zoom + "&b=t&o=f16a%2Cr&n=1,0.25"
+            this.maplinks.caltopo_aerial_topo["link"] = base + '#' + mapCentre + '&' + zoom + "&b=sat&o=t&n=0.5";
+            this.maplinks.caltopo_hybrid_sat["link"] = base + '#' + mapCentre + '&' + zoom + "&b=sat&o=r&n=0.3&a=c,mba";
 
             view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
