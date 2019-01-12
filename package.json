@@ -4,10 +4,11 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:resources": "",
-    "build:js": "",
+    "build:resources": "cp -r html css image vendor manifest.json release",
+    "build:js": "for srcFile in src/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done",
     "clean:release": "rm -rf release",
-    "build:release": ""
+    "build:release": "mkdir -p release/src &&  npm run build:resources && npm run build:js",
+    "build": "npm run clean:release && npm run build:release"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/david-r-edgar/MapSwitcher/issues"
   },
-  "homepage": "https://github.com/david-r-edgar/MapSwitcher#readme"
+  "homepage": "https://github.com/david-r-edgar/MapSwitcher#readme",
+  "dependencies": {
+    "terser": "^3.14.1"
+  }
 }
