@@ -3,7 +3,7 @@
   "description": "Switch between different map services. Convert coordinates and directions and jump to the same location on another map.",
   "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "standard && echo \"Error: no test specified\"",
     "build:resources": "cp -r html css image vendor manifest.json release",
     "build:js": "for srcFile in src/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done",
     "clean:release": "rm -rf release",
@@ -28,5 +28,8 @@
   "homepage": "https://github.com/david-r-edgar/MapSwitcher#readme",
   "dependencies": {
     "terser": "^3.14.1"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
   }
 }
