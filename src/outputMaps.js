@@ -16,6 +16,7 @@ var OutputMaps = {
         multidirns: 2,
         singledirns: 1,
         plain: 0,
+        special: 5,
         utility: 3,
         download: 4
     }
@@ -337,7 +338,7 @@ OutputMaps.services = [
                 sourceMapData.resolution, sourceMapData.centreCoords.lat, 4, 16) - 1;
         this.maplinks.wikiminiatlas["link"] = wikiminiatlasBase + mapCentre + "_0_0_en_" + zoom + "_englobe=Earth";
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -365,7 +366,7 @@ OutputMaps.services = [
 
         this.maplinks.wikimapiaMap["link"] = wikimapiaBase + mapCentre + '&' + zoom + "&m=w";
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -373,7 +374,7 @@ OutputMaps.services = [
     image: "geocachingLogo16x16.png",
     id: "geocaching",
     note: "geocaching.com requires login to see the map (free sign-up)",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         geocaching: {
@@ -392,14 +393,14 @@ OutputMaps.services = [
         }
         this.maplinks.geocaching["link"] = geocachingBase + mapCentre + '&' + zoom;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
+        view.addMapServiceLinks(this.cat, this, this.maplinks, this.note);
     }
 },
 {
     site: "what3words",
     image: "w3wLogo.png",
     id: "w3w",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         what3words: {
@@ -411,7 +412,7 @@ OutputMaps.services = [
         var mapCentre = sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
         this.maplinks.what3words["link"] = w3wBase + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -558,8 +559,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom > 18) zoom = 18;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
 
@@ -567,14 +567,14 @@ OutputMaps.services = [
 
         this.maplinks.openSeaMap["link"] = openSeaMapBase + zoom + '&' + mapCentre + '&' + layers;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
     site: "Stamen",
     image: "greyMarker.png",
     id: "stamen",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         stamenWatercolor: {
@@ -594,8 +594,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom > 17) zoom = 17;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 17);
             zoom = "" + zoom;
         }
 
@@ -603,7 +602,7 @@ OutputMaps.services = [
         this.maplinks.stamenToner["link"] = stamenBase + "toner/#" + zoom + '/' + mapCentre;
         this.maplinks.stamenTerrain["link"] = stamenBase + "terrain/#" + zoom + '/' + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -731,7 +730,7 @@ OutputMaps.services = [
 
             this.maplinks.streetmap["link"] = streetmapMapBase + mapCentre + "&A=Y&" + zoomArg;
 
-            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
 },
@@ -739,7 +738,7 @@ OutputMaps.services = [
     site: "GPX Editor",
     image: "gpxed16x16.png",
     id: "gpxeditor",
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.special,
     maplinks:
     {
         gpxedmap: {
@@ -762,8 +761,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom < 1) zoom = 1;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
         this.maplinks.gpxedmap["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=roadmap";
@@ -777,7 +775,7 @@ OutputMaps.services = [
         }
         this.maplinks.gpxedocm["link"] = gpxEditorBase + mapCentre + '&' + zoom + "&mapType=OCM";
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note);
+        view.addMapServiceLinks(this.cat, this, this.maplinks, this.note);
     }
 },
 {
@@ -881,7 +879,7 @@ OutputMaps.services = [
                             "http://www.ngi.be/topomapviewer and accept the " +
                             "conditions.\nThis should then work properly in future.";
 
-                view.addMapServiceLinks(OutputMaps.category.plain, that, that.maplinks, this.note);
+                view.addMapServiceLinks(this.cat, that, that.maplinks, this.note);
             });
 
 
@@ -920,7 +918,7 @@ OutputMaps.services = [
 
         this.maplinks.suncalc["link"] = suncalcBase + mapCentre + "," + zoom + '/' + date + '/' + time + '/1/0';
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -943,15 +941,13 @@ OutputMaps.services = [
 
             if ("resolution" in sourceMapData) {
                 zoom = calculateStdZoomFromResolution(
-                        sourceMapData.resolution, sourceMapData.centreCoords.lat);
-                if (zoom < 1) zoom = 1;
-                if (zoom > 16) zoom = 16;
+                        sourceMapData.resolution, sourceMapData.centreCoords.lat, 1, 16);
                 zoom = "&zoom=" + zoom;
             }
 
             this.maplinks.topozoneMap["link"] = topozoneBase + "map/?" + mapCentre + zoom;
 
-            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
 },
@@ -974,7 +970,7 @@ OutputMaps.services = [
 
             this.maplinks.sysmapsOS["link"] = sysmapsBase + mapCentre;
 
-            view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
         }
     }
 },
@@ -995,7 +991,7 @@ OutputMaps.services = [
 
         this.maplinks.boulterConverter["link"] = boulterBase + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -1029,8 +1025,7 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom > 18) zoom = 18;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18);
             zoom = "zoom=" + zoom;
         }
 
@@ -1045,7 +1040,7 @@ OutputMaps.services = [
         this.maplinks.ocmTransportDark["link"] = openCycleMapBase + zoom + '&' + mapCentre +
             '&layers=0000B';
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -1067,14 +1062,13 @@ OutputMaps.services = [
 
         if ("resolution" in sourceMapData) {
             zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
-            if (zoom < 1) zoom = 1;
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
             zoom = "zoom=" + zoom;
         }
 
         this.maplinks.owmWeatherMap["link"] = owmBase + zoom + '&' + mapCentre;
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
     }
 },
 {
@@ -1101,9 +1095,172 @@ OutputMaps.services = [
 
         this.maplinks.flickr["link"] = base + "?" + mapCentre + "&" + zoom + "&everyone_nearby=1";
 
-        view.addMapServiceLinks(OutputMaps.category.utility, this, this.maplinks);
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
+    }
+},
+{
+    site: "Strava",
+    image: "stravaLogo16x16.png",
+    id: "strava",
+    cat: OutputMaps.category.special,
+    maplinks:
+    {
+        stravaBike: {
+            name: "Global Heatmap"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var siteBase = "https://www.strava.com/heatmap#";
+        var zoom = "12";
+        var mapCentre = sourceMapData.centreCoords.lng + "/" + sourceMapData.centreCoords.lat;
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                sourceMapData.resolution, sourceMapData.centreCoords.lat, 1);
+        }
+
+        this.maplinks.stravaBike["link"] = siteBase + zoom + "/" + mapCentre + "/hot/all";
+
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
+    }
+},
+{
+    site: "Yandex",
+    image: "yandex16x16.png",
+    id: "yandex",
+    prio: 12,
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        yandexMap: {
+            name: "Maps"
+        },
+        yandexSatellite: {
+            name: "Satellite"
+        },
+        yandexHybrid: {
+            name: "Hybrid"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var yandexBase = "https://yandex.com/maps/";
+        var mapCentre = "ll=" + sourceMapData.centreCoords.lng + "," + sourceMapData.centreCoords.lat;
+        var zoom = "z=6";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            zoom = "z=" + zoom;
+        }
+        this.maplinks.yandexMap["link"] = yandexBase + "?" + mapCentre + "&" + zoom;
+        this.maplinks.yandexSatellite["link"] = yandexBase + "?l=sat&" + mapCentre + "&" + zoom;
+        this.maplinks.yandexHybrid["link"] = yandexBase + "?l=sat%2Cskl&" + mapCentre + "&" + zoom;
+
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
+    }
+},
+{
+    site: "F4map",
+    image: "f4logo16x16.png",
+    id: "F4map",
+    prio: 12,
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        f4reg: {
+            name: "Regular"
+        },
+        f4_3d: {
+            name: "3d"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var base = "https://demo.f4map.com/";
+        var mapCentre = "lat=" + sourceMapData.centreCoords.lat + "&lon=" + sourceMapData.centreCoords.lng;
+        var zoom = "zoom=12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 21);
+            zoom = "zoom=" + zoom;
+        }
+        this.maplinks.f4reg["link"] = base + "#" + mapCentre + "&" + zoom + '&3d=false&camera.theta=0.9';
+        this.maplinks.f4_3d["link"] = base + "#" + mapCentre + "&" + zoom;
+
+        view.addMapServiceLinks(this.cat, this, this.maplinks);
+    }
+},
+{
+    site: "OpenTopoMap",
+    image: "opentopomap16x16.png",
+    id: "opentopomap",
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        opentopomap: {
+            name: "Topographic map"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        var base = "https://opentopomap.org/#map=";
+        var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
+        var zoom = "12";
+
+        if ("resolution" in sourceMapData) {
+            zoom = calculateStdZoomFromResolution(
+                    sourceMapData.resolution, sourceMapData.centreCoords.lat);
+            zoom = "" + zoom;
+        }
+
+        this.maplinks.opentopomap["link"] = base + zoom + '/' + mapCentre;
+
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+    }
+},
+{
+    site: "CalTopo",
+    image: "caltopoLogo16x16.png",
+    id: "caltopo",
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+        caltopo_mbt: {
+            name: "MapBuilderTopo"
+        },
+        caltopo_7_5: {
+            name: "7.5' Topo"
+        },
+        caltopo_fs: {
+            name: "Forest Service"
+        },
+        caltopo_aerial_topo: {
+            name: "Aerial Topo"
+        },
+        caltopo_hybrid_sat: {
+            name: "Hybrid Satellite"
+        }
+    },
+    generate: function(sourceMapData, view) {
+        if ((sourceMapData.countryCode === "us") || (sourceMapData.countryCode === "ca")) {
+            var calTopoBase = "http://caltopo.com/map.html";
+            var mapCentre = "ll=" + sourceMapData.centreCoords.lat + "," + sourceMapData.centreCoords.lng;
+            var zoom = "z=12";
+
+            if ("resolution" in sourceMapData) {
+                zoom = calculateStdZoomFromResolution(
+                        sourceMapData.resolution, sourceMapData.centreCoords.lat);
+                zoom = "z=" + zoom;
+            }
+
+            this.maplinks.caltopo_mbt["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=mbt";
+            this.maplinks.caltopo_7_5["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=t&o=r&n=0.25";
+            this.maplinks.caltopo_fs["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=t&o=f16a%2Cr&n=1,0.25"
+            this.maplinks.caltopo_aerial_topo["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=sat&o=t&n=0.5";
+            this.maplinks.caltopo_hybrid_sat["link"] = calTopoBase + '#' + mapCentre + '&' + zoom + "&b=sat&o=r&n=0.3&a=c,mba";
+
+            view.addMapServiceLinks(this.cat, this, this.maplinks);
+        }
     }
 }
-
 
 ];

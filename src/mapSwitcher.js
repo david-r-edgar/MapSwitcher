@@ -59,6 +59,8 @@ var MapLinksView = {
             return "#singleSegDirns";
         } else if (OutputMaps.category.utility === category) {
             return "#utilities";
+        } else if (OutputMaps.category.special === category) {
+            return "#special";
         } else {
             return "#noDirns";
         }
@@ -89,6 +91,9 @@ var MapLinksView = {
                     break;
                 case OutputMaps.category.utility:
                     title = "Miscellaneous";
+                    break;
+                case OutputMaps.category.special:
+                    title = "Special";
                     break;
                 default:
                     if (this.sourceDirnSegs >= 1) {
@@ -459,4 +464,3 @@ $(document).ready(function() {
         MapSwitcher.handleNoCoords();
     });
 });
-

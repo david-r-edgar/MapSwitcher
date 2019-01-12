@@ -564,54 +564,6 @@ extractors.push({
 
 
 extractors.push({
-    host: "map.what3words.com",
-    extract:
-        function(resolve, reject) {
-            var sourceMapData = {}
-            $(".display").each(function() {
-                $(this).click();
-                $("#word-view .share").each(function() {
-                    $(this).click();
-                    var gpsElem = document.getElementsByClassName("gps")[0];
-                    //We have to remove the href to prevent the click following the link.
-                    //(I think normally jquery would have prevented this, but we can't use jquery here.)
-                    gpsElem.removeAttribute("href");
-                    gpsElem.dispatchEvent(new MouseEvent("click"));
-
-                    var waitForElemByClass = function(name, onSuccess, repeats, calls) {
-                        if (calls == undefined) calls = 0;
-                        var elem = document.getElementsByClassName(name)[0];
-                        if (elem) { onSuccess(elem); }
-                        else if (calls++ < repeats) {
-                            setTimeout(function()
-                                {waitForElemByClass(name, onSuccess, repeats, calls)}, 20 * calls);
-                        }
-                    }
-
-                    waitForElemByClass("coords", function(coordsElem) {
-                        var coords = coordsElem.getAttribute("value");
-                        document.getElementById("popup-container").dispatchEvent(new MouseEvent("click"));
-                        document.getElementsByClassName("close")[0].dispatchEvent(new MouseEvent("click"));
-                        var re = /([-0-9.]+),[ ]+([-0-9.]+)/;
-                        var coordArray = coords.match(re);
-                        if (coordArray && coordArray.length > 2) {
-                            sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
-                            sourceMapData.resolution = calculateResolutionFromStdZoom(
-                                16, sourceMapData.centreCoords.lat);
-                            sourceMapData.locationDescr = "current map centre";
-                            resolve(sourceMapData);
-                        }
-                        gpsElem.setAttribute("href", "/");
-                    }, 30);
-                });
-            });
-            //FIXME need to reject on failure cases
-        }
-});
-
-
-
-extractors.push({
     host: "maps.stamen.com",
     extract:
         function(resolve, reject) {
@@ -853,6 +805,110 @@ extractors.push({
                 }
             }
 
+            resolve(sourceMapData);
+        }
+});
+
+
+
+extractors.push({
+    host: "yandex.com",
+    extract:
+        function(resolve) {
+            var re = /ll=([-0-9.]+)%2C([-0-9.]+)/;
+            var coordArray = window.location.search.match(re);
+            if (coordArray && coordArray.length > 2) {
+                var sourceMapData = {
+                    centreCoords: {"lat": coordArray[2], "lng": coordArray[1]},
+                    locationDescr: "map centre specified in URL"
+                }
+                var zoomRe = /z=([0-9]+)/;
+                var zoomArray = window.location.search.match(zoomRe);
+                if (zoomArray && zoomArray.length > 1) {
+                    sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[2]);
+                }
+                resolve(sourceMapData);
+            } else {
+                reject();
+            }
+        }
+});
+
+
+
+extractors.push({
+    host: "caltopo.com",
+    extract:
+        function(resolve) {
+            var re = /ll=([-0-9.]+),([-0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 2) {
+                var sourceMapData = {
+                    centreCoords: {"lat": coordArray[1], "lng": coordArray[2]},
+                    locationDescr: "map centre specified in URL"
+                }
+                var zoomRe = /z=([0-9]+)/;
+                var zoomArray = window.location.hash.match(zoomRe);
+                if (zoomArray && zoomArray.length > 1) {
+                    sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[1]);
+                }
+                resolve(sourceMapData);
+            } else {
+                reject();
+            }
+        }
+});
+
+
+
+extractors.push({
+    host: "strava.com",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var re = /\#([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[3], "lng": coordArray[2]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[1], coordArray[3]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
+
+extractors.push({
+    host: "f4map.com",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var re = /#lat=([-0-9.]+)&lon=([-0-9.]+)&zoom=([0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[1], "lng": coordArray[2]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[3], coordArray[1]);
+            }
+            resolve(sourceMapData);
+        }
+});
+
+
+
+extractors.push({
+    host: "opentopomap.org",
+    extract:
+        function(resolve) {
+            var sourceMapData = {}
+            var re = /#map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/;
+            var coordArray = window.location.hash.match(re);
+            if (coordArray && coordArray.length > 3) {
+                sourceMapData.centreCoords = {"lat": coordArray[2], "lng": coordArray[3]}
+                sourceMapData.resolution =
+                    calculateResolutionFromStdZoom(coordArray[1], coordArray[2]);
+            }
             resolve(sourceMapData);
         }
 });
