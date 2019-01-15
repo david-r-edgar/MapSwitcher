@@ -1237,30 +1237,30 @@ OutputMaps.services = [
     }
   },
   {
-    site: "Qwant",
-    image: "qwantLogo16x16.png",
-    id: "qwant",
+    site: 'Qwant',
+    image: 'qwantLogo16x16.png',
+    id: 'qwant',
     cat: OutputMaps.category.plain,
     maplinks:
     {
-        qwantmap: {
-            name: "Map"
-        }
+      qwantmap: {
+        name: 'Map'
+      }
     },
-    generate: function(sourceMapData, view) {
-        var base = "https://www.qwant.com/maps";
-        var mapCentre = sourceMapData.centreCoords.lat + "/" + sourceMapData.centreCoords.lng;
-        var zoom = "12";
+    generate: function (sourceMapData, view) {
+      var base = 'https://www.qwant.com/maps'
+      var mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      var zoom = '12'
 
-        if ("resolution" in sourceMapData) {
-            zoom = calculateStdZoomFromResolution(
-                    sourceMapData.resolution, sourceMapData.centreCoords.lat) - 1;
-            zoom = "" + zoom;
-        }
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat) - 1
+        zoom = '' + zoom
+      }
 
-        this.maplinks.qwantmap["link"] = base + '/#map=' + zoom + '/' + mapCentre;
+      this.maplinks.qwantmap['link'] = base + '/#map=' + zoom + '/' + mapCentre
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks);
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
     }
   }
 
