@@ -17,7 +17,7 @@ If you're interested in contributing to its development, modifying the extension
 
 You can build the release version using npm:
 ```
-nvm use 10
+nvm use
 npm install
 npm run build
 ```

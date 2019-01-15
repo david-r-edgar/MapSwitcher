@@ -28,7 +28,7 @@ extractors.push({
         if (coordArray1 && coordArray1.length > 3) {
           sourceMapData.centreCoords = { 'lat': coordArray1[1], 'lng': coordArray1[2] }
           sourceMapData.resolution =
-                    calculateResolutionFromStdZoom(coordArray1[3], coordArray1[1])
+            calculateResolutionFromStdZoom(coordArray1[3], coordArray1[1])
         }
         resolve(sourceMapData)
       } else if (window.location.pathname.indexOf('/maps/') === 0) {
@@ -40,8 +40,7 @@ extractors.push({
         if (coordArray2 && coordArray2.length >= 5) {
           if (coordArray2[4] === 'z') {
             sourceMapData.resolution =
-                        calculateResolutionFromStdZoom(coordArray2[3],
-                          coordArray2[1])
+              calculateResolutionFromStdZoom(coordArray2[3], coordArray2[1])
           } else if (coordArray2[4] === 'm') {
             // on google satellite / earth, the zoom is specified in the URL not
             // as the standard 'z' value but as an m value, which is the height in
@@ -68,8 +67,7 @@ extractors.push({
               var coordRe = /([-0-9.]+),[+]?([-0-9.]+)/
               var addrIsCoordArr = arrWpt.match(coordRe)
               if (addrIsCoordArr && addrIsCoordArr.length > 2) {
-                wptObj.coords =
-                            { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
+                wptObj.coords = { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
               }
               sourceMapData.directions.route.push(wptObj)
             }
@@ -351,7 +349,7 @@ extractors.push({
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
         sourceMapData.resolution =
-                calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
+          calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
       }
 
       var routesHref = ''
@@ -698,7 +696,7 @@ extractors.push({
       if (dataArray && dataArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': dataArray[2], 'lng': dataArray[3] }
         sourceMapData.resolution =
-                calculateResolutionFromStdZoom(dataArray[1], dataArray[2])
+          calculateResolutionFromStdZoom(dataArray[1], dataArray[2])
       }
       resolve(sourceMapData)
     }
@@ -720,7 +718,7 @@ extractors.push({
             if (matchArr && matchArr.length > 3) {
               sourceMapData.centreCoords = { 'lat': matchArr[2], 'lng': matchArr[3] }
               sourceMapData.resolution =
-                            calculateResolutionFromStdZoom(matchArr[1], matchArr[2])
+                calculateResolutionFromStdZoom(matchArr[1], matchArr[2])
               break
             }
           }
@@ -737,7 +735,7 @@ extractors.push({
             if (matchArr && matchArr.length > 3) {
               sourceMapData.centreCoords = { 'lat': matchArr[1], 'lng': matchArr[2] }
               sourceMapData.resolution =
-                            calculateResolutionFromStdZoom(matchArr[3], matchArr[1])
+                calculateResolutionFromStdZoom(matchArr[3], matchArr[1])
               break
             }
           }
@@ -752,7 +750,7 @@ extractors.push({
             if (matchArr && matchArr.length > 3) {
               sourceMapData.centreCoords = { 'lat': matchArr[2], 'lng': matchArr[3] }
               sourceMapData.resolution =
-                            calculateResolutionFromStdZoom(matchArr[1], matchArr[2])
+                calculateResolutionFromStdZoom(matchArr[1], matchArr[2])
               break
             }
           }
@@ -819,7 +817,7 @@ extractors.push({
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[3], 'lng': coordArray[2] }
         sourceMapData.resolution =
-                calculateResolutionFromStdZoom(coordArray[1], coordArray[3])
+          calculateResolutionFromStdZoom(coordArray[1], coordArray[3])
       }
       resolve(sourceMapData)
     }
@@ -835,7 +833,7 @@ extractors.push({
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
         sourceMapData.resolution =
-                calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
+          calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
       }
       resolve(sourceMapData)
     }
@@ -851,7 +849,7 @@ extractors.push({
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
         sourceMapData.resolution =
-                calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
+          calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
       }
       resolve(sourceMapData)
     }
@@ -860,17 +858,17 @@ extractors.push({
 extractors.push({
   host: 'qwant.com',
   extract:
-        function (resolve) {
-          var sourceMapData = {}
-          var re = /#map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
-          var coordArray = window.location.hash.match(re)
-          if (coordArray && coordArray.length > 3) {
-            sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
-            sourceMapData.resolution =
-                    calculateResolutionFromStdZoom(+coordArray[1] + 1, coordArray[2])
-          }
-          resolve(sourceMapData)
-        }
+    function (resolve) {
+      var sourceMapData = {}
+      var re = /#map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
+      var coordArray = window.location.hash.match(re)
+      if (coordArray && coordArray.length > 3) {
+        sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
+        sourceMapData.resolution =
+          calculateResolutionFromStdZoom(+coordArray[1] + 1, coordArray[2])
+      }
+      resolve(sourceMapData)
+    }
 })
 
 var runDataExtraction = function () {
