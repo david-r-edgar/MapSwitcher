@@ -1262,6 +1262,33 @@ OutputMaps.services = [
 
       view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
     }
+  },
+  {
+    site: 'Komoot',
+    image: 'komootLogo16x16.png',
+    id: 'komoot',
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+      komootMap: {
+        name: 'Map'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      var base = 'https://www.komoot.com/plan/'
+      var mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      var zoom = '12'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat, 1, 18)
+        zoom = zoom + 'z'
+      }
+
+      this.maplinks.komootMap['link'] = base + '@' + mapCentre + ',' + zoom
+
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+    }
   }
 
 ]
