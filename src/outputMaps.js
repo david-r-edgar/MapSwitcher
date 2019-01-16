@@ -534,7 +534,7 @@ OutputMaps.services = [
     site: 'OpenSeaMap',
     image: 'openSeaMapLogo16x16.png',
     id: 'openseamap_map',
-    prio: 7,
+    prio: 8,
     cat: OutputMaps.category.plain,
     maplinks:
     {
@@ -1102,7 +1102,7 @@ OutputMaps.services = [
     site: 'Yandex',
     image: 'yandex16x16.png',
     id: 'yandex',
-    prio: 12,
+    prio: 7,
     cat: OutputMaps.category.plain,
     maplinks:
     {

@@ -254,17 +254,20 @@ extractors.push({
   host: 'tools.wmflabs.org',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re1 = /params=([-0-9.]+)_N_([-0-9.]+)_E/
-      var coordArray = window.location.search.match(re1)
+      const coordArray = window.location.search.match(re1)
       if (coordArray && coordArray.length >= 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
       }
-      var scaleElem = $(".toccolours th:contains('Scale')").next()
+      sourceMapData.resolution = 12
+      let scaleElem = $(".toccolours th:contains('Scale')").next()
       const re2 = /1:([0-9]+)/
-      var scaleMatch = scaleElem[0].innerText.match(re2)
-      if (scaleMatch && scaleMatch.length > 1) {
-        sourceMapData.resolution = calculateResolutionFromScale(scaleMatch[1])
+      if (scaleElem.length && scaleElem[0].innerText) {
+        const scaleMatch = scaleElem[0].innerText.match(re2)
+        if (scaleMatch && scaleMatch.length > 1) {
+          sourceMapData.resolution = calculateResolutionFromScale(scale[1])
+        }
       }
       sourceMapData.locationDescr = 'primary page coordinates'
       resolve(sourceMapData)
