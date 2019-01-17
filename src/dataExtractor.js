@@ -255,16 +255,38 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      const re1 = /params=([-0-9.]+)_N_([-0-9.]+)_E/
-      const coordArray = window.location.search.match(re1)
-      if (coordArray && coordArray.length >= 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+      const reCoordsD = /params=([-0-9.]+)_([NS])_([-0-9.]+)_([EW])/
+      const reCoordsDM = /params=([0-9]+)_([0-9.]+)_([NS])_([0-9]+)_([0-9.]+)_([EW])/
+      const reCoordsDMS = /params=([0-9]+)_([0-9]+)_([0-9.]+)_([NS])_([0-9]+)_([0-9]+)_([0-9.]+)_([EW])/
+      const coordArrayD = window.location.search.match(reCoordsD)
+      const coordArrayDM = window.location.search.match(reCoordsDM)
+      const coordArrayDMS = window.location.search.match(reCoordsDMS)
+      if (coordArrayD && coordArrayD.length >= 5) {
+        const lat = +coordArrayD[1]
+        const lng = +coordArrayD[3]
+        sourceMapData.centreCoords = {
+          'lat': coordArrayD[2] === 'N' ? lat : -lat,
+          'lng': coordArrayD[4] === 'E' ? lng : -lng,
+        }
+      } else if (coordArrayDM && coordArrayDM.length >= 7) {
+        const lat = +coordArrayDM[1] + coordArrayDM[2] / 60
+        const lng = +coordArrayDM[4] + coordArrayDM[5] / 60
+        sourceMapData.centreCoords = {
+          'lat': coordArrayDM[3] === 'N' ? lat : -lat,
+          'lng': coordArrayDM[6] === 'E' ? lng : -lng,
+        }
+      } else if (coordArrayDMS && coordArrayDMS.length >= 9) {
+        const lat = +coordArrayDMS[1] + coordArrayDMS[2] / 60 + coordArrayDMS[3] / 3600
+        const lng = +coordArrayDMS[5] + coordArrayDMS[6] / 60 + coordArrayDMS[7] / 3600
+        sourceMapData.centreCoords = {
+          'lat': coordArrayDMS[4] === 'N' ? lat : -lat,
+          'lng': coordArrayDMS[8] === 'E' ? lng : -lng,
+        }
       }
       sourceMapData.resolution = 12
       let scaleElem = $(".toccolours th:contains('Scale')").next()
-      const re2 = /1:([0-9]+)/
       if (scaleElem.length && scaleElem[0].innerText) {
-        const scaleMatch = scaleElem[0].innerText.match(re2)
+        const scaleMatch = scaleElem[0].innerText.match(/1:([0-9]+)/)
         if (scaleMatch && scaleMatch.length > 1) {
           sourceMapData.resolution = calculateResolutionFromScale(scale[1])
         }
