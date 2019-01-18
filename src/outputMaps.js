@@ -1289,6 +1289,35 @@ OutputMaps.services = [
 
       view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
     }
+  },
+  {
+    site: 'Sustrans',
+    image: 'sustransLogo16x16.png',
+    id: 'sustrans',
+    prio: 14,
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+      map: {
+        name: 'National Cycle Network'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      if (sourceMapData.countryCode === 'gb') {
+        const base = 'https://www.sustrans.org.uk/ncn/map'
+        const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng
+        let zoom = 12
+
+        if ('resolution' in sourceMapData) {
+          zoom = calculateStdZoomFromResolution(
+            sourceMapData.resolution, sourceMapData.centreCoords.lat, 5, 20)
+          zoom = 'zoom=' + zoom
+        }
+
+        this.maplinks.map['link'] = base + '?' + mapCentre + '&' + zoom
+        view.addMapServiceLinks(this.cat, this, this.maplinks)
+      }
+    }
   }
 
 ]
