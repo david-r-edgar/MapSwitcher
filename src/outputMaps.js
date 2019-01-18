@@ -1318,6 +1318,52 @@ OutputMaps.services = [
         view.addMapServiceLinks(this.cat, this, this.maplinks)
       }
     }
+  },
+  {
+    site: 'Waymarked Trails',
+    image: 'waymarkedtrailshiking16x16.png',
+    id: 'waymarkedtrails',
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+      waymkHiking: {
+        name: 'Hiking'
+      },
+      waymkCycling: {
+        name: 'Cycling'
+      },
+      waymMTB: {
+        name: 'MTB'
+      },
+      waymRiding: {
+        name: 'Riding'
+      },
+      waymkSkating: {
+        name: 'Skating'
+      },
+      waymkSlopes: {
+        name: 'Slopes'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      const domain = 'waymarkedtrails.org'
+      let zoom = '12'
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18)
+        zoom = zoom
+      }
+      const location = zoom + '!' + sourceMapData.centreCoords.lat + '!' + sourceMapData.centreCoords.lng
+
+      this.maplinks.waymkHiking['link'] = 'https://hiking.' + domain + '/#?map=' + location
+      this.maplinks.waymkCycling['link'] = 'https://cycling.' + domain + '/#?map=' + location
+      this.maplinks.waymMTB['link'] = 'https://mtb.' + domain + '/#?map=' + location
+      this.maplinks.waymRiding['link'] = 'https://riding.' + domain + '/#?map=' + location
+      this.maplinks.waymkSkating['link'] = 'https://skating.' + domain + '/#?map=' + location
+      this.maplinks.waymkSlopes['link'] = 'https://slopes.' + domain + '/#?map=' + location
+
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+    }
   }
 
 ]
