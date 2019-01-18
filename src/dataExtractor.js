@@ -935,7 +935,7 @@ extractors.push({
   extract:
     function (resolve) {
       var sourceMapData = {}
-      const re = /map=([0-9]+)\!([-0-9.]+)\!([-0-9.]+)/
+      const re = /map=([0-9]+)!([-0-9.]+)!([-0-9.]+)/
       var coordArray = window.location.hash.match(re)
       console.log('coordArray', coordArray)
       if (coordArray && coordArray.length > 3) {

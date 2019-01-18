@@ -1351,7 +1351,6 @@ OutputMaps.services = [
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
           sourceMapData.resolution, sourceMapData.centreCoords.lat, 0, 18)
-        zoom = zoom
       }
       const location = zoom + '!' + sourceMapData.centreCoords.lat + '!' + sourceMapData.centreCoords.lng
 
