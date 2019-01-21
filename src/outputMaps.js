@@ -931,21 +931,28 @@ OutputMaps.services = [
     id: 'sysmaps',
     prio: 14,
     cat: OutputMaps.category.plain,
-    maplinks:
-    {
-      sysmapsOS: {
-        name: 'OS'
-      }
-    },
+    maplinks: {},
     generate: function (sourceMapData, view) {
+      const base = 'http://www.sysmaps.co.uk/'
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
-        var sysmapsBase = 'http://www.sysmaps.co.uk/sysmaps_os.html?'
-        var mapCentre = '!' + sourceMapData.centreCoords.lat + '~' + sourceMapData.centreCoords.lng
+        const osBase = base + 'sysmaps_os.html?'
+        const mapCentre = '!' + sourceMapData.centreCoords.lat + '~' + sourceMapData.centreCoords.lng
 
-        this.maplinks.sysmapsOS['link'] = sysmapsBase + mapCentre
-
-        view.addMapServiceLinks(this.cat, this, this.maplinks)
+        this.maplinks.sysmapsOS = {
+          name: 'OS',
+          link: osBase + mapCentre
+        }
       }
+      if (sourceMapData.countryCode === 'de') {
+        const deTopoBase = base + 'sysmaps_bkg.html?layers=B00000000000000000000000FFFFFTFFFTFFTTTTT'
+        const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+
+        this.maplinks.sysmapsDETopo = {
+          name: 'DE Topo',
+          link: deTopoBase + '&' + mapCentre
+        }
+      }
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
