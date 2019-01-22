@@ -1110,7 +1110,7 @@ OutputMaps.services = [
     image: 'yandex16x16.png',
     id: 'yandex',
     prio: 7,
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.multidirns,
     maplinks:
     {
       yandexMap: {
@@ -1133,11 +1133,45 @@ OutputMaps.services = [
           sourceMapData.resolution, sourceMapData.centreCoords.lat)
         zoom = 'z=' + zoom
       }
-      this.maplinks.yandexMap['link'] = yandexBase + '?' + mapCentre + '&' + zoom
-      this.maplinks.yandexSatellite['link'] = yandexBase + '?l=sat&' + mapCentre + '&' + zoom
-      this.maplinks.yandexHybrid['link'] = yandexBase + '?l=sat%2Cskl&' + mapCentre + '&' + zoom
 
-      view.addMapServiceLinks(this.cat, this, this.maplinks)
+      let directions = ''
+      if ('directions' in sourceMapData && 'route' in sourceMapData.directions) {
+        const sourceWaypoints = sourceMapData.directions.route.filter((wpt) => {
+          return ('coords' in wpt)
+        })
+        const waypointPairs = sourceWaypoints.map(wpt => {
+          return wpt.coords.lat + ',' + wpt.coords.lng
+        })
+        const routeCoords = waypointPairs.join('~')
+        let mode = 'auto'
+        if (sourceMapData.directions.mode) {
+          switch (sourceMapData.directions.mode) {
+            case 'car':
+              mode = 'auto'
+              break
+            case 'bike':
+              mode = 'bc'
+              break
+            case 'foot':
+              mode = 'pd'
+              break
+            case 'transit':
+              mode = 'mt'
+              break
+          }
+        }
+        directions = '&mode=routes&rtext=' + routeCoords + '&rtt=' + mode
+      }
+
+      this.maplinks.yandexMap['link'] = yandexBase + '?' + mapCentre + directions + '&' + zoom
+      this.maplinks.yandexSatellite['link'] = yandexBase + '?l=sat&' + mapCentre + directions + '&' + zoom
+      this.maplinks.yandexHybrid['link'] = yandexBase + '?l=sat%2Cskl&' + mapCentre + directions + '&' + zoom
+
+      if (directions.length > 0) {
+        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks)
+      } else {
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      }
     }
   },
   {
