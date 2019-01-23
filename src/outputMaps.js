@@ -1305,6 +1305,33 @@ OutputMaps.services = [
     }
   },
   {
+    site: 'Mapillary',
+    image: 'mapillary16x16.png',
+    id: 'mapillary',
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+      mapillarymap: {
+        name: 'Map'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      var base = 'https://www.mapillary.com/app/'
+      var mapCentre = sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng
+      var zoom = '12'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat) - 1
+        zoom = '' + zoom
+      }
+
+      this.maplinks.mapillarymap['link'] = base + '?lat=' + mapCentre + '&z=' + zoom
+
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+    }
+  },
+  {
     site: 'Komoot',
     image: 'komootLogo16x16.png',
     id: 'komoot',
