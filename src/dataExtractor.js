@@ -201,7 +201,7 @@ extractors.push({
   host: 'openstreetmap.',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re1 = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
       var coordArray = window.location.hash.match(re1)
       if (coordArray && coordArray.length >= 4) {
@@ -302,7 +302,7 @@ extractors.push({
   extract:
     function (resolve) {
       if (window.location.pathname.indexOf('/map/') === 0) {
-        var sourceMapData = {}
+        let sourceMapData = {}
         const re1 = /ll=([-0-9.]+),([-0-9.]+)/
         var coordArray = window.location.hash.match(re1)
         if (coordArray && coordArray.length >= 3) {
@@ -362,7 +362,7 @@ extractors.push({
   host: 'waze.com',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       var href = ''
       $('.leaflet-control-permalink .permalink').each(function () {
         href = $(this).attr('href')
@@ -410,7 +410,7 @@ extractors.push({
   host: 'openseamap.',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       var centrePermalink = ($('#OpenLayers_Control_Permalink_13 a').attr('href'))
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
       var coordArray = centrePermalink.match(re)
@@ -431,7 +431,7 @@ extractors.push({
   host: 'wego.here.com',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/
       var coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -516,7 +516,7 @@ extractors.push({
   host: 'streetmap.co.uk',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       var urlToShare = $('#LinkToInput')[0].innerHTML
       const re1 = /X=([0-9]+)&amp;Y=([0-9]+)/
       var osCoordArray = urlToShare.match(re1)
@@ -621,7 +621,7 @@ extractors.push({
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
       var coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 2) {
-        var sourceMapData = {
+        let sourceMapData = {
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
           nonUpdating: window.location.hostname,
           locationDescr: 'non-updating URL'
@@ -678,7 +678,7 @@ extractors.push({
   host: 'sysmaps.co.uk',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       if (window.location.pathname.indexOf('/sysmaps_os.html') === 0) {
         $('.style1').each(function () {
           const re = /Map Centre: East: ([0-9.]+) : North: ([0-9.]+)/
@@ -698,7 +698,7 @@ extractors.push({
   host: 'wikipedia.org',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       $('#coordinates .geo').first().each(function () {
         var coordArray = this.innerText.split(';')
         if (coordArray.length === 2) {
@@ -714,7 +714,7 @@ extractors.push({
   host: 'opencyclemap.org',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       var href = $('#permalink').attr('href')
       const re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
       var dataArray = href.match(re)
@@ -731,7 +731,7 @@ extractors.push({
   host: 'facebook.com',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
 
       var mapImages = $('._a3f.img')
       if (mapImages.length > 0) {
@@ -843,7 +843,7 @@ extractors.push({
       const re = /ll=([-0-9.]+),([-0-9.]+)/
       var coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 2) {
-        var sourceMapData = {
+        let sourceMapData = {
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
           locationDescr: 'map centre specified in URL'
         }
@@ -863,7 +863,7 @@ extractors.push({
   host: 'strava.com',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re = /#([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       var coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -879,7 +879,7 @@ extractors.push({
   host: 'f4map.com',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re = /#lat=([-0-9.]+)&lon=([-0-9.]+)&zoom=([0-9.]+)/
       var coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -895,7 +895,7 @@ extractors.push({
   host: 'opentopomap.org',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re = /#map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
       var coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -911,7 +911,7 @@ extractors.push({
   host: 'qwant.com',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       var re = /#map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       var coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -927,7 +927,7 @@ extractors.push({
   host: 'komoot.com',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re = /@([-0-9.]+),([-0-9.]+),([0-9]+)z/
       var coordArray = window.location.pathname.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -943,7 +943,7 @@ extractors.push({
   host: 'sustrans.org.uk',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9]+)/
       var coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -961,7 +961,7 @@ extractors.push({
   host: 'waymarkedtrails.org',
   extract:
     function (resolve) {
-      var sourceMapData = {}
+      let sourceMapData = {}
       const re = /map=([0-9]+)!([-0-9.]+)!([-0-9.]+)/
       var coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -978,7 +978,8 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      const latlon = document.evaluate('//script[contains(.,"postcode")  and contains(.,"location")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+      const latlon = document.evaluate('//script[contains(.,"postcode")  and contains(.,"location")]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
       const lat = latlon.text.match(/.latitude.:([0-9.-]+)/)[1]
       const lon = latlon.text.match(/.longitude.:([0-9.-]+)/)[1]
 
@@ -986,7 +987,7 @@ extractors.push({
         sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
-      17, sourceMapData.centreCoords.lat)
+        17, sourceMapData.centreCoords.lat)
 
       resolve(sourceMapData)
     }
@@ -997,7 +998,8 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      const latlon = document.evaluate('//script[contains(.,"MEDIA_PREFIX")  and contains(.,"location")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+      const latlon = document.evaluate('//script[contains(.,"MEDIA_PREFIX")  and contains(.,"location")]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
       const lat = latlon.text.match(/lat:[ ']+([0-9.-]+)/)[1]
       const lon = latlon.text.match(/lon:[ ']+([0-9.-]+)/)[1]
 
@@ -1005,7 +1007,7 @@ extractors.push({
         sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
-      17, sourceMapData.centreCoords.lat)
+        17, sourceMapData.centreCoords.lat)
 
       resolve(sourceMapData)
     }
@@ -1016,7 +1018,8 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      const latlon = document.evaluate('//script[contains(.,"mapData ")  and contains(.,"bounding_box")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+      const latlon = document.evaluate('//script[contains(.,"mapData ")  and contains(.,"bounding_box")]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
       const lat = latlon.text.match(/latitude.:([0-9.-]+)/)[1]
       const lon = latlon.text.match(/longitude.:([0-9.-]+)/)[1]
 
@@ -1024,7 +1027,7 @@ extractors.push({
         sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
-      17, sourceMapData.centreCoords.lat)
+        17, sourceMapData.centreCoords.lat)
 
       resolve(sourceMapData)
     }
@@ -1035,14 +1038,16 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      const lat = document.evaluate('/html/head/meta[@property="og:latitude"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
-      const lon = document.evaluate('/html/head/meta[@property="og:longitude"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
+      const lat = document.evaluate('/html/head/meta[@property="og:latitude"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
+      const lon = document.evaluate('/html/head/meta[@property="og:longitude"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
 
       if (lat.length > 3 && lon.length > 3) {
         sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
-      17, sourceMapData.centreCoords.lat)
+        17, sourceMapData.centreCoords.lat)
 
       resolve(sourceMapData)
     }
