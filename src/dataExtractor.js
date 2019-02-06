@@ -1,5 +1,6 @@
 /* global
   browser, chrome,
+  XPathResult,
   $,
   calculateResolutionFromScale,
   calculateResolutionFromStdZoom,
@@ -968,6 +969,81 @@ extractors.push({
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
       }
+      resolve(sourceMapData)
+    }
+})
+
+extractors.push({
+  host: 'rightmove',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const latlon = document.evaluate('//script[contains(.,"postcode")  and contains(.,"location")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+      const lat = latlon.text.match(/.latitude.:([0-9.-]+)/)[1]
+      const lon = latlon.text.match(/.longitude.:([0-9.-]+)/)[1]
+
+      if (lat.length > 3 && lon.length > 3) {
+        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+      }
+      sourceMapData.resolution = calculateResolutionFromStdZoom(
+      17, sourceMapData.centreCoords.lat)
+
+      resolve(sourceMapData)
+    }
+})
+
+extractors.push({
+  host: 'onthemarket',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const latlon = document.evaluate('//script[contains(.,"MEDIA_PREFIX")  and contains(.,"location")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+      const lat = latlon.text.match(/lat:[ ']+([0-9.-]+)/)[1]
+      const lon = latlon.text.match(/lon:[ ']+([0-9.-]+)/)[1]
+
+      if (lat.length > 3 && lon.length > 3) {
+        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+      }
+      sourceMapData.resolution = calculateResolutionFromStdZoom(
+      17, sourceMapData.centreCoords.lat)
+
+      resolve(sourceMapData)
+    }
+})
+
+extractors.push({
+  host: 'zoopla',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const latlon = document.evaluate('//script[contains(.,"mapData ")  and contains(.,"bounding_box")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+      const lat = latlon.text.match(/latitude.:([0-9.-]+)/)[1]
+      const lon = latlon.text.match(/longitude.:([0-9.-]+)/)[1]
+
+      if (lat.length > 3 && lon.length > 3) {
+        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+      }
+      sourceMapData.resolution = calculateResolutionFromStdZoom(
+      17, sourceMapData.centreCoords.lat)
+
+      resolve(sourceMapData)
+    }
+})
+
+extractors.push({
+  host: 'primelocation',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const lat = document.evaluate('/html/head/meta[@property="og:latitude"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
+      const lon = document.evaluate('/html/head/meta[@property="og:longitude"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
+
+      if (lat.length > 3 && lon.length > 3) {
+        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+      }
+      sourceMapData.resolution = calculateResolutionFromStdZoom(
+      17, sourceMapData.centreCoords.lat)
+
       resolve(sourceMapData)
     }
 })
