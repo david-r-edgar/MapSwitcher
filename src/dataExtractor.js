@@ -411,7 +411,8 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      var centrePermalink = ($('#OpenLayers_Control_Permalink_13 a').attr('href'))
+      const centrePermalink = document.evaluate('//*[@id="OpenLayers_Control_Permalink_13"]//a/@href',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
       var coordArray = centrePermalink.match(re)
       if (coordArray && coordArray.length > 2) {
@@ -517,8 +518,9 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      var urlToShare = $('#LinkToInput')[0].innerHTML
-      const re1 = /X=([0-9]+)&amp;Y=([0-9]+)/
+      const urlToShare = document.evaluate('//*[@id="LinkToInput"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+      const re1 = /X=([0-9]+)&Y=([0-9]+)/
       var osCoordArray = urlToShare.match(re1)
       if (osCoordArray && osCoordArray.length > 2) {
         sourceMapData.osgbCentreCoords = { 'e': osCoordArray[1], 'n': osCoordArray[2] }
@@ -680,15 +682,14 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       if (window.location.pathname.indexOf('/sysmaps_os.html') === 0) {
-        $('.style1').each(function () {
-          const re = /Map Centre: East: ([0-9.]+) : North: ([0-9.]+)/
-          var mapCentreArr = this.innerText.match(re)
-          if (mapCentreArr && mapCentreArr.length > 2) {
-            sourceMapData.osgbCentreCoords = { 'e': mapCentreArr[1], 'n': mapCentreArr[2] }
-            sourceMapData.locationDescr = 'map centre'
-            return false // just to break out of jquery each loop
-          }
-        })
+        const locationText = document.evaluate('//*[@class="style1"][contains(text(),"Map Centre")]',
+          document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+        const re = /East: ([0-9.]+) : North: ([0-9.]+)/
+        var mapCentreArr = locationText.match(re)
+        if (mapCentreArr && mapCentreArr.length > 2) {
+          sourceMapData.osgbCentreCoords = { 'e': mapCentreArr[1], 'n': mapCentreArr[2] }
+          sourceMapData.locationDescr = 'map centre'
+        }
       }
       resolve(sourceMapData)
     }
@@ -699,13 +700,13 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      $('#coordinates .geo').first().each(function () {
-        var coordArray = this.innerText.split(';')
-        if (coordArray.length === 2) {
-          sourceMapData.centreCoords = { 'lat': coordArray[0].trim(), 'lng': coordArray[1].trim() }
-          sourceMapData.locationDescr = 'primary article coordinates'
-        }
-      })
+      const geo = document.evaluate('//*[@id="coordinates"]//*[@class="geo"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+      var coordArray = geo.split(';')
+      if (coordArray.length === 2) {
+        sourceMapData.centreCoords = { 'lat': coordArray[0].trim(), 'lng': coordArray[1].trim() }
+        sourceMapData.locationDescr = 'primary article coordinates'
+      }
       resolve(sourceMapData)
     }
 })
@@ -715,7 +716,8 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      var href = $('#permalink').attr('href')
+      const href = document.evaluate('//*[@id="permalink"]/@href',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
       const re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
       var dataArray = href.match(re)
       if (dataArray && dataArray.length > 3) {
