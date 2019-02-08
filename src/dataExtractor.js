@@ -939,7 +939,7 @@ extractors.push({
       const zoomArray = window.location.search.match(re2)
       if (zoomArray && zoomArray.length > 1) {
         sourceMapData.resolution = calculateResolutionFromStdZoom(
-          zoomArray[1], sourceMapData.centreCoords.lat)
+          +zoomArray[1] + 1, sourceMapData.centreCoords.lat)
       }
       resolve(sourceMapData)
     }
