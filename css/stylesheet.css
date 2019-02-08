@@ -111,7 +111,7 @@ h4 {
   flex-direction: column;
   flex-wrap: wrap;
   /*position: relative;*/
-  max-height: 440px;
+  max-height: 470px;
   width: 538px;
   overflow-x: auto;
 }
