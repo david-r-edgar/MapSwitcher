@@ -1,7 +1,6 @@
 /* global
   browser, chrome,
   XPathResult,
-  $,
   calculateResolutionFromScale,
   calculateResolutionFromStdZoom,
   Gmdp, GmdpException */
@@ -161,14 +160,23 @@ extractors.push({
           level, sourceMapData.centreCoords.lat)
       }
 
-      if ($('#directionsPanelRoot').length) {
+      const directionsPanelRoot = document.evaluate('//*[@id="directionsPanelRoot"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+      if (directionsPanelRoot.singleNodeValue &&
+        directionsPanelRoot.singleNodeValue.children.length) {
         // we expect a single 'From' input, followed by one or more 'To' inputs
+        const routeFrom = document.evaluate('//*[@class="dirWaypoints"]//input[contains(@title, "From")]',
+          directionsPanelRoot.singleNodeValue, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
         sourceMapData.directions = {
-          route: [ { address: $(".dirWaypoints input[title='From']").val() } ]
+          route: [ { address: routeFrom } ]
         }
-        $(".dirWaypoints input[title='To']").each(function () {
-          sourceMapData.directions.route.push({ address: $(this).val() })
-        })
+        const routeTo = document.evaluate('//*[@class="dirWaypoints"]//input[contains(@title, "To")]',
+          directionsPanelRoot.singleNodeValue, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
+
+        let routeToWpts
+        while (routeToWpts = routeTo.iterateNext()) {
+          sourceMapData.directions.route.push({ address: routeToWpts.value })
+        }
 
         const re3 = /([-0-9.]+)[ ]*,[ ]*([-0-9.]+)/
         for (let rteWptIndex in sourceMapData.directions.route) {
@@ -180,7 +188,9 @@ extractors.push({
           }
         }
 
-        switch ($('.dirBtnSelected')[0].classList[0]) {
+        const dirBtnSelected = document.evaluate('//*[contains(@class, "dirBtnSelected")]',
+          directionsPanelRoot.singleNodeValue, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+        switch (dirBtnSelected.singleNodeValue.classList[0]) {
           case 'dirBtnDrive':
             sourceMapData.directions.mode = 'car'
             break
@@ -210,43 +220,47 @@ extractors.push({
           coordArray[1], sourceMapData.centreCoords.lat)
       }
 
-      if ($('.directions_form').is(':visible') &&
-            ($('#route_from').val().length > 0) &&
-            ($('#route_to').val().length > 0)) {
-        sourceMapData.directions = {
-          route: [
-            { address: $('#route_from').val() },
-            { address: $('#route_to').val() }
-          ]
-        }
+      const routeFrom = document.evaluate('//*[@id="route_from"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
+      const routeTo = document.evaluate('//*[@id="route_to"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
 
-        const re2 = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
-        var routeCoordsArray = window.location.search.match(re2)
-        if (routeCoordsArray && routeCoordsArray.length > 4) {
-          sourceMapData.directions.route[0].coords =
-            { 'lat': routeCoordsArray[1],
-              'lng': routeCoordsArray[2] }
-          sourceMapData.directions.route[1].coords =
-            { 'lat': routeCoordsArray[3],
-              'lng': routeCoordsArray[4] }
-        }
+      sourceMapData.directions = {
+        route: [
+          { address: routeFrom },
+          { address: routeTo }
+        ]
+      }
 
-        const re3 = /engine=[a-zA-Z]+_([a-z]+)/
-        var modeArray = window.location.search.match(re3)
-        if (modeArray && modeArray.length > 1) {
-          switch (modeArray[1]) {
-            case 'bicycle':
-              sourceMapData.directions.mode = 'bike'
-              break
-            case 'car':
-              sourceMapData.directions.mode = 'car'
-              break
-            case 'foot':
-              sourceMapData.directions.mode = 'foot'
-              break
-          }
+      const re2 = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
+      var routeCoordsArray = window.location.search.match(re2)
+
+      if (routeCoordsArray && routeCoordsArray.length > 4) {
+        sourceMapData.directions.route[0].coords =
+          { 'lat': routeCoordsArray[1],
+            'lng': routeCoordsArray[2] }
+        sourceMapData.directions.route[1].coords =
+          { 'lat': routeCoordsArray[3],
+            'lng': routeCoordsArray[4] }
+      }
+
+      const re3 = /engine=[a-zA-Z]+_([a-z]+)/
+      var modeArray = window.location.search.match(re3)
+
+      if (modeArray && modeArray.length > 1) {
+        switch (modeArray[1]) {
+          case 'bicycle':
+            sourceMapData.directions.mode = 'bike'
+            break
+          case 'car':
+            sourceMapData.directions.mode = 'car'
+            break
+          case 'foot':
+            sourceMapData.directions.mode = 'foot'
+            break
         }
       }
+
       resolve(sourceMapData)
     }
 })
@@ -285,12 +299,9 @@ extractors.push({
         }
       }
       sourceMapData.resolution = 12
-      let scaleElem = $(".toccolours th:contains('Scale')").next()
-      if (scaleElem.length && scaleElem[0].innerText) {
-        const scaleMatch = scaleElem[0].innerText.match(/1:([0-9]+)/)
-        if (scaleMatch && scaleMatch.length > 1) {
-          sourceMapData.resolution = calculateResolutionFromScale(scaleMatch[1])
-        }
+      const urlScaleArray = window.location.search.match(/scale:([0-9]+)/)
+      if (urlScaleArray && urlScaleArray.length > 1) {
+        sourceMapData.resolution = calculateResolutionFromScale(urlScaleArray[1])
       }
       sourceMapData.locationDescr = 'primary page coordinates'
       resolve(sourceMapData)
@@ -363,31 +374,22 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      var href = ''
-      $('.leaflet-control-permalink .permalink').each(function () {
-        href = $(this).attr('href')
-        if (href.length > 0) {
-          return false // break on first non-empty URL
+      const centrePermalink = document.evaluate('//*[@class="wm-permalink-control__link"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.href
+
+      const lonArray = centrePermalink.match(/lon=([-0-9.]+)/)
+      const latArray = centrePermalink.match(/lat=([-0-9.]+)/)
+      if (lonArray && lonArray.length > 1 && latArray && latArray.length > 1) {
+        sourceMapData.centreCoords = { 'lat': latArray[1], 'lng': lonArray[1] }
+        const zoomArray = centrePermalink.match(/zoom=([0-9]+)/)
+        if (zoomArray && zoomArray.length > 1) {
+          sourceMapData.resolution =
+            calculateResolutionFromStdZoom(zoomArray[1], latArray[1])
         }
-      })
-      const re1 = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
-      var coordArray = href.match(re1)
-      if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
-        sourceMapData.resolution =
-          calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
       }
 
-      var routesHref = ''
-      $('.routes-list .permalink').each(function () {
-        routesHref = $(this).attr('href')
-        if (routesHref.length > 0) {
-          return false // break on first non-empty URL
-        }
-      })
-
       const re2 = /from_lat=([-0-9.]+)&from_lon=([-0-9.]+)&to_lat=([-0-9.]+)&to_lon=([-0-9.]+)/
-      var routeCoordsArray = routesHref.match(re2)
+      const routeCoordsArray = centrePermalink.match(re2)
       if (routeCoordsArray && routeCoordsArray.length > 4) {
         sourceMapData.directions = {
           route: [
@@ -735,53 +737,32 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
 
-      var mapImages = $('._a3f.img')
-      if (mapImages.length > 0) {
-        /// // Generic map image (relying on the obfuscated class name continuing to be used) /////
-        if (mapImages[0].currentSrc) {
-          const re1 = /zoom=([0-9]+)&markers=([-0-9.]+)%2C([-0-9.]+)/
-          for (let imgEl of mapImages) {
-            let matchArr = imgEl.currentSrc.match(re1)
-            if (matchArr && matchArr.length > 3) {
-              sourceMapData.centreCoords = { 'lat': matchArr[2], 'lng': matchArr[3] }
+      // we rely on this obfuscated class name continuing to be used
+      const mapImages = document.evaluate('//*[@class="_a3f img"]',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+
+      if (mapImages && mapImages.currentSrc && mapImages.currentSrc.length > 0) {
+        const re1 = /markers=([-0-9.]+)%2C([-0-9.]+)/
+        let coordArr = mapImages.currentSrc.match(re1)
+        if (coordArr && coordArr.length > 2) {
+          sourceMapData.centreCoords = { 'lat': coordArr[1], 'lng': coordArr[2] }
+          const zoomRe = /zoom=([0-9]+)/
+          const zoomArr = mapImages.currentSrc.match(zoomRe)
+          if (zoomArr && zoomArr.length > 1) {
+            sourceMapData.resolution =
+              calculateResolutionFromStdZoom(zoomArr[1], coordArr[1])
+          } else {
+            // hacky way to find zoom for pages - could maybe use bounding box instead
+            const zoomUrl = document.evaluate('//*[@class="_3n4p"]',
+              document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+            const zoomArr = zoomUrl.getAttribute('ajaxify').match(zoomRe)
+            if (zoomArr && zoomArr.length > 1) {
               sourceMapData.resolution =
-                calculateResolutionFromStdZoom(matchArr[1], matchArr[2])
-              break
+                calculateResolutionFromStdZoom(zoomArr[1], coordArr[1])
             }
           }
         }
-      } else if (window.location.pathname.indexOf('/events/') === 0) {
-        /// // Events /////
-        var eventMapImages = $('.fbPlaceFlyoutWrap img')
-        if (eventMapImages.length > 0) {
-          const re2 = /center=([-0-9.]+)%2C([-0-9.]+)&zoom=([0-9]+)/
-          for (let imgEl of eventMapImages) {
-            let matchArr = imgEl.currentSrc.match(re2)
-            // we expect there to be more than one image; we assume that only one will contain
-            // coords (i.e. the map thumbnail), so use the first such one we find
-            if (matchArr && matchArr.length > 3) {
-              sourceMapData.centreCoords = { 'lat': matchArr[1], 'lng': matchArr[2] }
-              sourceMapData.resolution =
-                calculateResolutionFromStdZoom(matchArr[3], matchArr[1])
-              break
-            }
-          }
-        }
-      } else {
-        /// // Pages /////
-        var pageSidebarImages = $('#pages_side_column img')
-        if (pageSidebarImages.length > 0) {
-          const re3 = /zoom=([0-9]+)&markers=([-0-9.]+)%2C([-0-9.]+)/
-          for (var imgEl of pageSidebarImages) {
-            var matchArr = imgEl.currentSrc.match(re3)
-            if (matchArr && matchArr.length > 3) {
-              sourceMapData.centreCoords = { 'lat': matchArr[2], 'lng': matchArr[3] }
-              sourceMapData.resolution =
-                calculateResolutionFromStdZoom(matchArr[1], matchArr[2])
-              break
-            }
-          }
-        }
+        sourceMapData.locationDescr = 'primary identified location'
       }
 
       resolve(sourceMapData)
