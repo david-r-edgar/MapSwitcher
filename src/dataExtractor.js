@@ -220,22 +220,21 @@ extractors.push({
           coordArray[1], sourceMapData.centreCoords.lat)
       }
 
-      const routeFrom = document.evaluate('//*[@id="route_from"]',
-        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
-      const routeTo = document.evaluate('//*[@id="route_to"]',
-        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
-
-      sourceMapData.directions = {
-        route: [
-          { address: routeFrom },
-          { address: routeTo }
-        ]
-      }
-
       const re2 = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
       var routeCoordsArray = window.location.search.match(re2)
 
       if (routeCoordsArray && routeCoordsArray.length > 4) {
+        const routeFrom = document.evaluate('//*[@id="route_from"]',
+          document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
+        const routeTo = document.evaluate('//*[@id="route_to"]',
+          document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
+        sourceMapData.directions = {
+          route: [
+            { address: routeFrom },
+            { address: routeTo }
+          ]
+        }
+
         sourceMapData.directions.route[0].coords =
           { 'lat': routeCoordsArray[1],
             'lng': routeCoordsArray[2] }
@@ -259,6 +258,21 @@ extractors.push({
             sourceMapData.directions.mode = 'foot'
             break
         }
+      }
+
+      // sometimes (eg. after a search?) osm has directions but no centre coords
+      if (!sourceMapData.centreCoords &&
+          sourceMapData.directions.route.length >= 2) {
+        const calcCentreLat = (+sourceMapData.directions.route[0].coords.lat
+          + +sourceMapData.directions.route[1].coords.lat) / 2
+        const calcCentreLng = (+sourceMapData.directions.route[0].coords.lng
+          + +sourceMapData.directions.route[1].coords.lng) / 2
+        sourceMapData.centreCoords = {
+          'lat': calcCentreLat,
+          'lng': calcCentreLng
+        }
+        sourceMapData.resolution = calculateResolutionFromStdZoom(
+          8, calcCentreLat)
       }
 
       resolve(sourceMapData)
