@@ -174,7 +174,7 @@ extractors.push({
           directionsPanelRoot.singleNodeValue, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
 
         let routeToWpts
-        while (routeToWpts = routeTo.iterateNext()) {
+        while ((routeToWpts = routeTo.iterateNext())) {
           sourceMapData.directions.route.push({ address: routeToWpts.value })
         }
 
@@ -263,10 +263,10 @@ extractors.push({
       // sometimes (eg. after a search?) osm has directions but no centre coords
       if (!sourceMapData.centreCoords &&
           sourceMapData.directions.route.length >= 2) {
-        const calcCentreLat = (+sourceMapData.directions.route[0].coords.lat
-          + +sourceMapData.directions.route[1].coords.lat) / 2
-        const calcCentreLng = (+sourceMapData.directions.route[0].coords.lng
-          + +sourceMapData.directions.route[1].coords.lng) / 2
+        const calcCentreLat = (+sourceMapData.directions.route[0].coords.lat +
+          +sourceMapData.directions.route[1].coords.lat) / 2
+        const calcCentreLng = (+sourceMapData.directions.route[0].coords.lng +
+          +sourceMapData.directions.route[1].coords.lng) / 2
         sourceMapData.centreCoords = {
           'lat': calcCentreLat,
           'lng': calcCentreLng
