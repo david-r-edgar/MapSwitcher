@@ -45,8 +45,8 @@ function updateSelectAllNone () {
 }
 
 $('.selectAllNone').change(function (ev) {
-  var checked = $(ev.target).prop('checked')
-  var targetList = $(ev.target).attr('cat')
+  const checked = $(ev.target).prop('checked')
+  const targetList = $(ev.target).attr('cat')
   $('#' + targetList + ' .chkboxcell .outpServiceEnabledChk').each(function () {
     $(this).prop('checked', checked)
   })
@@ -58,7 +58,7 @@ $('.selectAllNone').change(function (ev) {
  */
 function saveOptions () {
   $('#status').text('Saving...')
-  var mapChecks = {}
+  let mapChecks = {}
   $('.srvTickList .outpServiceEnabledChk').each(function () {
     mapChecks[$(this).attr('id')] = $(this).is(':checked')
   })
@@ -73,8 +73,8 @@ function saveOptions () {
  * Loads the extension options from browser storage.
  */
 function restoreOptions () {
-  var mapEnabledDefaults = {}
-  var prioDefaults = {}
+  let mapEnabledDefaults = {}
+  let prioDefaults = {}
   let listName
   $('#mapsTickList tbody').html('')
   $('#utilsTickList tbody').html('')
@@ -112,8 +112,8 @@ function restoreOptions () {
   browser.storage.local.get(prioDefaults, function (prio) {
     // iterate through all rows; look up new prio, set data-sort attrib on tr
     $('.srvTickList tr.omsrvRow').each(function () {
-      var row = $(this)
-      var id = $(row).find('td.chkboxcell input').attr('id')
+      let row = $(this)
+      let id = $(row).find('td.chkboxcell input').attr('id')
       $(this).attr('data-sort', prio['prio/' + id])
     })
 
@@ -125,7 +125,7 @@ function restoreOptions () {
 }
 
 function resetToDefaults () {
-  var result = confirm('Reset all options to initial defaults?')
+  const result = confirm('Reset all options to initial defaults?')
   if (result) {
     browser.storage.local.clear()
     restoreOptions()
@@ -135,11 +135,11 @@ function resetToDefaults () {
 
 function optionsSorted (event, ui) {
   $('#status').text('Saving...')
-  var mapPriorities = {}
-  var newPriority = 1
+  let mapPriorities = {}
+  let newPriority = 1
   $('tr.omsrvRow').each(function () {
-    var row = $(this)
-    var id = $(row).find('td.chkboxcell input').attr('id')
+    let row = $(this)
+    let id = $(row).find('td.chkboxcell input').attr('id')
     for (let outputMapService of OutputMaps.services) {
       if (outputMapService.id === id) {
         // outputMapService.prio = newPriority;

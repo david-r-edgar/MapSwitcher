@@ -63,10 +63,10 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var googleBase = 'https://www.google.com/maps/'
-      var directions = ''
-      var mapCentre = '@' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng + ','
-      var zoom = '13z'
+      const googleBase = 'https://www.google.com/maps/'
+      let directions = ''
+      const mapCentre = '@' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng + ','
+      let zoom = '13z'
       var dataWpts = ''
       var dataDirnOptions = ''
 
@@ -92,7 +92,7 @@ OutputMaps.services = [
           }
         }
 
-        var mode = ''
+        let mode = ''
         if (sourceMapData.directions.mode) {
           switch (sourceMapData.directions.mode) {
             case 'foot':
@@ -155,11 +155,11 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var bingBase = 'https://www.bing.com/maps/?'
-      var directions = ''
-      var mapCentre = 'cp=' + sourceMapData.centreCoords.lat + '~' +
+      const bingBase = 'https://www.bing.com/maps/?'
+      let directions = ''
+      const mapCentre = 'cp=' + sourceMapData.centreCoords.lat + '~' +
                                 sourceMapData.centreCoords.lng
-      var zoom = '&lvl=10'
+      let zoom = '&lvl=10'
 
       if ('resolution' in sourceMapData) {
         // 3 <= zoom <=20
@@ -184,7 +184,7 @@ OutputMaps.services = [
           }
         }
 
-        var mode = ''
+        let mode = ''
         if (sourceMapData.directions.mode) {
           switch (sourceMapData.directions.mode) {
             case 'foot':
@@ -243,10 +243,10 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var osmBase = 'https://www.openstreetmap.org/'
-      var zoom = '12/'
-      var mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
-      var directions = ''
+      const osmBase = 'https://www.openstreetmap.org/'
+      let zoom = '12/'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      let directions = ''
 
       if ('resolution' in sourceMapData) {
         // osm max zoom 19
@@ -256,7 +256,7 @@ OutputMaps.services = [
 
       if (sourceMapData.directions &&
                 'route' in sourceMapData.directions) {
-        var mode = ''
+        let mode = ''
         if (sourceMapData.directions.mode) {
           switch (sourceMapData.directions.mode) {
             case 'foot':
@@ -274,8 +274,8 @@ OutputMaps.services = [
         // OSM appears to only handle single-segment routes.
         // So we choose to use the first and last point of the route from the source map.
 
-        var firstElem = sourceMapData.directions.route[0]
-        var lastElem = sourceMapData.directions.route[sourceMapData.directions.route.length - 1]
+        const firstElem = sourceMapData.directions.route[0]
+        const lastElem = sourceMapData.directions.route[sourceMapData.directions.route.length - 1]
 
         if ('coords' in firstElem && 'coords' in lastElem) {
           directions = 'directions?' + mode + 'route=' +
@@ -287,7 +287,7 @@ OutputMaps.services = [
         }
       }
 
-      var coreLink = osmBase + directions + '#map=' + zoom + mapCentre
+      const coreLink = osmBase + directions + '#map=' + zoom + mapCentre
 
       this.maplinks.osmStandard['link'] = coreLink
       this.maplinks.osmCycle['link'] = coreLink + '&layers=C'
@@ -325,7 +325,7 @@ OutputMaps.services = [
       const scale = calculateScaleFromResolution(sourceMapData.resolution)
       this.maplinks.wmGeoHack['link'] = geohackBase + mapCentre + region + '_scale:' + scale
 
-      var wikiminiatlasBase = 'https://wma.wmflabs.org/iframe.html?'
+      const wikiminiatlasBase = 'https://wma.wmflabs.org/iframe.html?'
       mapCentre = sourceMapData.centreCoords.lat + '_' + sourceMapData.centreCoords.lng
       // FIXME this is an approximation of zoom - it's not completely accurate
       const zoom = calculateStdZoomFromResolution(
@@ -349,8 +349,8 @@ OutputMaps.services = [
     },
     generate: function (sourceMapData, view) {
       const wikimapiaBase = 'http://wikimapia.org/#lang=en&'
-      var mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
-      var zoom = 'z=12'
+      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      let zoom = 'z=12'
 
       if ('resolution' in sourceMapData) {
         zoom = 'z=' +
@@ -377,8 +377,8 @@ OutputMaps.services = [
     },
     generate: function (sourceMapData, view) {
       const geocachingBase = 'https://www.geocaching.com/map/#?'
-      var mapCentre = 'll=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
-      var zoom = 'z=14'
+      const mapCentre = 'll=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      let zoom = 'z=14'
 
       if ('resolution' in sourceMapData) {
         zoom = 'z=' +
@@ -403,7 +403,7 @@ OutputMaps.services = [
     },
     generate: function (sourceMapData, view) {
       const w3wBase = 'https://map.what3words.com/'
-      var mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
       this.maplinks.what3words['link'] = w3wBase + mapCentre
 
       view.addMapServiceLinks(this.cat, this, this.maplinks)
@@ -436,8 +436,8 @@ OutputMaps.services = [
         var firstPoint = sourceMapData.directions.route[0]
         var lastPoint = sourceMapData.directions.route[sourceMapData.directions.route.length - 1]
 
-        var routePoints = ''
-        var pointsWithCoords = 0
+        let routePoints = ''
+        let pointsWithCoords = 0
         for (let rteIndex in sourceMapData.directions.route) {
           var rteWpt = sourceMapData.directions.route[rteIndex]
           if ('coords' in rteWpt) {
@@ -489,10 +489,10 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var wazeBase = 'https://www.waze.com/livemap?'
-      var mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
-      var zoom = 'zoom=12'
-      var directions = ''
+      const wazeBase = 'https://www.waze.com/livemap?'
+      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      let zoom = 'zoom=12'
+      let directions = ''
 
       if ('resolution' in sourceMapData) {
         zoom = 'zoom=' +
@@ -543,9 +543,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var openSeaMapBase = 'http://map.openseamap.org/?'
-      var mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
-      var zoom = 'zoom=12'
+      const openSeaMapBase = 'http://map.openseamap.org/?'
+      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      let zoom = 'zoom=12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -553,7 +553,7 @@ OutputMaps.services = [
         zoom = 'zoom=' + zoom
       }
 
-      var layers = 'layers=BFTFFTTFFTF0FFFFFFFFFF'
+      const layers = 'layers=BFTFFTTFFTF0FFFFFFFFFF'
 
       this.maplinks.openSeaMap['link'] = openSeaMapBase + zoom + '&' + mapCentre + '&' + layers
 
@@ -578,9 +578,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var stamenBase = 'http://maps.stamen.com/'
-      var mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
-      var zoom = '12'
+      const stamenBase = 'http://maps.stamen.com/'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      let zoom = '12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -620,11 +620,11 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var hereBase = 'https://wego.here.com/'
-      var mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
-      var zoom = '12'
-      var directions = ''
-      var note = ''
+      const hereBase = 'https://wego.here.com/'
+      const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      let zoom = '12'
+      let directions = ''
+      let note = ''
 
       if ('resolution' in sourceMapData) {
         zoom = '' +
@@ -634,7 +634,7 @@ OutputMaps.services = [
 
       if ('directions' in sourceMapData &&
                 'route' in sourceMapData.directions) {
-        var route = ''
+        let route = ''
         for (let rteWpt of sourceMapData.directions.route) {
           route += '/'
           if ('address' in rteWpt) {
@@ -645,7 +645,7 @@ OutputMaps.services = [
           }
         }
 
-        var mode = 'mix'
+        let mode = 'mix'
         if (sourceMapData.directions.mode) {
           switch (sourceMapData.directions.mode) {
             case 'foot':
@@ -696,19 +696,26 @@ OutputMaps.services = [
     },
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
-        var streetmapMapBase = 'http://www.streetmap.co.uk/map.srf?'
+        const streetmapMapBase = 'http://www.streetmap.co.uk/map.srf?'
 
-        var ll = new LatLon(sourceMapData.centreCoords.lat, sourceMapData.centreCoords.lng)
-        var osLL = CoordTransform.convertWGS84toOSGB36(ll)
-        var osGR = OsGridRef.latLongToOsGrid(osLL)
-        var mapCentre = 'X=' + osGR.easting + '&Y=' + osGR.northing
+        const ll = new LatLon(sourceMapData.centreCoords.lat, sourceMapData.centreCoords.lng)
+        const osLL = CoordTransform.convertWGS84toOSGB36(ll)
+        const osGR = OsGridRef.latLongToOsGrid(osLL)
+        const mapCentre = 'X=' + osGR.easting + '&Y=' + osGR.northing
 
-        var zoom = 120
+        let zoom = 120
         if ('resolution' in sourceMapData) {
-          var scale = calculateScaleFromResolution(sourceMapData.resolution)
-          if (scale < 4000) { zoom = 106 } else if (scale < 15000) { zoom = 110 } else if (scale < 40000) { zoom = 115 } else if (scale < 80000) { zoom = 120 } else if (scale < 160000) { zoom = 126 } else if (scale < 400000) { zoom = 130 } else if (scale < 900000) { zoom = 140 } else { zoom = 150 }
+          const scale = calculateScaleFromResolution(sourceMapData.resolution)
+          if (scale < 4000) { zoom = 106 }
+          else if (scale < 15000) { zoom = 110 }
+          else if (scale < 40000) { zoom = 115 }
+          else if (scale < 80000) { zoom = 120 }
+          else if (scale < 160000) { zoom = 126 }
+          else if (scale < 400000) { zoom = 130 }
+          else if (scale < 900000) { zoom = 140 }
+          else { zoom = 150 }
         }
-        var zoomArg = 'Z=' + zoom
+        const zoomArg = 'Z=' + zoom
 
         this.maplinks.streetmap['link'] = streetmapMapBase + mapCentre + '&A=Y&' + zoomArg
 
@@ -737,9 +744,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var gpxEditorBase = 'http://www.gpxeditor.co.uk/?'
-      var mapCentre = 'location=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
-      var zoom = 'zoom=12'
+      const gpxEditorBase = 'http://www.gpxeditor.co.uk/?'
+      const mapCentre = 'location=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      let zoom = 'zoom=12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -772,7 +779,7 @@ OutputMaps.services = [
         return
       }
 
-      var ngiBase = 'http://www.ngi.be/topomapviewer/public?'
+      const ngiBase = 'http://www.ngi.be/topomapviewer/public?'
       var that = this
 
       // NGI uses the Lambert 2008 projection, grs80 ellipsoid
@@ -782,7 +789,7 @@ OutputMaps.services = [
                 sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
       })
         .done(function (data) {
-          var mapCentre = 'mapcenter={"x":' +
+          const mapCentre = 'mapcenter={"x":' +
                 Math.round(data.easting) + ',"y":' + Math.round(data.northing) + '}'
 
           var level = 4
@@ -872,9 +879,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var suncalcBase = 'http://suncalc.org/#/'
-      var mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
-      var zoom = '12'
+      const suncalcBase = 'http://suncalc.org/#/'
+      const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      let zoom = '12'
 
       var now = new Date()
       var year = now.getFullYear()
@@ -909,9 +916,9 @@ OutputMaps.services = [
     },
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'us') {
-        var topozoneBase = 'http://www.topozone.com/'
-        var mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
-        var zoom = '&zoom=12'
+        const topozoneBase = 'http://www.topozone.com/'
+        const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+        let zoom = '&zoom=12'
 
         if ('resolution' in sourceMapData) {
           zoom = calculateStdZoomFromResolution(
@@ -967,8 +974,8 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var boulterBase = 'http://boulter.com/gps/'
-      var mapCentre = '#' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
+      const boulterBase = 'http://boulter.com/gps/'
+      const mapCentre = '#' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
 
       this.maplinks.boulterConverter['link'] = boulterBase + mapCentre
 
@@ -1000,9 +1007,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var openCycleMapBase = 'http://www.opencyclemap.org/?'
-      var mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
-      var zoom = 'zoom=12'
+      const openCycleMapBase = 'http://www.opencyclemap.org/?'
+      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      let zoom = 'zoom=12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1037,9 +1044,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var owmBase = 'https://openweathermap.org/weathermap?'
-      var mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
-      var zoom = 'zoom=6'
+      const owmBase = 'https://openweathermap.org/weathermap?'
+      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      let zoom = 'zoom=6'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1064,9 +1071,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var base = 'http://www.flickr.com/map/'
-      var mapCentre = 'fLat=' + sourceMapData.centreCoords.lat + '&fLon=' + sourceMapData.centreCoords.lng
-      var zoom = '12'
+      const base = 'http://www.flickr.com/map/'
+      const mapCentre = 'fLat=' + sourceMapData.centreCoords.lat + '&fLon=' + sourceMapData.centreCoords.lng
+      let zoom = '12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1091,9 +1098,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var siteBase = 'https://www.strava.com/heatmap#'
-      var zoom = '12'
-      var mapCentre = sourceMapData.centreCoords.lng + '/' + sourceMapData.centreCoords.lat
+      const siteBase = 'https://www.strava.com/heatmap#'
+      let zoom = '12'
+      const mapCentre = sourceMapData.centreCoords.lng + '/' + sourceMapData.centreCoords.lat
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1124,9 +1131,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var yandexBase = 'https://yandex.com/maps/'
-      var mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat
-      var zoom = 'z=6'
+      const yandexBase = 'https://yandex.com/maps/'
+      const mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat
+      let zoom = 'z=6'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1190,9 +1197,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var base = 'https://demo.f4map.com/'
-      var mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
-      var zoom = 'zoom=12'
+      const base = 'https://demo.f4map.com/'
+      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      let zoom = 'zoom=12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1217,9 +1224,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var base = 'https://opentopomap.org/#map='
-      var mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
-      var zoom = '12'
+      const base = 'https://opentopomap.org/#map='
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      let zoom = '12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1257,9 +1264,9 @@ OutputMaps.services = [
     },
     generate: function (sourceMapData, view) {
       if ((sourceMapData.countryCode === 'us') || (sourceMapData.countryCode === 'ca')) {
-        var base = 'http://caltopo.com/map.html'
-        var mapCentre = 'll=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
-        var zoom = 'z=12'
+        const base = 'http://caltopo.com/map.html'
+        const mapCentre = 'll=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+        let zoom = 'z=12'
 
         if ('resolution' in sourceMapData) {
           zoom = calculateStdZoomFromResolution(
@@ -1289,9 +1296,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var base = 'https://www.qwant.com/maps'
-      var mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
-      var zoom = '12'
+      const base = 'https://www.qwant.com/maps'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      let zoom = '12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1316,9 +1323,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var base = 'https://www.mapillary.com/app/'
-      var mapCentre = sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng
-      var zoom = '12'
+      const base = 'https://www.mapillary.com/app/'
+      const mapCentre = sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng
+      let zoom = '12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
@@ -1343,9 +1350,9 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      var base = 'https://www.komoot.com/plan/'
-      var mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
-      var zoom = '12'
+      const base = 'https://www.komoot.com/plan/'
+      const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      let zoom = '12'
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(

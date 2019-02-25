@@ -77,7 +77,7 @@ var MapLinksView = {
      * @param {category} OutputMaps category for which the title is requested.
      */
   getTitle: function (category) {
-    var title = ''
+    let title = ''
     switch (category) {
       case OutputMaps.category.multidirns:
         if (this.sourceDirnSegs >= 2) {
@@ -120,7 +120,7 @@ var MapLinksView = {
      */
   addMapServiceLinks: function (category, mapService, mapLinks, note) {
     var thisView = this
-    var selector = this.getSelector(category)
+    const selector = this.getSelector(category)
 
     if ($(selector).children().length === 0) {
       $(selector).append('<h4>' + this.getTitle(category) + '</h4>')
@@ -207,7 +207,7 @@ var MapLinksView = {
     * @return {string} the HTML for the line
     */
   buildLineOfLinks: function (id, mapSite, links, note) {
-    var html = ''
+    let html = ''
     if (links) {
       html =
                 "<div id='" + id + "' class='serviceLine' data-sort='" + mapSite.prio + "'>" +
@@ -257,7 +257,7 @@ var MapSwitcher = {
      * @return Promise which fulfils when complete
      */
   runExtraction: function () {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       new ScriptExecution().executeScripts(
         '/vendor/google-maps-data-parameter-parser/src/googleMapsDataParameter.js',
         '/src/mapUtil.js',
@@ -272,7 +272,7 @@ var MapSwitcher = {
      * @return Promise which fulfils with the source map data
      */
   listenForExtraction: function () {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         resolve(request.sourceMapData)
       })
@@ -324,7 +324,7 @@ var MapSwitcher = {
     * @return Promise which resolves on success with the extracted data object.
     */
   getCountryCode: function (extractedData) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       if (extractedData && extractedData.centreCoords != null) {
         CodeGrid.getCode(
           Number(extractedData.centreCoords.lat),
@@ -365,7 +365,7 @@ var MapSwitcher = {
 
       document.getElementById('nonUpdatingHost').textContent = sourceMapData.nonUpdating
 
-      var close = document.getElementsByClassName('modalClose')[0]
+      const close = document.getElementsByClassName('modalClose')[0]
 
       close.onclick = function () {
         modal.style.display = 'none'

@@ -24,7 +24,7 @@ extractors.push({
       // exceptional case for custom maps
       if (window.location.pathname === '/maps/d/viewer') {
         const re1 = /ll=([-0-9.]+)%2C([-0-9.]+)&z=([0-9.]+)/
-        var coordArray1 = window.location.search.match(re1)
+        const coordArray1 = window.location.search.match(re1)
         if (coordArray1 && coordArray1.length > 3) {
           sourceMapData.centreCoords = { 'lat': coordArray1[1], 'lng': coordArray1[2] }
           sourceMapData.resolution =
@@ -33,7 +33,7 @@ extractors.push({
         resolve(sourceMapData)
       } else if (window.location.pathname.indexOf('/maps/') === 0) {
         const re2 = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/
-        var coordArray2 = window.location.pathname.match(re2)
+        const coordArray2 = window.location.pathname.match(re2)
         if (coordArray2 && coordArray2.length >= 3) {
           sourceMapData.centreCoords = { 'lat': coordArray2[1], 'lng': coordArray2[2] }
         }
@@ -55,16 +55,16 @@ extractors.push({
         // first we look for the 'dir' waypoints
         // these are where any named addresses will be (but maybe coords too)
         const re3 = /dir\/(([-A-Za-z0-9%'+,!$_.*()]+\/){2,})@/
-        var wholeRouteArray = window.location.pathname.match(re3)
+        const wholeRouteArray = window.location.pathname.match(re3)
         if (wholeRouteArray && wholeRouteArray.length > 1) {
           sourceMapData.directions = {}
           sourceMapData.directions.route = []
-          for (var arrWpt of wholeRouteArray[1].split('/')) {
+          for (let arrWpt of wholeRouteArray[1].split('/')) {
             if (arrWpt.length > 0) {
               var wptObj = { address: arrWpt }
               // check if the address looks like a coordinate
               // if so, we put it in the coords sub-object too
-              var coordRe = /([-0-9.]+),[+]?([-0-9.]+)/
+              const coordRe = /([-0-9.]+),[+]?([-0-9.]+)/
               var addrIsCoordArr = arrWpt.match(coordRe)
               if (addrIsCoordArr && addrIsCoordArr.length > 2) {
                 wptObj.coords = { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
@@ -78,12 +78,12 @@ extractors.push({
         // But some of them may only have addresses, not coordinates.
         // So we must parse the data part of the URL to find the coords.
         try {
-          var gmdp = new Gmdp(window.location.href)
-          var gmdpRoute = gmdp.getRoute()
-          var mapDataWptIndex = 0 // index into sourceMapData wpts
+          const gmdp = new Gmdp(window.location.href)
+          const gmdpRoute = gmdp.getRoute()
+          let mapDataWptIndex = 0 // index into sourceMapData wpts
           // FIXME we should do a count here - number of gmdp primary wpts should be equal to
           // number of sourceMapData wpts
-          for (var gmdpWpt of gmdpRoute.getAllWaypoints()) {
+          for (let gmdpWpt of gmdpRoute.getAllWaypoints()) {
             if (gmdpWpt.primary) {
               var mapDataWptCoords = sourceMapData.directions.route[mapDataWptIndex].coords
               // if coords are not yet specified, insert them
@@ -114,7 +114,7 @@ extractors.push({
       } else if (window.location.pathname.indexOf('/search') === 0 ||
                 window.location.pathname.indexOf('/webhp') === 0) {
         const re = /&rllag=([-0-9]+),([-0-9]+)/
-        var coordArray = window.location.hash.match(re)
+        const coordArray = window.location.hash.match(re)
         if (coordArray && coordArray.length > 2) {
           resolve({
             centreCoords: { 'lat': coordArray[1] / 1000000, 'lng': coordArray[2] / 1000000 },
@@ -139,12 +139,13 @@ extractors.push({
       // So we should extract the lat and lng from the window.location parameter
       if (window.history && !window.history.state) {
         const re1 = /cp=([-0-9.]+)~([-0-9.]+)/
-        var coordArray = window.location.search.match(re1)
+        const coordArray = window.location.search.match(re1)
+
         if (coordArray && coordArray.length >= 3) {
           sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
         }
         const re2 = /lvl=([0-9]+)/
-        var levelArray = window.location.search.match(re2)
+        const levelArray = window.location.search.match(re2)
         if (levelArray && levelArray.length > 1) {
           sourceMapData.resolution = calculateResolutionFromStdZoom(
             levelArray[1], sourceMapData.centreCoords.lat)
@@ -155,7 +156,7 @@ extractors.push({
         sourceMapData.centreCoords = {
           'lat': window.history.state.MapModeStateHistory.centerPoint.latitude, 'lng': window.history.state.MapModeStateHistory.centerPoint.longitude }
 
-        var level = window.history.state.MapModeStateHistory.level
+        const level = window.history.state.MapModeStateHistory.level
         sourceMapData.resolution = calculateResolutionFromStdZoom(
           level, sourceMapData.centreCoords.lat)
       }
@@ -180,7 +181,7 @@ extractors.push({
 
         const re3 = /([-0-9.]+)[ ]*,[ ]*([-0-9.]+)/
         for (let rteWptIndex in sourceMapData.directions.route) {
-          var wptArray =
+          let wptArray =
             sourceMapData.directions.route[rteWptIndex].address.match(re3)
           if (wptArray && wptArray.length > 2) {
             sourceMapData.directions.route[rteWptIndex].coords =
@@ -213,7 +214,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re1 = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
-      var coordArray = window.location.hash.match(re1)
+      const coordArray = window.location.hash.match(re1)
       if (coordArray && coordArray.length >= 4) {
         sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
         sourceMapData.resolution = calculateResolutionFromStdZoom(
@@ -221,7 +222,7 @@ extractors.push({
       }
 
       const re2 = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
-      var routeCoordsArray = window.location.search.match(re2)
+      const routeCoordsArray = window.location.search.match(re2)
 
       if (routeCoordsArray && routeCoordsArray.length > 4) {
         const routeFrom = document.evaluate('//*[@id="route_from"]',
@@ -244,7 +245,7 @@ extractors.push({
       }
 
       const re3 = /engine=[a-zA-Z]+_([a-z]+)/
-      var modeArray = window.location.search.match(re3)
+      const modeArray = window.location.search.match(re3)
 
       if (modeArray && modeArray.length > 1) {
         switch (modeArray[1]) {
@@ -329,24 +330,24 @@ extractors.push({
       if (window.location.pathname.indexOf('/map/') === 0) {
         let sourceMapData = {}
         const re1 = /ll=([-0-9.]+),([-0-9.]+)/
-        var coordArray = window.location.hash.match(re1)
+        const coordArray = window.location.hash.match(re1)
         if (coordArray && coordArray.length >= 3) {
           sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
         }
         const re2 = /z=([0-9]+)/
-        var zoomArray = window.location.hash.match(re2)
+        const zoomArray = window.location.hash.match(re2)
         if (zoomArray && zoomArray.length > 1) {
           sourceMapData.resolution = calculateResolutionFromStdZoom(
             zoomArray[1], sourceMapData.centreCoords.lat)
         }
         resolve(sourceMapData)
       } else if (window.location.pathname.indexOf('/geocache/') === 0) {
-        var dmLatLng = document.getElementById('uxLatLon').innerText
+        const dmLatLng = document.getElementById('uxLatLon').innerText
         const re3 = /([NS])\s+([0-9]+)[^0-9]\s+([0-9.]+)\s+([EW])\s+([0-9]+)[^0-9]\s+([0-9.]+)/
-        var dmCoordArray = dmLatLng.match(re3)
+        const dmCoordArray = dmLatLng.match(re3)
         if (dmCoordArray && dmCoordArray.length > 6) {
-          var lat = parseInt(dmCoordArray[2]) + (dmCoordArray[3] / 60)
-          var lng = parseInt(dmCoordArray[5]) + (dmCoordArray[6] / 60)
+          let lat = parseInt(dmCoordArray[2]) + (dmCoordArray[3] / 60)
+          let lng = parseInt(dmCoordArray[5]) + (dmCoordArray[6] / 60)
           if (dmCoordArray[1] === 'S') {
             lat = -lat
           }
@@ -430,12 +431,12 @@ extractors.push({
       const centrePermalink = document.evaluate('//*[@id="OpenLayers_Control_Permalink_13"]//a/@href',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
-      var coordArray = centrePermalink.match(re)
+      const coordArray = centrePermalink.match(re)
       if (coordArray && coordArray.length > 2) {
         sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
       }
       const re2 = /zoom=([0-9]+)/
-      var zoomArray = centrePermalink.match(re2)
+      const zoomArray = centrePermalink.match(re2)
       if (zoomArray && zoomArray.length > 1) {
         sourceMapData.resolution = calculateResolutionFromStdZoom(
           zoomArray[1], sourceMapData.centreCoords.lat)
@@ -450,7 +451,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/
-      var coordArray = window.location.search.match(re)
+      const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
         sourceMapData.resolution = calculateResolutionFromStdZoom(
@@ -458,8 +459,8 @@ extractors.push({
       }
 
       // check if pathname contains directions
-      var state = -1
-      for (var directions of window.location.pathname.split('/')) {
+      let state = -1
+      for (let directions of window.location.pathname.split('/')) {
         if (state < 0) {
           if (directions === 'directions') {
             sourceMapData.directions = {}
@@ -487,23 +488,23 @@ extractors.push({
         } else if (state > 0) {
           let wptObj
           const re1 = /^([^:]+):/
-          var addrArray = directions.match(re1)
+          const addrArray = directions.match(re1)
           if (addrArray && addrArray.length > 1) {
-            var addr = addrArray[1].replace(/-/g, ' ')
+            const addr = addrArray[1].replace(/-/g, ' ')
             wptObj = { address: addr }
 
             const re2 = /:loc-([^:]+)/
-            var dirArray = directions.match(re2)
+            const dirArray = directions.match(re2)
             if (dirArray && dirArray.length > 1) {
-              var locnFromB64 = window.atob(dirArray[1])
+              const locnFromB64 = window.atob(dirArray[1])
               const re3 = /lat=([-0-9.]+);lon=([-0-9.]+)/
-              var coordsArr = locnFromB64.match(re3)
+              const coordsArr = locnFromB64.match(re3)
               if (coordsArr.length > 2) {
                 wptObj.coords = { lat: coordsArr[1], lng: coordsArr[2] }
               }
             }
             const re4 = /:([-0-9.]+),([-0-9.]+)/
-            var coordsArray = directions.match(re4)
+            const coordsArray = directions.match(re4)
             if (coordsArray && coordsArray.length > 2) {
               wptObj.coords =
                             { lat: coordsArray[1], lng: coordsArray[2] }
@@ -537,14 +538,14 @@ extractors.push({
       const urlToShare = document.evaluate('//*[@id="LinkToInput"]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
       const re1 = /X=([0-9]+)&Y=([0-9]+)/
-      var osCoordArray = urlToShare.match(re1)
+      const osCoordArray = urlToShare.match(re1)
       if (osCoordArray && osCoordArray.length > 2) {
         sourceMapData.osgbCentreCoords = { 'e': osCoordArray[1], 'n': osCoordArray[2] }
       }
       const re2 = /Z=([0-9]+)/
-      var zoomArray = urlToShare.match(re2)
+      const zoomArray = urlToShare.match(re2)
       if (zoomArray && zoomArray.length > 1) {
-        var scale = 50000
+        let scale = 50000
         switch (zoomArray[1]) {
           case '106':
             scale = 2500
@@ -582,7 +583,7 @@ extractors.push({
   extract:
     function (resolve, reject) {
       const re = /#[a-zA-Z]*\/?([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
         resolve({
           centreCoords: { 'lat': coordArray[2], 'lng': coordArray[3] },
@@ -599,7 +600,7 @@ extractors.push({
   extract:
     function (resolve, reject) {
       const re = /location=([-0-9.]+),([-0-9.]+)&zoom=([0-9]+)/
-      var coordArray = window.location.search.match(re)
+      const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
         resolve({
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
@@ -618,7 +619,7 @@ extractors.push({
   extract:
     function (resolve, reject) {
       const re = /\?(?:wma=)?([-0-9.]+)_([-0-9.]+)_[0-9]+_[0-9]+_[a-z]{0,3}_([0-9]+)/
-      var coordArray = window.location.search.match(re)
+      const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
         resolve({
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
@@ -637,15 +638,14 @@ extractors.push({
   extract:
     function (resolve, reject) {
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
-      var coordArray = window.location.search.match(re)
+      const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 2) {
         let sourceMapData = {
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
           nonUpdating: window.location.hostname,
           locationDescr: 'non-updating URL'
         }
-        var zoomRe = /zoom=([0-9]+)/
-        var zoomArray = window.location.search.match(zoomRe)
+        const zoomArray = window.location.search.match(/zoom=([0-9]+)/)
         if (zoomArray && zoomArray.length > 1) {
           sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[1])
         }
@@ -661,7 +661,7 @@ extractors.push({
   extract:
     function (resolve, reject) {
       const re = /#\/([-0-9.]+),([-0-9.]+),([0-9]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length >= 3) {
         resolve({
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
@@ -679,7 +679,7 @@ extractors.push({
   extract:
     function (resolve, reject) {
       const re = /#\/([-0-9.]+),([-0-9.]+),([0-9]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length >= 3) {
         resolve({
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
@@ -701,7 +701,7 @@ extractors.push({
         const locationText = document.evaluate('//*[@class="style1"][contains(text(),"Map Centre")]',
           document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
         const re = /East: ([0-9.]+) : North: ([0-9.]+)/
-        var mapCentreArr = locationText.match(re)
+        const mapCentreArr = locationText.match(re)
         if (mapCentreArr && mapCentreArr.length > 2) {
           sourceMapData.osgbCentreCoords = { 'e': mapCentreArr[1], 'n': mapCentreArr[2] }
           sourceMapData.locationDescr = 'map centre'
@@ -718,7 +718,7 @@ extractors.push({
       let sourceMapData = {}
       const geo = document.evaluate('//*[@id="coordinates"]//*[@class="geo"]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
-      var coordArray = geo.split(';')
+        const coordArray = geo.split(';')
       if (coordArray.length === 2) {
         sourceMapData.centreCoords = { 'lat': coordArray[0].trim(), 'lng': coordArray[1].trim() }
         sourceMapData.locationDescr = 'primary article coordinates'
@@ -735,7 +735,7 @@ extractors.push({
       const href = document.evaluate('//*[@id="permalink"]/@href',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
       const re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
-      var dataArray = href.match(re)
+      const dataArray = href.match(re)
       if (dataArray && dataArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': dataArray[2], 'lng': dataArray[3] }
         sourceMapData.resolution =
@@ -838,14 +838,13 @@ extractors.push({
   extract:
     function (resolve, reject) {
       const re = /ll=([-0-9.]+),([-0-9.]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 2) {
         let sourceMapData = {
           centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
           locationDescr: 'map centre specified in URL'
         }
-        var zoomRe = /z=([0-9]+)/
-        var zoomArray = window.location.hash.match(zoomRe)
+        const zoomArray = window.location.hash.match(/z=([0-9]+)/)
         if (zoomArray && zoomArray.length > 1) {
           sourceMapData.resolution = calculateResolutionFromStdZoom(zoomArray[1], coordArray[1])
         }
@@ -862,7 +861,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re = /#([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[3], 'lng': coordArray[2] }
         sourceMapData.resolution =
@@ -878,7 +877,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re = /#lat=([-0-9.]+)&lon=([-0-9.]+)&zoom=([0-9.]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
         sourceMapData.resolution =
@@ -894,7 +893,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re = /#map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
         sourceMapData.resolution =
@@ -909,8 +908,8 @@ extractors.push({
   extract:
     function (resolve) {
       let sourceMapData = {}
-      var re = /#map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
-      var coordArray = window.location.hash.match(re)
+      const re = /#map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
         sourceMapData.resolution =
@@ -946,7 +945,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re = /@([-0-9.]+),([-0-9.]+),([0-9]+)z/
-      var coordArray = window.location.pathname.match(re)
+      const coordArray = window.location.pathname.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
         sourceMapData.resolution =
@@ -962,7 +961,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9]+)/
-      var coordArray = window.location.search.match(re)
+      const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
         sourceMapData.resolution =
@@ -980,7 +979,7 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       const re = /map=([0-9]+)!([-0-9.]+)!([-0-9.]+)/
-      var coordArray = window.location.hash.match(re)
+      const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
         sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
         sourceMapData.resolution =
