@@ -1069,6 +1069,22 @@ extractors.push({
     }
 })
 
+extractors.push({
+  host: 'peakbagger',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const gmap = document.evaluate('//*[@id="Gmap"]/@src',
+        document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
+      const cx = gmap.value.match(/cx=([-0-9.]+)/)[1]
+      const cy = gmap.value.match(/cy=([-0-9.]+)/)[1]
+      const z = gmap.value.match(/z=([-0-9.]+)/)[1]
+      sourceMapData.centreCoords = { 'lat': cy, 'lng': cx }
+      sourceMapData.resolution = calculateResolutionFromStdZoom(z, cy)
+      resolve(sourceMapData)
+    }
+})
+
 var runDataExtraction = function () {
   // default null extractor
   let extractor = {
