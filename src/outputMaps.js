@@ -706,14 +706,23 @@ OutputMaps.services = [
         let zoom = 120
         if ('resolution' in sourceMapData) {
           const scale = calculateScaleFromResolution(sourceMapData.resolution)
-          if (scale < 4000) { zoom = 106 }
-          else if (scale < 15000) { zoom = 110 }
-          else if (scale < 40000) { zoom = 115 }
-          else if (scale < 80000) { zoom = 120 }
-          else if (scale < 160000) { zoom = 126 }
-          else if (scale < 400000) { zoom = 130 }
-          else if (scale < 900000) { zoom = 140 }
-          else { zoom = 150 }
+          if (scale < 4000) {
+            zoom = 106
+          } else if (scale < 15000) {
+            zoom = 110
+          } else if (scale < 40000) {
+            zoom = 115
+          } else if (scale < 80000) {
+            zoom = 120
+          } else if (scale < 160000) {
+            zoom = 126
+          } else if (scale < 400000) {
+            zoom = 130
+          } else if (scale < 900000) {
+            zoom = 140
+          } else {
+            zoom = 150
+          }
         }
         const zoomArg = 'Z=' + zoom
 
