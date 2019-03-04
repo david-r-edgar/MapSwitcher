@@ -959,7 +959,7 @@ OutputMaps.services = [
           link: osBase + mapCentre
         }
       }
-      if (sourceMapData.countryCode === 'de') {
+      else if (sourceMapData.countryCode === 'de') {
         const deTopoBase = base + 'sysmaps_bkg.html?layers=B00000000000000000000000FFFFFTFFFTFFTTTTT'
         const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
 
@@ -968,7 +968,9 @@ OutputMaps.services = [
           link: deTopoBase + '&' + mapCentre
         }
       }
-      view.addMapServiceLinks(this.cat, this, this.maplinks)
+      if (Object.keys(this.maplinks).length > 0) {
+        view.addMapServiceLinks(this.cat, this, this.maplinks)
+      }
     }
   },
   {
