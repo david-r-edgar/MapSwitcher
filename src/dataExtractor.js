@@ -133,7 +133,7 @@ extractors.push({
 extractors.push({
   host: '.bing.',
   extract:
-    function (resolve) {
+    function (resolve, reject) {
       let sourceMapData = {}
       // if there's no 'state', it means no scrolling has happened yet.
       // So we should extract the lat and lng from the window.location parameter
@@ -153,10 +153,23 @@ extractors.push({
       } else {
         // scrolling has happened, but bing doesn't update its URL. So we pull
         // the coords from the'MapModeStateHistory'
-        sourceMapData.centreCoords = {
-          'lat': window.history.state.MapModeStateHistory.centerPoint.latitude, 'lng': window.history.state.MapModeStateHistory.centerPoint.longitude }
 
-        const level = window.history.state.MapModeStateHistory.level
+        // MapModeStateHistory broke - so we assume it may be in one of two locations
+        let mapModeStateHistory
+        if (window.history.state && window.history.state.MapModeStateHistory) {
+          mapModeStateHistory = window.history.state.MapModeStateHistory
+        }
+        else if (window.history.state.state && window.history.state.state.MapModeStateHistory) {
+          mapModeStateHistory = window.history.state.state.MapModeStateHistory
+        }
+        if (!mapModeStateHistory) {
+          reject()
+        }
+
+        sourceMapData.centreCoords = {
+          'lat': mapModeStateHistory.centerPoint.latitude, 'lng': mapModeStateHistory.centerPoint.longitude }
+
+        const level = mapModeStateHistory.level
         sourceMapData.resolution = calculateResolutionFromStdZoom(
           level, sourceMapData.centreCoords.lat)
       }
