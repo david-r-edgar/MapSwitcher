@@ -158,8 +158,7 @@ extractors.push({
         let mapModeStateHistory
         if (window.history.state && window.history.state.MapModeStateHistory) {
           mapModeStateHistory = window.history.state.MapModeStateHistory
-        }
-        else if (window.history.state.state && window.history.state.state.MapModeStateHistory) {
+        } else if (window.history.state.state && window.history.state.state.MapModeStateHistory) {
           mapModeStateHistory = window.history.state.state.MapModeStateHistory
         }
         if (!mapModeStateHistory) {

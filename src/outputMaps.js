@@ -958,8 +958,7 @@ OutputMaps.services = [
           name: 'OS',
           link: osBase + mapCentre
         }
-      }
-      else if (sourceMapData.countryCode === 'de') {
+      } else if (sourceMapData.countryCode === 'de') {
         const deTopoBase = base + 'sysmaps_bkg.html?layers=B00000000000000000000000FFFFFTFFFTFFTTTTT'
         const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
 
