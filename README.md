@@ -61,7 +61,6 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Qwant
 - Mapillary
 - Komoot
-- Sustrans
 - Waymarked Trails
 - Rightmove
 - OnTheMarket
@@ -105,7 +104,6 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Qwant
 - Mapillary
 - Komoot
-- Sustrans
 - Waymarked Trails
 
 ### Utilities

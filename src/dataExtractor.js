@@ -967,24 +967,6 @@ extractors.push({
 })
 
 extractors.push({
-  host: 'sustrans.org.uk',
-  extract:
-    function (resolve) {
-      let sourceMapData = {}
-      const re = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9]+)/
-      const coordArray = window.location.search.match(re)
-      if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
-        sourceMapData.resolution =
-          calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
-        sourceMapData.nonUpdating = window.location.hostname
-        sourceMapData.locationDescr = 'non-updating URL'
-      }
-      resolve(sourceMapData)
-    }
-})
-
-extractors.push({
   host: 'waymarkedtrails.org',
   extract:
     function (resolve) {
