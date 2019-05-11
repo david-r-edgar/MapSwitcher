@@ -339,8 +339,8 @@ extractors.push({
   host: 'geocaching.',
   extract:
     function (resolve) {
+      let sourceMapData = {}
       if (window.location.pathname.indexOf('/map/') >= 0) {
-        let sourceMapData = {}
         const re1 = /lat=([-0-9.]+)&lng=([-0-9.]+)/
         const coordArray = window.location.search.match(re1)
         if (coordArray && coordArray.length >= 3) {
@@ -352,7 +352,6 @@ extractors.push({
           sourceMapData.resolution = calculateResolutionFromStdZoom(
             zoomArray[1], sourceMapData.centreCoords.lat)
         }
-        resolve(sourceMapData)
       } else if (window.location.pathname.indexOf('/geocache/') === 0) {
         const dmLatLng = document.getElementById('uxLatLon').innerText
         const re3 = /([NS])\s+([0-9]+)[^0-9]\s+([0-9.]+)\s+([EW])\s+([0-9]+)[^0-9]\s+([0-9.]+)/
@@ -366,13 +365,14 @@ extractors.push({
           if (dmCoordArray[4] === 'W') {
             lng = -lng
           }
-          resolve({
+          Object.assign(sourceMapData, {
             centreCoords: { 'lat': lat, 'lng': lng },
             resolution: calculateResolutionFromStdZoom(15, lat),
             locationDescr: 'primary geocache coordinates'
           })
         }
       }
+      resolve(sourceMapData)
     }
 })
 
