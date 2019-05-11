@@ -1,0 +1,36 @@
+{
+  "name": "mapswitcher",
+  "description": "Switch between different map services. Convert coordinates and directions and jump to the same location on another map.",
+  "main": "",
+  "scripts": {
+    "test": "standard && echo \"Error: no test specified\"",
+    "build:resources": "cp -r html css image vendor manifest.json release",
+    "build:js": "for srcFile in src/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done",
+    "clean:release": "rm -rf release",
+    "build:release": "mkdir -p release/src &&  npm run build:resources && npm run build:js",
+    "zip:release": "cd release ; zip -r ../MapSwitcher_v.zip * ; cd ..",
+    "build": "npm run clean:release && npm run build:release && npm run zip:release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/david-r-edgar/MapSwitcher.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "chrome",
+    "maps",
+    "mapping"
+  ],
+  "author": "David R Edgar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/david-r-edgar/MapSwitcher/issues"
+  },
+  "homepage": "https://github.com/david-r-edgar/MapSwitcher#readme",
+  "dependencies": {
+    "terser": "^3.14.1"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
+  }
+}

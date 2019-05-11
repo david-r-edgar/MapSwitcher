@@ -9,19 +9,23 @@ Most users will want to use the released version, [available on the Chrome Store
 ### To install the development version
 If you're interested in contributing to its development, modifying the extension for your own use, or simply using the most recent code, you should follow these steps:
 - Clone this repository
-- Open [chrome://extensions/](chrome://extensions/) in your browser
+- Open `chrome://extensions/` in your browser
 - Check the 'Developer Mode' checkbox
 - Choose 'Load unpacked extension...' and select the root directory (which contains `manifest.json`)
 
 ### Building the release version
 
-The included makefile allows you to build for release. Currently you may need to adapt it according to your local set-up. As of 24 June 2016, you must install the 'harmony' branch of uglifyjs in order to mangle ES6 JavaScript code.
-
-`make all` will build into a 'release' directory, generating or copying all necessary files. It can be tested using the chrome://extensions 'Load unpacked extension...' option (see above) and packed through the same page.
+You can build the release version using npm:
+```
+nvm use
+npm install
+npm run build
+```
+This will clean and build into `./release`, generating or copying all necessary files. It can be tested using the `chrome://extensions` 'Load unpacked extension...' option (see above), and also packed through the same page.
 
 ## Browsers supported
 - Chromium - Tested
-- Chrome -  Partially tested
+- Chrome - Partially tested
 - Opera - Unknown
 
 ## Mapping services supported
@@ -34,6 +38,7 @@ The included makefile allows you to build for release. Currently you may need to
 - OpenStreetMap
 - Waze
 - Here
+- Yandex
 
 ##### Without directions
 - Wikimapia
@@ -49,11 +54,19 @@ The included makefile allows you to build for release. Currently you may need to
 - SysMaps
 - OpenCycleMap
 - Facebook (pages and events)
-- Yandex
 - CalTopo
 - Strava (global heatmap)
 - F4map
 - OpenTopoMap
+- Qwant
+- Mapillary
+- Komoot
+- Waymarked Trails
+- Rightmove
+- OnTheMarket
+- Zoopla
+- PrimeLocation
+- Peakbagger
 
 ### Output mapping services
 
@@ -66,6 +79,7 @@ The included makefile allows you to build for release. Currently you may need to
 (These services only support single segment directions, no 'via' points.)
 - OpenStreetMap (only for routes with coordinate-specified waypoints)
 - Waze (only for routes with coordinate-specified waypoints)
+- Yandex
 
 ##### Without directions
 - Wikimapia
@@ -84,10 +98,13 @@ The included makefile allows you to build for release. Currently you may need to
 - SysMaps (UK)
 - Strava
   - Global Heatmap
-- Yandex
 - F4map
 - OpenTopoMap
 - CalTopo (US + CA)
+- Qwant
+- Mapillary
+- Komoot
+- Waymarked Trails
 
 ### Utilities
 - GPX download
