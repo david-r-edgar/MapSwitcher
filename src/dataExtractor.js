@@ -803,8 +803,7 @@ extractors.push({
       const coordArray = window.location.search.match(coordRe)
       if (coordArray && coordArray.length > 2) {
         let sourceMapData = {
-          centreCoords: { 'lat': coordArray[2], 'lng': coordArray[1] },
-          locationDescr: 'map centre specified in URL'
+          centreCoords: { 'lat': coordArray[2], 'lng': coordArray[1] }
         }
         const zoomArray = window.location.search.match(/z=([0-9]+)/)
         if (zoomArray && zoomArray.length > 1) {

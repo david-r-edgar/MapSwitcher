@@ -38,6 +38,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - OpenStreetMap
 - Waze
 - Here
+- Yandex
 
 ##### Without directions
 - Wikimapia
@@ -53,12 +54,20 @@ This will clean and build into `./release`, generating or copying all necessary 
 - SysMaps
 - OpenCycleMap
 - Facebook (pages and events)
-- Yandex
 - CalTopo
 - Strava (global heatmap)
 - F4map
 - OpenTopoMap
 - Qwant
+- Mapillary
+- Komoot
+- Sustrans
+- Waymarked Trails
+- Rightmove
+- OnTheMarket
+- Zoopla
+- PrimeLocation
+- Peakbagger
 
 ### Output mapping services
 
@@ -71,6 +80,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 (These services only support single segment directions, no 'via' points.)
 - OpenStreetMap (only for routes with coordinate-specified waypoints)
 - Waze (only for routes with coordinate-specified waypoints)
+- Yandex
 
 ##### Without directions
 - Wikimapia
@@ -89,11 +99,14 @@ This will clean and build into `./release`, generating or copying all necessary 
 - SysMaps (UK)
 - Strava
   - Global Heatmap
-- Yandex
 - F4map
 - OpenTopoMap
 - CalTopo (US + CA)
 - Qwant
+- Mapillary
+- Komoot
+- Sustrans
+- Waymarked Trails
 
 ### Utilities
 - GPX download
