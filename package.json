@@ -8,7 +8,8 @@
     "build:js": "for srcFile in src/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done",
     "clean:release": "rm -rf release",
     "build:release": "mkdir -p release/src &&  npm run build:resources && npm run build:js",
-    "build": "npm run clean:release && npm run build:release"
+    "zip:release": "cd release ; zip -r ../MapSwitcher_v.zip * ; cd ..",
+    "build": "npm run clean:release && npm run build:release && npm run zip:release"
   },
   "repository": {
     "type": "git",
