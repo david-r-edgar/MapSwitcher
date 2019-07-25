@@ -341,16 +341,12 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       if (window.location.pathname.indexOf('/map/') >= 0) {
-        const re1 = /lat=([-0-9.]+)&lng=([-0-9.]+)/
-        const coordArray = window.location.search.match(re1)
-        if (coordArray && coordArray.length >= 3) {
+        const re1 = /ll=([-0-9.]+),([-0-9.]+)&z=([0-9.]+)/
+        const coordArray = window.location.hash.match(re1)
+        if (coordArray && coordArray.length > 3) {
           sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
-        }
-        const re2 = /zoom=([0-9]+)/
-        const zoomArray = window.location.search.match(re2)
-        if (zoomArray && zoomArray.length > 1) {
-          sourceMapData.resolution = calculateResolutionFromStdZoom(
-            zoomArray[1], sourceMapData.centreCoords.lat)
+          sourceMapData.resolution =
+            calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
         }
       } else if (window.location.pathname.indexOf('/geocache/') === 0) {
         const dmLatLng = document.getElementById('uxLatLon').innerText
