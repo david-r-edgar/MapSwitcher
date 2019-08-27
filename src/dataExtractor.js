@@ -1,5 +1,5 @@
 /* global
-  browser, chrome,
+  browserRoot, browser, chrome,
   XPathResult,
   calculateResolutionFromScale,
   calculateResolutionFromStdZoom,
@@ -8,10 +8,12 @@
 /**
  * The Web Extension API is implemented on different root objects in different browsers.
  * Firefox uses 'browser'. Chrome uses 'chrome'.
- * Checking here allows us to use a common 'browser' everywhere.
+ * Checking here and use a common 'browserRoot' everywhere.
  */
-if (typeof browser === 'undefined') {
-  browser = chrome // eslint-disable-line no-global-assign
+if (chrome && chrome.runtime) {
+  browserRoot = chrome // eslint-disable-line no-global-assign
+} else {
+  browserRoot = browser // eslint-disable-line no-global-assign
 }
 
 var extractors = []
@@ -1088,10 +1090,10 @@ var runDataExtraction = function () {
   }
   // execute the extraction and send the result to the main script
   new Promise(extractor.extract).then(function (sourceMapData) {
-    browser.runtime.sendMessage({ sourceMapData: sourceMapData })
+    browserRoot.runtime.sendMessage({ sourceMapData: sourceMapData })
   }).catch(function () {
     // if an extractor fails, just send a null message to the main script to indicate failure
-    browser.runtime.sendMessage({})
+    browserRoot.runtime.sendMessage({})
   })
 }
 
