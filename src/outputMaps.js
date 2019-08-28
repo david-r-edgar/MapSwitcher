@@ -1419,6 +1419,35 @@ OutputMaps.services = [
 
       view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
     }
-  }
+  },
+  {
+    site: 'OS Maps',
+    image: 'osLogo16x16.png',
+    id: 'ordnancesurvey',
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+      ordnancesurvey: {
+        name: 'Map'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
+        const base = 'https://osmaps.ordnancesurvey.co.uk/'
+        const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+        let zoom = '12'
 
+        if ('resolution' in sourceMapData) {
+          zoom = calculateStdZoomFromResolution(
+            sourceMapData.resolution, sourceMapData.centreCoords.lat, 1, 18)
+        }
+
+        this.maplinks.ordnancesurvey['link'] = base + mapCentre + ',' + zoom
+
+        console.log('os:', this.maplinks.ordnancesurvey)
+
+        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      }
+    }
+  }
 ]
