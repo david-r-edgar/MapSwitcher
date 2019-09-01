@@ -1333,7 +1333,7 @@ OutputMaps.services = [
 
       this.maplinks.qwantmap['link'] = base + '/#map=' + zoom + '/' + mapCentre
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
@@ -1360,7 +1360,7 @@ OutputMaps.services = [
 
       this.maplinks.mapillarymap['link'] = base + '?lat=' + mapCentre + '&z=' + zoom
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
@@ -1387,7 +1387,7 @@ OutputMaps.services = [
 
       this.maplinks.komootMap['link'] = base + '@' + mapCentre + ',' + zoom
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
@@ -1432,7 +1432,7 @@ OutputMaps.services = [
       this.maplinks.waymkSkating['link'] = 'https://skating.' + domain + '/#?map=' + location
       this.maplinks.waymkSlopes['link'] = 'https://slopes.' + domain + '/#?map=' + location
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
@@ -1459,7 +1459,7 @@ OutputMaps.services = [
 
         this.maplinks.ordnancesurvey['link'] = base + mapCentre + ',' + zoom
 
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+        view.addMapServiceLinks(this.cat, this, this.maplinks)
       }
     }
   },
@@ -1472,6 +1472,40 @@ OutputMaps.services = [
       view.addUtilityLink(this, 'copyToClipboard', 'Copy map centre coordinates', function () {
         copyTextToClipboard(sourceMapData.centreCoords.lat + ', ' + sourceMapData.centreCoords.lng)
       })
+    }
+  },
+  {
+    site: 'Windy',
+    image: 'windyLogo16x16.png',
+    id: 'windy',
+    cat: OutputMaps.category.misc,
+    maplinks:
+    {
+      windywind: {
+        name: 'Wind'
+      },
+      windyradar: {
+        name: 'Weather radar'
+      },
+      windyclouds: {
+        name: 'Clouds'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      const base = 'https://www.windy.com/'
+      const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      let zoom = '12'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat)
+      }
+
+      this.maplinks.windywind['link'] = base + '?' + mapCentre + ',' + zoom
+      this.maplinks.windyradar['link'] = base + '-Weather-radar-radar?radar,' + mapCentre + ',' + zoom
+      this.maplinks.windyclouds['link'] = base + '-Clouds-clouds?clouds,' + mapCentre + ',' + zoom
+
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   }
 ]

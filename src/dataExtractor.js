@@ -1099,6 +1099,21 @@ extractors.push({
   }
 })
 
+extractors.push({
+  host: 'windy.com',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const re = /([-0-9.]+),([-0-9.]+),([0-9]+)$/
+      const [, lat, lng, zoom] = window.location.search.match(re)
+      if (lat && lng && zoom) {
+        sourceMapData.centreCoords = { lat, lng }
+        sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
+      }
+      resolve(sourceMapData)
+    }
+})
+
 var runDataExtraction = function () {
   // default null extractor
   let extractor = {
