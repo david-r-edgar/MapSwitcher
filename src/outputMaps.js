@@ -28,19 +28,19 @@ let OutputMaps = {
 
 }
 
-function copyTextToClipboard(text) {
+function copyTextToClipboard (text) {
   // create a temporary textbox field where we can insert text to.
-  var copyFrom = document.createElement("textarea")
+  var copyFrom = document.createElement('textarea')
   copyFrom.textContent = text
   document.body.appendChild(copyFrom)
 
   // select all the text and copy it to the clipboard
   copyFrom.select()
-  document.execCommand('copy');
+  document.execCommand('copy')
 
   // deselect text and remove temp element
-  copyFrom.blur();
-  document.body.removeChild(copyFrom);
+  copyFrom.blur()
+  document.body.removeChild(copyFrom)
 }
 
 /**

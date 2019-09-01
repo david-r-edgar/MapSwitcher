@@ -126,7 +126,7 @@ var MapLinksView = {
       $(selector).append('<h4>' + this.getTitle(category) + '</h4>')
     }
 
-    console.log({category, selector, title: this.getTitle(category)})
+    console.log({ category, selector, title: this.getTitle(category) })
 
     let prioDefaults = {}
     prioDefaults['prio/' + mapService.id] = mapService.prio !== undefined ? mapService.prio : 999
@@ -184,7 +184,7 @@ var MapLinksView = {
     })
   },
 
-  addUtilityLink: function(mapService, id, name, utilFunction) {
+  addUtilityLink: function (mapService, id, name, utilFunction) {
     // only add the title once
     if ($('#utility').text().length === 0) {
       $('#utility').append('<h4>Utilities</h4>')
