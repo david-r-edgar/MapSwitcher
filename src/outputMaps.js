@@ -22,10 +22,25 @@ let OutputMaps = {
     singledirns: 1,
     plain: 0,
     special: 5,
-    utility: 3,
-    download: 4
+    misc: 3,
+    utility: 4
   }
 
+}
+
+function copyTextToClipboard(text) {
+  // create a temporary textbox field where we can insert text to.
+  var copyFrom = document.createElement("textarea")
+  copyFrom.textContent = text
+  document.body.appendChild(copyFrom)
+
+  // select all the text and copy it to the clipboard
+  copyFrom.select()
+  document.execCommand('copy');
+
+  // deselect text and remove temp element
+  copyFrom.blur();
+  document.body.removeChild(copyFrom);
 }
 
 /**
@@ -305,7 +320,7 @@ OutputMaps.services = [
     site: 'Wikimedia Labs',
     image: 'wmLabsLogo16x16.png',
     id: 'wmLabs',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     prio: 4,
     maplinks:
     {
@@ -413,9 +428,9 @@ OutputMaps.services = [
     site: 'GPX',
     image: 'gpxFile16x16.png',
     id: 'dl_gpx',
-    cat: OutputMaps.category.download,
+    cat: OutputMaps.category.utility,
     generate: function (sourceMapData, view) {
-      view.addFileDownload(this, 'gpx_map_centre', 'Map centre waypoint', function () {
+      view.addFileDownload(this, 'gpx_map_centre', 'Download map centre waypoint', function () {
         var fileData = {
           name: 'MapSwitcher.gpx',
           type: 'text/xml;charset=utf-8',
@@ -450,7 +465,7 @@ OutputMaps.services = [
         }
         // only provide a gpx route download if all the points in the route have coordinates
         if (pointsWithCoords === sourceMapData.directions.route.length) {
-          view.addFileDownload(this, 'gpx_rte', 'Route', function () {
+          view.addFileDownload(this, 'gpx_rte', 'Download route', function () {
             var fileData = {
               name: 'MapSwitcherRoute.gpx',
               type: 'text/xml;charset=utf-8',
@@ -880,7 +895,7 @@ OutputMaps.services = [
     site: 'SunCalc',
     image: 'suncalc_org16x16.png',
     id: 'suncalc',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       suncalc: {
@@ -976,7 +991,7 @@ OutputMaps.services = [
     site: 'Boulter',
     image: 'boulterIcon.png',
     id: 'boulter',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       boulterConverter: {
@@ -1046,7 +1061,7 @@ OutputMaps.services = [
     image: 'openWeatherMap16x16.png',
     id: 'openweathermap',
     prio: 12,
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       owmWeatherMap: {
@@ -1073,7 +1088,7 @@ OutputMaps.services = [
     site: 'Flickr',
     image: 'flickr16x16.png',
     id: 'flickr',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       flickr: {
@@ -1444,10 +1459,19 @@ OutputMaps.services = [
 
         this.maplinks.ordnancesurvey['link'] = base + mapCentre + ',' + zoom
 
-        console.log('os:', this.maplinks.ordnancesurvey)
-
         view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
       }
+    }
+  },
+  {
+    site: 'Clipboard',
+    image: 'clipboard16x16.png',
+    id: 'clipboard',
+    cat: OutputMaps.category.utility,
+    generate: function (sourceMapData, view) {
+      view.addUtilityLink(this, 'copyToClipboard', 'Copy map centre coordinates', function () {
+        copyTextToClipboard(sourceMapData.centreCoords.lat + ', ' + sourceMapData.centreCoords.lng)
+      })
     }
   }
 ]
