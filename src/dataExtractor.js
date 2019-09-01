@@ -344,7 +344,14 @@ extractors.push({
       let sourceMapData = {}
       if (window.location.pathname.indexOf('/map/') >= 0) {
         const re1 = /ll=([-0-9.]+),([-0-9.]+)&z=([0-9.]+)/
-        const coordArray = window.location.hash.match(re1)
+        let coordArray = window.location.hash.match(re1)
+        if (coordArray && coordArray.length > 3) {
+          sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+          sourceMapData.resolution =
+            calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
+        }
+        const re2 = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9.]+)/
+        coordArray = window.location.search.match(re2)
         if (coordArray && coordArray.length > 3) {
           sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
           sourceMapData.resolution =
