@@ -1,5 +1,5 @@
 /* global
-  browser, chrome,
+  browserRoot, browser, chrome,
   XPathResult,
   calculateResolutionFromScale,
   calculateResolutionFromStdZoom,
@@ -8,10 +8,12 @@
 /**
  * The Web Extension API is implemented on different root objects in different browsers.
  * Firefox uses 'browser'. Chrome uses 'chrome'.
- * Checking here allows us to use a common 'browser' everywhere.
+ * Check here and use a common 'browserRoot' everywhere.
  */
-if (typeof browser === 'undefined') {
-  browser = chrome // eslint-disable-line no-global-assign
+if (chrome && chrome.runtime) {
+  browserRoot = chrome // eslint-disable-line no-global-assign
+} else {
+  browserRoot = browser // eslint-disable-line no-global-assign
 }
 
 var extractors = []
@@ -341,16 +343,19 @@ extractors.push({
     function (resolve) {
       let sourceMapData = {}
       if (window.location.pathname.indexOf('/map/') >= 0) {
-        const re1 = /lat=([-0-9.]+)&lng=([-0-9.]+)/
-        const coordArray = window.location.search.match(re1)
-        if (coordArray && coordArray.length >= 3) {
+        const re1 = /ll=([-0-9.]+),([-0-9.]+)&z=([0-9.]+)/
+        let coordArray = window.location.hash.match(re1)
+        if (coordArray && coordArray.length > 3) {
           sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+          sourceMapData.resolution =
+            calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
         }
-        const re2 = /zoom=([0-9]+)/
-        const zoomArray = window.location.search.match(re2)
-        if (zoomArray && zoomArray.length > 1) {
-          sourceMapData.resolution = calculateResolutionFromStdZoom(
-            zoomArray[1], sourceMapData.centreCoords.lat)
+        const re2 = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9.]+)/
+        coordArray = window.location.search.match(re2)
+        if (coordArray && coordArray.length > 3) {
+          sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+          sourceMapData.resolution =
+            calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
         }
       } else if (window.location.pathname.indexOf('/geocache/') === 0) {
         const dmLatLng = document.getElementById('uxLatLon').innerText
@@ -796,7 +801,7 @@ extractors.push({
 })
 
 extractors.push({
-  host: 'yandex.com',
+  host: 'yandex.',
   extract:
     function (resolve, reject) {
       const coordRe = /ll=([-0-9.]+)%2C([-0-9.]+)/
@@ -1078,6 +1083,37 @@ extractors.push({
     }
 })
 
+extractors.push({
+  host: 'osmaps.ordnancesurvey.',
+  extract:
+  function (resolve) {
+    let sourceMapData = {}
+    const re = /([-0-9.]+),([-0-9.]+),([0-9]+)/
+    const coordArray = window.location.pathname.match(re)
+    if (coordArray && coordArray.length > 3) {
+      sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+      sourceMapData.resolution =
+        calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
+    }
+    resolve(sourceMapData)
+  }
+})
+
+extractors.push({
+  host: 'windy.com',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const re = /([-0-9.]+),([-0-9.]+),([0-9]+)$/
+      const [, lat, lng, zoom] = window.location.search.match(re)
+      if (lat && lng && zoom) {
+        sourceMapData.centreCoords = { lat, lng }
+        sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
+      }
+      resolve(sourceMapData)
+    }
+})
+
 var runDataExtraction = function () {
   // default null extractor
   let extractor = {
@@ -1092,10 +1128,10 @@ var runDataExtraction = function () {
   }
   // execute the extraction and send the result to the main script
   new Promise(extractor.extract).then(function (sourceMapData) {
-    browser.runtime.sendMessage({ sourceMapData: sourceMapData })
+    browserRoot.runtime.sendMessage({ sourceMapData: sourceMapData })
   }).catch(function () {
     // if an extractor fails, just send a null message to the main script to indicate failure
-    browser.runtime.sendMessage({})
+    browserRoot.runtime.sendMessage({})
   })
 }
 

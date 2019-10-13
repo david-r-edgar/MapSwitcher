@@ -91,7 +91,11 @@ function restoreOptions () {
 
     const mapEntry =
       '<tr class=omsrvRow>' +
-      '<td class="fa fa-bars dragcell"></td>' +
+      '<td class="dragcell">' +
+        '<svg viewBox="0 0 512 512">' +
+          '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#bars"></use>' +
+        '</svg>' +
+      '</td>' +
       '<label for"' + outputMapService.id + "\"><td class='imgcell'><img src=\"../image/" + outputMapService.image + '"></td>' + "<td class='mapnamecell'>" + outputMapService.site + '</td></label>' +
       "<td class='chkboxcell'><input type=\"checkbox\" class='outpServiceEnabledChk' id=\"" + outputMapService.id +
       '" cat="' + listName + '" /></td>' + '</tr>'

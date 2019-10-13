@@ -25,10 +25,15 @@ body {
   vertical-align: middle;
 }
 #ctrlButtons {
-  font-size: 12px;
   position: absolute;
-  left: 8px;
-  top: 40px;
+  top: 42px;
+}
+#ctrlButtons svg {
+  width:16px;
+  height:16px;
+}
+#ctrlButtons svg:hover {
+  fill: #777;
 }
 #nomap {
   display: none;
@@ -58,6 +63,10 @@ a.maplink:active {
 }
 .maplink {
   padding: 1px;
+}
+.linknote svg {
+  width: 12px;
+  height: 12px;
 }
 
 /* animated loading dots from https://martinwolf.org/blog/2015/01/pure-css-savingloading-dots-animation */
@@ -206,90 +215,96 @@ h4 {
 
 
 body#optionsPage {
-    font-family: sans-serif;
-    font-size: 75%;
-    background-color: white;
-    margin: 4px;
+  font-family: sans-serif;
+  font-size: 75%;
+  background-color: white;
+  margin: 4px;
 }
 article.options {
-    margin: 1em 2em 1em 3em;
+  margin: 1em 2em 1em 3em;
 }
 #optionsPage .borderBox {
   padding: 0px;
 }
 #optionsTitleLine {
-    margin-bottom: 2em;
+  margin-bottom: 2em;
 }
 #optionsTitleLine h2 {
-    display: inline;
-    font-size: 22px;
-    padding-right: 12px;
+  display: inline;
+  font-size: 22px;
+  padding-right: 12px;
 }
 #optionsTitleLine img {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 .srvTickList {
-    float: left;
-    margin: 0.4em 2.4em 1.8em 2.4em;
-    list-style-type: none;
-    border-collapse: collapse;
+  float: left;
+  margin: 0.4em 2.4em 1.8em 2.4em;
+  list-style-type: none;
+  border-collapse: collapse;
 }
 .srvTickList th {
-    border-bottom: 2px solid #999;
-    padding-bottom: 4px;
+  border-bottom: 2px solid #999;
+  padding-bottom: 4px;
 }
 .srvTickList td {
-    padding-top: 3px;
-    padding-bottom: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 #status {
-    color: #666;
-    margin-top: 0.6em;
-    clear: both;
-    min-height: 1.1em;
+  color: #666;
+  margin-top: 0.6em;
+  clear: both;
+  min-height: 1.1em;
 }
 .services p {
-    color: #555;
+  color: #555;
 }
 .imgcell {
-    padding: 0px 6px;
+  padding: 0px 6px;
 }
 .chkboxcell {
-    padding: 0px 12px;
+  padding: 0px 12px;
 }
 .mapnamecell {
-    vertical-align: middle;
-    min-width: 110px;
+  vertical-align: middle;
+  min-width: 110px;
 }
 section.services {
-    margin: 2em 0em 2em 0em;
+  margin: 2em 0em 2em 0em;
 }
 .srvTickList td.dragcell {
-    color: #ddd;
-    padding: 5px 0px 5px 0px;
-    display: table-cell;
+  padding: 5px 0px 5px 0px;
+  display: table-cell;
+}
+.srvTickList td.dragcell svg {
+  width: 12px;
+  fill: #ddd;
 }
 .srvTickList th.srvTitle {
-    text-align: left;
-    padding-left: 28px;
+  text-align: left;
+  padding-left: 28px;
 }
 button#reset {
-    margin-top: 4em;
+  margin-top: 4em;
+}
+button#reset svg {
+  width: 12px;
 }
 .sortable {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 60%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 60%;
 }
 .sortable li {
-    margin: 0 3px 3px 3px;
-    padding: 0.4em;
-    padding-left: 1.5em;
-    font-size: 1.4em;
-    height: 18px;
+  margin: 0 3px 3px 3px;
+  padding: 0.4em;
+  padding-left: 1.5em;
+  font-size: 1.4em;
+  height: 18px;
 }
 .sortable li span {
-    position: absolute;
-    margin-left: -1.3em;
+  position: absolute;
+  margin-left: -1.3em;
 }

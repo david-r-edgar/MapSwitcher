@@ -1,6 +1,5 @@
 /* global
   browser, chrome,
-  $,
   calculateStdZoomFromResolution,
   calculateScaleFromResolution,
   CoordTransform, OsGridRef, LatLon */
@@ -22,10 +21,23 @@ let OutputMaps = {
     singledirns: 1,
     plain: 0,
     special: 5,
-    utility: 3,
-    download: 4
+    misc: 3,
+    utility: 4
   }
 
+}
+
+function copyTextToClipboard (text) {
+  // create a temporary textbox field into which we can insert text
+  const copyFrom = document.createElement('textarea')
+  copyFrom.textContent = text
+  document.body.appendChild(copyFrom)
+
+  copyFrom.select()
+  document.execCommand('copy')
+
+  copyFrom.blur()
+  document.body.removeChild(copyFrom)
 }
 
 /**
@@ -305,7 +317,7 @@ OutputMaps.services = [
     site: 'Wikimedia Labs',
     image: 'wmLabsLogo16x16.png',
     id: 'wmLabs',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     prio: 4,
     maplinks:
     {
@@ -413,9 +425,9 @@ OutputMaps.services = [
     site: 'GPX',
     image: 'gpxFile16x16.png',
     id: 'dl_gpx',
-    cat: OutputMaps.category.download,
+    cat: OutputMaps.category.utility,
     generate: function (sourceMapData, view) {
-      view.addFileDownload(this, 'gpx_map_centre', 'Map centre waypoint', function () {
+      view.addFileDownload(this, 'gpx_map_centre', 'Download map centre waypoint', function () {
         var fileData = {
           name: 'MapSwitcher.gpx',
           type: 'text/xml;charset=utf-8',
@@ -450,7 +462,7 @@ OutputMaps.services = [
         }
         // only provide a gpx route download if all the points in the route have coordinates
         if (pointsWithCoords === sourceMapData.directions.route.length) {
-          view.addFileDownload(this, 'gpx_rte', 'Route', function () {
+          view.addFileDownload(this, 'gpx_rte', 'Download route', function () {
             var fileData = {
               name: 'MapSwitcherRoute.gpx',
               type: 'text/xml;charset=utf-8',
@@ -489,12 +501,13 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      const wazeBase = 'https://www.waze.com/livemap?'
-      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      const wazeBase = 'https://www.waze.com'
+      const mapCentre = 'll=' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
       let zoom = 'zoom=12'
       let directions = ''
 
       if ('resolution' in sourceMapData) {
+        // FIXME waze zoom doesn't seem to work anymore?
         zoom = 'zoom=' +
           calculateStdZoomFromResolution(
             sourceMapData.resolution, sourceMapData.centreCoords.lat)
@@ -510,22 +523,19 @@ OutputMaps.services = [
 
         if ('coords' in firstElem && 'coords' in lastElem) {
           directions +=
-            '&from_lat=' + firstElem.coords.lat +
-            '&from_lon=' + firstElem.coords.lng +
-            '&to_lat=' + lastElem.coords.lat +
-            '&to_lon=' + lastElem.coords.lng +
+            'from=ll.' + firstElem.coords.lat + ',' + firstElem.coords.lng +
+            '&to=ll.' + lastElem.coords.lat + ',' + lastElem.coords.lng +
             '&at_req=0&at_text=Now'
         } else {
           this.note = 'Waze directions unavailable because waypoints are not ' +
                             'all specified as coordinates.'
         }
       }
-
-      this.maplinks.livemap['link'] = wazeBase + zoom + '&' + mapCentre + directions
-
       if (directions.length > 0) {
+        this.maplinks.livemap['link'] = wazeBase + '/livemap/directions?' + directions
         view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinks, this.note)
       } else {
+        this.maplinks.livemap['link'] = wazeBase + '/ul?' + mapCentre + '&' + zoom
         view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note)
       }
     }
@@ -776,7 +786,7 @@ OutputMaps.services = [
       view.addMapServiceLinks(this.cat, this, this.maplinks, this.note)
     }
   },
-  {
+  /* {
     site: 'NGI/IGN',
     image: 'ngi_ign_Logo16x16.png',
     id: 'ngi_ign',
@@ -875,12 +885,12 @@ OutputMaps.services = [
           })
         })
     }
-  },
+  }, */
   {
     site: 'SunCalc',
     image: 'suncalc_org16x16.png',
     id: 'suncalc',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       suncalc: {
@@ -976,7 +986,7 @@ OutputMaps.services = [
     site: 'Boulter',
     image: 'boulterIcon.png',
     id: 'boulter',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       boulterConverter: {
@@ -1046,7 +1056,7 @@ OutputMaps.services = [
     image: 'openWeatherMap16x16.png',
     id: 'openweathermap',
     prio: 12,
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       owmWeatherMap: {
@@ -1073,7 +1083,7 @@ OutputMaps.services = [
     site: 'Flickr',
     image: 'flickr16x16.png',
     id: 'flickr',
-    cat: OutputMaps.category.utility,
+    cat: OutputMaps.category.misc,
     maplinks:
     {
       flickr: {
@@ -1318,7 +1328,7 @@ OutputMaps.services = [
 
       this.maplinks.qwantmap['link'] = base + '/#map=' + zoom + '/' + mapCentre
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
@@ -1345,7 +1355,7 @@ OutputMaps.services = [
 
       this.maplinks.mapillarymap['link'] = base + '?lat=' + mapCentre + '&z=' + zoom
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
@@ -1372,7 +1382,7 @@ OutputMaps.services = [
 
       this.maplinks.komootMap['link'] = base + '@' + mapCentre + ',' + zoom
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   },
   {
@@ -1417,8 +1427,80 @@ OutputMaps.services = [
       this.maplinks.waymkSkating['link'] = 'https://skating.' + domain + '/#?map=' + location
       this.maplinks.waymkSlopes['link'] = 'https://slopes.' + domain + '/#?map=' + location
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
+    }
+  },
+  {
+    site: 'OS Maps',
+    image: 'osLogo16x16.png',
+    id: 'ordnancesurvey',
+    cat: OutputMaps.category.plain,
+    maplinks:
+    {
+      ordnancesurvey: {
+        name: 'Map'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
+        const base = 'https://osmaps.ordnancesurvey.co.uk/'
+        const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+        let zoom = '12'
+
+        if ('resolution' in sourceMapData) {
+          zoom = calculateStdZoomFromResolution(
+            sourceMapData.resolution, sourceMapData.centreCoords.lat, 1, 18)
+        }
+
+        this.maplinks.ordnancesurvey['link'] = base + mapCentre + ',' + zoom
+
+        view.addMapServiceLinks(this.cat, this, this.maplinks)
+      }
+    }
+  },
+  {
+    site: 'Clipboard',
+    image: 'clipboard16x16.png',
+    id: 'clipboard',
+    cat: OutputMaps.category.utility,
+    generate: function (sourceMapData, view) {
+      view.addUtilityLink(this, 'copyToClipboard', 'Copy map centre coordinates', function () {
+        copyTextToClipboard(sourceMapData.centreCoords.lat + ', ' + sourceMapData.centreCoords.lng)
+      })
+    }
+  },
+  {
+    site: 'Windy',
+    image: 'windyLogo16x16.png',
+    id: 'windy',
+    cat: OutputMaps.category.misc,
+    maplinks:
+    {
+      windywind: {
+        name: 'Wind'
+      },
+      windyradar: {
+        name: 'Weather radar'
+      },
+      windyclouds: {
+        name: 'Clouds'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      const base = 'https://www.windy.com/'
+      const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      let zoom = '12'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat)
+      }
+
+      this.maplinks.windywind['link'] = base + '?' + mapCentre + ',' + zoom
+      this.maplinks.windyradar['link'] = base + '-Weather-radar-radar?radar,' + mapCentre + ',' + zoom
+      this.maplinks.windyclouds['link'] = base + '-Clouds-clouds?clouds,' + mapCentre + ',' + zoom
+
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
   }
-
 ]

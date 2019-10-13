@@ -7,7 +7,6 @@
     <script src="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
     <script src="../src/outputMaps.js"></script>
     <link rel="stylesheet" href="../vendor/jquery-ui-1.12.1.custom/jquery-ui.min.css">
-    <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="../css/stylesheet.css">
   </head>
   <body id="optionsPage">
@@ -38,7 +37,11 @@
       </section>
 
       <div id="status"></div>
-      <button id="reset" class="fa fa-undo"> Reset to defaults...</button>
+      <button id="reset">
+        <svg viewBox="0 0 512 512" >
+          <use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#undo"></use>
+        </svg>
+        Reset to defaults...</button>
     </article>
 
     <script src="../src/options.js"></script>

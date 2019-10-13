@@ -61,8 +61,8 @@ var MapLinksView = {
       return '#singleSegDirns'
     } else if (OutputMaps.category.singledirns === category && this.sourceDirnSegs > 0) {
       return '#singleSegDirns'
-    } else if (OutputMaps.category.utility === category) {
-      return '#utilities'
+    } else if (OutputMaps.category.misc === category) {
+      return '#misc'
     } else if (OutputMaps.category.special === category) {
       return '#special'
     } else {
@@ -93,7 +93,7 @@ var MapLinksView = {
           title = 'Directions'
         }
         break
-      case OutputMaps.category.utility:
+      case OutputMaps.category.misc:
         title = 'Miscellaneous'
         break
       case OutputMaps.category.special:
@@ -154,8 +154,8 @@ var MapLinksView = {
      */
   addFileDownload: function (mapService, id, name, fileGenerator) {
     // only add the title once
-    if ($('#downloads').text().length === 0) {
-      $('#downloads').append('<h4>Downloads</h4>')
+    if ($('#utility').text().length === 0) {
+      $('#utility').append('<h4>Utilities</h4>')
     }
 
     // create div for mapService if not one already
@@ -164,7 +164,7 @@ var MapLinksView = {
         "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
         '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
         '<span class="serviceName">' + mapService.site + '</span></div>'
-      $('#downloads').append(mapServiceHtml)
+      $('#utility').append(mapServiceHtml)
     }
 
     const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
@@ -182,6 +182,30 @@ var MapLinksView = {
     })
   },
 
+  addUtilityLink: function (mapService, id, name, utilFunction) {
+    // only add the title once
+    if ($('#utility').text().length === 0) {
+      $('#utility').append('<h4>Utilities</h4>')
+    }
+
+    // create div for mapService if not one already
+    if ($('#' + mapService.id).length === 0) {
+      const mapServiceHtml = "<div id='" + mapService.id +
+        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
+        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
+        '<span class="serviceName">' + mapService.site + '</span></div>'
+      $('#utility').append(mapServiceHtml)
+    }
+
+    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
+    $('#' + mapService.id).append(linkHtml)
+
+    $('#' + id).click(function () {
+      console.log('clicked!')
+      utilFunction()
+    })
+  },
+
   /**
      * Adds a note for a map service.
      *
@@ -190,8 +214,13 @@ var MapLinksView = {
      */
   addNote: function (mapService, note) {
     if (note && note.length) {
-      $('#' + mapService.id).append(" <span class=\"fa fa-sticky-note-o linknote\" title='" + note + "'></span>")
-
+      $('#' + mapService.id).append(' ' +
+        "<span class=linknote title='" + note + "'>" +
+          '<svg viewBox="0 0 512 512">' +
+            '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
+            '</use>' +
+          '</svg>' +
+        '</span>')
       $('.linknote').tipsy({ gravity: 's', opacity: 1, fade: true })
     }
   },
@@ -210,18 +239,24 @@ var MapLinksView = {
     let html = ''
     if (links) {
       html =
-                "<div id='" + id + "' class='serviceLine' data-sort='" + mapSite.prio + "'>" +
-                '<span class="linkLineImg"><img src="../image/' + mapSite.image + '"></span> ' +
-                '<span class="serviceName">' + mapSite.site + '</span> '
+        "<div id='" + id + "' class='serviceLine' data-sort='" + mapSite.prio + "'>" +
+        '<span class="linkLineImg"><img src="../image/' + mapSite.image + '"></span> ' +
+        '<span class="serviceName">' + mapSite.site + '</span> '
       Object.keys(links).forEach(link => {
         html += '<a class="maplink" target="_blank" id="' +
-                    link + '" href="' +
-                    links[link].link + '">' +
-                    links[link].name + '</a> '
+          link + '" href="' +
+          links[link].link + '">' +
+          links[link].name + '</a> '
       })
 
       if (note && note.length) {
-        html += "<span class=\"fa fa-sticky-note-o linknote\" title='" + note + "'></span>"
+        html +=
+        "<span class=linknote title='" + note + "'>" +
+          '<svg viewBox="0 0 512 512">' +
+            '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
+            '</use>' +
+          '</svg>' +
+        '</span>'
       }
       html += '</div>'
     }

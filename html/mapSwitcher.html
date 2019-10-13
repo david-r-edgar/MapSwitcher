@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8"/>
     <title>Map Switcher</title>
-    <link rel="stylesheet" href="../vendor/font-awesome-4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="../vendor/tipsy/tipsy.css">
     <link rel="stylesheet" href="../css/stylesheet.css">
     <script src="../vendor/jquery/jquery-2.2.4.min.js"></script>
@@ -23,9 +22,27 @@
       <div id="titleLine">
         <h2>Map Switcher</h2> <img src="../image/mapswitcher48x48.png">
         <div id="ctrlButtons">
-            <span><a href="options.html" target="_blank" title="Options" class="fa fa-cog fa-lg"></a></span>
-            <span><a href="help.html" target="_blank" title="Help" class="fa fa-question-circle fa-lg"></a></span>
-            <span><a href="about.html" target="_blank" title="About" class="fa fa-info-circle fa-lg"></a></span>
+          <span>
+            <a href="options.html" target="_blank" title="Options">
+              <svg viewBox="0 0 512 512">
+                <use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#cog"></use>
+              </svg>
+            </a>
+          </span>
+            <a href="help.html" target="_blank" title="Help">
+              <svg viewBox="0 0 512 512" >
+                <use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#question-circle"></use>
+              </svg>
+            </a>
+          <span>
+          </span>
+          <span>
+            <a href="about.html" target="_blank" title="About">
+              <svg viewBox="0 0 512 512">
+                <use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#info-circle"></use>
+              </svg>
+            </a>
+          </span>
         </div>
       </div>
     </div>
@@ -41,8 +58,8 @@
         <div class="maplinkcat" id="singleSegDirns"></div>
         <div class="maplinkcat" id="noDirns"></div>
         <div class="maplinkcat" id="special"></div>
-        <div class="maplinkcat" id="utilities"></div>
-        <div class="maplinkcat" id="downloads"></div>
+        <div class="maplinkcat" id="misc"></div>
+        <div class="maplinkcat" id="utility"></div>
         <div id="warningModal" class="modal">
           <div class="modal-content">
             <span class="modalClose">x</span>
