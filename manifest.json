@@ -18,6 +18,7 @@
     "activeTab",
     "storage",
     "downloads",
+    "clipboardWrite",
     "<all_urls>"
   ],
   "content_scripts": [{

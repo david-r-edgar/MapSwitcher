@@ -801,7 +801,7 @@ extractors.push({
 })
 
 extractors.push({
-  host: 'yandex.com',
+  host: 'yandex.',
   extract:
     function (resolve, reject) {
       const coordRe = /ll=([-0-9.]+)%2C([-0-9.]+)/
