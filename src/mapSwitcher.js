@@ -126,8 +126,6 @@ var MapLinksView = {
       $(selector).append('<h4>' + this.getTitle(category) + '</h4>')
     }
 
-    console.log({ category, selector, title: this.getTitle(category) })
-
     let prioDefaults = {}
     prioDefaults['prio/' + mapService.id] = mapService.prio !== undefined ? mapService.prio : 999
 

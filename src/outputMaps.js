@@ -29,16 +29,14 @@ let OutputMaps = {
 }
 
 function copyTextToClipboard (text) {
-  // create a temporary textbox field where we can insert text to.
-  var copyFrom = document.createElement('textarea')
+  // create a temporary textbox field into which we can insert text
+  const copyFrom = document.createElement('textarea')
   copyFrom.textContent = text
   document.body.appendChild(copyFrom)
 
-  // select all the text and copy it to the clipboard
   copyFrom.select()
   document.execCommand('copy')
 
-  // deselect text and remove temp element
   copyFrom.blur()
   document.body.removeChild(copyFrom)
 }
@@ -504,12 +502,13 @@ OutputMaps.services = [
       }
     },
     generate: function (sourceMapData, view) {
-      const wazeBase = 'https://www.waze.com/livemap?'
-      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
+      const wazeBase = 'https://www.waze.com'
+      const mapCentre = 'll=' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
       let zoom = 'zoom=12'
       let directions = ''
 
       if ('resolution' in sourceMapData) {
+        // FIXME waze zoom doesn't seem to work anymore?
         zoom = 'zoom=' +
           calculateStdZoomFromResolution(
             sourceMapData.resolution, sourceMapData.centreCoords.lat)
@@ -525,22 +524,19 @@ OutputMaps.services = [
 
         if ('coords' in firstElem && 'coords' in lastElem) {
           directions +=
-            '&from_lat=' + firstElem.coords.lat +
-            '&from_lon=' + firstElem.coords.lng +
-            '&to_lat=' + lastElem.coords.lat +
-            '&to_lon=' + lastElem.coords.lng +
+            'from=ll.' + firstElem.coords.lat + ',' + firstElem.coords.lng +
+            '&to=ll.' + lastElem.coords.lat + ',' + lastElem.coords.lng +
             '&at_req=0&at_text=Now'
         } else {
           this.note = 'Waze directions unavailable because waypoints are not ' +
                             'all specified as coordinates.'
         }
       }
-
-      this.maplinks.livemap['link'] = wazeBase + zoom + '&' + mapCentre + directions
-
       if (directions.length > 0) {
+        this.maplinks.livemap['link'] = wazeBase + '/livemap/directions?' + directions
         view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinks, this.note)
       } else {
+        this.maplinks.livemap['link'] = wazeBase + '/ul?' + mapCentre + '&' + zoom
         view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note)
       }
     }
