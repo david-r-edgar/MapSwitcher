@@ -8,7 +8,7 @@
 /**
  * The Web Extension API is implemented on different root objects in different browsers.
  * Firefox uses 'browser'. Chrome uses 'chrome'.
- * Checking here and use a common 'browserRoot' everywhere.
+ * Check here and use a common 'browserRoot' everywhere.
  */
 if (chrome && chrome.runtime) {
   browserRoot = chrome // eslint-disable-line no-global-assign
