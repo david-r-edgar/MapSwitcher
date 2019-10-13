@@ -1,6 +1,5 @@
 /* global
   browser, chrome,
-  $,
   calculateStdZoomFromResolution,
   calculateScaleFromResolution,
   CoordTransform, OsGridRef, LatLon */
@@ -787,7 +786,7 @@ OutputMaps.services = [
       view.addMapServiceLinks(this.cat, this, this.maplinks, this.note)
     }
   },
-  /*{
+  /* {
     site: 'NGI/IGN',
     image: 'ngi_ign_Logo16x16.png',
     id: 'ngi_ign',
@@ -886,7 +885,7 @@ OutputMaps.services = [
           })
         })
     }
-  },*/
+  }, */
   {
     site: 'SunCalc',
     image: 'suncalc_org16x16.png',
