@@ -795,13 +795,13 @@ OutputMaps.services = [
     cat: OutputMaps.category.plain,
     maplinks: {
       ngitopo: {
-        name: 'CartoWeb topo',
+        name: 'CartoWeb topo'
       },
       ngiclassic: {
-        name: 'Classic topo',
+        name: 'Classic topo'
       },
       ngiaerial: {
-        name: 'Aerial',
+        name: 'Aerial'
       }
     },
     generate: function (sourceMapData, view) {
