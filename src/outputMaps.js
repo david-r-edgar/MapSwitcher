@@ -1,5 +1,6 @@
 /* global
   browser, chrome,
+  $,
   calculateStdZoomFromResolution,
   calculateScaleFromResolution,
   CoordTransform, OsGridRef, LatLon */
@@ -786,20 +787,31 @@ OutputMaps.services = [
       view.addMapServiceLinks(this.cat, this, this.maplinks, this.note)
     }
   },
-  /* {
+  {
     site: 'NGI/IGN',
     image: 'ngi_ign_Logo16x16.png',
     id: 'ngi_ign',
     prio: 13,
     cat: OutputMaps.category.plain,
-    maplinks: {},
+    maplinks: {
+      ngitopo: {
+        name: 'CartoWeb topo',
+      },
+      ngiclassic: {
+        name: 'Classic topo',
+      },
+      ngiaerial: {
+        name: 'Aerial',
+      }
+    },
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode !== 'be') {
         return
       }
 
-      const ngiBase = 'http://www.ngi.be/topomapviewer/public?'
-      var that = this
+      const ngiBase = 'https://topomapviewer.ngi.be/'
+      const that = this
+      let zoom = 6
 
       // NGI uses the Lambert 2008 projection, grs80 ellipsoid
       // We use an external service to calculate coordinates from the regular WGS84 lat & long
@@ -808,84 +820,44 @@ OutputMaps.services = [
                 sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
       })
         .done(function (data) {
-          const mapCentre = 'mapcenter={"x":' +
-                Math.round(data.easting) + ',"y":' + Math.round(data.northing) + '}'
+          const mapCentre = 'x=' + data.easting + '&y=' + data.northing
 
-          var level = 4
-          // we get an approximate zoom level from the resolution
-          // (the values here were derived by manual inspection)
           if ('resolution' in sourceMapData) {
-            if (sourceMapData.resolution > 1000) { level = 0 } else if (sourceMapData.resolution > 300) { level = 1 } else if (sourceMapData.resolution > 150) { level = 2 } else if (sourceMapData.resolution > 75) { level = 3 } else if (sourceMapData.resolution > 35) { level = 4 } else if (sourceMapData.resolution > 18) { level = 5 } else if (sourceMapData.resolution > 9) { level = 6 } else if (sourceMapData.resolution > 5) { level = 7 } else if (sourceMapData.resolution > 2) { level = 8 } else if (sourceMapData.resolution > 1) { level = 9 } else { level = 10 }
+            // available zooms appear to go from 0 to 12
+            zoom = calculateStdZoomFromResolution(
+              sourceMapData.resolution, sourceMapData.centreCoords.lat, 7, 19) - 7
           }
-          var levelArg = 'level=' + level
 
           var lang = ''
           // extract the highest priority language (fr or nl) from browser preferences
           browser.i18n.getAcceptLanguages(function (list) {
             for (let listLang of list) {
-              if (listLang.match(/^fr/)) {
-                lang = 'lang=fr&'
+              if (listLang.match(/^en/)) {
+                lang = 'l=en'
+                break
+              } else if (listLang.match(/^fr/)) {
+                lang = 'l=fr'
                 break
               } else if (listLang.match(/^nl/)) {
-                lang = 'lang=nl&'
+                lang = 'l=nl'
+                break
+              } else if (listLang.match(/^de/)) {
+                lang = 'l=de'
                 break
               }
             }
 
-            var commonLink = ngiBase + lang + levelArg + '&' + mapCentre
+            const commonLink = ngiBase + '?' + mapCentre + '&' + 'zoom=' + zoom + '&' + lang
 
-            var linkTopo = encodeURI(
-              commonLink + '&layers={"autoMap":true,"baseMaps":[["cartoweb_topo",100]],"aerialMaps":[],"overlayMaps":[]}')
+            that.maplinks.ngitopo.link = commonLink + '&baseLayer=ngi.cartoweb.topo.be'
+            that.maplinks.ngiclassic.link = commonLink + '&baseLayer=classic.maps'
+            that.maplinks.ngiaerial.link = commonLink + '&baseLayer=ngi.ortho'
 
-            let classicName
-            let classicURLcode
-
-            // some of the resolutions of the classic maps don't work at particular zoom
-            // levels - so we select an appropriate one based on the level
-            if (level <= 4) {
-              classicName = 'Top250'
-              classicURLcode = 'TOPO250'
-            } else if (level === 5) {
-              classicName = 'Top100'
-              classicURLcode = 'TOPO100'
-            } else if (level <= 7) {
-              classicName = 'Top50'
-              classicURLcode = 'TOPO50'
-            } else {
-              classicName = 'Top10'
-              classicURLcode = 'TOPO10'
-            }
-
-            var linkClassic = encodeURI(
-              commonLink + '&layers={"autoMap":true,"baseMaps":[["' + classicURLcode + '",100]],"aerialMaps":[],"overlayMaps":[]}')
-            var linkAerial = encodeURI(
-              commonLink + '&layers={"autoMap":true,"baseMaps":[["' + classicURLcode + '",100]],"aerialMaps":[["ORTHO COLOR (2013-2015)",100]],"overlayMaps":[]}')
-
-            that.maplinks = {
-              topo: {
-                name: 'Topo',
-                link: linkTopo
-              },
-              classic: {
-                name: classicName,
-                link: linkClassic
-              },
-              aerial: {
-                name: 'Aerial',
-                link: linkAerial
-              }
-            }
-
-            this.note =
-              'Due to NGI/IGN limitations, you should first go to ' +
-              'http://www.ngi.be/topomapviewer and accept the ' +
-              'conditions.\nThis should then work properly in future.'
-
-            view.addMapServiceLinks(this.cat, that, that.maplinks, this.note)
+            view.addMapServiceLinks(this.cat, that, that.maplinks)
           })
         })
     }
-  }, */
+  },
   {
     site: 'SunCalc',
     image: 'suncalc_org16x16.png',
