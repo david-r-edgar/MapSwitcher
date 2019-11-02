@@ -344,8 +344,8 @@ var MapSwitcher = {
         resolve(extractedData)
       } else if (extractedData.lambertCentreCoords) {
         // Lambert Conic Conformal coords specified
-        const request = new Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
-        fetch(request)
+        const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
+        window.fetch(request)
           .then(response => response.json())
           .then(latlng => {
             extractedData.centreCoords = {
@@ -357,7 +357,6 @@ var MapSwitcher = {
           .catch(() => {
             reject(extractedData)
           })
-
       } else {
         // no centre coords of any recognised format
         reject(extractedData)
