@@ -201,7 +201,6 @@ var MapLinksView = {
     $('#' + mapService.id).append(linkHtml)
 
     $('#' + id).click(function () {
-      console.log('clicked!')
       utilFunction()
     })
   },
@@ -326,26 +325,42 @@ var MapSwitcher = {
   normaliseExtractedData: function (extractedData) {
     return new Promise(function (resolve, reject) {
       if (!extractedData) {
-        reject(extractedData)
-      } else if (extractedData.centreCoords != null) {
+        return reject(extractedData)
+      }
+
+      if (extractedData.centreCoords) {
         // regular wgs84 coords extracted
         resolve(extractedData)
-      } else {
-        if (extractedData.osgbCentreCoords == null) {
-          // no centre coords of any recognised format
-          reject(extractedData)
-        } else {
-          // osgb36 coords specified
-          var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
-            extractedData.osgbCentreCoords.n)
-          var osLL = OsGridRef.osGridToLatLong(osGR)
-          var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
-          extractedData.centreCoords = {
-            'lat': wgs84LL._lat,
-            'lng': wgs84LL._lon
-          }
-          resolve(extractedData)
+      } else if (extractedData.osgbCentreCoords) {
+        // osgb36 coords specified
+        var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
+          extractedData.osgbCentreCoords.n)
+        var osLL = OsGridRef.osGridToLatLong(osGR)
+        var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
+        extractedData.centreCoords = {
+          'lat': wgs84LL._lat,
+          'lng': wgs84LL._lon
         }
+        resolve(extractedData)
+      } else if (extractedData.lambertCentreCoords) {
+        // Lambert Conic Conformal coords specified
+        const request = new Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
+        fetch(request)
+          .then(response => response.json())
+          .then(latlng => {
+            extractedData.centreCoords = {
+              'lat': latlng.lat,
+              'lng': latlng.lng
+            }
+            resolve(extractedData)
+          })
+          .catch(() => {
+            reject(extractedData)
+          })
+
+      } else {
+        // no centre coords of any recognised format
+        reject(extractedData)
       }
     })
   },
