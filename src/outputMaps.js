@@ -815,11 +815,10 @@ OutputMaps.services = [
 
       // NGI uses the Lambert 2008 projection, grs80 ellipsoid
       // We use an external service to calculate coordinates from the regular WGS84 lat & long
-      $.ajax({
-        url: 'http://loughrigg.org/wgs84Lambert/wgs84_lambert/' +
-                sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
-      })
-        .done(function (data) {
+      const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/wgs84_lambert/${sourceMapData.centreCoords.lat}/${sourceMapData.centreCoords.lng}`)
+      window.fetch(request)
+        .then(response => response.json())
+        .then(data => {
           const mapCentre = 'x=' + data.easting + '&y=' + data.northing
 
           if ('resolution' in sourceMapData) {
