@@ -1,6 +1,5 @@
 /* global
   browser, chrome,
-  $,
   calculateStdZoomFromResolution,
   calculateScaleFromResolution,
   CoordTransform, OsGridRef, LatLon */
