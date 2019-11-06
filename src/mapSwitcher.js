@@ -179,7 +179,7 @@ var MapLinksView = {
   addFileDownload: function (mapService, id, name, fileGenerator) {
     this.addUtility(mapService, id, name)
 
-    idElem = document.getElementById(id)
+    const idElem = document.getElementById(id)
     idElem.addEventListener('click', () => {
       const fileData = fileGenerator()
       const filename = fileData.name
@@ -195,7 +195,7 @@ var MapLinksView = {
   addUtilityLink: function (mapService, id, name, utilFunction) {
     this.addUtility(mapService, id, name)
 
-    idElem = document.getElementById(id)
+    const idElem = document.getElementById(id)
     idElem.addEventListener('click', utilFunction)
   },
 
@@ -207,7 +207,6 @@ var MapLinksView = {
      */
   addNote: function (mapService, note) {
     if (note && note.length) {
-
       const mapServiceIdElem = document.getElementById(mapService.id)
       mapServiceIdElem.innerHTML = ' ' +
         "<span class=linknote title='" + note + "'>" +
