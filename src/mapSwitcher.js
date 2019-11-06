@@ -144,6 +144,30 @@ var MapLinksView = {
     })
   },
 
+  addUtility: function (mapService, id, name) {
+    // only add the title once
+    const utilityElem = document.getElementById('utility')
+    if (utilityElem.innerText.length === 0) {
+      const title = document.createElement('h4')
+      title.innerText = 'Utilities'
+      utilityElem.appendChild(title)
+    }
+
+    // create div for mapService if not one already
+    let mapServiceIdElem = document.getElementById(mapService.id)
+    if (!mapServiceIdElem || mapServiceIdElem.innerText.length === 0) {
+      utilityElem.insertAdjacentHTML('beforeend', "<div id='" + mapService.id +
+        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
+        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
+        '<span class="serviceName">' + mapService.site + '</span></div>')
+    }
+
+    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
+    // get it again (now that's it been created)
+    mapServiceIdElem = document.getElementById(mapService.id)
+    mapServiceIdElem.insertAdjacentHTML('beforeend', linkHtml)
+  },
+
   /**
      * Adds links for file downloads (such as GPX)
      *
@@ -153,28 +177,14 @@ var MapLinksView = {
      * @param {fileGenerator} Function to invoke to create the file contents.
      */
   addFileDownload: function (mapService, id, name, fileGenerator) {
-    // only add the title once
-    if ($('#utility').text().length === 0) {
-      $('#utility').append('<h4>Utilities</h4>')
-    }
+    this.addUtility(mapService, id, name)
 
-    // create div for mapService if not one already
-    if ($('#' + mapService.id).length === 0) {
-      const mapServiceHtml = "<div id='" + mapService.id +
-        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
-        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
-        '<span class="serviceName">' + mapService.site + '</span></div>'
-      $('#utility').append(mapServiceHtml)
-    }
-
-    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
-    $('#' + mapService.id).append(linkHtml)
-
-    $('#' + id).click(function () {
-      var fileData = fileGenerator()
-      var filename = fileData.name
-      var contentBlob = new Blob([fileData.content], { type: fileData.type })
-      var gpxURL = URL.createObjectURL(contentBlob)
+    idElem = document.getElementById(id)
+    idElem.addEventListener('click', () => {
+      const fileData = fileGenerator()
+      const filename = fileData.name
+      const contentBlob = new Blob([fileData.content], { type: fileData.type })
+      const gpxURL = URL.createObjectURL(contentBlob)
       browser.downloads.download({
         url: gpxURL,
         filename: filename
@@ -183,26 +193,10 @@ var MapLinksView = {
   },
 
   addUtilityLink: function (mapService, id, name, utilFunction) {
-    // only add the title once
-    if ($('#utility').text().length === 0) {
-      $('#utility').append('<h4>Utilities</h4>')
-    }
+    this.addUtility(mapService, id, name)
 
-    // create div for mapService if not one already
-    if ($('#' + mapService.id).length === 0) {
-      const mapServiceHtml = "<div id='" + mapService.id +
-        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
-        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
-        '<span class="serviceName">' + mapService.site + '</span></div>'
-      $('#utility').append(mapServiceHtml)
-    }
-
-    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
-    $('#' + mapService.id).append(linkHtml)
-
-    $('#' + id).click(function () {
-      utilFunction()
-    })
+    idElem = document.getElementById(id)
+    idElem.addEventListener('click', utilFunction)
   },
 
   /**
@@ -213,13 +207,15 @@ var MapLinksView = {
      */
   addNote: function (mapService, note) {
     if (note && note.length) {
-      $('#' + mapService.id).append(' ' +
+
+      const mapServiceIdElem = document.getElementById(mapService.id)
+      mapServiceIdElem.innerHTML = ' ' +
         "<span class=linknote title='" + note + "'>" +
           '<svg viewBox="0 0 512 512">' +
             '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
             '</use>' +
           '</svg>' +
-        '</span>')
+        '</span>'
       $('.linknote').tipsy({ gravity: 's', opacity: 1, fade: true })
     }
   },
@@ -448,7 +444,8 @@ var MapSwitcher = {
           ? 'public transport' : sourceMapData.directions.mode
         dirnDescr += ', travelling by ' + mode
       }
-      $('#sourceDirn').show()
+      const sourceDirnElem = document.getElementById('sourceDirn')
+      sourceDirnElem.style.display = 'block'
       document.getElementById('sourceDirnVal').textContent = dirnDescr
     }
 
