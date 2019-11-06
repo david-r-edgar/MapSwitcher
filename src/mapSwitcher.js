@@ -395,8 +395,10 @@ var MapSwitcher = {
     * @param {object} sourceMapData - Data object extracted by the dataExtractor.
     */
   handleNoCoords: function (sourceMapData) {
-    $('#nomap').show()
-    $('#maplinkbox').hide()
+    const nomapElem = document.getElementById('nomap')
+    nomapElem.style.display = 'block'
+    const maplinkboxElem = document.getElementById('maplinkbox')
+    maplinkboxElem.style.display = 'none'
   },
 
   /**
@@ -472,8 +474,10 @@ var MapSwitcher = {
     * Hide the animated loading dots.
     */
   loaded: function (s) {
-    $('.loading').hide()
-    $('#sourceDescr').show()
+    const maplinkboxElem = document.getElementsByClassName('loading')[0]
+    maplinkboxElem.style.display = 'none'
+    const sourceDescrElem = document.getElementById('sourceDescr')
+    sourceDescrElem.style.display = 'block'
   }
 }
 
