@@ -485,7 +485,7 @@ var MapSwitcher = {
  * Then performs some auxiliary methods before executing the main method run() which
  * generates all the links.
  */
-$(document).ready(function () {
+function runMapSwitcher () {
   MapSwitcher.validateCurrentTab().then(function () {
     Promise.all([MapSwitcher.listenForExtraction(), MapSwitcher.runExtraction()])
     // s[0] refers to the source map data received from the dataExtractor script
@@ -499,4 +499,13 @@ $(document).ready(function () {
   }, function () {
     MapSwitcher.handleNoCoords()
   })
-})
+}
+
+if (
+  document.readyState === 'complete' ||
+    (document.readyState !== 'loading' && !document.documentElement.doScroll)
+) {
+  runMapSwitcher()
+} else {
+  document.addEventListener('DOMContentLoaded', runMapSwitcher)
+}
