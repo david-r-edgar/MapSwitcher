@@ -206,7 +206,7 @@ const MapLinksView = {
   addNote: function (mapService, note) {
     if (note && note.length) {
       const mapServiceIdElem = document.getElementById(mapService.id)
-      mapServiceIdElem.innerHTML += mapServiceIdElem.innerHTML + ' ' +
+      mapServiceIdElem.innerHTML += ' ' +
         "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
             '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +

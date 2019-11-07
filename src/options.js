@@ -161,11 +161,20 @@ function optionsSorted (event, ui) {
   })
 }
 
-$(document).ready(function () {
+function optionsLoaded () {
   restoreOptions()
   $('.sortable').sortable({
     stop: optionsSorted
   })
-})
+}
+
+if (
+  document.readyState === 'complete' ||
+    (document.readyState !== 'loading' && !document.documentElement.doScroll)
+) {
+  optionsLoaded()
+} else {
+  document.addEventListener('DOMContentLoaded', optionsLoaded)
+}
 
 $('#reset').click(resetToDefaults)
