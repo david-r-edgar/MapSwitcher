@@ -482,8 +482,7 @@ OutputMaps.services = [
           })
         } else {
           view.addNote(this,
-            'GPX directions unavailable because waypoints are not ' +
-            'all specified as coordinates.')
+            'GPX directions unavailable because waypoints are not all specified as coordinates.')
         }
       }
     }

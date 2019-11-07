@@ -4,7 +4,8 @@
   OutputMaps,
   ScriptExecution,
   codegrid, jsonWorldGrid
-  CoordTransform, OsGridRef */
+  CoordTransform, OsGridRef,
+  tippy */
 
 /**
  * The Web Extension API is implemented on different root objects in different browsers.
@@ -139,7 +140,9 @@ var MapLinksView = {
       $(selector).sortDivs()
 
       if (note && note.length) {
-        $('.linknote').tipsy({ gravity: 's', opacity: 1, fade: true })
+        tippy('.linknote', {
+          content: note
+        })
       }
     })
   },
@@ -208,14 +211,16 @@ var MapLinksView = {
   addNote: function (mapService, note) {
     if (note && note.length) {
       const mapServiceIdElem = document.getElementById(mapService.id)
-      mapServiceIdElem.innerHTML = ' ' +
-        "<span class=linknote title='" + note + "'>" +
+      mapServiceIdElem.innerHTML = mapServiceIdElem.innerHTML + ' ' +
+        "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
             '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
             '</use>' +
           '</svg>' +
         '</span>'
-      $('.linknote').tipsy({ gravity: 's', opacity: 1, fade: true })
+      tippy('.linknote', {
+        content: note
+      })
     }
   },
 
@@ -245,7 +250,7 @@ var MapLinksView = {
 
       if (note && note.length) {
         html +=
-        "<span class=linknote title='" + note + "'>" +
+        "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
             '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
             '</use>' +
