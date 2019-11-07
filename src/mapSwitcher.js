@@ -1,6 +1,5 @@
 /* global
   browser, chrome, Blob,
-  jQuery, $,
   OutputMaps,
   ScriptExecution,
   codegrid, jsonWorldGrid
@@ -25,26 +24,19 @@ if (typeof browser === 'undefined') {
  */
 const CodeGrid = codegrid.CodeGrid('http://www.loughrigg.org/codegrid-js/tiles/', jsonWorldGrid) // eslint-disable-line no-global-assign
 
-/**
- * Sorts divs inside the element this is called on, based on the ascending numeric
- * value of their "data-sort" attribute.
- *
- * Divs with no such attribute specified are placed at the end of the list in
- * arbitrary order.
- */
-jQuery.fn.sortDivs = function sortDivs () {
-  $('> div', this[0]).sort(decSort).appendTo(this[0])
-  function decSort (a, b) {
-    if ($(a).data('sort') === 'undefined') { return 1 }
-    if ($(b).data('sort') === 'undefined') { return -1 }
-    return ($(b).data('sort')) < ($(a).data('sort')) ? 1 : -1
+const insertServiceLineIntoCategory = function (categoryElem, serviceLine, prio) {
+  let lastNonMatchingElem
+  for (let elem of categoryElem.children) {
+    if (elem.getAttribute('data-sort') > prio) break
+    lastNonMatchingElem = elem
   }
+  lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
 }
 
 /**
  * Main view object for the extension popup.
  */
-var MapLinksView = {
+const MapLinksView = {
 
   /** Number of direction segments in the source map data. */
   sourceDirnSegs: 0,
@@ -57,17 +49,17 @@ var MapLinksView = {
      */
   getSelector: function (category) {
     if (OutputMaps.category.multidirns === category && this.sourceDirnSegs >= 2) {
-      return '#multiSegDirns'
+      return 'multiSegDirns'
     } else if (OutputMaps.category.multidirns === category && this.sourceDirnSegs === 1) {
-      return '#singleSegDirns'
+      return 'singleSegDirns'
     } else if (OutputMaps.category.singledirns === category && this.sourceDirnSegs > 0) {
-      return '#singleSegDirns'
+      return 'singleSegDirns'
     } else if (OutputMaps.category.misc === category) {
-      return '#misc'
+      return 'misc'
     } else if (OutputMaps.category.special === category) {
-      return '#special'
+      return 'special'
     } else {
-      return '#noDirns'
+      return 'noDirns'
     }
   },
 
@@ -120,11 +112,14 @@ var MapLinksView = {
      * @param {note} Content for an optional explanatory note.
      */
   addMapServiceLinks: function (category, mapService, mapLinks, note) {
-    var thisView = this
+    const thisView = this
     const selector = this.getSelector(category)
+    const categoryElem = document.getElementById(selector)
 
-    if ($(selector).children().length === 0) {
-      $(selector).append('<h4>' + this.getTitle(category) + '</h4>')
+    if (categoryElem.children.length === 0) {
+      const title = document.createElement('h4')
+      title.innerText = this.getTitle(category)
+      categoryElem.appendChild(title)
     }
 
     let prioDefaults = {}
@@ -133,11 +128,11 @@ var MapLinksView = {
     browser.storage.local.get(prioDefaults, function (prio) {
       mapService.prio = prio['prio/' + mapService.id]
 
-      $(selector).append(thisView.buildLineOfLinks(mapService.id,
+      const serviceLine = thisView.buildLineOfLinks(mapService.id,
         mapService,
         mapLinks,
-        note))
-      $(selector).sortDivs()
+        note)
+      insertServiceLineIntoCategory(categoryElem, serviceLine, mapService.prio)
 
       if (note && note.length) {
         tippy('.linknote', {
@@ -211,7 +206,7 @@ var MapLinksView = {
   addNote: function (mapService, note) {
     if (note && note.length) {
       const mapServiceIdElem = document.getElementById(mapService.id)
-      mapServiceIdElem.innerHTML = mapServiceIdElem.innerHTML + ' ' +
+      mapServiceIdElem.innerHTML += mapServiceIdElem.innerHTML + ' ' +
         "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
             '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
