@@ -1,7 +1,6 @@
 /* global
   browser, chrome, confirm,
   XPathResult,
-  $,
   Sortable,
   OutputMaps */
 
@@ -32,41 +31,39 @@ function sortChildren (xpathSelector) {
 
 function updateSelectAllNone () {
   // update all the 'select all/none' checkboxes
-  $('.selectAllNone').each(function () {
-    var targetList = $(this).attr('cat')
-    var totalServices = $('#' + targetList + ' .outpServiceEnabledChk').length
-    var servicesOn = $('#' + targetList + ' .outpServiceEnabledChk').filter(function () {
-      return $(this).prop('checked')
+  Array.from(document.getElementsByClassName('selectAllNone')).forEach(chkBox => {
+    const targetListElem = document.getElementById(chkBox.getAttribute('cat'))
+    const services = targetListElem.getElementsByClassName('outpServiceEnabledChk')
+    const servicesOn = Array.from(services).filter(serviceChkBox => {
+      return serviceChkBox.checked
     }).length
-    if (servicesOn === totalServices) {
-      $('#' + targetList + ' .selectAllNone').prop('checked', true)
-    } else {
-      $('#' + targetList + ' .selectAllNone').prop('checked', false)
-    }
+    targetListElem.getElementsByClassName('selectAllNone')[0].checked =
+      (servicesOn === services.length)
   })
 }
 
-$('.selectAllNone').change(function (ev) {
-  const checked = $(ev.target).prop('checked')
-  const targetList = $(ev.target).attr('cat')
-  $('#' + targetList + ' .chkboxcell .outpServiceEnabledChk').each(function () {
-    $(this).prop('checked', checked)
+Array.from(document.getElementsByClassName('selectAllNone')).forEach(selectAllChkBox => {
+  selectAllChkBox.addEventListener('change', ev => {
+    const targetList = ev.target.getAttribute('cat')
+    document.querySelectorAll('#' + targetList + ' .chkboxcell .outpServiceEnabledChk').forEach(chkBox => {
+      chkBox.checked = ev.target.checked
+    })
+    saveOptions()
   })
-  saveOptions()
 })
 
 /**
  * Saves the extension options in browser storage.
  */
 function saveOptions () {
-  $('#status').text('Saving...')
+  document.getElementById('status').textContent = 'Saving...'
   let mapChecks = {}
-  $('.srvTickList .outpServiceEnabledChk').each(function () {
-    mapChecks[$(this).attr('id')] = $(this).is(':checked')
+  document.querySelectorAll('.srvTickList .outpServiceEnabledChk').forEach(chkBox => {
+    mapChecks[chkBox.id] = chkBox.checked
   })
   browser.storage.local.set(mapChecks, function () {
     setTimeout(function () {
-      $('#status').text('Options saved.')
+      document.getElementById('status').textContent = 'Options saved.'
     }, 1000)
   })
 }
@@ -78,8 +75,8 @@ function restoreOptions () {
   let mapEnabledDefaults = {}
   let prioDefaults = {}
   let listName
-  $('#mapsTickList tbody').html('')
-  $('#utilsTickList tbody').html('')
+  document.getElementById('mapsTickList').getElementsByTagName('tbody')[0].innerText = ''
+  document.getElementById('utilsTickList').getElementsByTagName('tbody')[0].innerText = ''
   for (let outputMapService of OutputMaps.services) {
     switch (outputMapService.cat) {
       case OutputMaps.category.utility:
@@ -101,33 +98,38 @@ function restoreOptions () {
       '<label for"' + outputMapService.id + "\"><td class='imgcell'><img src=\"../image/" + outputMapService.image + '"></td>' + "<td class='mapnamecell'>" + outputMapService.site + '</td></label>' +
       "<td class='chkboxcell'><input type=\"checkbox\" class='outpServiceEnabledChk' id=\"" + outputMapService.id +
       '" cat="' + listName + '" /></td>' + '</tr>'
-    $('#' + listName + ' tbody').append(mapEntry)
+    document.getElementById(listName).getElementsByTagName('tbody')[0].insertAdjacentHTML('beforeend', mapEntry)
 
     mapEnabledDefaults[outputMapService.id] = true
     prioDefaults['prio/' + outputMapService.id] =
             (outputMapService.prio !== undefined) ? outputMapService.prio : 999
   }
   browser.storage.local.get(mapEnabledDefaults, function (items) {
-    $('.srvTickList .outpServiceEnabledChk').each(function () {
-      $(this).prop('checked', items[$(this).attr('id')])
+    document.querySelectorAll('.srvTickList .outpServiceEnabledChk').forEach(chkBox => {
+      chkBox.checked = items[chkBox.id]
     })
+
     updateSelectAllNone()
   })
-  $('.srvTickList .outpServiceEnabledChk').change(updateSelectAllNone)
+
+  document.querySelectorAll('.srvTickList .outpServiceEnabledChk').forEach(chkBox => {
+    chkBox.addEventListener('change', updateSelectAllNone)
+  })
 
   browser.storage.local.get(prioDefaults, function (prio) {
     // iterate through all rows; look up new prio, set data-sort attrib on tr
-    $('.srvTickList tr.omsrvRow').each(function () {
-      let row = $(this)
-      let id = $(row).find('td.chkboxcell input').attr('id')
-      $(this).attr('data-sort', prio['prio/' + id])
+    document.querySelectorAll('.srvTickList tr.omsrvRow').forEach(row => {
+      let id = row.querySelector('td.chkboxcell input').id
+      row.setAttribute('data-sort', prio['prio/' + id])
     })
 
     sortChildren('//*[@id="mapsTickList"]//tbody')
     sortChildren('//*[@id="utilsTickList"]//tbody')
   })
 
-  $('.outpServiceEnabledChk').change(saveOptions)
+  Array.from(document.getElementsByClassName('outpServiceEnabledChk')).forEach(elem => {
+    elem.addEventListener('change', saveOptions)
+  })
 }
 
 function resetToDefaults () {
@@ -135,17 +137,16 @@ function resetToDefaults () {
   if (result) {
     browser.storage.local.clear()
     restoreOptions()
-    $('#status').text('Default options restored.')
+    document.getElementById('status').textContent = 'Default options restored.'
   }
 }
 
 function optionsSorted (event, ui) {
-  $('#status').text('Saving...')
+  document.getElementById('status').textContent = 'Saving...'
   let mapPriorities = {}
   let newPriority = 1
-  $('tr.omsrvRow').each(function () {
-    let row = $(this)
-    let id = $(row).find('td.chkboxcell input').attr('id')
+  document.querySelectorAll('tr.omsrvRow').forEach(rowElem => {
+    let id = rowElem.querySelector('td.chkboxcell input').id
     for (let outputMapService of OutputMaps.services) {
       if (outputMapService.id === id) {
         // outputMapService.prio = newPriority;
@@ -158,7 +159,7 @@ function optionsSorted (event, ui) {
 
   browser.storage.local.set(mapPriorities, function () {
     setTimeout(function () {
-      $('#status').text('Options saved.')
+      document.getElementById('status').textContent = 'Options saved.'
     }, 1000)
   })
 }
@@ -187,4 +188,4 @@ if (
   document.addEventListener('DOMContentLoaded', optionsLoaded)
 }
 
-$('#reset').click(resetToDefaults)
+document.getElementById('reset').addEventListener('click', resetToDefaults)
