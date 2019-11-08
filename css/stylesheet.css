@@ -312,3 +312,12 @@ button#reset svg {
   position: absolute;
   margin-left: -1.3em;
 }
+
+.sortableChosen {
+  opacity: 1.0;
+  background-color: #eee;
+}
+
+.sortableGhost {
+  opacity: 0.2;
+}

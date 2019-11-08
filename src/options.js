@@ -1,6 +1,8 @@
 /* global
   browser, chrome, confirm,
-  jQuery, $,
+  XPathResult,
+  $,
+  Sortable,
   OutputMaps */
 
 /**
@@ -13,19 +15,19 @@ if (typeof browser === 'undefined') {
 }
 
 /**
- * Sorts elements matching the given selector inside the element this is called
- * on, based on the ascending numeric value of their "data-sort" attribute.
+ * Sorts elements under the element identified by the given selector,
+ * based on the ascending numeric value of their "data-sort" attribute.
  *
  * Elements with no such attribute specified are placed at the end of the list in
  * arbitrary order.
  */
-jQuery.fn.sortElems = function sortElems (sel) {
-  $(sel, this[0]).sort(decSort).appendTo(this[0])
-  function decSort (a, b) {
-    if ($(a).data('sort') === 'undefined') { return 1 }
-    if ($(b).data('sort') === 'undefined') { return -1 }
-    return ($(b).data('sort')) < ($(a).data('sort')) ? 1 : -1
-  }
+function sortChildren (xpathSelector) {
+  const parent = document.evaluate(xpathSelector,
+    document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+  [...parent.children]
+    .sort((a, b) => +a.getAttribute('data-sort') > +b.getAttribute('data-sort') ? 1 : -1)
+    .map(node => parent.appendChild(node))
 }
 
 function updateSelectAllNone () {
@@ -121,8 +123,8 @@ function restoreOptions () {
       $(this).attr('data-sort', prio['prio/' + id])
     })
 
-    $('#mapsTickList').sortElems('> tbody > tr.omsrvRow')
-    $('#utilsTickList').sortElems('> tbody > tr.omsrvRow')
+    sortChildren('//*[@id="mapsTickList"]//tbody')
+    sortChildren('//*[@id="utilsTickList"]//tbody')
   })
 
   $('.outpServiceEnabledChk').change(saveOptions)
@@ -163,8 +165,16 @@ function optionsSorted (event, ui) {
 
 function optionsLoaded () {
   restoreOptions()
-  $('.sortable').sortable({
-    stop: optionsSorted
+
+  const sortableContainers = document.getElementsByClassName('sortable')
+  Array.from(sortableContainers).map((container) => {
+    Sortable.create(container, {
+      animation: 150,
+      handle: '.dragcell',
+      chosenClass: 'sortableChosen',
+      ghostClass: 'sortableGhost',
+      onEnd: optionsSorted
+    })
   })
 }
 
