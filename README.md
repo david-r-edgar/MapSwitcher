@@ -23,11 +23,6 @@ npm run build
 ```
 This will clean and build into `./release`, generating or copying all necessary files. It can be tested using the `chrome://extensions` 'Load unpacked extension...' option (see above), and also packed through the same page.
 
-## Browsers supported
-- Chromium - Tested
-- Chrome - Partially tested
-- Opera - Unknown
-
 ## Mapping services supported
 
 ### Input mapping services
@@ -67,6 +62,9 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Zoopla
 - PrimeLocation
 - Peakbagger
+- NGI / IGN (Belgium)
+- OSMaps
+- Windy
 
 ### Output mapping services
 
@@ -105,10 +103,13 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Mapillary
 - Komoot
 - Waymarked Trails
+- OSMaps
+- Windy
+- OpenWeatherMap
 
 ### Utilities
 - GPX download
-- OpenWeatherMap
+- Copy to clipboard
 - SunCalc
 - Boulter (coordinate conversion)
 - Flickr (map of nearby photos)
@@ -118,4 +119,4 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Where directions are specified by address (not coordinates), different services can geocode these in radically different ways. So the routes may not start or finish where they did on the input mapping service. Where available, coordinates are used instead, but not all services make the coordinates of each waypoint on the route available.
 - Zoom / scale may not always be exact, depending on the limitations of the input & output map services
 - Directions handle multi-segment routes (with intermediate specified locations) where possible. Only some services (google, microsoft) support this. In these cases, output services which only support single segments will show maps from the first location to the last location.
-- NGI/IGN links are problematic. Conditions must be accepted, and language chosen, before opening the link. The developers clearly half-considered this problem, as permalinks theoretically redirect you after accepting the conditions. But a 400 error occurs (even when opening a permalink in a new browser, without using MapSwitcher).
+- Waze currently fails to handle zoom. The parameters do not work as its own documentation suggests they should.
