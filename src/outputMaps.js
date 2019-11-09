@@ -452,10 +452,11 @@ OutputMaps.services = [
         let pointsWithCoords = 0
         for (let rteIndex in sourceMapData.directions.route) {
           var rteWpt = sourceMapData.directions.route[rteIndex]
+
           if ('coords' in rteWpt) {
             routePoints +=
               '\t\t<rtept lat="' + rteWpt.coords.lat + '" lon="' + rteWpt.coords.lng + '">\n' +
-              '\t\t\t<name>' + rteWpt + '</name>\n' +
+              '\t\t\t<name>' + (rteWpt.address || 'Unnamed waypoint') + '</name>\n' +
               '\t\t</rtept>\n'
             pointsWithCoords++
           }
