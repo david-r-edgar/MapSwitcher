@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/david-r-edgar/MapSwitcher#readme",
   "dependencies": {
+    "sortablejs": "^1.10.1",
     "terser": "^3.14.1"
   },
   "devDependencies": {

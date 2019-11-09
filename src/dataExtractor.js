@@ -123,9 +123,22 @@ extractors.push({
             locationDescr: 'default map of search results',
             nonUpdating: window.location.hostname + window.location.pathname
           })
-        } else {
-          resolve(null)
         }
+
+        const dataUrl = document.evaluate('//div[contains(@class, "rhsmap3col")]//a/@data-url',
+          document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+        const dataUrlRe = /@([-0-9.]+),([-0-9.]+),([0-9]+)z/
+        const dataUrlCoordArray = dataUrl.match(dataUrlRe)
+        if (dataUrlCoordArray && dataUrlCoordArray.length > 3) {
+          resolve({
+            centreCoords: { 'lat': dataUrlCoordArray[1], 'lng': dataUrlCoordArray[2] },
+            locationDescr: 'map of primary search result',
+            resolution: calculateResolutionFromStdZoom(
+              dataUrlCoordArray[3], dataUrlCoordArray[1])
+          })
+        }
+
+        resolve(null)
       } else {
         reject(null)
       }
@@ -1112,6 +1125,27 @@ extractors.push({
       }
       resolve(sourceMapData)
     }
+})
+
+function ignngiExtractor (resolve) {
+  let sourceMapData = {}
+  const re = /x=([0-9.]+)&y=([0-9.]+)&zoom=([0-9]+)/
+  const [, easting, northing, zoom] = window.location.search.match(re)
+  if (easting && northing && zoom) {
+    sourceMapData.lambertCentreCoords = { 'e': easting, 'n': northing }
+    sourceMapData.resolution = calculateResolutionFromStdZoom(+zoom + 7, 50.8)
+  }
+  resolve(sourceMapData)
+}
+
+extractors.push({
+  host: '.ign.be',
+  extract: ignngiExtractor
+})
+
+extractors.push({
+  host: '.ngi.be',
+  extract: ignngiExtractor
 })
 
 var runDataExtraction = function () {

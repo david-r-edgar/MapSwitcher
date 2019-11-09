@@ -1,6 +1,5 @@
 /* global
   browser, chrome,
-  $,
   calculateStdZoomFromResolution,
   calculateScaleFromResolution,
   CoordTransform, OsGridRef, LatLon */
@@ -453,10 +452,11 @@ OutputMaps.services = [
         let pointsWithCoords = 0
         for (let rteIndex in sourceMapData.directions.route) {
           var rteWpt = sourceMapData.directions.route[rteIndex]
+
           if ('coords' in rteWpt) {
             routePoints +=
               '\t\t<rtept lat="' + rteWpt.coords.lat + '" lon="' + rteWpt.coords.lng + '">\n' +
-              '\t\t\t<name>' + rteWpt + '</name>\n' +
+              '\t\t\t<name>' + (rteWpt.address || 'Unnamed waypoint') + '</name>\n' +
               '\t\t</rtept>\n'
             pointsWithCoords++
           }
@@ -483,8 +483,7 @@ OutputMaps.services = [
           })
         } else {
           view.addNote(this,
-            'GPX directions unavailable because waypoints are not ' +
-            'all specified as coordinates.')
+            'GPX directions unavailable because waypoints are not all specified as coordinates.')
         }
       }
     }
@@ -815,11 +814,10 @@ OutputMaps.services = [
 
       // NGI uses the Lambert 2008 projection, grs80 ellipsoid
       // We use an external service to calculate coordinates from the regular WGS84 lat & long
-      $.ajax({
-        url: 'http://loughrigg.org/wgs84Lambert/wgs84_lambert/' +
-                sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
-      })
-        .done(function (data) {
+      const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/wgs84_lambert/${sourceMapData.centreCoords.lat}/${sourceMapData.centreCoords.lng}`)
+      window.fetch(request)
+        .then(response => response.json())
+        .then(data => {
           const mapCentre = 'x=' + data.easting + '&y=' + data.northing
 
           if ('resolution' in sourceMapData) {

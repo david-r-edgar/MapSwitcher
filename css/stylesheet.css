@@ -106,8 +106,12 @@ a.maplink:active {
   margin-bottom: 0.4em;
 }
 
-.tipsy-inner {
+.tippy-backdrop  {
   background-color: #3399dd;
+}
+
+.tippy-content {
+  font-size: 12px;
 }
 
 h4 {
@@ -307,4 +311,13 @@ button#reset svg {
 .sortable li span {
   position: absolute;
   margin-left: -1.3em;
+}
+
+.sortableChosen {
+  opacity: 1.0;
+  background-color: #eee;
+}
+
+.sortableGhost {
+  opacity: 0.2;
 }

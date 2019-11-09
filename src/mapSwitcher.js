@@ -1,10 +1,10 @@
 /* global
   browser, chrome, Blob,
-  jQuery, $,
   OutputMaps,
   ScriptExecution,
   codegrid, jsonWorldGrid
-  CoordTransform, OsGridRef */
+  CoordTransform, OsGridRef,
+  tippy */
 
 /**
  * The Web Extension API is implemented on different root objects in different browsers.
@@ -24,26 +24,19 @@ if (typeof browser === 'undefined') {
  */
 const CodeGrid = codegrid.CodeGrid('http://www.loughrigg.org/codegrid-js/tiles/', jsonWorldGrid) // eslint-disable-line no-global-assign
 
-/**
- * Sorts divs inside the element this is called on, based on the ascending numeric
- * value of their "data-sort" attribute.
- *
- * Divs with no such attribute specified are placed at the end of the list in
- * arbitrary order.
- */
-jQuery.fn.sortDivs = function sortDivs () {
-  $('> div', this[0]).sort(decSort).appendTo(this[0])
-  function decSort (a, b) {
-    if ($(a).data('sort') === 'undefined') { return 1 }
-    if ($(b).data('sort') === 'undefined') { return -1 }
-    return ($(b).data('sort')) < ($(a).data('sort')) ? 1 : -1
+const insertServiceLineIntoCategory = function (categoryElem, serviceLine, prio) {
+  let lastNonMatchingElem
+  for (let elem of categoryElem.children) {
+    if (elem.getAttribute('data-sort') > prio) break
+    lastNonMatchingElem = elem
   }
+  lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
 }
 
 /**
  * Main view object for the extension popup.
  */
-var MapLinksView = {
+const MapLinksView = {
 
   /** Number of direction segments in the source map data. */
   sourceDirnSegs: 0,
@@ -56,17 +49,17 @@ var MapLinksView = {
      */
   getSelector: function (category) {
     if (OutputMaps.category.multidirns === category && this.sourceDirnSegs >= 2) {
-      return '#multiSegDirns'
+      return 'multiSegDirns'
     } else if (OutputMaps.category.multidirns === category && this.sourceDirnSegs === 1) {
-      return '#singleSegDirns'
+      return 'singleSegDirns'
     } else if (OutputMaps.category.singledirns === category && this.sourceDirnSegs > 0) {
-      return '#singleSegDirns'
+      return 'singleSegDirns'
     } else if (OutputMaps.category.misc === category) {
-      return '#misc'
+      return 'misc'
     } else if (OutputMaps.category.special === category) {
-      return '#special'
+      return 'special'
     } else {
-      return '#noDirns'
+      return 'noDirns'
     }
   },
 
@@ -119,11 +112,14 @@ var MapLinksView = {
      * @param {note} Content for an optional explanatory note.
      */
   addMapServiceLinks: function (category, mapService, mapLinks, note) {
-    var thisView = this
+    const thisView = this
     const selector = this.getSelector(category)
+    const categoryElem = document.getElementById(selector)
 
-    if ($(selector).children().length === 0) {
-      $(selector).append('<h4>' + this.getTitle(category) + '</h4>')
+    if (categoryElem.children.length === 0) {
+      const title = document.createElement('h4')
+      title.innerText = this.getTitle(category)
+      categoryElem.appendChild(title)
     }
 
     let prioDefaults = {}
@@ -132,16 +128,42 @@ var MapLinksView = {
     browser.storage.local.get(prioDefaults, function (prio) {
       mapService.prio = prio['prio/' + mapService.id]
 
-      $(selector).append(thisView.buildLineOfLinks(mapService.id,
+      const serviceLine = thisView.buildLineOfLinks(mapService.id,
         mapService,
         mapLinks,
-        note))
-      $(selector).sortDivs()
+        note)
+      insertServiceLineIntoCategory(categoryElem, serviceLine, mapService.prio)
 
       if (note && note.length) {
-        $('.linknote').tipsy({ gravity: 's', opacity: 1, fade: true })
+        tippy('.linknote', {
+          content: note
+        })
       }
     })
+  },
+
+  addUtility: function (mapService, id, name) {
+    // only add the title once
+    const utilityElem = document.getElementById('utility')
+    if (utilityElem.innerText.length === 0) {
+      const title = document.createElement('h4')
+      title.innerText = 'Utilities'
+      utilityElem.appendChild(title)
+    }
+
+    // create div for mapService if not one already
+    let mapServiceIdElem = document.getElementById(mapService.id)
+    if (!mapServiceIdElem || mapServiceIdElem.innerText.length === 0) {
+      utilityElem.insertAdjacentHTML('beforeend', "<div id='" + mapService.id +
+        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
+        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
+        '<span class="serviceName">' + mapService.site + '</span></div>')
+    }
+
+    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
+    // get it again (now that's it been created)
+    mapServiceIdElem = document.getElementById(mapService.id)
+    mapServiceIdElem.insertAdjacentHTML('beforeend', linkHtml)
   },
 
   /**
@@ -153,28 +175,14 @@ var MapLinksView = {
      * @param {fileGenerator} Function to invoke to create the file contents.
      */
   addFileDownload: function (mapService, id, name, fileGenerator) {
-    // only add the title once
-    if ($('#utility').text().length === 0) {
-      $('#utility').append('<h4>Utilities</h4>')
-    }
+    this.addUtility(mapService, id, name)
 
-    // create div for mapService if not one already
-    if ($('#' + mapService.id).length === 0) {
-      const mapServiceHtml = "<div id='" + mapService.id +
-        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
-        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
-        '<span class="serviceName">' + mapService.site + '</span></div>'
-      $('#utility').append(mapServiceHtml)
-    }
-
-    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
-    $('#' + mapService.id).append(linkHtml)
-
-    $('#' + id).click(function () {
-      var fileData = fileGenerator()
-      var filename = fileData.name
-      var contentBlob = new Blob([fileData.content], { type: fileData.type })
-      var gpxURL = URL.createObjectURL(contentBlob)
+    const idElem = document.getElementById(id)
+    idElem.addEventListener('click', () => {
+      const fileData = fileGenerator()
+      const filename = fileData.name
+      const contentBlob = new Blob([fileData.content], { type: fileData.type })
+      const gpxURL = URL.createObjectURL(contentBlob)
       browser.downloads.download({
         url: gpxURL,
         filename: filename
@@ -183,27 +191,10 @@ var MapLinksView = {
   },
 
   addUtilityLink: function (mapService, id, name, utilFunction) {
-    // only add the title once
-    if ($('#utility').text().length === 0) {
-      $('#utility').append('<h4>Utilities</h4>')
-    }
+    this.addUtility(mapService, id, name)
 
-    // create div for mapService if not one already
-    if ($('#' + mapService.id).length === 0) {
-      const mapServiceHtml = "<div id='" + mapService.id +
-        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
-        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
-        '<span class="serviceName">' + mapService.site + '</span></div>'
-      $('#utility').append(mapServiceHtml)
-    }
-
-    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
-    $('#' + mapService.id).append(linkHtml)
-
-    $('#' + id).click(function () {
-      console.log('clicked!')
-      utilFunction()
-    })
+    const idElem = document.getElementById(id)
+    idElem.addEventListener('click', utilFunction)
   },
 
   /**
@@ -214,14 +205,17 @@ var MapLinksView = {
      */
   addNote: function (mapService, note) {
     if (note && note.length) {
-      $('#' + mapService.id).append(' ' +
-        "<span class=linknote title='" + note + "'>" +
+      const mapServiceIdElem = document.getElementById(mapService.id)
+      mapServiceIdElem.innerHTML += ' ' +
+        "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
             '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
             '</use>' +
           '</svg>' +
-        '</span>')
-      $('.linknote').tipsy({ gravity: 's', opacity: 1, fade: true })
+        '</span>'
+      tippy('.linknote', {
+        content: note
+      })
     }
   },
 
@@ -251,7 +245,7 @@ var MapLinksView = {
 
       if (note && note.length) {
         html +=
-        "<span class=linknote title='" + note + "'>" +
+        "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
             '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#sticky-note">' +
             '</use>' +
@@ -326,26 +320,41 @@ var MapSwitcher = {
   normaliseExtractedData: function (extractedData) {
     return new Promise(function (resolve, reject) {
       if (!extractedData) {
-        reject(extractedData)
-      } else if (extractedData.centreCoords != null) {
+        return reject(extractedData)
+      }
+
+      if (extractedData.centreCoords) {
         // regular wgs84 coords extracted
         resolve(extractedData)
-      } else {
-        if (extractedData.osgbCentreCoords == null) {
-          // no centre coords of any recognised format
-          reject(extractedData)
-        } else {
-          // osgb36 coords specified
-          var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
-            extractedData.osgbCentreCoords.n)
-          var osLL = OsGridRef.osGridToLatLong(osGR)
-          var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
-          extractedData.centreCoords = {
-            'lat': wgs84LL._lat,
-            'lng': wgs84LL._lon
-          }
-          resolve(extractedData)
+      } else if (extractedData.osgbCentreCoords) {
+        // osgb36 coords specified
+        var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
+          extractedData.osgbCentreCoords.n)
+        var osLL = OsGridRef.osGridToLatLong(osGR)
+        var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
+        extractedData.centreCoords = {
+          'lat': wgs84LL._lat,
+          'lng': wgs84LL._lon
         }
+        resolve(extractedData)
+      } else if (extractedData.lambertCentreCoords) {
+        // Lambert Conic Conformal coords specified
+        const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
+        window.fetch(request)
+          .then(response => response.json())
+          .then(latlng => {
+            extractedData.centreCoords = {
+              'lat': latlng.lat,
+              'lng': latlng.lng
+            }
+            resolve(extractedData)
+          })
+          .catch(() => {
+            reject(extractedData)
+          })
+      } else {
+        // no centre coords of any recognised format
+        reject(extractedData)
       }
     })
   },
@@ -381,8 +390,10 @@ var MapSwitcher = {
     * @param {object} sourceMapData - Data object extracted by the dataExtractor.
     */
   handleNoCoords: function (sourceMapData) {
-    $('#nomap').show()
-    $('#maplinkbox').hide()
+    const nomapElem = document.getElementById('nomap')
+    nomapElem.style.display = 'block'
+    const maplinkboxElem = document.getElementById('maplinkbox')
+    maplinkboxElem.style.display = 'none'
   },
 
   /**
@@ -432,7 +443,8 @@ var MapSwitcher = {
           ? 'public transport' : sourceMapData.directions.mode
         dirnDescr += ', travelling by ' + mode
       }
-      $('#sourceDirn').show()
+      const sourceDirnElem = document.getElementById('sourceDirn')
+      sourceDirnElem.style.display = 'block'
       document.getElementById('sourceDirnVal').textContent = dirnDescr
     }
 
@@ -458,8 +470,10 @@ var MapSwitcher = {
     * Hide the animated loading dots.
     */
   loaded: function (s) {
-    $('.loading').hide()
-    $('#sourceDescr').show()
+    const maplinkboxElem = document.getElementsByClassName('loading')[0]
+    maplinkboxElem.style.display = 'none'
+    const sourceDescrElem = document.getElementById('sourceDescr')
+    sourceDescrElem.style.display = 'block'
   }
 }
 
@@ -471,7 +485,7 @@ var MapSwitcher = {
  * Then performs some auxiliary methods before executing the main method run() which
  * generates all the links.
  */
-$(document).ready(function () {
+function runMapSwitcher () {
   MapSwitcher.validateCurrentTab().then(function () {
     Promise.all([MapSwitcher.listenForExtraction(), MapSwitcher.runExtraction()])
     // s[0] refers to the source map data received from the dataExtractor script
@@ -485,4 +499,13 @@ $(document).ready(function () {
   }, function () {
     MapSwitcher.handleNoCoords()
   })
-})
+}
+
+if (
+  document.readyState === 'complete' ||
+    (document.readyState !== 'loading' && !document.documentElement.doScroll)
+) {
+  runMapSwitcher()
+} else {
+  document.addEventListener('DOMContentLoaded', runMapSwitcher)
+}
