@@ -18,13 +18,8 @@
     "activeTab",
     "storage",
     "downloads",
-    "clipboardWrite",
-    "<all_urls>"
+    "clipboardWrite"
   ],
-  "content_scripts": [{
-    "matches": ["http://*/*", "https://*/*"],
-    "js": ["src/dataExtractor.js"]
-  }],
   "icons": {
     "16": "image/mapswitcher16x16.png",
     "32": "image/mapswitcher32x32.png",
