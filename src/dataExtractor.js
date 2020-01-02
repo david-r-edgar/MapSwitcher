@@ -1127,6 +1127,21 @@ extractors.push({
     }
 })
 
+extractors.push({
+  host: 'flightradar24.com',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const re = /([-0-9.]+),([-0-9.]+)\/([0-9]+)$/
+      const [, lat, lng, zoom] = window.location.pathname.match(re)
+      if (lat && lng && zoom) {
+        sourceMapData.centreCoords = { lat, lng }
+        sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
+      }
+      resolve(sourceMapData)
+    }
+})
+
 function ignngiExtractor (resolve) {
   let sourceMapData = {}
   const re = /x=([0-9.]+)&y=([0-9.]+)&zoom=([0-9]+)/

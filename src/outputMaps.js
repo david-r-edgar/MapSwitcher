@@ -1472,5 +1472,34 @@ OutputMaps.services = [
 
       view.addMapServiceLinks(this.cat, this, this.maplinks)
     }
+  },
+  {
+    site: 'Flightradar24',
+    image: 'flightradar24.png',
+    id: 'flightradar24',
+    cat: OutputMaps.category.misc,
+    maplinks:
+    {
+      flightradar24: {
+        name: 'Live Flight Tracker'
+      }
+    },
+    generate: function (sourceMapData, view) {
+      const base = 'https://www.flightradar24.com/'
+      const roundedLat = Math.round(sourceMapData.centreCoords.lat * 100) / 100
+      const roundedLng = Math.round(sourceMapData.centreCoords.lng * 100) / 100
+
+      const mapCentre = roundedLat + ',' + roundedLng
+      let zoom = '6'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat, 2, 20)
+      }
+
+      this.maplinks.flightradar24['link'] = base + mapCentre + '/' + zoom
+
+      view.addMapServiceLinks(this.cat, this, this.maplinks)
+    }
   }
 ]
