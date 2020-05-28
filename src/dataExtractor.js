@@ -910,7 +910,7 @@ extractors.push({
         if (!tile) { return false }
         const tileRect = tile.getBoundingClientRect()
 
-        const re = /\/([0-9]+)\/([0-9]+)\/([0-9]+)@2x.png/
+        const re = /tiles\/([0-9]+)\/([0-9]+)\/([0-9]+)/
         const coordArray = tile.src.match(re)
         if (!coordArray) { return false }
         const z = +coordArray[1]
