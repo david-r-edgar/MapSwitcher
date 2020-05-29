@@ -22,7 +22,7 @@ if (typeof browser === 'undefined') {
  * is close to an international boundary, additional levels of tiles, with more
  * detail, are reqested from the specified host.
  */
-const CodeGrid = codegrid.CodeGrid('http://www.loughrigg.org/codegrid-js/tiles/', jsonWorldGrid) // eslint-disable-line no-global-assign
+const CodeGrid = codegrid.CodeGrid('https://www.loughrigg.org/codegrid-js/tiles/', jsonWorldGrid) // eslint-disable-line no-global-assign
 
 const insertServiceLineIntoCategory = function (categoryElem, serviceLine, prio) {
   let lastNonMatchingElem
