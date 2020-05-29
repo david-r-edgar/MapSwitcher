@@ -50,7 +50,10 @@ This will clean and build into `./release`, generating or copying all necessary 
 - OpenCycleMap
 - Facebook (pages and events)
 - CalTopo
-- Strava (global heatmap)
+- Strava
+  - Rides
+  - Routes
+  - Global Heatmap
 - F4map
 - OpenTopoMap
 - Qwant
