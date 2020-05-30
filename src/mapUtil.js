@@ -26,7 +26,7 @@ var MEDIAN_PIXEL_PITCH = 0.264
  * @returns {number} resolution returned in metres per pixel
  */
 function calculateResolutionFromStdZoom (zoom, lat) {
-  let latAdjCoeff = Math.cos(lat * Math.PI / 180)
+  const latAdjCoeff = Math.cos(lat * Math.PI / 180)
   return WORLD_RESOLUTION_MPP * latAdjCoeff / Math.pow(2, zoom)
 }
 
@@ -41,7 +41,7 @@ function calculateResolutionFromStdZoom (zoom, lat) {
  * @returns {integer} zoom level integer (normally in the range 0-20)
  */
 function calculateStdZoomFromResolution (resn, lat, min, max) {
-  let latAdjCoeff = Math.cos(lat * Math.PI / 180)
+  const latAdjCoeff = Math.cos(lat * Math.PI / 180)
   let zoom = Math.log(WORLD_RESOLUTION_MPP * latAdjCoeff / resn) / Math.log(2)
   if (min > zoom) zoom = min
   if ((max > 0) && (max < zoom)) zoom = max
@@ -97,3 +97,20 @@ function calculatePixelPitchFromDPI (ppi) {
 }
 
 /* eslint-ensable no-unused-vars */
+
+function getDistanceFromLatLonInKm (lat1, lon1, lat2, lon2) {
+  const R = 6371 // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1) // deg2rad below
+  const dLon = deg2rad(lon2 - lon1)
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const d = R * c // Distance in km
+  return d
+}
+
+function deg2rad (deg) {
+  return deg * (Math.PI / 180)
+}
