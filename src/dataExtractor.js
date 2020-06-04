@@ -23,7 +23,7 @@ extractors.push({
   host: '.google.',
   extract:
     function (resolve, reject) {
-      function customMap() {
+      function customMap () {
         let sourceMapData = {}
         const customCoordsRe = /ll=([-0-9.]+)%2C([-0-9.]+)/
         const coordArray = window.location.search.match(customCoordsRe)
@@ -37,7 +37,7 @@ extractors.push({
         resolve(sourceMapData)
       }
 
-      function regularMap() {
+      function regularMap () {
         let sourceMapData = {}
         const re2 = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/
         const coordArray2 = window.location.pathname.match(re2)
@@ -121,7 +121,7 @@ extractors.push({
       }
 
       // when a single matching search result is found
-      function searchResultsMap() {
+      function searchResultsMap () {
         const re = /&rllag=([-0-9]+),([-0-9]+)/
         const coordArray = window.location.hash.match(re)
         if (coordArray && coordArray.length > 2) {
@@ -167,8 +167,8 @@ extractors.push({
         resolve(null)
       }
 
-      // when a search results map is shown with multiple possible locations
-      function multipleSearchResultsMap() {
+      // search results 'map' page (click through from search with multiple results)
+      function multipleSearchResultsMap () {
         // when initial map is shown, coords give the bounds of a box containing all search results
         const initialRe = /mv:\[\[([-0-9.]+),([-0-9.]+)\],\[([-0-9.]+),([-0-9.]+)\]\]/
         const initialArray = window.location.hash.match(initialRe)
