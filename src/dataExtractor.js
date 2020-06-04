@@ -23,18 +23,22 @@ extractors.push({
   host: '.google.',
   extract:
     function (resolve, reject) {
-      let sourceMapData = {}
-      // exceptional case for custom maps
-      if (window.location.pathname === '/maps/d/viewer') {
-        const re1 = /ll=([-0-9.]+)%2C([-0-9.]+)&z=([0-9.]+)/
-        const coordArray1 = window.location.search.match(re1)
-        if (coordArray1 && coordArray1.length > 3) {
-          sourceMapData.centreCoords = { 'lat': coordArray1[1], 'lng': coordArray1[2] }
+      function customMap() {
+        let sourceMapData = {}
+        const customCoordsRe = /ll=([-0-9.]+)%2C([-0-9.]+)/
+        const coordArray = window.location.search.match(customCoordsRe)
+        const customZoomRe = /z=([0-9.]+)/
+        const zoomArray = window.location.search.match(customZoomRe)
+        if (coordArray && coordArray.length > 2 && zoomArray && zoomArray.length > 1) {
+          sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
           sourceMapData.resolution =
-            calculateResolutionFromStdZoom(coordArray1[3], coordArray1[1])
+            calculateResolutionFromStdZoom(zoomArray[1], coordArray[1])
         }
         resolve(sourceMapData)
-      } else if (window.location.pathname.indexOf('/maps/') === 0) {
+      }
+
+      function regularMap() {
+        let sourceMapData = {}
         const re2 = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/
         const coordArray2 = window.location.pathname.match(re2)
         if (coordArray2 && coordArray2.length >= 3) {
@@ -114,8 +118,10 @@ extractors.push({
         } finally {
           resolve(sourceMapData)
         }
-      } else if (window.location.pathname.indexOf('/search') === 0 ||
-                window.location.pathname.indexOf('/webhp') === 0) {
+      }
+
+      // when a single matching search result is found
+      function searchResultsMap() {
         const re = /&rllag=([-0-9]+),([-0-9]+)/
         const coordArray = window.location.hash.match(re)
         if (coordArray && coordArray.length > 2) {
@@ -124,6 +130,25 @@ extractors.push({
             locationDescr: 'default map of search results',
             nonUpdating: window.location.hostname + window.location.pathname
           })
+        }
+
+        // when a map of multiple possible results shows on the search page
+        const anchors = document.querySelector('#search').querySelectorAll('a')
+        for (const anchor of anchors) {
+          if (anchor.href.indexOf('https://www.google.com') === 0) {
+            const firstAhrefRe = /rllag=([-0-9]+),([-0-9]+),([-0-9]+)/
+            const firstAhrefArr = anchor.href.match(firstAhrefRe)
+            if (firstAhrefArr && firstAhrefArr.length > 3) {
+              const centreLat = firstAhrefArr[1] / 1000000
+              const centreLng = firstAhrefArr[2] / 1000000
+              const zoomMPP = firstAhrefArr[3] / 100
+              return resolve({
+                centreCoords: { lat: centreLat, lng: centreLng },
+                locationDescr: 'map of search results',
+                resolution: zoomMPP
+              })
+            }
+          }
         }
 
         const dataUrl = document.evaluate('//div[contains(@class, "rhsmap3col")]//a/@data-url',
@@ -140,6 +165,60 @@ extractors.push({
         }
 
         resolve(null)
+      }
+
+      // when a search results map is shown with multiple possible locations
+      function multipleSearchResultsMap() {
+        // when initial map is shown, coords give the bounds of a box containing all search results
+        const initialRe = /mv:\[\[([-0-9.]+),([-0-9.]+)\],\[([-0-9.]+),([-0-9.]+)\]\]/
+        const initialArray = window.location.hash.match(initialRe)
+
+        // after moving, centre coords + zoom are given too
+        const movedRe = /mv:\[\[([-0-9.]+),([-0-9.]+)\],\[([-0-9.]+),([-0-9.]+)\],[a-zA-Z0-9_]+,\[([-0-9.]+),([-0-9.]+)\],([0-9]+)\]/
+        const movedArray = window.location.hash.match(movedRe)
+
+        if (movedArray && movedArray.length > 7) {
+          resolve({
+            centreCoords: { lat: movedArray[5], lng: movedArray[6] },
+            locationDescr: 'displayed (repositioned) map',
+            resolution: calculateResolutionFromStdZoom(
+              movedArray[7], movedArray[5])
+          })
+        } else if (initialArray && initialArray.length > 4) {
+          const [maxLat, maxLng, minLat, minLng] = initialArray.slice(1)
+          const centreLat = (+maxLat + +minLat) / 2
+          const centreLng = (+maxLng + +minLng) / 2
+
+          const vert = getDistanceFromLatLonInKm(maxLat, centreLng, minLat, centreLng)
+          const horiz = getDistanceFromLatLonInKm(centreLat, minLng, centreLat, maxLng)
+
+          const mapdiv = document.querySelector('.rhscol')
+          const vertMetresPerPixel = vert * 1000 / +mapdiv.clientHeight
+          const horizMetresPerPixel = horiz * 1000 / +mapdiv.clientWidth
+
+          const maxMPP = vertMetresPerPixel > horizMetresPerPixel ? vertMetresPerPixel : horizMetresPerPixel
+
+          // use max mpp, adjusted a bit to approximate typical map shown (exact determination of this is unknown)
+          const resnMPP = maxMPP * 1.2
+
+          resolve({
+            centreCoords: { lat: centreLat, lng: centreLng },
+            locationDescr: 'search results map',
+            resolution: resnMPP
+          })
+        }
+      }
+
+      if (window.location.pathname === '/maps/d/viewer') {
+        customMap()
+      } else if (window.location.pathname.indexOf('/maps/') === 0) {
+        regularMap()
+      } else if ((window.location.pathname.indexOf('/search') === 0) &&
+                (window.location.hash.length > 0)) {
+        multipleSearchResultsMap()
+      } else if ((window.location.pathname.indexOf('/search') === 0) ||
+                (window.location.pathname.indexOf('/webhp') === 0)) {
+        searchResultsMap()
       } else {
         reject(null)
       }
