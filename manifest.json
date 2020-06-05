@@ -3,7 +3,7 @@
 
   "name": "Map Switcher",
   "description": "Switch between different map services. Convert coordinates and directions and jump to the same location on another map.",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "options_page": "html/options.html",
 
   "browser_action": {
