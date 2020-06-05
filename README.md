@@ -68,6 +68,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - NGI / IGN (Belgium)
 - OSMaps
 - Windy
+- Flightradar24
 
 ### Output mapping services
 
@@ -109,6 +110,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - OSMaps
 - Windy
 - OpenWeatherMap
+- Flightradar24
 
 ### Utilities
 - GPX download
