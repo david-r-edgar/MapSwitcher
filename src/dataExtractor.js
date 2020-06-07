@@ -169,11 +169,12 @@ extractors.push({
           // so instead we'll pass the location
           const dataUrlPlaceRe = /\/maps\/place\/([^/]+)\//
           const dataUrlPlaceArray = dataUrl.match(dataUrlPlaceRe)
-          if (dataUrlPlaceArray && dataUrlPlaceArray.length > 1)
-          resolve({
-            googlePlace: dataUrlPlaceArray[1],
-            locationDescr: 'named search location'
-          })
+          if (dataUrlPlaceArray && dataUrlPlaceArray.length > 1) {
+            resolve({
+              googlePlace: dataUrlPlaceArray[1],
+              locationDescr: 'named search location'
+            })
+          }
         }
 
         resolve(null)

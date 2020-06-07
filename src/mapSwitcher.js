@@ -3,6 +3,7 @@
   OutputMaps,
   ScriptExecution,
   codegrid, jsonWorldGrid
+  calculateResolutionFromStdZoom,
   CoordTransform, OsGridRef,
   tippy */
 
