@@ -30,7 +30,7 @@ extractors.push({
         const customZoomRe = /z=([0-9.]+)/
         const zoomArray = window.location.search.match(customZoomRe)
         if (coordArray && coordArray.length > 2 && zoomArray && zoomArray.length > 1) {
-          sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+          sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
           sourceMapData.resolution =
             calculateResolutionFromStdZoom(zoomArray[1], coordArray[1])
         }
@@ -42,7 +42,7 @@ extractors.push({
         const re2 = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/
         const coordArray2 = window.location.pathname.match(re2)
         if (coordArray2 && coordArray2.length >= 3) {
-          sourceMapData.centreCoords = { 'lat': coordArray2[1], 'lng': coordArray2[2] }
+          sourceMapData.centreCoords = { lat: coordArray2[1], lng: coordArray2[2] }
         }
         if (coordArray2 && coordArray2.length >= 5) {
           if (coordArray2[4] === 'z') {
@@ -126,7 +126,7 @@ extractors.push({
         const coordArray = window.location.hash.match(re)
         if (coordArray && coordArray.length > 2) {
           resolve({
-            centreCoords: { 'lat': coordArray[1] / 1000000, 'lng': coordArray[2] / 1000000 },
+            centreCoords: { lat: coordArray[1] / 1000000, lng: coordArray[2] / 1000000 },
             locationDescr: 'default map of search results',
             nonUpdating: window.location.hostname + window.location.pathname
           })
@@ -151,16 +151,28 @@ extractors.push({
           }
         }
 
+        // sometimes (for locations with known single coordinates?) the map url will contain lat/lng
         const dataUrl = document.evaluate('//div[contains(@class, "rhsmap3col")]//a/@data-url',
           document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
         const dataUrlRe = /@([-0-9.]+),([-0-9.]+),([0-9]+)z/
         const dataUrlCoordArray = dataUrl.match(dataUrlRe)
         if (dataUrlCoordArray && dataUrlCoordArray.length > 3) {
           resolve({
-            centreCoords: { 'lat': dataUrlCoordArray[1], 'lng': dataUrlCoordArray[2] },
+            centreCoords: { lat: dataUrlCoordArray[1], lng: dataUrlCoordArray[2] },
             locationDescr: 'map of primary search result',
             resolution: calculateResolutionFromStdZoom(
               dataUrlCoordArray[3], dataUrlCoordArray[1])
+          })
+        } else {
+          // sometimes the url will not contain lat/lng
+          // instead there's a hex id (whose interpretation is unknown)
+          // so instead we'll pass the location
+          const dataUrlPlaceRe = /\/maps\/place\/([^/]+)\//
+          const dataUrlPlaceArray = dataUrl.match(dataUrlPlaceRe)
+          if (dataUrlPlaceArray && dataUrlPlaceArray.length > 1)
+          resolve({
+            googlePlace: dataUrlPlaceArray[1],
+            locationDescr: 'named search location'
           })
         }
 
@@ -237,7 +249,7 @@ extractors.push({
         const coordArray = window.location.search.match(re1)
 
         if (coordArray && coordArray.length >= 3) {
-          sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+          sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
         }
         const re2 = /lvl=([0-9]+)/
         const levelArray = window.location.search.match(re2)
@@ -261,7 +273,7 @@ extractors.push({
         }
 
         sourceMapData.centreCoords = {
-          'lat': mapModeStateHistory.centerPoint.latitude, 'lng': mapModeStateHistory.centerPoint.longitude }
+          lat: mapModeStateHistory.centerPoint.latitude, lng: mapModeStateHistory.centerPoint.longitude }
 
         const level = mapModeStateHistory.level
         sourceMapData.resolution = calculateResolutionFromStdZoom(
@@ -292,7 +304,7 @@ extractors.push({
             sourceMapData.directions.route[rteWptIndex].address.match(re3)
           if (wptArray && wptArray.length > 2) {
             sourceMapData.directions.route[rteWptIndex].coords =
-              { 'lat': wptArray[1], 'lng': wptArray[2] }
+              { lat: wptArray[1], lng: wptArray[2] }
           }
         }
 
@@ -323,7 +335,7 @@ extractors.push({
       const re1 = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
       const coordArray = window.location.hash.match(re1)
       if (coordArray && coordArray.length >= 4) {
-        sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
+        sourceMapData.centreCoords = { lat: coordArray[2], lng: coordArray[3] }
         sourceMapData.resolution = calculateResolutionFromStdZoom(
           coordArray[1], sourceMapData.centreCoords.lat)
       }
@@ -344,11 +356,11 @@ extractors.push({
         }
 
         sourceMapData.directions.route[0].coords =
-          { 'lat': routeCoordsArray[1],
-            'lng': routeCoordsArray[2] }
+          { lat: routeCoordsArray[1],
+            lng: routeCoordsArray[2] }
         sourceMapData.directions.route[1].coords =
-          { 'lat': routeCoordsArray[3],
-            'lng': routeCoordsArray[4] }
+          { lat: routeCoordsArray[3],
+            lng: routeCoordsArray[4] }
       }
 
       const re3 = /engine=[a-zA-Z]+_([a-z]+)/
@@ -376,8 +388,8 @@ extractors.push({
         const calcCentreLng = (+sourceMapData.directions.route[0].coords.lng +
           +sourceMapData.directions.route[1].coords.lng) / 2
         sourceMapData.centreCoords = {
-          'lat': calcCentreLat,
-          'lng': calcCentreLng
+          lat: calcCentreLat,
+          lng: calcCentreLng
         }
         sourceMapData.resolution = calculateResolutionFromStdZoom(
           8, calcCentreLat)
@@ -402,22 +414,22 @@ extractors.push({
         const lat = +coordArrayD[1]
         const lng = +coordArrayD[3]
         sourceMapData.centreCoords = {
-          'lat': coordArrayD[2] === 'N' ? lat : -lat,
-          'lng': coordArrayD[4] === 'E' ? lng : -lng
+          lat: coordArrayD[2] === 'N' ? lat : -lat,
+          lng: coordArrayD[4] === 'E' ? lng : -lng
         }
       } else if (coordArrayDM && coordArrayDM.length >= 7) {
         const lat = +coordArrayDM[1] + coordArrayDM[2] / 60
         const lng = +coordArrayDM[4] + coordArrayDM[5] / 60
         sourceMapData.centreCoords = {
-          'lat': coordArrayDM[3] === 'N' ? lat : -lat,
-          'lng': coordArrayDM[6] === 'E' ? lng : -lng
+          lat: coordArrayDM[3] === 'N' ? lat : -lat,
+          lng: coordArrayDM[6] === 'E' ? lng : -lng
         }
       } else if (coordArrayDMS && coordArrayDMS.length >= 9) {
         const lat = +coordArrayDMS[1] + coordArrayDMS[2] / 60 + coordArrayDMS[3] / 3600
         const lng = +coordArrayDMS[5] + coordArrayDMS[6] / 60 + coordArrayDMS[7] / 3600
         sourceMapData.centreCoords = {
-          'lat': coordArrayDMS[4] === 'N' ? lat : -lat,
-          'lng': coordArrayDMS[8] === 'E' ? lng : -lng
+          lat: coordArrayDMS[4] === 'N' ? lat : -lat,
+          lng: coordArrayDMS[8] === 'E' ? lng : -lng
         }
       }
       sourceMapData.resolution = 12
@@ -439,14 +451,14 @@ extractors.push({
         const re1 = /ll=([-0-9.]+),([-0-9.]+)&z=([0-9.]+)/
         let coordArray = window.location.hash.match(re1)
         if (coordArray && coordArray.length > 3) {
-          sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+          sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
           sourceMapData.resolution =
             calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
         }
         const re2 = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9.]+)/
         coordArray = window.location.search.match(re2)
         if (coordArray && coordArray.length > 3) {
-          sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+          sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
           sourceMapData.resolution =
             calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
         }
@@ -464,7 +476,7 @@ extractors.push({
             lng = -lng
           }
           Object.assign(sourceMapData, {
-            centreCoords: { 'lat': lat, 'lng': lng },
+            centreCoords: { lat, lng },
             resolution: calculateResolutionFromStdZoom(15, lat),
             locationDescr: 'primary geocache coordinates'
           })
@@ -482,7 +494,7 @@ extractors.push({
       const re1 = /&lat=([-0-9.]+)&lon=([-0-9.]+)&/
       const coordArray = window.location.hash.match(re1)
       if (coordArray && coordArray.length >= 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+        sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
       }
       const re2 = /z=([0-9]+)/
       const zoomArray = window.location.hash.match(re2)
@@ -505,7 +517,7 @@ extractors.push({
       const lonArray = centrePermalink.match(/lon=([-0-9.]+)/)
       const latArray = centrePermalink.match(/lat=([-0-9.]+)/)
       if (lonArray && lonArray.length > 1 && latArray && latArray.length > 1) {
-        sourceMapData.centreCoords = { 'lat': latArray[1], 'lng': lonArray[1] }
+        sourceMapData.centreCoords = { lat: latArray[1], lng: lonArray[1] }
         const zoomArray = centrePermalink.match(/zoom=([0-9]+)/)
         if (zoomArray && zoomArray.length > 1) {
           sourceMapData.resolution =
@@ -543,7 +555,7 @@ extractors.push({
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
       const coordArray = centrePermalink.match(re)
       if (coordArray && coordArray.length > 2) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+        sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
       }
       const re2 = /zoom=([0-9]+)/
       const zoomArray = centrePermalink.match(re2)
@@ -563,7 +575,7 @@ extractors.push({
       const re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/
       const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+        sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
         sourceMapData.resolution = calculateResolutionFromStdZoom(
           coordArray[3], sourceMapData.centreCoords.lat)
       }
@@ -650,7 +662,7 @@ extractors.push({
       const re1 = /X=([0-9]+)&Y=([0-9]+)/
       const osCoordArray = urlToShare.match(re1)
       if (osCoordArray && osCoordArray.length > 2) {
-        sourceMapData.osgbCentreCoords = { 'e': osCoordArray[1], 'n': osCoordArray[2] }
+        sourceMapData.osgbCentreCoords = { e: osCoordArray[1], n: osCoordArray[2] }
       }
       const re2 = /Z=([0-9]+)/
       const zoomArray = urlToShare.match(re2)
@@ -696,7 +708,7 @@ extractors.push({
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
         resolve({
-          centreCoords: { 'lat': coordArray[2], 'lng': coordArray[3] },
+          centreCoords: { lat: coordArray[2], lng: coordArray[3] },
           resolution: calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
         })
       } else {
@@ -713,7 +725,7 @@ extractors.push({
       const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
         resolve({
-          centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
+          centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
           nonUpdating: window.location.hostname,
           locationDescr: 'non-updating URL'
@@ -732,7 +744,7 @@ extractors.push({
       const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
         resolve({
-          centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
+          centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
           nonUpdating: window.location.hostname,
           locationDescr: 'non-updating URL'
@@ -751,7 +763,7 @@ extractors.push({
       const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 2) {
         let sourceMapData = {
-          centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
+          centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           nonUpdating: window.location.hostname,
           locationDescr: 'non-updating URL'
         }
@@ -774,7 +786,7 @@ extractors.push({
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length >= 3) {
         resolve({
-          centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
+          centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
           locationDescr: 'current pin location'
         })
@@ -792,7 +804,7 @@ extractors.push({
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length >= 3) {
         resolve({
-          centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
+          centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           resolution: calculateResolutionFromStdZoom(coordArray[3], coordArray[1]),
           locationDescr: 'current pin location'
         })
@@ -813,7 +825,7 @@ extractors.push({
         const re = /East: ([0-9.]+) : North: ([0-9.]+)/
         const mapCentreArr = locationText.match(re)
         if (mapCentreArr && mapCentreArr.length > 2) {
-          sourceMapData.osgbCentreCoords = { 'e': mapCentreArr[1], 'n': mapCentreArr[2] }
+          sourceMapData.osgbCentreCoords = { e: mapCentreArr[1], n: mapCentreArr[2] }
           sourceMapData.locationDescr = 'map centre'
         }
       }
@@ -830,7 +842,7 @@ extractors.push({
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
       const coordArray = geo.split(';')
       if (coordArray.length === 2) {
-        sourceMapData.centreCoords = { 'lat': coordArray[0].trim(), 'lng': coordArray[1].trim() }
+        sourceMapData.centreCoords = { lat: coordArray[0].trim(), lng: coordArray[1].trim() }
         sourceMapData.locationDescr = 'primary article coordinates'
       }
       resolve(sourceMapData)
@@ -847,7 +859,7 @@ extractors.push({
       const re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
       const dataArray = href.match(re)
       if (dataArray && dataArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': dataArray[2], 'lng': dataArray[3] }
+        sourceMapData.centreCoords = { lat: dataArray[2], lng: dataArray[3] }
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(dataArray[1], dataArray[2])
       }
@@ -869,7 +881,7 @@ extractors.push({
         const re1 = /markers=([-0-9.]+)%2C([-0-9.]+)/
         let coordArr = mapImages.currentSrc.match(re1)
         if (coordArr && coordArr.length > 2) {
-          sourceMapData.centreCoords = { 'lat': coordArr[1], 'lng': coordArr[2] }
+          sourceMapData.centreCoords = { lat: coordArr[1], lng: coordArr[2] }
           const zoomRe = /zoom=([0-9]+)/
           const zoomArr = mapImages.currentSrc.match(zoomRe)
           if (zoomArr && zoomArr.length > 1) {
@@ -901,7 +913,7 @@ extractors.push({
       const coordArray = window.location.search.match(coordRe)
       if (coordArray && coordArray.length > 2) {
         let sourceMapData = {
-          centreCoords: { 'lat': coordArray[2], 'lng': coordArray[1] }
+          centreCoords: { lat: coordArray[2], lng: coordArray[1] }
         }
         const zoomArray = window.location.search.match(/z=([0-9]+)/)
         if (zoomArray && zoomArray.length > 1) {
@@ -950,7 +962,7 @@ extractors.push({
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 2) {
         let sourceMapData = {
-          centreCoords: { 'lat': coordArray[1], 'lng': coordArray[2] },
+          centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           locationDescr: 'map centre specified in URL'
         }
         const zoomArray = window.location.hash.match(/z=([0-9]+)/)
@@ -1022,7 +1034,7 @@ extractors.push({
       const re = /#lat=([-0-9.]+)&lon=([-0-9.]+)&zoom=([0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+        sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
       }
@@ -1038,7 +1050,7 @@ extractors.push({
       const re = /#map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
+        sourceMapData.centreCoords = { lat: coordArray[2], lng: coordArray[3] }
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
       }
@@ -1054,7 +1066,7 @@ extractors.push({
       const re = /#map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
+        sourceMapData.centreCoords = { lat: coordArray[2], lng: coordArray[3] }
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(+coordArray[1] + 1, coordArray[2])
       }
@@ -1070,7 +1082,7 @@ extractors.push({
       const re1 = /lat=([-0-9.]+)&lng=([-0-9.]+)/
       const coordArray = window.location.search.match(re1)
       if (coordArray && coordArray.length >= 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+        sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
       }
       const re2 = /z=([0-9]+)/
       const zoomArray = window.location.search.match(re2)
@@ -1090,7 +1102,7 @@ extractors.push({
       const re = /@([-0-9.]+),([-0-9.]+),([0-9]+)z/
       const coordArray = window.location.pathname.match(re)
       if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+        sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
       }
@@ -1106,7 +1118,7 @@ extractors.push({
       const re = /map=([0-9]+)!([-0-9.]+)!([-0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
-        sourceMapData.centreCoords = { 'lat': coordArray[2], 'lng': coordArray[3] }
+        sourceMapData.centreCoords = { lat: coordArray[2], lng: coordArray[3] }
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(coordArray[1], coordArray[2])
       }
@@ -1125,7 +1137,7 @@ extractors.push({
       const lon = latlon.text.match(/.longitude.:([0-9.-]+)/)[1]
 
       if (lat.length > 3 && lon.length > 3) {
-        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+        sourceMapData.centreCoords = { lat: lat, lng: lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
         17, sourceMapData.centreCoords.lat)
@@ -1145,7 +1157,7 @@ extractors.push({
       const lon = latlon.text.match(/lon:[ ']+([0-9.-]+)/)[1]
 
       if (lat.length > 3 && lon.length > 3) {
-        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+        sourceMapData.centreCoords = { lat: lat, lng: lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
         17, sourceMapData.centreCoords.lat)
@@ -1165,7 +1177,7 @@ extractors.push({
       const lon = latlon.text.match(/longitude.:([0-9.-]+)/)[1]
 
       if (lat.length > 3 && lon.length > 3) {
-        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+        sourceMapData.centreCoords = { lat: lat, lng: lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
         17, sourceMapData.centreCoords.lat)
@@ -1185,7 +1197,7 @@ extractors.push({
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
 
       if (lat.length > 3 && lon.length > 3) {
-        sourceMapData.centreCoords = { 'lat': lat, 'lng': lon }
+        sourceMapData.centreCoords = { lat: lat, lng: lon }
       }
       sourceMapData.resolution = calculateResolutionFromStdZoom(
         17, sourceMapData.centreCoords.lat)
@@ -1206,7 +1218,7 @@ extractors.push({
           const cx = gmap.value.match(/cx=([-0-9.]+)/)[1]
           const cy = gmap.value.match(/cy=([-0-9.]+)/)[1]
           const z = gmap.value.match(/z=([-0-9.]+)/)[1]
-          sourceMapData.centreCoords = { 'lat': cy, 'lng': cx }
+          sourceMapData.centreCoords = { lat: cy, lng: cx }
           sourceMapData.resolution = calculateResolutionFromStdZoom(z, cy)
           resolve(sourceMapData)
           return true
@@ -1239,7 +1251,7 @@ extractors.push({
         // use max mpp, increased by a trial-and-error factor to approximate the full map extent shown (not just the bounds of the peaks)
         const resnMPP = maxMPP * 1.4
 
-        sourceMapData.centreCoords = { 'lat': centreLat, 'lng': centreLng }
+        sourceMapData.centreCoords = { lat: centreLat, lng: centreLng }
         sourceMapData.resolution = resnMPP // calculateResolutionFromStdZoom(5, centreLat)
         resolve(sourceMapData)
       }
@@ -1257,7 +1269,7 @@ extractors.push({
     const re = /([-0-9.]+),([-0-9.]+),([0-9]+)/
     const coordArray = window.location.pathname.match(re)
     if (coordArray && coordArray.length > 3) {
-      sourceMapData.centreCoords = { 'lat': coordArray[1], 'lng': coordArray[2] }
+      sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
       sourceMapData.resolution =
         calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
     }
@@ -1300,7 +1312,7 @@ function ignngiExtractor (resolve) {
   const re = /x=([0-9.]+)&y=([0-9.]+)&zoom=([0-9]+)/
   const [, easting, northing, zoom] = window.location.search.match(re)
   if (easting && northing && zoom) {
-    sourceMapData.lambertCentreCoords = { 'e': easting, 'n': northing }
+    sourceMapData.lambertCentreCoords = { e: easting, n: northing }
     sourceMapData.resolution = calculateResolutionFromStdZoom(+zoom + 7, 50.8)
   }
   resolve(sourceMapData)

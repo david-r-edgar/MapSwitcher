@@ -333,8 +333,8 @@ var MapSwitcher = {
         var osLL = OsGridRef.osGridToLatLong(osGR)
         var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
         extractedData.centreCoords = {
-          'lat': wgs84LL._lat,
-          'lng': wgs84LL._lon
+          lat: wgs84LL._lat,
+          lng: wgs84LL._lon
         }
         resolve(extractedData)
       } else if (extractedData.lambertCentreCoords) {
@@ -344,13 +344,33 @@ var MapSwitcher = {
           .then(response => response.json())
           .then(latlng => {
             extractedData.centreCoords = {
-              'lat': latlng.lat,
-              'lng': latlng.lng
+              lat: latlng.lat,
+              lng: latlng.lng
             }
             resolve(extractedData)
           })
           .catch(() => {
             reject(extractedData)
+          })
+      } else if (extractedData.googlePlace) {
+        const request = new window.Request(`https://www.google.com/maps?q=${extractedData.googlePlace}`)
+        const initOptions = {
+          credentials: 'omit'
+        }
+
+        window.fetch(request, initOptions)
+          .then(response => response.blob())
+          .then(blob => blob.text())
+          .then(blobtext => {
+            // coords are given many times in the response, but some others are shifted to one side
+            const googleRe = /preview\/place\/[^/]+\/@([-0-9.]+),([-0-9.]+),[-0-9.]+a,([0-9.]+)y/
+            const resultArray = blobtext.match(googleRe)
+            extractedData.centreCoords = {
+              lat: resultArray[1],
+              lng: resultArray[2]
+            }
+            extractedData.resolution = calculateResolutionFromStdZoom(resultArray[3], resultArray[1])
+            resolve(extractedData)
           })
       } else {
         // no centre coords of any recognised format
