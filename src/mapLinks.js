@@ -10,15 +10,6 @@ if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
-const insertServiceLineIntoCategory = function (categoryElem, serviceLine, prio) {
-  let lastNonMatchingElem
-  for (let elem of categoryElem.children) {
-    if (elem.getAttribute('data-sort') > prio) break
-    lastNonMatchingElem = elem
-  }
-  lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
-}
-
 /**
  * Main view object for the extension popup.
  */
@@ -89,6 +80,17 @@ const MapLinksView = {
     return title
   },
 
+
+  insertServiceLineIntoCategory: function (categoryElem, serviceLine, prio) {
+    let lastNonMatchingElem
+    for (let elem of categoryElem.children) {
+      if (elem.getAttribute('data-sort') > prio) break
+      lastNonMatchingElem = elem
+    }
+    lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
+  },
+
+
   /**
      * Adds links to a map service to a particular category
      *
@@ -111,6 +113,7 @@ const MapLinksView = {
     let prioDefaults = {}
     prioDefaults['prio/' + mapService.id] = mapService.prio !== undefined ? mapService.prio : 999
 
+    const self = this
     browser.storage.local.get(prioDefaults, function (prio) {
       mapService.prio = prio['prio/' + mapService.id]
 
@@ -118,7 +121,7 @@ const MapLinksView = {
         mapService,
         mapLinks,
         note)
-      insertServiceLineIntoCategory(categoryElem, serviceLine, mapService.prio)
+      self.insertServiceLineIntoCategory(categoryElem, serviceLine, mapService.prio)
 
       if (note && note.length) {
         tippy('.linknote', {
