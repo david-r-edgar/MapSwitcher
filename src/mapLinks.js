@@ -1,10 +1,13 @@
 /* global
-  browser, chrome, Blob,
-  OutputMaps,
+  globalThis,
+  Blob,
   tippy */
 
+import OutputMaps from './outputMaps.js'
+
+let browser
 if (typeof browser === 'undefined') {
-  browser = chrome // eslint-disable-line no-global-assign
+  browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
 const insertServiceLineIntoCategory = function (categoryElem, serviceLine, prio) {

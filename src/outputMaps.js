@@ -1,5 +1,5 @@
 /* global
-  browser, chrome,
+  globalThis,
   calculateStdZoomFromResolution,
   calculateScaleFromResolution,
   CoordTransform, OsGridRef, LatLon */
@@ -9,8 +9,9 @@
  * Firefox uses 'browser'. Chrome uses 'chrome'.
  * Checking here allows us to use a common 'browser' everywhere.
  */
+let browser
 if (typeof browser === 'undefined') {
-  browser = chrome // eslint-disable-line no-global-assign
+  browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
 let OutputMaps = {
@@ -1503,3 +1504,5 @@ OutputMaps.services = [
     }
   }
 ]
+
+export default OutputMaps

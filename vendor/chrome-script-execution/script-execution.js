@@ -1,5 +1,10 @@
 'use strict';
 
+let browser
+if (typeof browser === 'undefined') {
+  browser = globalThis.chrome // eslint-disable-line no-global-assign
+}
+
 (function () {
 
     function ScriptExecution(tabId) {
