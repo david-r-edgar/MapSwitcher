@@ -843,7 +843,9 @@ extractors.push({
         const mapCentreArr = window.location.search.match(re)
         if (mapCentreArr && mapCentreArr.length > 2) {
           resolve({
-            centreCoords: { lat: mapCentreArr[1], lng: mapCentreArr[2] }
+            centreCoords: { lat: mapCentreArr[1], lng: mapCentreArr[2] },
+            nonUpdating: window.location.hostname,
+            locationDescr: 'non-updating URL'
           })
           return true
         }
