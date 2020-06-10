@@ -68,10 +68,10 @@ var MapSwitcher = {
   },
 
   normaliseOSGBCoords: function (extractedData) {
-    var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
+    const osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
       extractedData.osgbCentreCoords.n)
-    var osLL = OsGridRef.osGridToLatLong(osGR)
-    var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
+    const osLL = OsGridRef.osGridToLatLong(osGR)
+    const wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
     extractedData.centreCoords = {
       lat: wgs84LL._lat,
       lng: wgs84LL._lon
@@ -79,39 +79,31 @@ var MapSwitcher = {
     return extractedData
   },
 
-  normaliseLambertCoords: function (extractedData) {
+  normaliseLambertCoords: async function (extractedData) {
     const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
-    return window.fetch(request)
-      .then(response => response.json())
-      .then(latlng => {
-        extractedData.centreCoords = {
-          lat: latlng.lat,
-          lng: latlng.lng
-        }
-        return extractedData
-      })
+    const response = await window.fetch(request)
+    const { lat, lng } = await response.json()
+    extractedData.centreCoords = { lat, lng }
+    return extractedData
   },
 
-  normaliseGooglePlace: function (extractedData) {
+  normaliseGooglePlace: async function (extractedData) {
     const request = new window.Request(`https://www.google.com/maps?q=${extractedData.googlePlace}`)
     const initOptions = {
       credentials: 'omit'
     }
-
-    return window.fetch(request, initOptions)
-      .then(response => response.blob())
-      .then(blob => blob.text())
-      .then(blobtext => {
-        // coords are given many times in the response, but some others are shifted to one side
-        const googleRe = /preview\/place\/[^/]+\/@([-0-9.]+),([-0-9.]+),[-0-9.]+a,([0-9.]+)y/
-        const resultArray = blobtext.match(googleRe)
-        extractedData.centreCoords = {
-          lat: resultArray[1],
-          lng: resultArray[2]
-        }
-        extractedData.resolution = calculateResolutionFromStdZoom(resultArray[3], resultArray[1])
-        return extractedData
-      })
+    const response = await window.fetch(request, initOptions)
+    const responseBlob = await response.blob()
+    const blobtext = await responseBlob.text()
+    // coords are given many times in the response, but some others are shifted to one side
+    const googleRe = /preview\/place\/[^/]+\/@([-0-9.]+),([-0-9.]+),[-0-9.]+a,([0-9.]+)y/
+    const resultArray = blobtext.match(googleRe)
+    extractedData.centreCoords = {
+      lat: resultArray[1],
+      lng: resultArray[2]
+    }
+    extractedData.resolution = calculateResolutionFromStdZoom(resultArray[3], resultArray[1])
+    return extractedData
   },
 
   /**
@@ -123,28 +115,29 @@ var MapSwitcher = {
     * @param {object} extractedData - Data object extracted by the dataExtractor.
     * @return Promise which resolves if the data can be normalised, or rejects if not.
     */
-  normaliseExtractedData: function (extractedData) {
-    return new Promise(function (resolve, reject) {
-      if (!extractedData) {
-        return reject(extractedData)
-      }
+  normaliseExtractedData: async function (extractedData) {
+    // return new Promise(function (resolve, reject) {
+    if (!extractedData) {
+      throw new Error('no data extracted')
+    }
 
-      if (extractedData.centreCoords) {
-        // regular wgs84 coords extracted
-        resolve(extractedData)
-      } else if (extractedData.osgbCentreCoords) {
-        // osgb36 coords specified
-        resolve(MapSwitcher.normaliseOSGBCoords(extractedData))
-      } else if (extractedData.lambertCentreCoords) {
-        // Lambert Conic Conformal coords specified
-        resolve(MapSwitcher.normaliseLambertCoords(extractedData))
-      } else if (extractedData.googlePlace) {
-        resolve(MapSwitcher.normaliseGooglePlace(extractedData))
-      } else {
-        // no centre coords of any recognised format
-        reject(extractedData)
-      }
-    })
+    if (extractedData.centreCoords) {
+      // regular wgs84 coords extracted
+      return extractedData
+    } else if (extractedData.osgbCentreCoords) {
+      // osgb36 coords specified
+      return MapSwitcher.normaliseOSGBCoords(extractedData)
+    } else if (extractedData.lambertCentreCoords) {
+      // Lambert Conic Conformal coords specified
+      return MapSwitcher.normaliseLambertCoords(extractedData)
+    } else if (extractedData.googlePlace) {
+      // named google place (a map is being shown in search results, but
+      // we don't know how to extract the coords)
+      return MapSwitcher.normaliseGooglePlace(extractedData)
+    }
+
+    // if we reach here, then have no coords of any recognised format
+    throw new Error('extracted data not in recognised format')
   },
 
   /**
@@ -182,9 +175,9 @@ var MapSwitcher = {
     * Handles cases where no coordinates are available from the page, or another problem
     * has occured.
     *
-    * @param {object} sourceMapData - Data object extracted by the dataExtractor.
+    * @param {object} errorObject - Contains any relevant error data
     */
-  handleNoCoords: function (sourceMapData) {
+  handleNoCoords: function (errorObject) {
     const nomapElem = document.getElementById('nomap')
     nomapElem.style.display = 'block'
     const maplinkboxElem = document.getElementById('maplinkbox')
@@ -280,20 +273,17 @@ var MapSwitcher = {
  * Then performs some auxiliary methods before executing the main method run() which
  * generates all the links.
  */
-function runMapSwitcher () {
-  MapSwitcher.validateCurrentTab().then(function () {
-    Promise.all([MapSwitcher.listenForExtraction(), MapSwitcher.runExtraction()])
-      // s[0] refers to the source map data received from the dataExtractor script
-      .then(s => s[0])
-      // the following functions use the extracted source map data to build the view
-      .then(s => MapSwitcher.normaliseExtractedData(s))
-      .then(s => MapSwitcher.getCountryCode(s))
-      .then(s => MapSwitcher.constructOutputs(s))
-      .then(s => MapSwitcher.loaded(s))
-      .catch(s => (MapSwitcher.handleNoCoords(s)))
-  }, function () {
-    MapSwitcher.handleNoCoords()
-  })
+async function runMapSwitcher () {
+  try {
+    await MapSwitcher.validateCurrentTab()
+    const [extractedData] = await Promise.all([MapSwitcher.listenForExtraction(), MapSwitcher.runExtraction()])
+    const normalised = await MapSwitcher.normaliseExtractedData(extractedData)
+    const countryCodeAdded = await MapSwitcher.getCountryCode(normalised)
+    const outputsConstructed = await MapSwitcher.constructOutputs(countryCodeAdded)
+    await MapSwitcher.loaded(outputsConstructed)
+  } catch (err) {
+    MapSwitcher.handleNoCoords(err)
+  }
 }
 
 if (

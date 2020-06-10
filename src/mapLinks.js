@@ -80,7 +80,6 @@ const MapLinksView = {
     return title
   },
 
-
   insertServiceLineIntoCategory: function (categoryElem, serviceLine, prio) {
     let lastNonMatchingElem
     for (let elem of categoryElem.children) {
@@ -89,7 +88,6 @@ const MapLinksView = {
     }
     lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
   },
-
 
   /**
      * Adds links to a map service to a particular category
