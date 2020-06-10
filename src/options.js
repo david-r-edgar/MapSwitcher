@@ -1,16 +1,18 @@
 /* global
-  browser, chrome, confirm,
+  globalThis, confirm,
   XPathResult,
-  Sortable,
-  OutputMaps */
+  Sortable */
+
+import OutputMaps from './outputMaps.js'
 
 /**
  * The Web Extension API is implemented on different root objects in different browsers.
  * Firefox uses 'browser'. Chrome uses 'chrome'.
  * Checking here allows us to use a common 'browser' everywhere.
  */
+let browser
 if (typeof browser === 'undefined') {
-  browser = chrome // eslint-disable-line no-global-assign
+  browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
 /**

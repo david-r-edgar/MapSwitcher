@@ -18,15 +18,6 @@ if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
-/**
- * CodeGrid is a service for identifying the country within which a coordinate
- * falls. The first-level identification tiles are loaded client-side, so most
- * of the time, no further request is necessary. But in cases where the coordinate
- * is close to an international boundary, additional levels of tiles, with more
- * detail, are reqested from the specified host.
- */
-const CodeGrid = codegrid.CodeGrid('https://www.loughrigg.org/codegrid-js/tiles/', jsonWorldGrid) // eslint-disable-line no-global-assign
-
 var MapSwitcher = {
 
   /**
@@ -76,6 +67,53 @@ var MapSwitcher = {
     })
   },
 
+  normaliseOSGBCoords: function (extractedData) {
+    var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
+      extractedData.osgbCentreCoords.n)
+    var osLL = OsGridRef.osGridToLatLong(osGR)
+    var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
+    extractedData.centreCoords = {
+      lat: wgs84LL._lat,
+      lng: wgs84LL._lon
+    }
+    return extractedData
+  },
+
+  normaliseLambertCoords: function (extractedData) {
+    const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
+    return window.fetch(request)
+      .then(response => response.json())
+      .then(latlng => {
+        extractedData.centreCoords = {
+          lat: latlng.lat,
+          lng: latlng.lng
+        }
+        return extractedData
+      })
+  },
+
+  normaliseGooglePlace: function (extractedData) {
+    const request = new window.Request(`https://www.google.com/maps?q=${extractedData.googlePlace}`)
+    const initOptions = {
+      credentials: 'omit'
+    }
+
+    return window.fetch(request, initOptions)
+      .then(response => response.blob())
+      .then(blob => blob.text())
+      .then(blobtext => {
+        // coords are given many times in the response, but some others are shifted to one side
+        const googleRe = /preview\/place\/[^/]+\/@([-0-9.]+),([-0-9.]+),[-0-9.]+a,([0-9.]+)y/
+        const resultArray = blobtext.match(googleRe)
+        extractedData.centreCoords = {
+          lat: resultArray[1],
+          lng: resultArray[2]
+        }
+        extractedData.resolution = calculateResolutionFromStdZoom(resultArray[3], resultArray[1])
+        return extractedData
+      })
+  },
+
   /**
     * Put the extracted data in a standard format, and perform any necessary checks
     * to ensure the extracted data object is suitable for output use.
@@ -96,50 +134,12 @@ var MapSwitcher = {
         resolve(extractedData)
       } else if (extractedData.osgbCentreCoords) {
         // osgb36 coords specified
-        var osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
-          extractedData.osgbCentreCoords.n)
-        var osLL = OsGridRef.osGridToLatLong(osGR)
-        var wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
-        extractedData.centreCoords = {
-          lat: wgs84LL._lat,
-          lng: wgs84LL._lon
-        }
-        resolve(extractedData)
+        resolve(MapSwitcher.normaliseOSGBCoords(extractedData))
       } else if (extractedData.lambertCentreCoords) {
         // Lambert Conic Conformal coords specified
-        const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
-        window.fetch(request)
-          .then(response => response.json())
-          .then(latlng => {
-            extractedData.centreCoords = {
-              lat: latlng.lat,
-              lng: latlng.lng
-            }
-            resolve(extractedData)
-          })
-          .catch(() => {
-            reject(extractedData)
-          })
+        resolve(MapSwitcher.normaliseLambertCoords(extractedData))
       } else if (extractedData.googlePlace) {
-        const request = new window.Request(`https://www.google.com/maps?q=${extractedData.googlePlace}`)
-        const initOptions = {
-          credentials: 'omit'
-        }
-
-        window.fetch(request, initOptions)
-          .then(response => response.blob())
-          .then(blob => blob.text())
-          .then(blobtext => {
-            // coords are given many times in the response, but some others are shifted to one side
-            const googleRe = /preview\/place\/[^/]+\/@([-0-9.]+),([-0-9.]+),[-0-9.]+a,([0-9.]+)y/
-            const resultArray = blobtext.match(googleRe)
-            extractedData.centreCoords = {
-              lat: resultArray[1],
-              lng: resultArray[2]
-            }
-            extractedData.resolution = calculateResolutionFromStdZoom(resultArray[3], resultArray[1])
-            resolve(extractedData)
-          })
+        resolve(MapSwitcher.normaliseGooglePlace(extractedData))
       } else {
         // no centre coords of any recognised format
         reject(extractedData)
@@ -156,6 +156,13 @@ var MapSwitcher = {
     * @return Promise which resolves on success with the extracted data object.
     */
   getCountryCode: function (extractedData) {
+    // CodeGrid is a service for identifying the country within which a coordinate
+    // falls. The first-level identification tiles are loaded client-side, so most
+    // of the time, no further request is necessary. But in cases where the coordinate
+    // is close to an international boundary, additional levels of tiles, with more
+    // detail, are reqested from the specified host.
+    const CodeGrid = codegrid.CodeGrid('https://www.loughrigg.org/codegrid-js/tiles/', jsonWorldGrid) // eslint-disable-line no-global-assign
+
     return new Promise(function (resolve) {
       if (extractedData && extractedData.centreCoords != null) {
         CodeGrid.getCode(
@@ -276,9 +283,9 @@ var MapSwitcher = {
 function runMapSwitcher () {
   MapSwitcher.validateCurrentTab().then(function () {
     Promise.all([MapSwitcher.listenForExtraction(), MapSwitcher.runExtraction()])
-    // s[0] refers to the source map data received from the dataExtractor script
+      // s[0] refers to the source map data received from the dataExtractor script
       .then(s => s[0])
-    // the following functions use the extracted source map data to build the view
+      // the following functions use the extracted source map data to build the view
       .then(s => MapSwitcher.normaliseExtractedData(s))
       .then(s => MapSwitcher.getCountryCode(s))
       .then(s => MapSwitcher.constructOutputs(s))
