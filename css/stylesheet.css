@@ -9,7 +9,9 @@ body {
   padding: 4px;
 }
 #mainBorderBox {
-  margin-top: 4px;
+  margin-top: 2px;
+  display: inline-block;
+  background-color: #eee;
 }
 #titleLine {
   min-width: 300px;
@@ -183,7 +185,7 @@ h4 {
 }
 
 #sourceDescr {
-  background-color: #e8e8e8;
+  background-color: #fff;
   color: #999;
   padding: 2px 4px;
   line-height: 1.5em;
@@ -320,4 +322,65 @@ button#reset svg {
 
 .sortableGhost {
   opacity: 0.2;
+}
+
+.container--tabs {
+  /* margin: 2rem; */
+}
+.container--tabs .nav-tabs {
+  float: left;
+  width: 100%;
+  margin: 0;
+  list-style-type: none;
+  border-bottom: 1px solid #ddd;
+  padding-inline-start: 0px;
+}
+.container--tabs .nav-tabs > li {
+  float: left;
+  margin-bottom: -1px;
+}
+.container--tabs .nav-tabs > li > a {
+  float: left;
+  margin-right: 2px;
+  line-height: 1.42857143;
+  padding: 4px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px 8px 0 0;
+  background-color: #fafafa;
+  text-decoration: none;
+  color: #777;
+}
+.container--tabs .nav-tabs > li > a:hover {
+  border-color: #f5f5f5;
+  color: #333;
+  background-color: #fefefe;
+}
+.container--tabs .nav-tabs > li.active > a,
+.container--tabs .nav-tabs > li.active > a:hover,
+.container--tabs .nav-tabs > li.active > a:focus {
+  color: #555;
+  cursor: default;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  font-weight: 700;
+}
+.container--tabs .tab-content {
+  float: left;
+  width: 100%;
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+.container--tabs .tab-content > .tab-pane {
+  display: none;
+}
+.container--tabs .tab-content > .tab-pane.active {
+  display: block;
+  /* padding: 2.5% 3.5%; */
+  /* background-color: #eee; */
+}
+.container--tabs .tab-content > .active {
+  display: block;
 }

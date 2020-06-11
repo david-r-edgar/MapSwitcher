@@ -45,27 +45,54 @@
       </div>
     </div>
     <div class=borderBox id=mainBorderBox>
-        <div id="sourceDescr">
-            <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal"></span></div>
-            <div class="descrItem" id="sourceDirn">&nbsp; <span id="sourceDirnVal" class="descrVal"></span></div>
-            <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal"></span></div>
-        </div>
-      <div id="maplinkbox">
-        <div class="loading"><span>.</span><span>.</span><span>.</span></div>
-        <div class="maplinkcat" id="multiSegDirns"></div>
-        <div class="maplinkcat" id="singleSegDirns"></div>
-        <div class="maplinkcat" id="noDirns"></div>
-        <div class="maplinkcat" id="special"></div>
-        <div class="maplinkcat" id="misc"></div>
-        <div class="maplinkcat" id="utility"></div>
-        <div id="warningModal" class="modal">
-          <div class="modal-content">
-            <span class="modalClose">x</span>
-            <div id=nonupdating>
-              <div class=warning>Attention:</div><div><span id="nonUpdatingHost">This site</span> may not provide up-to-date extractable location data.</div><div>If you have moved or zoomed the map since loading the page, the coordinates in the URL will not be updated, and Map Switcher's links will be incorrect.</div>
+      <div class="container--tabs">
+        <section class="row">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-1">Displayed map</a></li>
+            <li class=""><a href="#tab-2">Directions</a></li>
+            <li class=""><a href="#tab-3">Marked point</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="tab-1" class="tab-pane active">
+              <div id="sourceDescr">
+                  <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal"></span></div>
+                  <div class="descrItem" id="sourceDirn">&nbsp; <span id="sourceDirnVal" class="descrVal"></span></div>
+                  <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal"></span></div>
+              </div>
+              <div id="maplinkbox">
+                <div class="loading"><span>.</span><span>.</span><span>.</span></div>
+                <div class="maplinkcat" id="multiSegDirns"></div>
+                <div class="maplinkcat" id="singleSegDirns"></div>
+                <div class="maplinkcat" id="noDirns"></div>
+                <div class="maplinkcat" id="special"></div>
+                <div class="maplinkcat" id="misc"></div>
+                <div class="maplinkcat" id="utility"></div>
+                <div id="warningModal" class="modal">
+                  <div class="modal-content">
+                    <span class="modalClose">x</span>
+                    <div id=nonupdating>
+                      <div class=warning>Attention:</div><div><span id="nonUpdatingHost">This site</span> may not provide up-to-date extractable location data.</div><div>If you have moved or zoomed the map since loading the page, the coordinates in the URL will not be updated, and Map Switcher's links will be incorrect.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tab-2" class="tab-pane">
+              <span class="glyphicon glyphicon-fire glyphicon--home--feature two columns text-center"></span>
+              <span class="col-md-10">
+                <h3>Feature 2</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+              </span>
+            </div>
+            <div id="tab-3" class="tab-pane">
+              <span class="glyphicon glyphicon-tint glyphicon--home--feature two columns text-center"></span>
+              <span class="col-md-10">
+                <h3>Feature 3</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+              </span>
             </div>
           </div>
-        </div>
+        </section>
       </div>
       <div id=nomap>
         <span>No coordinates available on this page</span>
