@@ -18,14 +18,14 @@ if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
-var MapSwitcher = {
+class MapSwitcher {
 
   /**
      * Checks if we should continue attempting to extract data from the current tab.
      *
      * @return Promise which fulfils if OK to continue, otherwise rejects.
      */
-  validateCurrentTab: function () {
+  validateCurrentTab = function () {
     return new Promise(function (resolve, reject) {
       browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         if ((tabs[0].url.indexOf('chrome://') >= 0) ||
@@ -37,14 +37,14 @@ var MapSwitcher = {
         }
       })
     })
-  },
+  }
 
   /**
      * Runs the content scripts which handle the extraction of coordinate data from the current tab.
      *
      * @return Promise which fulfils when complete
      */
-  runExtraction: function () {
+  runExtraction = function () {
     return new Promise(function (resolve) {
       new ScriptExecution().executeScripts(
         '/vendor/google-maps-data-parameter-parser/src/googleMapsDataParameter.js',
@@ -52,22 +52,22 @@ var MapSwitcher = {
         '/src/dataExtractor.js')
       resolve()
     })
-  },
+  }
 
   /**
      * Sets up message listener to receive results from content script
      *
      * @return Promise which fulfils with the source map data
      */
-  listenForExtraction: function () {
+  listenForExtraction = function () {
     return new Promise(function (resolve) {
       browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         resolve(request.sourceMapData)
       })
     })
-  },
+  }
 
-  normaliseOSGBCoords: function (extractedData) {
+  normaliseOSGBCoords = function (extractedData) {
     const osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
       extractedData.osgbCentreCoords.n)
     const osLL = OsGridRef.osGridToLatLong(osGR)
@@ -77,17 +77,17 @@ var MapSwitcher = {
       lng: wgs84LL._lon
     }
     return extractedData
-  },
+  }
 
-  normaliseLambertCoords: async function (extractedData) {
+  normaliseLambertCoords = async function (extractedData) {
     const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
     const response = await window.fetch(request)
     const { lat, lng } = await response.json()
     extractedData.centreCoords = { lat, lng }
     return extractedData
-  },
+  }
 
-  normaliseGooglePlace: async function (extractedData) {
+  normaliseGooglePlace = async function (extractedData) {
     const request = new window.Request(`https://www.google.com/maps?q=${extractedData.googlePlace}`)
     const initOptions = {
       credentials: 'omit'
@@ -104,7 +104,7 @@ var MapSwitcher = {
     }
     extractedData.resolution = calculateResolutionFromStdZoom(resultArray[3], resultArray[1])
     return extractedData
-  },
+  }
 
   /**
     * Put the extracted data in a standard format, and perform any necessary checks
@@ -115,7 +115,7 @@ var MapSwitcher = {
     * @param {object} extractedData - Data object extracted by the dataExtractor.
     * @return Promise which resolves if the data can be normalised, or rejects if not.
     */
-  normaliseExtractedData: async function (extractedData) {
+  normaliseExtractedData = async function (extractedData) {
     // return new Promise(function (resolve, reject) {
     if (!extractedData) {
       throw new Error('no data extracted')
@@ -126,19 +126,19 @@ var MapSwitcher = {
       return extractedData
     } else if (extractedData.osgbCentreCoords) {
       // osgb36 coords specified
-      return MapSwitcher.normaliseOSGBCoords(extractedData)
+      return this.normaliseOSGBCoords(extractedData)
     } else if (extractedData.lambertCentreCoords) {
       // Lambert Conic Conformal coords specified
-      return MapSwitcher.normaliseLambertCoords(extractedData)
+      return this.normaliseLambertCoords(extractedData)
     } else if (extractedData.googlePlace) {
       // named google place (a map is being shown in search results, but
       // we don't know how to extract the coords)
-      return MapSwitcher.normaliseGooglePlace(extractedData)
+      return this.normaliseGooglePlace(extractedData)
     }
 
     // if we reach here, then have no coords of any recognised format
     throw new Error('extracted data not in recognised format')
-  },
+  }
 
   /**
     * Gets the two letter country code for the current location of the map shown
@@ -148,7 +148,7 @@ var MapSwitcher = {
     * @param {object} extractedData - Data object extracted by the dataExtractor.
     * @return Promise which resolves on success with the extracted data object.
     */
-  getCountryCode: function (extractedData) {
+  getCountryCode = function (extractedData) {
     // CodeGrid is a service for identifying the country within which a coordinate
     // falls. The first-level identification tiles are loaded client-side, so most
     // of the time, no further request is necessary. But in cases where the coordinate
@@ -169,7 +169,7 @@ var MapSwitcher = {
           })
       }
     })
-  },
+  }
 
   /**
     * Handles cases where no coordinates are available from the page, or another problem
@@ -177,12 +177,12 @@ var MapSwitcher = {
     *
     * @param {object} errorObject - Contains any relevant error data
     */
-  handleNoCoords: function (errorObject) {
+  handleNoCoords = function (errorObject) {
     const nomapElem = document.getElementById('nomap')
     nomapElem.style.display = 'block'
     const maplinkboxElem = document.getElementById('maplinkbox')
     maplinkboxElem.style.display = 'none'
-  },
+  }
 
   /**
     * Constructs the outputs to be shown in the extension popup.
@@ -192,7 +192,9 @@ var MapSwitcher = {
     *
     * @param sourceMapData
     */
-  constructOutputs: function (sourceMapData) {
+  constructOutputs = function (sourceMapData) {
+    const mapLinksView = new MapLinksView
+
     if (sourceMapData.nonUpdating !== undefined) {
       var modal = document.getElementById('warningModal')
       modal.style.display = 'block'
@@ -237,7 +239,7 @@ var MapSwitcher = {
     }
 
     if (sourceMapData.directions && sourceMapData.directions.route) {
-      MapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1
+      mapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1
     }
 
     for (let outputMapService of OutputMaps.services) {
@@ -247,45 +249,51 @@ var MapSwitcher = {
 
         browser.storage.local.get(mapOptDefaults, function (options) {
           if (options[outputMapService.id]) {
-            outputMapService.generate(sourceMapData, MapLinksView)
+            outputMapService.generate(sourceMapData, mapLinksView)
           }
         })
       })(outputMapService)
     }
-  },
+  }
 
   /**
     * Hide the animated loading dots.
     */
-  loaded: function (s) {
+  loaded = function (s) {
     const maplinkboxElem = document.getElementsByClassName('loading')[0]
     maplinkboxElem.style.display = 'none'
     const sourceDescrElem = document.getElementById('sourceDescr')
     sourceDescrElem.style.display = 'block'
   }
-}
 
-/**
- * Entry routine.
- *
- * Injects content scripts into the current tab (including the most important, the data
- * extractor), which reads data from the map service.
- * Then performs some auxiliary methods before executing the main method run() which
- * generates all the links.
- */
-async function runMapSwitcher () {
-  try {
-    await MapSwitcher.validateCurrentTab()
-    const [extractedData] = await Promise.all([MapSwitcher.listenForExtraction(), MapSwitcher.runExtraction()])
-    const normalised = await MapSwitcher.normaliseExtractedData(extractedData)
-    const countryCodeAdded = await MapSwitcher.getCountryCode(normalised)
-    const outputsConstructed = await MapSwitcher.constructOutputs(countryCodeAdded)
-    await MapSwitcher.loaded(outputsConstructed)
-  } catch (err) {
-    MapSwitcher.handleNoCoords(err)
+  /**
+   * Entry routine.
+   *
+   * Injects content scripts into the current tab (including the most important, the data
+   * extractor), which reads data from the map service.
+   * Then performs some auxiliary methods before executing the main method run() which
+   * generates all the links.
+   */
+  run = async function () {
+    try {
+      await this.validateCurrentTab()
+      const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
+      const normalised = await this.normaliseExtractedData(extractedData)
+      const countryCodeAdded = await this.getCountryCode(normalised)
+      const outputsConstructed = await this.constructOutputs(countryCodeAdded)
+      await this.loaded(outputsConstructed)
+    } catch (err) {
+      this.handleNoCoords(err)
+    }
   }
 }
 
+function runMapSwitcher() {
+  const mapSwitcher = new MapSwitcher
+  mapSwitcher.run()
+}
+
+// either run immediately, if loading is already complete, or run it when DOM is loaded
 if (
   document.readyState === 'complete' ||
     (document.readyState !== 'loading' && !document.documentElement.doScroll)

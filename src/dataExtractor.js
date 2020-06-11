@@ -6,7 +6,6 @@
   getDistanceFromLatLonInKm,
   Gmdp, GmdpException */
 
-
 // The Web Extension API is implemented on different root objects in different browsers.
 // Firefox uses 'browser'. Chrome uses 'chrome'.
 // Check here and use a common 'browserRoot' everywhere.

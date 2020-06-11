@@ -10,13 +10,11 @@ if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
-/**
- * Main view object for the extension popup.
- */
-const MapLinksView = {
+// An instance of this class is the main view object for the extension popup.
+class MapLinksView {
 
   /** Number of direction segments in the source map data. */
-  sourceDirnSegs: 0,
+  sourceDirnSegs = 0
 
   /**
      * Returns the appropriate jquery selector for the given map service category,
@@ -24,7 +22,7 @@ const MapLinksView = {
      *
      * @param {category} OutputMaps category for which the selector is requested.
      */
-  getSelector: function (category) {
+  getSelector = function (category) {
     if (OutputMaps.category.multidirns === category && this.sourceDirnSegs >= 2) {
       return 'multiSegDirns'
     } else if (OutputMaps.category.multidirns === category && this.sourceDirnSegs === 1) {
@@ -38,7 +36,7 @@ const MapLinksView = {
     } else {
       return 'noDirns'
     }
-  },
+  }
 
   /**
      * Returns the section title for the given map service category, based
@@ -46,7 +44,7 @@ const MapLinksView = {
      *
      * @param {category} OutputMaps category for which the title is requested.
      */
-  getTitle: function (category) {
+  getTitle = function (category) {
     let title = ''
     switch (category) {
       case OutputMaps.category.multidirns:
@@ -78,16 +76,16 @@ const MapLinksView = {
         break
     }
     return title
-  },
+  }
 
-  insertServiceLineIntoCategory: function (categoryElem, serviceLine, prio) {
+  insertServiceLineIntoCategory = function (categoryElem, serviceLine, prio) {
     let lastNonMatchingElem
     for (let elem of categoryElem.children) {
       if (elem.getAttribute('data-sort') > prio) break
       lastNonMatchingElem = elem
     }
     lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
-  },
+  }
 
   /**
      * Adds links to a map service to a particular category
@@ -97,7 +95,7 @@ const MapLinksView = {
      * @param {mapLinks} All the map links to be added.
      * @param {note} Content for an optional explanatory note.
      */
-  addMapServiceLinks: function (category, mapService, mapLinks, note) {
+  addMapServiceLinks = function (category, mapService, mapLinks, note) {
     const thisView = this
     const selector = this.getSelector(category)
     const categoryElem = document.getElementById(selector)
@@ -127,9 +125,9 @@ const MapLinksView = {
         })
       }
     })
-  },
+  }
 
-  addUtility: function (mapService, id, name) {
+  addUtility = function (mapService, id, name) {
     // only add the title once
     const utilityElem = document.getElementById('utility')
     if (utilityElem.innerText.length === 0) {
@@ -151,7 +149,7 @@ const MapLinksView = {
     // get it again (now that's it been created)
     mapServiceIdElem = document.getElementById(mapService.id)
     mapServiceIdElem.insertAdjacentHTML('beforeend', linkHtml)
-  },
+  }
 
   /**
      * Adds links for file downloads (such as GPX)
@@ -161,7 +159,7 @@ const MapLinksView = {
      * @param {name} Display name for the link.
      * @param {fileGenerator} Function to invoke to create the file contents.
      */
-  addFileDownload: function (mapService, id, name, fileGenerator) {
+  addFileDownload = function (mapService, id, name, fileGenerator) {
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)
@@ -175,14 +173,14 @@ const MapLinksView = {
         filename: filename
       })
     })
-  },
+  }
 
-  addUtilityLink: function (mapService, id, name, utilFunction) {
+  addUtilityLink = function (mapService, id, name, utilFunction) {
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)
     idElem.addEventListener('click', utilFunction)
-  },
+  }
 
   /**
      * Adds a note for a map service.
@@ -190,7 +188,7 @@ const MapLinksView = {
      * @param {mapService} Object representing the map service.
      * @param {note} Text content of the note to be displayed.
      */
-  addNote: function (mapService, note) {
+  addNote = function (mapService, note) {
     if (note && note.length) {
       const mapServiceIdElem = document.getElementById(mapService.id)
       mapServiceIdElem.innerHTML += ' ' +
@@ -204,7 +202,7 @@ const MapLinksView = {
         content: note
       })
     }
-  },
+  }
 
   /**
     * Utility function which builds the HTML for all the map links belonging to a specific
@@ -216,7 +214,7 @@ const MapLinksView = {
     * @param {note} note - a note for this map service, if applicable
     * @return {string} the HTML for the line
     */
-  buildLineOfLinks: function (id, mapSite, links, note) {
+  buildLineOfLinks = function (id, mapSite, links, note) {
     let html = ''
     if (links) {
       html =
