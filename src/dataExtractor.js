@@ -1,16 +1,17 @@
 /* global
-  browserRoot, browser, chrome,
+  browser, chrome,
   XPathResult,
   calculateResolutionFromScale,
   calculateResolutionFromStdZoom,
   getDistanceFromLatLonInKm,
   Gmdp, GmdpException */
 
-/**
- * The Web Extension API is implemented on different root objects in different browsers.
- * Firefox uses 'browser'. Chrome uses 'chrome'.
- * Check here and use a common 'browserRoot' everywhere.
- */
+
+// The Web Extension API is implemented on different root objects in different browsers.
+// Firefox uses 'browser'. Chrome uses 'chrome'.
+// Check here and use a common 'browserRoot' everywhere.
+// It is var' rather than 'let' to avoid already-declared errors.
+var browserRoot
 if (chrome && chrome.runtime) {
   browserRoot = chrome // eslint-disable-line no-global-assign
 } else {
@@ -1292,17 +1293,17 @@ extractors.push({
 extractors.push({
   host: 'osmaps.ordnancesurvey.',
   extract:
-  function (resolve) {
-    let sourceMapData = {}
-    const re = /([-0-9.]+),([-0-9.]+),([0-9]+)/
-    const coordArray = window.location.pathname.match(re)
-    if (coordArray && coordArray.length > 3) {
-      sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
-      sourceMapData.resolution =
-        calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
+    function (resolve) {
+      let sourceMapData = {}
+      const re = /([-0-9.]+),([-0-9.]+),([0-9]+)/
+      const coordArray = window.location.pathname.match(re)
+      if (coordArray && coordArray.length > 3) {
+        sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
+        sourceMapData.resolution =
+          calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
+      }
+      resolve(sourceMapData)
     }
-    resolve(sourceMapData)
-  }
 })
 
 extractors.push({
