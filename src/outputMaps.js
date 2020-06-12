@@ -57,7 +57,25 @@ OutputMaps.services = [
     image: 'googleMapsLogo16x16.png',
     id: 'google',
     cat: OutputMaps.category.multidirns,
-    maplinks:
+    mapLinksWithDirns:
+    {
+      googlemapsDirns: {
+        name: 'Maps'
+      },
+      googleterrainDirns: {
+        name: 'Terrain'
+      },
+      googleearthDirns: {
+        name: 'Earth'
+      },
+      googletrafficDirns: {
+        name: 'Traffic'
+      },
+      googlebikeDirns: {
+        name: 'Cycling'
+      }
+    },
+    basicMapLinks:
     {
       googlemaps: {
         name: 'Maps'
@@ -136,17 +154,22 @@ OutputMaps.services = [
           sourceMapData.resolution, sourceMapData.centreCoords.lat, 3) + 'z'
       }
 
-      this.maplinks.googlemaps['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions
-      this.maplinks.googleterrain['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e4'
-      this.maplinks.googleearth['link'] = googleBase + directions + mapCentre + zoom + '/data=!3m1!1e3' + dataDirnOptions
-      this.maplinks.googletraffic['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e1'
-      this.maplinks.googlebike['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e3'
+      this.mapLinksWithDirns.googlemapsDirns['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions
+      this.mapLinksWithDirns.googleterrainDirns['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e4'
+      this.mapLinksWithDirns.googleearthDirns['link'] = googleBase + directions + mapCentre + zoom + '/data=!3m1!1e3' + dataDirnOptions
+      this.mapLinksWithDirns.googletrafficDirns['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e1'
+      this.mapLinksWithDirns.googlebikeDirns['link'] = googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e3'
+
+      this.basicMapLinks.googlemaps['link'] = googleBase + mapCentre + zoom + '/data='
+      this.basicMapLinks.googleterrain['link'] = googleBase + mapCentre + zoom + '/data=' + '!5m1!1e4'
+      this.basicMapLinks.googleearth['link'] = googleBase + mapCentre + zoom + '/data=!3m1!1e3'
+      this.basicMapLinks.googletraffic['link'] = googleBase + mapCentre + zoom + '/data=' + '!5m1!1e1'
+      this.basicMapLinks.googlebike['link'] = googleBase + mapCentre + zoom + '/data=' + '!5m1!1e3'
 
       if (directions.length > 0) {
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks)
-      } else {
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.mapLinksWithDirns)
       }
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.basicMapLinks)
     }
   },
   {
@@ -155,7 +178,19 @@ OutputMaps.services = [
     image: 'bingLogo16x16.png',
     id: 'bing',
     cat: OutputMaps.category.multidirns,
-    maplinks:
+    maplinksDirns:
+    {
+      bingroadDirns: {
+        name: 'Road'
+      },
+      bingaerialDirns: {
+        name: 'Aerial'
+      },
+      bingbirdseyeDirns: {
+        name: "Bird's eye"
+      }
+    },
+    maplinksBasic:
     {
       bingroad: {
         name: 'Road'
@@ -215,22 +250,30 @@ OutputMaps.services = [
         directions += mode
       }
 
-      this.maplinks.bingroad['link'] =
+      this.maplinksDirns.bingroadDirns['link'] =
             bingBase + directions + '&' + mapCentre + zoom
-      this.maplinks.bingaerial['link'] =
+      this.maplinksDirns.bingaerialDirns['link'] =
             bingBase + directions + '&' + mapCentre + zoom + '&sty=h'
-      this.maplinks.bingbirdseye['link'] =
+      this.maplinksDirns.bingbirdseyeDirns['link'] =
             bingBase + directions + '&' + mapCentre + zoom + '&sty=b'
 
+      this.maplinksBasic.bingroad['link'] =
+            bingBase + '&' + mapCentre + zoom
+      this.maplinksBasic.bingaerial['link'] =
+            bingBase + '&' + mapCentre + zoom + '&sty=h'
+      this.maplinksBasic.bingbirdseye['link'] =
+            bingBase + '&' + mapCentre + zoom + '&sty=b'
+
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
-        this.maplinks.bingos = { name: 'Ordnance Survey',
+        this.maplinksDirns.bingosDirns = { name: 'Ordnance Survey',
           link: (bingBase + directions + '&' + mapCentre + zoom + '&sty=s') }
+        this.maplinksBasic.bingos = { name: 'Ordnance Survey',
+          link: (bingBase + '&' + mapCentre + zoom + '&sty=s') }
       }
       if (directions.length > 0) {
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks)
-      } else {
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinksDirns)
       }
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinksBasic)
     }
   },
   {
@@ -240,7 +283,22 @@ OutputMaps.services = [
     id: 'osm',
     cat: OutputMaps.category.singledirns,
     note: '',
-    maplinks:
+    maplinksDirns:
+    {
+      osmStandardDirns: {
+        name: 'Standard'
+      },
+      osmCycleDirns: {
+        name: 'Cycle Map'
+      },
+      osmTransportDirns: {
+        name: 'Transport'
+      },
+      osmHumanitarianDirns: {
+        name: 'Humanitarian'
+      }
+    },
+    maplinksBasic:
     {
       osmStandard: {
         name: 'Standard'
@@ -300,18 +358,23 @@ OutputMaps.services = [
         }
       }
 
-      const coreLink = osmBase + directions + '#map=' + zoom + mapCentre
+      const coreDirnsLink = osmBase + directions + '#map=' + zoom + mapCentre
+      const coreBasicLink = osmBase + '#map=' + zoom + mapCentre
 
-      this.maplinks.osmStandard['link'] = coreLink
-      this.maplinks.osmCycle['link'] = coreLink + '&layers=C'
-      this.maplinks.osmTransport['link'] = coreLink + '&layers=T'
-      this.maplinks.osmHumanitarian['link'] = coreLink + '&layers=H'
+      this.maplinksDirns.osmStandardDirns['link'] = coreDirnsLink
+      this.maplinksDirns.osmCycleDirns['link'] = coreDirnsLink + '&layers=C'
+      this.maplinksDirns.osmTransportDirns['link'] = coreDirnsLink + '&layers=T'
+      this.maplinksDirns.osmHumanitarianDirns['link'] = coreDirnsLink + '&layers=H'
+
+      this.maplinksBasic.osmStandard['link'] = coreBasicLink
+      this.maplinksBasic.osmCycle['link'] = coreBasicLink + '&layers=C'
+      this.maplinksBasic.osmTransport['link'] = coreBasicLink + '&layers=T'
+      this.maplinksBasic.osmHumanitarian['link'] = coreBasicLink + '&layers=H'
 
       if (directions.length > 0) {
-        view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinks, this.note)
-      } else {
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note)
+        view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinksDirns, this.note)
       }
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinksBasic, this.note)
     }
   },
   {
@@ -495,7 +558,13 @@ OutputMaps.services = [
     id: 'waze',
     prio: 6,
     cat: OutputMaps.category.singledirns,
-    maplinks:
+    maplinksDirns:
+    {
+      livemapDirns: {
+        name: 'Livemap'
+      }
+    },
+    maplinksBasic:
     {
       livemap: {
         name: 'Livemap'
@@ -533,12 +602,11 @@ OutputMaps.services = [
         }
       }
       if (directions.length > 0) {
-        this.maplinks.livemap['link'] = wazeBase + '/livemap/directions?' + directions
-        view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinks, this.note)
-      } else {
-        this.maplinks.livemap['link'] = wazeBase + '/ul?' + mapCentre + '&' + zoom
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks, this.note)
+        this.maplinksDirns.livemapDirns['link'] = wazeBase + '/livemap/directions?' + directions
+        view.addMapServiceLinks(OutputMaps.category.singledirns, this, this.maplinksDirns, this.note)
       }
+      this.maplinksBasic.livemap['link'] = wazeBase + '/ul?' + mapCentre + '&' + zoom
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinksBasic, this.note)
     }
   },
   {
@@ -612,7 +680,25 @@ OutputMaps.services = [
     id: 'here',
     prio: 5,
     cat: OutputMaps.category.multidirns,
-    maplinks:
+    maplinksDirns:
+    {
+      hereMapDirns: {
+        name: 'Map'
+      },
+      hereTerrainDirns: {
+        name: 'Terrain'
+      },
+      hereSatelliteDirns: {
+        name: 'Satellite'
+      },
+      hereTrafficDirns: {
+        name: 'Traffic'
+      },
+      herePublicTransportDirns: {
+        name: 'Public Transport'
+      }
+    },
+    maplinksBasic:
     {
       hereMap: {
         name: 'Map'
@@ -680,17 +766,22 @@ OutputMaps.services = [
         }
       }
 
-      this.maplinks.hereMap['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'normal'
-      this.maplinks.hereTerrain['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'terrain'
-      this.maplinks.hereSatellite['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'satellite'
-      this.maplinks.hereTraffic['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'traffic'
-      this.maplinks.herePublicTransport['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'public_transport'
+      this.maplinksDirns.hereMapDirns['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'normal'
+      this.maplinksDirns.hereTerrainDirns['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'terrain'
+      this.maplinksDirns.hereSatelliteDirns['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'satellite'
+      this.maplinksDirns.hereTrafficDirns['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'traffic'
+      this.maplinksDirns.herePublicTransportDirns['link'] = hereBase + directions + mapCentre + ',' + zoom + ',' + 'public_transport'
+
+      this.maplinksBasic.hereMap['link'] = hereBase + mapCentre + ',' + zoom + ',' + 'normal'
+      this.maplinksBasic.hereTerrain['link'] = hereBase + mapCentre + ',' + zoom + ',' + 'terrain'
+      this.maplinksBasic.hereSatellite['link'] = hereBase + mapCentre + ',' + zoom + ',' + 'satellite'
+      this.maplinksBasic.hereTraffic['link'] = hereBase + mapCentre + ',' + zoom + ',' + 'traffic'
+      this.maplinksBasic.herePublicTransport['link'] = hereBase + mapCentre + ',' + zoom + ',' + 'public_transport'
 
       if (directions.length > 0) {
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks, note)
-      } else {
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinksDirns, note)
       }
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinksBasic)
     }
   },
   {
@@ -1109,7 +1200,19 @@ OutputMaps.services = [
     id: 'yandex',
     prio: 7,
     cat: OutputMaps.category.multidirns,
-    maplinks:
+    maplinksDirns:
+    {
+      yandexMapDirns: {
+        name: 'Maps'
+      },
+      yandexSatelliteDirns: {
+        name: 'Satellite'
+      },
+      yandexHybridDirns: {
+        name: 'Hybrid'
+      }
+    },
+    maplinksBasic:
     {
       yandexMap: {
         name: 'Maps'
@@ -1161,15 +1264,18 @@ OutputMaps.services = [
         directions = '&mode=routes&rtext=' + routeCoords + '&rtt=' + mode
       }
 
-      this.maplinks.yandexMap['link'] = yandexBase + '?' + mapCentre + directions + '&' + zoom
-      this.maplinks.yandexSatellite['link'] = yandexBase + '?l=sat&' + mapCentre + directions + '&' + zoom
-      this.maplinks.yandexHybrid['link'] = yandexBase + '?l=sat%2Cskl&' + mapCentre + directions + '&' + zoom
+      this.maplinksDirns.yandexMapDirns['link'] = yandexBase + '?' + mapCentre + directions + '&' + zoom
+      this.maplinksDirns.yandexSatelliteDirns['link'] = yandexBase + '?l=sat&' + mapCentre + directions + '&' + zoom
+      this.maplinksDirns.yandexHybridDirns['link'] = yandexBase + '?l=sat%2Cskl&' + mapCentre + directions + '&' + zoom
+
+      this.maplinksBasic.yandexMap['link'] = yandexBase + '?' + mapCentre + '&' + zoom
+      this.maplinksBasic.yandexSatellite['link'] = yandexBase + '?l=sat&' + mapCentre + '&' + zoom
+      this.maplinksBasic.yandexHybrid['link'] = yandexBase + '?l=sat%2Cskl&' + mapCentre + '&' + zoom
 
       if (directions.length > 0) {
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinks)
-      } else {
-        view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinks)
+        view.addMapServiceLinks(OutputMaps.category.multidirns, this, this.maplinksDirns)
       }
+      view.addMapServiceLinks(OutputMaps.category.plain, this, this.maplinksBasic)
     }
   },
   {
