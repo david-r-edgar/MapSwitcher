@@ -10,7 +10,7 @@ body {
 }
 #mainBorderBox {
   margin-top: 2px;
-  display: inline-block;
+  display: none;
   background-color: #eee;
 }
 #titleLine {
@@ -39,6 +39,10 @@ body {
 }
 #nomap {
   display: none;
+}
+#nomapbox {
+  margin-top: 4px;
+  background-color: #fff;
 }
 #ctrlButtons a {
   text-decoration: none;
@@ -120,7 +124,7 @@ h4 {
   margin: 0.8em 0em 0.5em 0em;
 }
 
-#maplinkbox {
+.maplinkbox {
   display: flex;
   /*flex: 2;*/
   flex-direction: column;

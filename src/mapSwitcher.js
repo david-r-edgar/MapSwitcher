@@ -177,9 +177,11 @@ class MapSwitcher {
     * @param {object} errorObject - Contains any relevant error data
     */
   handleNoCoords (errorObject) {
+    const loadingElem = document.getElementsByClassName('loading')[0]
+    loadingElem.style.display = 'none'
     const nomapElem = document.getElementById('nomap')
     nomapElem.style.display = 'block'
-    const maplinkboxElem = document.getElementById('maplinkbox')
+    const maplinkboxElem = document.getElementById('tabContainer')
     maplinkboxElem.style.display = 'none'
   }
 
@@ -259,10 +261,14 @@ class MapSwitcher {
     * Hide the animated loading dots.
     */
   loaded (s) {
-    const maplinkboxElem = document.getElementsByClassName('loading')[0]
-    maplinkboxElem.style.display = 'none'
+    const loadingElem = document.getElementsByClassName('loading')[0]
+    loadingElem.style.display = 'none'
     const sourceDescrElem = document.getElementById('sourceDescr')
     sourceDescrElem.style.display = 'block'
+    const mainTabBox = document.getElementById('mainBorderBox')
+    mainTabBox.style.display = 'inline-block'
+    const nomapbox = document.getElementById('nomapbox')
+    nomapbox.style.display = 'none'
   }
 
   /**

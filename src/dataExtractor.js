@@ -151,9 +151,8 @@ extractors.push({
           }
         }
 
-        // sometimes (for locations with known single coordinates?) the map url will contain lat/lng
-        const dataUrl = document.evaluate('//div[contains(@class, "rhsmap3col")]//a/@data-url',
-          document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+        // probably the first one ([0]) will be the one of the map at the top of the column
+        const dataUrl = document.querySelectorAll('.rhscol a[data-url]')[0].attributes['data-url'].value
         const dataUrlRe = /@([-0-9.]+),([-0-9.]+),([0-9]+)z/
         const dataUrlCoordArray = dataUrl.match(dataUrlRe)
         if (dataUrlCoordArray && dataUrlCoordArray.length > 3) {
@@ -169,6 +168,7 @@ extractors.push({
           // so instead we'll pass the location
           const dataUrlPlaceRe = /\/maps\/place\/([^/]+)\//
           const dataUrlPlaceArray = dataUrl.match(dataUrlPlaceRe)
+
           if (dataUrlPlaceArray && dataUrlPlaceArray.length > 1) {
             resolve({
               googlePlace: dataUrlPlaceArray[1],
