@@ -188,24 +188,24 @@ h4 {
   margin-bottom: 0.4em
 }
 
-#sourceDescr {
+.sourceDescr {
   background-color: #fff;
   color: #999;
   padding: 2px 4px;
   line-height: 1.5em;
-  display: none;
+  display: block;
 }
 
-#sourceDescr .descrItem {
+.sourceDescr .descrItem {
   display: inline-block;
   padding-right: 10px;
 }
 
-#sourceDescr .lbl {
+.sourceDescr .lbl {
   font-style: italic;
 }
 
-#sourceDescr .descrVal {
+.sourceDescr .descrVal {
   color: #666;
 }
 
@@ -217,8 +217,6 @@ h4 {
 #sourceDirn {
   display: none;
 }
-
-
 
 
 /******** Options **********/

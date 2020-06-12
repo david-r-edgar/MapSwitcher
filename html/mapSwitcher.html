@@ -49,31 +49,23 @@
       <div id=tabContainer class="container--tabs">
         <section class="row">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab-1">Displayed map</a></li>
-            <li class=""><a href="#tab-2">Directions</a></li>
+            <li class="active"><a href="#basicTabPane">Displayed map</a></li>
+            <li class="" id="directionsTabTab"><a href="#directionsTabPane">Directions</a></li>
             <!--<li class=""><a href="#tab-3">Marked point</a></li>-->
-            <li class=""><a href="#tab-4">Miscellaneous</a></li>
+            <li class=""><a href="#miscTabPane">Miscellaneous</a></li>
           </ul>
           <div class="tab-content">
-            <div id="tab-1" class="tab-pane active">
-              <div id="sourceDescr">
+            <div id="basicTabPane" class="tab-pane active">
+              <div class="sourceDescr">
                 <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal"></span></div>
                 <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal"></span></div>
               </div>
               <div id="maplinkbox" class=maplinkbox>
                 <div class="maplinkcat" id="noDirns"></div>
-                <div id="warningModal" class="modal">
-                  <div class="modal-content">
-                    <span class="modalClose">x</span>
-                    <div id=nonupdating>
-                      <div class=warning>Attention:</div><div><span id="nonUpdatingHost">This site</span> may not provide up-to-date extractable location data.</div><div>If you have moved or zoomed the map since loading the page, the coordinates in the URL will not be updated, and Map Switcher's links will be incorrect.</div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
-            <div id="tab-2" class="tab-pane">
-              <div id="sourceDescrDirns">
+            <div id="directionsTabPane" class="tab-pane">
+              <div class="sourceDescr">
                 <div class="descrItem" id="sourceDirn">&nbsp; <span id="sourceDirnVal" class="descrVal"></span></div>
               </div>
                <div id="maplinkdirnsbox" class=maplinkbox>
@@ -81,8 +73,8 @@
                 <div class="maplinkcat" id="singleSegDirns"></div>
               </div>
             </div>
-            <div id="tab-4" class="tab-pane">
-              <div id="sourceDescr">
+            <div id="miscTabPane" class="tab-pane">
+              <div class="sourceDescr">
                 <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal"></span></div>
                 <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal"></span></div>
               </div>
@@ -90,18 +82,18 @@
                 <div class="maplinkcat" id="special"></div>
                 <div class="maplinkcat" id="misc"></div>
                 <div class="maplinkcat" id="utility"></div>
-                <div id="warningModal" class="modal">
-                  <div class="modal-content">
-                    <span class="modalClose">x</span>
-                    <div id=nonupdating>
-                      <div class=warning>Attention:</div><div><span id="nonUpdatingHost">This site</span> may not provide up-to-date extractable location data.</div><div>If you have moved or zoomed the map since loading the page, the coordinates in the URL will not be updated, and Map Switcher's links will be incorrect.</div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
         </section>
+      </div>
+      <div id="warningModal" class="modal">
+        <div class="modal-content">
+          <span class="modalClose">x</span>
+          <div id=nonupdating>
+            <div class=warning>Attention:</div><div><span id="nonUpdatingHost">This site</span> may not provide up-to-date extractable location data.</div><div>If you have moved or zoomed the map since loading the page, the coordinates in the URL will not be updated, and Map Switcher's links will be incorrect.</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class=borderBox id=nomapbox>

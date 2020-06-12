@@ -17,12 +17,10 @@ class MapLinksView {
     this.sourceDirnSegs = 0
   }
 
-  /**
-     * Returns the appropriate jquery selector for the given map service category,
-     * based on the number of direction segments.
-     *
-     * @param {category} OutputMaps category for which the selector is requested.
-     */
+  // Returns the appropriate jquery selector for the given map service category,
+  // based on the number of direction segments.
+  //
+  // @param {category} OutputMaps category for which the selector is requested.
   getSelector (category) {
     if (OutputMaps.category.multidirns === category && this.sourceDirnSegs >= 2) {
       return 'multiSegDirns'
@@ -39,12 +37,10 @@ class MapLinksView {
     }
   }
 
-  /**
-     * Returns the section title for the given map service category, based
-     * on the number of direction segments.
-     *
-     * @param {category} OutputMaps category for which the title is requested.
-     */
+  // Returns the section title for the given map service category, based
+  // on the number of direction segments.
+  //
+  // @param {category} OutputMaps category for which the title is requested.
   getTitle (category) {
     let title = ''
     switch (category) {
@@ -88,14 +84,33 @@ class MapLinksView {
     lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
   }
 
-  /**
-     * Adds links to a map service to a particular category
-     *
-     * @param {category} Category in which to add this map service.
-     * @param {mapService} Object containing data about the particular map service.
-     * @param {mapLinks} All the map links to be added.
-     * @param {note} Content for an optional explanatory note.
-     */
+  // FIXME move this to tabs.js
+  optionallyShowDirectionsTab () {
+    if (this.sourceDirnSegs >= 1) {
+      const tabs = document.querySelectorAll('ul.nav-tabs > li')
+      for (let tab of tabs) {
+        tab.classList.remove('active')
+      }
+      const directionsTabTab = document.getElementById('directionsTabTab')
+      directionsTabTab.classList.add('active')
+      const panes = document.querySelectorAll('.tab-pane')
+      for (let pane of panes) {
+        pane.classList.remove('active')
+      }
+      const directionsTabPane = document.getElementById('directionsTabPane')
+      directionsTabPane.classList.add('active')
+    } else {
+      const directionsTabTab = document.getElementById('directionsTabTab')
+      directionsTabTab.style.display = 'none'
+    }
+  }
+
+  // Adds links to a map service to a particular category
+  //
+  // @param {category} Category in which to add this map service.
+  // @param {mapService} Object containing data about the particular map service.
+  // @param {mapLinks} All the map links to be added.
+  // @param {note} Content for an optional explanatory note.
   addMapServiceLinks (category, mapService, mapLinks, note) {
     const thisView = this
     const selector = this.getSelector(category)
@@ -109,6 +124,8 @@ class MapLinksView {
 
     let prioDefaults = {}
     prioDefaults['prio/' + mapService.id] = mapService.prio !== undefined ? mapService.prio : 999
+
+    this.optionallyShowDirectionsTab()
 
     const self = this
     browser.storage.local.get(prioDefaults, function (prio) {
@@ -152,14 +169,12 @@ class MapLinksView {
     mapServiceIdElem.insertAdjacentHTML('beforeend', linkHtml)
   }
 
-  /**
-     * Adds links for file downloads (such as GPX)
-     *
-     * @param {mapService} Object containing data about the particular map service.
-     * @param {id} Identifying string for this link.
-     * @param {name} Display name for the link.
-     * @param {fileGenerator} Function to invoke to create the file contents.
-     */
+  // Adds links for file downloads (such as GPX)
+  //
+  // @param {mapService} Object containing data about the particular map service.
+  // @param {id} Identifying string for this link.
+  // @param {name} Display name for the link.
+  // @param {fileGenerator} Function to invoke to create the file contents.
   addFileDownload (mapService, id, name, fileGenerator) {
     this.addUtility(mapService, id, name)
 
@@ -183,12 +198,10 @@ class MapLinksView {
     idElem.addEventListener('click', utilFunction)
   }
 
-  /**
-     * Adds a note for a map service.
-     *
-     * @param {mapService} Object representing the map service.
-     * @param {note} Text content of the note to be displayed.
-     */
+  // Adds a note for a map service.
+  //
+  // @param {mapService} Object representing the map service.
+  // @param {note} Text content of the note to be displayed.
   addNote (mapService, note) {
     if (note && note.length) {
       const mapServiceIdElem = document.getElementById(mapService.id)
@@ -205,16 +218,14 @@ class MapLinksView {
     }
   }
 
-  /**
-    * Utility function which builds the HTML for all the map links belonging to a specific
-    * map service.
-    *
-    * @param {string} id - id for the main map service div.
-    * @param {object} mapSite - the output object representing the map service
-    * @param {object} links - the map links to add, containing URLs and names for each
-    * @param {note} note - a note for this map service, if applicable
-    * @return {string} the HTML for the line
-    */
+  // Utility function which builds the HTML for all the map links belonging to a specific
+  // map service.
+  //
+  // @param {string} id - id for the main map service div.
+  // @param {object} mapSite - the output object representing the map service
+  // @param {object} links - the map links to add, containing URLs and names for each
+  // @param {note} note - a note for this map service, if applicable
+  // @return {string} the HTML for the line
   buildLineOfLinks (id, mapSite, links, note) {
     let html = ''
     if (links) {

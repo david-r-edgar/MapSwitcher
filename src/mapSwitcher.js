@@ -8,22 +8,18 @@
 import MapLinksView from './mapLinks.js'
 import OutputMaps from './outputMaps.js'
 
-/**
- * The Web Extension API is implemented on different root objects in different browsers.
- * Firefox uses 'browser'. Chrome uses 'chrome'.
- * Checking here allows us to use a common 'browser' everywhere.
- */
+// The Web Extension API is implemented on different root objects in different browsers.
+// Firefox uses 'browser'. Chrome uses 'chrome'.
+// Checking here allows us to use a common 'browser' everywhere.
 let browser
 if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
 class MapSwitcher {
-  /**
-     * Checks if we should continue attempting to extract data from the current tab.
-     *
-     * @return Promise which fulfils if OK to continue, otherwise rejects.
-     */
+  // Checks if we should continue attempting to extract data from the current tab.
+  //
+  // @return Promise which fulfils if OK to continue, otherwise rejects.
   validateCurrentTab () {
     return new Promise(function (resolve, reject) {
       browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -38,11 +34,9 @@ class MapSwitcher {
     })
   }
 
-  /**
-     * Runs the content scripts which handle the extraction of coordinate data from the current tab.
-     *
-     * @return Promise which fulfils when complete
-     */
+  // Runs the content scripts which handle the extraction of coordinate data from the current tab.
+  //
+  // @return Promise which fulfils when complete
   runExtraction () {
     return new Promise(function (resolve) {
       new ScriptExecution().executeScripts(
@@ -53,11 +47,9 @@ class MapSwitcher {
     })
   }
 
-  /**
-     * Sets up message listener to receive results from content script
-     *
-     * @return Promise which fulfils with the source map data
-     */
+  // Sets up message listener to receive results from content script
+  //
+  // @return Promise which fulfils with the source map data
   listenForExtraction () {
     return new Promise(function (resolve) {
       browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -105,15 +97,13 @@ class MapSwitcher {
     return extractedData
   }
 
-  /**
-    * Put the extracted data in a standard format, and perform any necessary checks
-    * to ensure the extracted data object is suitable for output use.
-    *
-    * The main functionality is to convert from unusual coordinate systems to WGS84.
-    *
-    * @param {object} extractedData - Data object extracted by the dataExtractor.
-    * @return Promise which resolves if the data can be normalised, or rejects if not.
-    */
+  // Put the extracted data in a standard format, and perform any necessary checks
+  // to ensure the extracted data object is suitable for output use.
+  //
+  // The main functionality is to convert from unusual coordinate systems to WGS84.
+  //
+  // @param {object} extractedData - Data object extracted by the dataExtractor.
+  // @return Promise which resolves if the data can be normalised, or rejects if not.
   async normaliseExtractedData (extractedData) {
     // return new Promise(function (resolve, reject) {
     if (!extractedData) {
@@ -139,14 +129,12 @@ class MapSwitcher {
     throw new Error('extracted data not in recognised format')
   }
 
-  /**
-    * Gets the two letter country code for the current location of the map shown
-    * in the current tab. If the country code can be found, it is stored in the
-    * extracted data object passed as argument.
-    *
-    * @param {object} extractedData - Data object extracted by the dataExtractor.
-    * @return Promise which resolves on success with the extracted data object.
-    */
+  // Gets the two letter country code for the current location of the map shown
+  // in the current tab. If the country code can be found, it is stored in the
+  // extracted data object passed as argument.
+  //
+  // @param {object} extractedData - Data object extracted by the dataExtractor.
+  // @return Promise which resolves on success with the extracted data object.
   getCountryCode (extractedData) {
     // CodeGrid is a service for identifying the country within which a coordinate
     // falls. The first-level identification tiles are loaded client-side, so most
@@ -170,12 +158,10 @@ class MapSwitcher {
     })
   }
 
-  /**
-    * Handles cases where no coordinates are available from the page, or another problem
-    * has occured.
-    *
-    * @param {object} errorObject - Contains any relevant error data
-    */
+  // Handles cases where no coordinates are available from the page, or another problem
+  // has occured.
+  //
+  // @param {object} errorObject - Contains any relevant error data
   handleNoCoords (errorObject) {
     const loadingElem = document.getElementsByClassName('loading')[0]
     loadingElem.style.display = 'none'
@@ -185,14 +171,12 @@ class MapSwitcher {
     maplinkboxElem.style.display = 'none'
   }
 
-  /**
-    * Constructs the outputs to be shown in the extension popup.
-    *
-    * Run once the dataExtractor has been executed on the current tab.
-    * Iterates throught the map services to request them to generate their links.
-    *
-    * @param sourceMapData
-    */
+  // Constructs the outputs to be shown in the extension popup.
+  //
+  // Run once the dataExtractor has been executed on the current tab.
+  // Iterates throught the map services to request them to generate their links.
+  //
+  // @param sourceMapData
   constructOutputs (sourceMapData) {
     const mapLinksView = new MapLinksView()
 
@@ -257,28 +241,22 @@ class MapSwitcher {
     }
   }
 
-  /**
-    * Hide the animated loading dots.
-    */
+  // Hide the animated loading dots.
   loaded (s) {
     const loadingElem = document.getElementsByClassName('loading')[0]
     loadingElem.style.display = 'none'
-    const sourceDescrElem = document.getElementById('sourceDescr')
-    sourceDescrElem.style.display = 'block'
     const mainTabBox = document.getElementById('mainBorderBox')
     mainTabBox.style.display = 'inline-block'
     const nomapbox = document.getElementById('nomapbox')
     nomapbox.style.display = 'none'
   }
 
-  /**
-   * Entry routine.
-   *
-   * Injects content scripts into the current tab (including the most important, the data
-   * extractor), which reads data from the map service.
-   * Then performs some auxiliary methods before executing the main method run() which
-   * generates all the links.
-   */
+  // Entry routine.
+  //
+  // Injects content scripts into the current tab (including the most important, the data
+  // extractor), which reads data from the map service.
+  // Then performs some auxiliary methods before executing the main method run() which
+  // generates all the links.
   async run () {
     try {
       await this.validateCurrentTab()

@@ -5,23 +5,19 @@
 
 import OutputMaps from './outputMaps.js'
 
-/**
- * The Web Extension API is implemented on different root objects in different browsers.
- * Firefox uses 'browser'. Chrome uses 'chrome'.
- * Checking here allows us to use a common 'browser' everywhere.
- */
+// The Web Extension API is implemented on different root objects in different browsers.
+// Firefox uses 'browser'. Chrome uses 'chrome'.
+// Checking here allows us to use a common 'browser' everywhere.
 let browser
 if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
-/**
- * Sorts elements under the element identified by the given selector,
- * based on the ascending numeric value of their "data-sort" attribute.
- *
- * Elements with no such attribute specified are placed at the end of the list in
- * arbitrary order.
- */
+// Sorts elements under the element identified by the given selector,
+// based on the ascending numeric value of their "data-sort" attribute.
+//
+// Elements with no such attribute specified are placed at the end of the list in
+// arbitrary order.
 function sortChildren (xpathSelector) {
   const parent = document.evaluate(xpathSelector,
     document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -54,9 +50,7 @@ Array.from(document.getElementsByClassName('selectAllNone')).forEach(selectAllCh
   })
 })
 
-/**
- * Saves the extension options in browser storage.
- */
+// Saves the extension options in browser storage.
 function saveOptions () {
   document.getElementById('status').textContent = 'Saving...'
   let mapChecks = {}
@@ -70,9 +64,7 @@ function saveOptions () {
   })
 }
 
-/**
- * Loads the extension options from browser storage.
- */
+// Loads the extension options from browser storage.
 function restoreOptions () {
   let mapEnabledDefaults = {}
   let prioDefaults = {}
