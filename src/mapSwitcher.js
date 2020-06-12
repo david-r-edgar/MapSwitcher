@@ -19,13 +19,12 @@ if (typeof browser === 'undefined') {
 }
 
 class MapSwitcher {
-
   /**
      * Checks if we should continue attempting to extract data from the current tab.
      *
      * @return Promise which fulfils if OK to continue, otherwise rejects.
      */
-  validateCurrentTab = function () {
+  validateCurrentTab () {
     return new Promise(function (resolve, reject) {
       browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         if ((tabs[0].url.indexOf('chrome://') >= 0) ||
@@ -44,7 +43,7 @@ class MapSwitcher {
      *
      * @return Promise which fulfils when complete
      */
-  runExtraction = function () {
+  runExtraction () {
     return new Promise(function (resolve) {
       new ScriptExecution().executeScripts(
         '/vendor/google-maps-data-parameter-parser/src/googleMapsDataParameter.js',
@@ -59,7 +58,7 @@ class MapSwitcher {
      *
      * @return Promise which fulfils with the source map data
      */
-  listenForExtraction = function () {
+  listenForExtraction () {
     return new Promise(function (resolve) {
       browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         resolve(request.sourceMapData)
@@ -67,7 +66,7 @@ class MapSwitcher {
     })
   }
 
-  normaliseOSGBCoords = function (extractedData) {
+  normaliseOSGBCoords (extractedData) {
     const osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
       extractedData.osgbCentreCoords.n)
     const osLL = OsGridRef.osGridToLatLong(osGR)
@@ -79,7 +78,7 @@ class MapSwitcher {
     return extractedData
   }
 
-  normaliseLambertCoords = async function (extractedData) {
+  async normaliseLambertCoords (extractedData) {
     const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
     const response = await window.fetch(request)
     const { lat, lng } = await response.json()
@@ -87,7 +86,7 @@ class MapSwitcher {
     return extractedData
   }
 
-  normaliseGooglePlace = async function (extractedData) {
+  async normaliseGooglePlace (extractedData) {
     const request = new window.Request(`https://www.google.com/maps?q=${extractedData.googlePlace}`)
     const initOptions = {
       credentials: 'omit'
@@ -115,7 +114,7 @@ class MapSwitcher {
     * @param {object} extractedData - Data object extracted by the dataExtractor.
     * @return Promise which resolves if the data can be normalised, or rejects if not.
     */
-  normaliseExtractedData = async function (extractedData) {
+  async normaliseExtractedData (extractedData) {
     // return new Promise(function (resolve, reject) {
     if (!extractedData) {
       throw new Error('no data extracted')
@@ -148,7 +147,7 @@ class MapSwitcher {
     * @param {object} extractedData - Data object extracted by the dataExtractor.
     * @return Promise which resolves on success with the extracted data object.
     */
-  getCountryCode = function (extractedData) {
+  getCountryCode (extractedData) {
     // CodeGrid is a service for identifying the country within which a coordinate
     // falls. The first-level identification tiles are loaded client-side, so most
     // of the time, no further request is necessary. But in cases where the coordinate
@@ -177,7 +176,7 @@ class MapSwitcher {
     *
     * @param {object} errorObject - Contains any relevant error data
     */
-  handleNoCoords = function (errorObject) {
+  handleNoCoords (errorObject) {
     const nomapElem = document.getElementById('nomap')
     nomapElem.style.display = 'block'
     const maplinkboxElem = document.getElementById('maplinkbox')
@@ -192,8 +191,8 @@ class MapSwitcher {
     *
     * @param sourceMapData
     */
-  constructOutputs = function (sourceMapData) {
-    const mapLinksView = new MapLinksView
+  constructOutputs (sourceMapData) {
+    const mapLinksView = new MapLinksView()
 
     if (sourceMapData.nonUpdating !== undefined) {
       var modal = document.getElementById('warningModal')
@@ -259,7 +258,7 @@ class MapSwitcher {
   /**
     * Hide the animated loading dots.
     */
-  loaded = function (s) {
+  loaded (s) {
     const maplinkboxElem = document.getElementsByClassName('loading')[0]
     maplinkboxElem.style.display = 'none'
     const sourceDescrElem = document.getElementById('sourceDescr')
@@ -274,7 +273,7 @@ class MapSwitcher {
    * Then performs some auxiliary methods before executing the main method run() which
    * generates all the links.
    */
-  run = async function () {
+  async run () {
     try {
       await this.validateCurrentTab()
       const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
@@ -288,31 +287,8 @@ class MapSwitcher {
   }
 }
 
-window.addEventListener('load', function () {
-  const myTabs = document.querySelectorAll('ul.nav-tabs > li')
-  function myTabClicks (tabClickEvent) {
-    for (let i = 0; i < myTabs.length; i++) {
-      myTabs[i].classList.remove('active')
-    }
-    const clickedTab = tabClickEvent.currentTarget
-    clickedTab.classList.add('active')
-    tabClickEvent.preventDefault()
-    var myContentPanes = document.querySelectorAll('.tab-pane')
-    for (let i = 0; i < myContentPanes.length; i++) {
-      myContentPanes[i].classList.remove('active')
-    }
-    const anchorReference = tabClickEvent.target
-    const activePaneId = anchorReference.getAttribute('href')
-    const activePane = document.querySelector(activePaneId)
-    activePane.classList.add('active')
-  }
-  for (let i = 0; i < myTabs.length; i++) {
-    myTabs[i].addEventListener('click', myTabClicks)
-  }
-})
-
-function runMapSwitcher() {
-  const mapSwitcher = new MapSwitcher
+function runMapSwitcher () {
+  const mapSwitcher = new MapSwitcher()
   mapSwitcher.run()
 }
 

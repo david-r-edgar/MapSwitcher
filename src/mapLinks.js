@@ -12,9 +12,10 @@ if (typeof browser === 'undefined') {
 
 // An instance of this class is the main view object for the extension popup.
 class MapLinksView {
-
-  /** Number of direction segments in the source map data. */
-  sourceDirnSegs = 0
+  constructor () {
+    // Number of direction segments in the source map data
+    this.sourceDirnSegs = 0
+  }
 
   /**
      * Returns the appropriate jquery selector for the given map service category,
@@ -22,7 +23,7 @@ class MapLinksView {
      *
      * @param {category} OutputMaps category for which the selector is requested.
      */
-  getSelector = function (category) {
+  getSelector (category) {
     if (OutputMaps.category.multidirns === category && this.sourceDirnSegs >= 2) {
       return 'multiSegDirns'
     } else if (OutputMaps.category.multidirns === category && this.sourceDirnSegs === 1) {
@@ -44,7 +45,7 @@ class MapLinksView {
      *
      * @param {category} OutputMaps category for which the title is requested.
      */
-  getTitle = function (category) {
+  getTitle (category) {
     let title = ''
     switch (category) {
       case OutputMaps.category.multidirns:
@@ -78,7 +79,7 @@ class MapLinksView {
     return title
   }
 
-  insertServiceLineIntoCategory = function (categoryElem, serviceLine, prio) {
+  insertServiceLineIntoCategory (categoryElem, serviceLine, prio) {
     let lastNonMatchingElem
     for (let elem of categoryElem.children) {
       if (elem.getAttribute('data-sort') > prio) break
@@ -95,7 +96,7 @@ class MapLinksView {
      * @param {mapLinks} All the map links to be added.
      * @param {note} Content for an optional explanatory note.
      */
-  addMapServiceLinks = function (category, mapService, mapLinks, note) {
+  addMapServiceLinks (category, mapService, mapLinks, note) {
     const thisView = this
     const selector = this.getSelector(category)
     const categoryElem = document.getElementById(selector)
@@ -127,7 +128,7 @@ class MapLinksView {
     })
   }
 
-  addUtility = function (mapService, id, name) {
+  addUtility (mapService, id, name) {
     // only add the title once
     const utilityElem = document.getElementById('utility')
     if (utilityElem.innerText.length === 0) {
@@ -159,7 +160,7 @@ class MapLinksView {
      * @param {name} Display name for the link.
      * @param {fileGenerator} Function to invoke to create the file contents.
      */
-  addFileDownload = function (mapService, id, name, fileGenerator) {
+  addFileDownload (mapService, id, name, fileGenerator) {
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)
@@ -175,7 +176,7 @@ class MapLinksView {
     })
   }
 
-  addUtilityLink = function (mapService, id, name, utilFunction) {
+  addUtilityLink (mapService, id, name, utilFunction) {
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)
@@ -188,7 +189,7 @@ class MapLinksView {
      * @param {mapService} Object representing the map service.
      * @param {note} Text content of the note to be displayed.
      */
-  addNote = function (mapService, note) {
+  addNote (mapService, note) {
     if (note && note.length) {
       const mapServiceIdElem = document.getElementById(mapService.id)
       mapServiceIdElem.innerHTML += ' ' +
@@ -214,7 +215,7 @@ class MapLinksView {
     * @param {note} note - a note for this map service, if applicable
     * @return {string} the HTML for the line
     */
-  buildLineOfLinks = function (id, mapSite, links, note) {
+  buildLineOfLinks (id, mapSite, links, note) {
     let html = ''
     if (links) {
       html =
@@ -241,7 +242,6 @@ class MapLinksView {
     }
     return html
   }
-
 }
 
 export default MapLinksView
