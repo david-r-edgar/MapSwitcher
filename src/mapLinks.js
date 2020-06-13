@@ -131,6 +131,11 @@ class MapLinksView {
     browser.storage.local.get(prioDefaults, function (prio) {
       mapService.prio = prio['prio/' + mapService.id]
 
+      mapLinks.forEach(mapLink => {
+        const sanitisedName = mapLink.name.replace(/[^a-zA-Z0-9]/g, '')
+        mapLink.id = mapService.id + '_' + sanitisedName + '_' + category
+      })
+
       const serviceLine = thisView.buildLineOfLinks(mapService.id,
         mapService,
         mapLinks,
@@ -233,11 +238,11 @@ class MapLinksView {
         "<div id='" + id + "' class='serviceLine' data-sort='" + mapSite.prio + "'>" +
         '<span class="linkLineImg"><img src="../image/' + mapSite.image + '"></span> ' +
         '<span class="serviceName">' + mapSite.site + '</span> '
-      Object.keys(links).forEach(link => {
+      links.forEach(link => {
         html += '<a class="maplink" target="_blank" id="' +
-          link + '" href="' +
-          links[link].link + '">' +
-          links[link].name + '</a> '
+          link.id + '" href="' +
+          link.url + '">' +
+          link.name + '</a> '
       })
 
       if (note && note.length) {
