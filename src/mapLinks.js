@@ -32,6 +32,8 @@ class MapLinksView {
       return 'misc'
     } else if (OutputMaps.category.special === category) {
       return 'special'
+    } else if (OutputMaps.category.regional === category) {
+      return 'regional'
     } else {
       return 'noDirns'
     }
@@ -63,6 +65,9 @@ class MapLinksView {
         break
       case OutputMaps.category.special:
         title = 'Special'
+        break
+      case OutputMaps.category.regional:
+        title = 'Regional'
         break
       default:
         if (this.sourceDirnSegs >= 1) {

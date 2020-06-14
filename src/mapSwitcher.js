@@ -198,14 +198,18 @@ class MapSwitcher {
       }
     }
 
-    document.getElementById('sourceLocnVal').textContent =
+    Array.from(document.getElementsByClassName('sourceLocnVal')).map(elem => {
+      elem.textContent =
       Number(sourceMapData.centreCoords.lat).toFixed(7) + ', ' +
       Number(sourceMapData.centreCoords.lng).toFixed(7)
-    if (undefined === sourceMapData.locationDescr) {
-      document.getElementById('sourceExtrFromVal').textContent = 'currently displayed map'
-    } else {
-      document.getElementById('sourceExtrFromVal').textContent = sourceMapData.locationDescr
-    }
+    })
+    Array.from(document.getElementsByClassName('sourceExtrFromVal')).map(elem => {
+      if (undefined === sourceMapData.locationDescr) {
+        elem.textContent = 'currently displayed map'
+      } else {
+        elem.textContent = sourceMapData.locationDescr
+      }
+    })
     if ('directions' in sourceMapData) {
       let numWpts = 0
       let mode = ''

@@ -17,7 +17,7 @@
     <script type="module" src="../src/mapSwitcher.js"></script>
   </head>
   <body>
-    <div class=borderBox>
+    <div class=titleBox>
       <div id="titleLine">
         <h2>Map Switcher</h2> <img src="../image/mapswitcher48x48.png">
         <div id="ctrlButtons">
@@ -49,19 +49,20 @@
       <div id=tabContainer class="container--tabs">
         <section class="row">
           <ul class="nav nav-tabs">
-            <li class="active"><a href="#basicTabPane">Displayed map</a></li>
+            <li class="active"><a href="#basicTabPane">Regular mapping</a></li>
             <li class="" id="directionsTabTab"><a href="#directionsTabPane">Directions</a></li>
             <!--<li class=""><a href="#tab-3">Marked point</a></li>-->
-            <li class=""><a href="#miscTabPane">Miscellaneous</a></li>
+            <li class=""><a href="#miscTabPane">Utilities</a></li>
           </ul>
           <div class="tab-content">
             <div id="basicTabPane" class="tab-pane active">
               <div class="sourceDescr">
-                <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal"></span></div>
-                <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal"></span></div>
+                <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal sourceLocnVal"></span></div>
+                <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal sourceExtrFromVal"></span></div>
               </div>
               <div id="maplinkbox" class=maplinkbox>
                 <div class="maplinkcat" id="noDirns"></div>
+                <div class="maplinkcat" id="regional"></div>
               </div>
             </div>
             <div id="directionsTabPane" class="tab-pane">
@@ -75,8 +76,8 @@
             </div>
             <div id="miscTabPane" class="tab-pane">
               <div class="sourceDescr">
-                <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal"></span></div>
-                <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal"></span></div>
+                <div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>
+                <div class="descrItem"><span class="lbl">Extracted from:</span> &nbsp; <span class="descrVal sourceExtrFromVal"></span></div>
               </div>
               <div id="maplinkbox" class=maplinkbox>
                 <div class="maplinkcat" id="special"></div>

@@ -6,12 +6,15 @@ body {
 }
 .borderBox {
   background-color: #fff;
-  padding: 4px;
+  padding: 0px 2px 2px 2px;
 }
 #mainBorderBox {
-  margin-top: 2px;
   display: none;
   background-color: #eee;
+}
+.titleBox {
+  background-color: #eee;
+  padding: 4px 4px 0px 4px;
 }
 #titleLine {
   min-width: 300px;
@@ -28,7 +31,7 @@ body {
 }
 #ctrlButtons {
   position: absolute;
-  top: 42px;
+  top: 12px;
 }
 #ctrlButtons svg {
   width:16px;
@@ -62,6 +65,8 @@ a.maplink:active {
 }
 .serviceLine {
   margin: 1px 0px;
+  padding-left: 20px;
+  text-indent: -20px;
 }
 .serviceName {
   font-size: 1.05em;
@@ -130,7 +135,7 @@ h4 {
   flex-direction: column;
   flex-wrap: wrap;
   /*position: relative;*/
-  max-height: 470px;
+  max-height: 420px;
   width: 538px;
   overflow-x: auto;
 }
@@ -209,7 +214,7 @@ h4 {
   color: #666;
 }
 
-#sourceLocnVal {
+.sourceLocnVal {
   font-family: monospace;
   font-size: 11px;
 }

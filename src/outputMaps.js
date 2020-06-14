@@ -23,7 +23,8 @@ let OutputMaps = {
     plain: 0,
     special: 5,
     misc: 3,
-    utility: 4
+    utility: 4,
+    regional: 6
   }
 
 }
@@ -752,7 +753,7 @@ OutputMaps.services = [
     image: 'streetmapLogo16x16.png',
     id: 'streetmap',
     prio: 11,
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
         const streetmapMapBase = 'http://www.streetmap.co.uk/map.srf?'
@@ -843,7 +844,7 @@ OutputMaps.services = [
     image: 'ngi_ign_Logo16x16.png',
     id: 'ngi_ign',
     prio: 13,
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode !== 'be') {
         return
@@ -943,7 +944,7 @@ OutputMaps.services = [
     image: 'topozone16x16.png',
     id: 'topozone',
     prio: 12,
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'us') {
         const topozoneBase = 'http://www.topozone.com/'
@@ -969,7 +970,7 @@ OutputMaps.services = [
     image: 'sysmaps16x16.png',
     id: 'sysmaps',
     prio: 14,
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       const mapLinks = []
       const base = 'http://www.sysmaps.co.uk/'
@@ -1260,7 +1261,7 @@ OutputMaps.services = [
     site: 'CalTopo',
     image: 'caltopoLogo16x16.png',
     id: 'caltopo',
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if ((sourceMapData.countryCode === 'us') || (sourceMapData.countryCode === 'ca')) {
         const base = 'http://caltopo.com/map.html'
@@ -1418,7 +1419,7 @@ OutputMaps.services = [
     site: 'OS Maps',
     image: 'osLogo16x16.png',
     id: 'ordnancesurvey',
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
         const base = 'https://osmaps.ordnancesurvey.co.uk/'
