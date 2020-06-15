@@ -48,14 +48,14 @@ class MapLinksView {
     switch (category) {
       case OutputMaps.category.multidirns:
         if (this.sourceDirnSegs >= 2) {
-          title = 'Directions, full'
+          title = 'Directions – full route'
         } else {
           title = 'Directions'
         }
         break
       case OutputMaps.category.singledirns:
         if (this.sourceDirnSegs >= 2) {
-          title = 'Directions, single segment only'
+          title = 'Directions – single segment only'
         } else {
           title = 'Directions'
         }
@@ -70,11 +70,7 @@ class MapLinksView {
         title = 'Regional'
         break
       default:
-        if (this.sourceDirnSegs >= 1) {
-          title = 'Other Maps'
-        } else {
-          title = 'Map Services'
-        }
+        title = 'Other Maps'
         break
     }
     return title
