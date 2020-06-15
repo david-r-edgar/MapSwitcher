@@ -989,8 +989,6 @@ OutputMaps.services = [
           url: deTopoBase + '&' + mapCentre
         })
       }
-      console.log({ mapLinks })
-      console.log(mapLinks.length)
       if (mapLinks.length > 0) {
         view.addMapServiceLinks(this.cat, this, mapLinks)
       }
@@ -1576,6 +1574,42 @@ OutputMaps.services = [
       ]
 
       view.addMapServiceLinks(this.cat, this, mapLinks)
+    }
+  },
+  {
+    site: 'Mapmyindia',
+    image: 'mapmyindia.png',
+    id: 'mapmyindia',
+    cat: OutputMaps.category.regional,
+    generate: function (sourceMapData, view) {
+      const base = 'https://maps.mapmyindia.com/'
+      let zoom = 12
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat)
+      }
+
+      const substituteEncode = function (num) {
+        const input = '0123456789.'
+        const output = 'fljtaseoqvi'
+        const index = x => input.indexOf(x)
+        const translate = x => index(x) > -1 ? output[index(x)] : x
+        return ('' + num).split('').map(translate).join('')
+      }
+      const [latAlpha, lngAlpha, zoomAlpha] = [
+        sourceMapData.centreCoords.lat,
+        sourceMapData.centreCoords.lng,
+        zoom
+      ].map(substituteEncode)
+
+      const mapLinks = [{
+        name: 'Default',
+        url: base + '@' + latAlpha + ',' + lngAlpha + ',' + zoomAlpha + ',l,j,fzdata'
+      }]
+
+      if (sourceMapData.countryCode === 'in') {
+        view.addMapServiceLinks(this.cat, this, mapLinks)
+      }
     }
   }
 ]
