@@ -1377,4 +1377,19 @@ var runDataExtraction = function () {
   })
 }
 
+extractors.push({
+  host: 'cyclosm.org',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const re = /map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
+      const [, zoom, lat, lng] = window.location.hash.match(re)
+      if (lat && lng && zoom) {
+        sourceMapData.centreCoords = { lat, lng }
+        sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
+      }
+      resolve(sourceMapData)
+    }
+})
+
 runDataExtraction()

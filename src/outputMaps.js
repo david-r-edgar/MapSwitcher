@@ -1509,6 +1509,36 @@ OutputMaps.services = [
 
       view.addMapServiceLinks(this.cat, this, mapLinks)
     }
+  },
+  {
+    site: 'CyclOSM',
+    image: 'cyclosm16x16.png',
+    id: 'cyclosm',
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const base = 'https://www.cyclosm.org/'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      let zoom = '12'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat) - 1
+        zoom = '' + zoom
+      }
+
+      const mapLinks = [
+        {
+          name: 'CyclOSM',
+          url: base + '#map=' + zoom + '/' + mapCentre + '/cyclosm'
+        },
+        {
+          name: 'OSM Piano',
+          url: base + '#map=' + zoom + '/' + mapCentre + '/piano'
+        }
+      ]
+
+      view.addMapServiceLinks(this.cat, this, mapLinks)
+    }
   }
 ]
 
