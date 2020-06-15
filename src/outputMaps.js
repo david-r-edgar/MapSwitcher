@@ -1522,7 +1522,7 @@ OutputMaps.services = [
 
       if ('resolution' in sourceMapData) {
         zoom = calculateStdZoomFromResolution(
-          sourceMapData.resolution, sourceMapData.centreCoords.lat) - 1
+          sourceMapData.resolution, sourceMapData.centreCoords.lat)
         zoom = '' + zoom
       }
 
@@ -1534,6 +1534,44 @@ OutputMaps.services = [
         {
           name: 'OSM Piano',
           url: base + '#map=' + zoom + '/' + mapCentre + '/piano'
+        }
+      ]
+
+      view.addMapServiceLinks(this.cat, this, mapLinks)
+    }
+  },
+  {
+    site: 'nakarte.me',
+    image: 'nakarte16x16.png',
+    id: 'nakarte',
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const base = 'https://www.nakarte.me/'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      let zoom = '12'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat)
+        zoom = '' + zoom
+      }
+
+      const mapLinks = [
+        {
+          name: 'OpenStreetMap',
+          url: base + '#m=' + zoom + '/' + mapCentre + '&l=O'
+        },
+        {
+          name: 'mapy.cz tourist',
+          url: base + '#m=' + zoom + '/' + mapCentre + '&l=Czt'
+        },
+        {
+          name: 'ESRI Satellite',
+          url: base + '#m=' + zoom + '/' + mapCentre + '&l=E'
+        },
+        {
+          name: 'Topomapper 1km',
+          url: base + '#m=' + zoom + '/' + mapCentre + '&l=T'
         }
       ]
 

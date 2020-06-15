@@ -69,6 +69,8 @@ This will clean and build into `./release`, generating or copying all necessary 
 - OSMaps
 - Windy
 - Flightradar24
+- CyclOSM
+- nakarte.me
 
 ### Output mapping services
 
@@ -111,6 +113,8 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Windy
 - OpenWeatherMap
 - Flightradar24
+- CyclOSM
+- nakarte.me
 
 ### Utilities
 - GPX download
