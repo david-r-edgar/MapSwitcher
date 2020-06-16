@@ -71,6 +71,8 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Flightradar24
 - CyclOSM
 - nakarte.me
+- Mapmyindia
+- BRouter web
 
 ### Output mapping services
 
@@ -115,6 +117,8 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Flightradar24
 - CyclOSM
 - nakarte.me
+- Mapmyindia
+- BRouter web
 
 ### Utilities
 - GPX download

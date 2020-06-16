@@ -1611,6 +1611,36 @@ OutputMaps.services = [
         view.addMapServiceLinks(this.cat, this, mapLinks)
       }
     }
+  },
+  {
+    site: 'BRouter',
+    image: 'defaultNoFavicon16x16.png',
+    id: 'brouter',
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const base = 'https://brouter.de/brouter-web'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      let zoom = '12'
+
+      if ('resolution' in sourceMapData) {
+        zoom = calculateStdZoomFromResolution(
+          sourceMapData.resolution, sourceMapData.centreCoords.lat)
+        zoom = '' + zoom
+      }
+
+      const mapLinks = [
+        {
+          name: 'OpenStreetMap',
+          url: base + '#map=' + zoom + '/' + mapCentre + '/standard'
+        },
+        {
+          name: 'OpenTopoMap',
+          url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap'
+        }
+      ]
+
+      view.addMapServiceLinks(this.cat, this, mapLinks)
+    }
   }
 ]
 
