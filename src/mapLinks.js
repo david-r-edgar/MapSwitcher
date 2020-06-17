@@ -34,6 +34,8 @@ class MapLinksView {
       return 'special'
     } else if (OutputMaps.category.regional === category) {
       return 'regional'
+    } else if (OutputMaps.category.activity === category) {
+      return 'activity'
     } else {
       return 'noDirns'
     }
@@ -68,6 +70,9 @@ class MapLinksView {
         break
       case OutputMaps.category.regional:
         title = 'Regional'
+        break
+      case OutputMaps.category.activity:
+        title = 'Activity'
         break
       default:
         title = 'Other Maps'

@@ -407,7 +407,7 @@ OutputMaps.services = [
     image: 'geocachingLogo16x16.png',
     id: 'geocaching',
     note: 'geocaching.com requires login to see the map (free sign-up)',
-    cat: OutputMaps.category.special,
+    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const geocachingBase = 'https://www.geocaching.com/map/#?'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -748,7 +748,7 @@ OutputMaps.services = [
     site: 'GPX Editor',
     image: 'gpxed16x16.png',
     id: 'gpxeditor',
-    cat: OutputMaps.category.special,
+    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const gpxEditorBase = 'http://www.gpxeditor.co.uk/?'
       const mapCentre = 'location=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -756,7 +756,7 @@ OutputMaps.services = [
 
       const mapLinks = [
         {
-          name: 'Street Map',
+          name: 'Map',
           url: gpxEditorBase + mapCentre + '&' + zoom + '&mapType=roadmap'
         },
         {
@@ -764,18 +764,14 @@ OutputMaps.services = [
           url: gpxEditorBase + mapCentre + '&' + zoom + '&mapType=satellite'
         },
         {
-          name: 'OpenStreetMap',
+          name: 'OSM',
           url: gpxEditorBase + mapCentre + '&' + zoom + '&mapType=OSM'
-        },
-        {
-          name: 'OpenCycleMap',
-          url: gpxEditorBase + mapCentre + '&' + zoom + '&mapType=OCM'
         }
       ]
 
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
         mapLinks.push({
-          name: 'Ordnance Survey',
+          name: 'OS',
           url: gpxEditorBase + mapCentre + '&' + zoom + '&mapType=OS'
         })
       }
@@ -1224,7 +1220,7 @@ OutputMaps.services = [
     site: 'Komoot',
     image: 'komootLogo16x16.png',
     id: 'komoot',
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const base = 'https://www.komoot.com/plan/'
       const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -1242,7 +1238,7 @@ OutputMaps.services = [
     site: 'Waymarked Trails',
     image: 'waymarkedtrailshiking16x16.png',
     id: 'waymarkedtrails',
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const domain = 'waymarkedtrails.org'
       const zoom = sourceMapData.getStandardZoom({ min: 0, max: 18 })
@@ -1365,7 +1361,7 @@ OutputMaps.services = [
     site: 'CyclOSM',
     image: 'cyclosm16x16.png',
     id: 'cyclosm',
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const base = 'https://www.cyclosm.org/'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -1453,7 +1449,7 @@ OutputMaps.services = [
     site: 'BRouter',
     image: 'defaultNoFavicon16x16.png',
     id: 'brouter',
-    cat: OutputMaps.category.plain,
+    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const base = 'https://brouter.de/brouter-web'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
