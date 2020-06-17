@@ -1209,12 +1209,12 @@ OutputMaps.services = [
     cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const base = 'https://www.mapillary.com/app/'
-      const mapCentre = sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng
+      const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng
       const zoom = sourceMapData.getStandardZoom() - 1
 
       const mapLinks = [{
         name: 'Map',
-        url: base + '?lat=' + mapCentre + '&z=' + zoom
+        url: base + '?' + mapCentre + '&z=' + zoom
       }]
 
       view.addMapServiceLinks(this.cat, this, mapLinks)
