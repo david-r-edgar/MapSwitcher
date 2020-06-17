@@ -1,12 +1,10 @@
 /* global
   globalThis,
-  ScriptExecution,
-  codegrid, jsonWorldGrid
-  calculateResolutionFromStdZoom,
-  CoordTransform, OsGridRef */
+  ScriptExecution */
 
 import MapLinksView from './mapLinks.js'
 import OutputMaps from './outputMaps.js'
+import SourceMapData from './sourceMapData.js'
 
 // The Web Extension API is implemented on different root objects in different browsers.
 // Firefox uses 'browser'. Chrome uses 'chrome'.
@@ -55,106 +53,6 @@ class MapSwitcher {
       browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         resolve(request.sourceMapData)
       })
-    })
-  }
-
-  normaliseOSGBCoords (extractedData) {
-    const osGR = new OsGridRef(extractedData.osgbCentreCoords.e,
-      extractedData.osgbCentreCoords.n)
-    const osLL = OsGridRef.osGridToLatLong(osGR)
-    const wgs84LL = CoordTransform.convertOSGB36toWGS84(osLL)
-    extractedData.centreCoords = {
-      lat: wgs84LL._lat,
-      lng: wgs84LL._lon
-    }
-    return extractedData
-  }
-
-  async normaliseLambertCoords (extractedData) {
-    const request = new window.Request(`http://www.loughrigg.org/wgs84Lambert/lambert_wgs84/${extractedData.lambertCentreCoords.e}/${extractedData.lambertCentreCoords.n}`)
-    const response = await window.fetch(request)
-    const { lat, lng } = await response.json()
-    extractedData.centreCoords = { lat, lng }
-    return extractedData
-  }
-
-  async normaliseGooglePlace (extractedData) {
-    const request = new window.Request(`https://www.google.com/maps?q=${extractedData.googlePlace}`)
-    const initOptions = {
-      credentials: 'omit'
-    }
-    const response = await window.fetch(request, initOptions)
-    const responseBlob = await response.blob()
-    const blobtext = await responseBlob.text()
-    // coords are given many times in the response, but some others are shifted to one side
-    const googleRe = /preview\/place\/[^/]+\/@([-0-9.]+),([-0-9.]+),[-0-9.]+a,([0-9.]+)y/
-    const resultArray = blobtext.match(googleRe)
-    extractedData.centreCoords = {
-      lat: resultArray[1],
-      lng: resultArray[2]
-    }
-    extractedData.resolution = calculateResolutionFromStdZoom(resultArray[3], resultArray[1])
-    return extractedData
-  }
-
-  // Put the extracted data in a standard format, and perform any necessary checks
-  // to ensure the extracted data object is suitable for output use.
-  //
-  // The main functionality is to convert from unusual coordinate systems to WGS84.
-  //
-  // @param {object} extractedData - Data object extracted by the dataExtractor.
-  // @return Promise which resolves if the data can be normalised, or rejects if not.
-  async normaliseExtractedData (extractedData) {
-    // return new Promise(function (resolve, reject) {
-    if (!extractedData) {
-      throw new Error('no data extracted')
-    }
-
-    if (extractedData.centreCoords) {
-      // regular wgs84 coords extracted
-      return extractedData
-    } else if (extractedData.osgbCentreCoords) {
-      // osgb36 coords specified
-      return this.normaliseOSGBCoords(extractedData)
-    } else if (extractedData.lambertCentreCoords) {
-      // Lambert Conic Conformal coords specified
-      return this.normaliseLambertCoords(extractedData)
-    } else if (extractedData.googlePlace) {
-      // named google place (a map is being shown in search results, but
-      // we don't know how to extract the coords)
-      return this.normaliseGooglePlace(extractedData)
-    }
-
-    // if we reach here, then have no coords of any recognised format
-    throw new Error('extracted data not in recognised format')
-  }
-
-  // Gets the two letter country code for the current location of the map shown
-  // in the current tab. If the country code can be found, it is stored in the
-  // extracted data object passed as argument.
-  //
-  // @param {object} extractedData - Data object extracted by the dataExtractor.
-  // @return Promise which resolves on success with the extracted data object.
-  getCountryCode (extractedData) {
-    // CodeGrid is a service for identifying the country within which a coordinate
-    // falls. The first-level identification tiles are loaded client-side, so most
-    // of the time, no further request is necessary. But in cases where the coordinate
-    // is close to an international boundary, additional levels of tiles, with more
-    // detail, are reqested from the specified host.
-    const CodeGrid = codegrid.CodeGrid('https://www.loughrigg.org/codegrid-js/tiles/', jsonWorldGrid) // eslint-disable-line no-global-assign
-
-    return new Promise(function (resolve) {
-      if (extractedData && extractedData.centreCoords != null) {
-        CodeGrid.getCode(
-          Number(extractedData.centreCoords.lat),
-          Number(extractedData.centreCoords.lng),
-          function (error, countryCode) {
-            if (!error) {
-              extractedData.countryCode = countryCode
-              resolve(extractedData)
-            }
-          })
-      }
     })
   }
 
@@ -246,7 +144,7 @@ class MapSwitcher {
   }
 
   // Hide the animated loading dots.
-  loaded (s) {
+  loaded () {
     const loadingElem = document.getElementsByClassName('loading')[0]
     loadingElem.style.display = 'none'
     const mainTabBox = document.getElementById('mainBorderBox')
@@ -265,10 +163,9 @@ class MapSwitcher {
     try {
       await this.validateCurrentTab()
       const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
-      const normalised = await this.normaliseExtractedData(extractedData)
-      const countryCodeAdded = await this.getCountryCode(normalised)
-      const outputsConstructed = await this.constructOutputs(countryCodeAdded)
-      await this.loaded(outputsConstructed)
+      const sourceMapData = await SourceMapData.build(extractedData)
+      await this.constructOutputs(sourceMapData)
+      await this.loaded()
     } catch (err) {
       this.handleNoCoords(err)
     }
