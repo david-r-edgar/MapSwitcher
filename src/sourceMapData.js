@@ -79,15 +79,12 @@ class SourceMapData {
     }
 
     if (this.lambertCentreCoords) {
-      console.log('lambertCentreCoords')
-
       // Lambert Conic Conformal coords specified
       await this.normaliseLambertCoords()
       return
     }
 
     if (this.googlePlace) {
-      console.log('googlePlace')
       // named google place (a map is being shown in search results, but
       // we don't know how to extract the coords)
       await this.normaliseGooglePlace()
@@ -96,6 +93,15 @@ class SourceMapData {
 
     // if we reach here, then have no coords of any recognised format
     throw new Error('extracted data not in recognised format')
+  }
+
+  normaliseRoute () {
+    if (this.directions && this.directions.route) {
+      // routes without at least 2 waypoints are invalid - so just delete them
+      if (this.directions.route.length < 2) {
+        delete this.directions
+      }
+    }
   }
 
   // Gets the two letter country code for the current location of the map shown
@@ -128,6 +134,7 @@ class SourceMapData {
   static async build (extractedData) {
     const sourceMapData = new SourceMapData(extractedData)
     await sourceMapData.normaliseExtractedData()
+    await sourceMapData.normaliseRoute()
     await sourceMapData.getCountryCode()
     return sourceMapData
   }

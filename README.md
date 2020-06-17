@@ -34,6 +34,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Waze
 - Here
 - Yandex
+- BRouter web
 
 ##### Without directions
 - Wikimapia
@@ -72,7 +73,6 @@ This will clean and build into `./release`, generating or copying all necessary 
 - CyclOSM
 - nakarte.me
 - Mapmyindia
-- BRouter web
 
 ### Output mapping services
 
@@ -80,14 +80,15 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Google
 - Bing
 - Here
+- BRouter web
 
 ##### With limited directions
 (These services only support single segment directions, no 'via' points.)
 - OpenStreetMap (only for routes with coordinate-specified waypoints)
-- Waze (only for routes with coordinate-specified waypoints)
 - Yandex
 
 ##### Without directions
+- Waze
 - Wikimapia
 - Wikimedia Labs
   - Geohack info page
@@ -118,7 +119,6 @@ This will clean and build into `./release`, generating or copying all necessary 
 - CyclOSM
 - nakarte.me
 - Mapmyindia
-- BRouter web
 
 ### Utilities
 - GPX download
@@ -133,3 +133,4 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Zoom / scale may not always be exact, depending on the limitations of the input & output map services
 - Directions handle multi-segment routes (with intermediate specified locations) where possible. Only some services (google, microsoft) support this. In these cases, output services which only support single segments will show maps from the first location to the last location.
 - Waze currently fails to handle zoom. The parameters do not work as its own documentation suggests they should.
+- Waze output routing has been disabled, as deep-linking to coordinates currently doesn't work properly.

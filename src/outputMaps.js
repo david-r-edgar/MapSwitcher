@@ -302,8 +302,10 @@ OutputMaps.services = [
                     firstElem.coords.lat + ',' + firstElem.coords.lng + ';' +
                     lastElem.coords.lat + ',' + lastElem.coords.lng
         } else {
-          this.note = 'OSM directions unavailable because waypoints are not ' +
-                            'all specified as coordinates.'
+          view.addMapServiceLinks(OutputMaps.category.singledirns, this, [],
+            'OSM directions unavailable because waypoints are not ' +
+            'all specified as coordinates.'
+          )
         }
       }
 
@@ -329,7 +331,7 @@ OutputMaps.services = [
             url: coreDirnsLink + '&layers=H'
           }
         ]
-        view.addMapServiceLinks(OutputMaps.category.singledirns, this, mapLinksWithDirns, this.note)
+        view.addMapServiceLinks(OutputMaps.category.singledirns, this, mapLinksWithDirns)
       }
 
       const mapLinksBasic = [
@@ -350,7 +352,7 @@ OutputMaps.services = [
           url: coreBasicLink + '&layers=H'
         }
       ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic, this.note)
+      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
     }
   },
   {
@@ -1457,7 +1459,7 @@ OutputMaps.services = [
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
       const zoom = sourceMapData.getStandardZoom()
 
-      const mapLinks = [
+      const mapLinksBasic = [
         {
           name: 'OpenStreetMap',
           url: base + '#map=' + zoom + '/' + mapCentre + '/standard'
@@ -1467,8 +1469,56 @@ OutputMaps.services = [
           url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap'
         }
       ]
+      view.addMapServiceLinks(this.cat, this, mapLinksBasic)
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      // first prepare pairs of waypoints which have coords, in a stringified format
+      const coordPairArr = []
+      if ('directions' in sourceMapData &&
+        'route' in sourceMapData.directions) {
+        sourceMapData.directions.route.forEach(wpt => {
+          if ('coords' in wpt) {
+            coordPairArr.push(wpt.coords.lng + ',' + wpt.coords.lat)
+          }
+        })
+      }
+
+      if (coordPairArr.length < sourceMapData.directions.route.length) {
+        // no directions at all, show note
+        view.addMapServiceLinks(OutputMaps.category.multidirns, this, [],
+          'BRouter directions unavailable because waypoints are not ' +
+          'all available as coordinates.')
+      } else {
+        let directions = '&lonlats='
+        directions += coordPairArr.join(';')
+
+        let mode = ''
+        if (sourceMapData.directions.mode) {
+          switch (sourceMapData.directions.mode) {
+            case 'car':
+              mode = '&profile=car-eco'
+              break
+            case 'foot':
+              mode = '&profile=hiking-beta'
+              break
+          }
+        }
+
+        directions += mode
+
+        if (directions) {
+          const mapLinksWithDirns = [
+            {
+              name: 'OpenStreetMap',
+              url: base + '#map=' + zoom + '/' + mapCentre + '/standard' + directions
+            },
+            {
+              name: 'OpenTopoMap',
+              url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap' + directions
+            }
+          ]
+          view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns, this.note)
+        }
+      }
     }
   }
 ]
