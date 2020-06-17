@@ -75,7 +75,7 @@ class MapLinksView {
         title = 'Activity'
         break
       default:
-        title = 'Other Maps'
+        title = 'General purpose'
         break
     }
     return title
