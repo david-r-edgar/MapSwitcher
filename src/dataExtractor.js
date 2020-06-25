@@ -1361,27 +1361,6 @@ extractors.push({
   extract: ignngiExtractor
 })
 
-var runDataExtraction = function () {
-  // default null extractor
-  let extractor = {
-    extract: resolve => { resolve(null) }
-  }
-  // we iterate through our extractors to find a matching host
-  for (let extr of extractors) {
-    if (window.location.hostname.indexOf(extr.host) >= 0) {
-      extractor = extr
-      break
-    }
-  }
-  // execute the extraction and send the result to the main script
-  new Promise(extractor.extract).then(function (sourceMapData) {
-    browserRoot.runtime.sendMessage({ sourceMapData: sourceMapData })
-  }).catch(function () {
-    // if an extractor fails, just send a null message to the main script to indicate failure
-    browserRoot.runtime.sendMessage({})
-  })
-}
-
 extractors.push({
   host: 'cyclosm.org',
   extract:
@@ -1462,5 +1441,26 @@ extractors.push({
       resolve(sourceMapData)
     }
 })
+
+var runDataExtraction = function () {
+  // default null extractor
+  let extractor = {
+    extract: resolve => { resolve(null) }
+  }
+  // we iterate through our extractors to find a matching host
+  for (let extr of extractors) {
+    if (window.location.hostname.indexOf(extr.host) >= 0) {
+      extractor = extr
+      break
+    }
+  }
+  // execute the extraction and send the result to the main script
+  new Promise(extractor.extract).then(function (sourceMapData) {
+    browserRoot.runtime.sendMessage({ sourceMapData: sourceMapData })
+  }).catch(function () {
+    // if an extractor fails, just send a null message to the main script to indicate failure
+    browserRoot.runtime.sendMessage({})
+  })
+}
 
 runDataExtraction()

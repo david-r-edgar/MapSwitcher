@@ -295,6 +295,75 @@ class MapLinksView {
     }
     return html
   }
+
+  displayNonUpdatingWarning (warning) {
+  // display modal with warning for non-updating sources
+    var modal = document.getElementById('warningModal')
+    modal.style.display = 'block'
+
+    document.getElementById('nonUpdatingHost').textContent = warning
+
+    const close = document.getElementsByClassName('modalClose')[0]
+
+    close.onclick = function () {
+      modal.style.display = 'none'
+    }
+    modal.onclick = function (event) {
+      if (event.target === modal) {
+        modal.style.display = 'none'
+      }
+    }
+  }
+
+  showInfo (sourceMapDataInfo) {
+    // set source coords and description
+    Array.from(document.getElementsByClassName('sourceLocnVal')).map(elem => {
+      elem.textContent =
+      Number(sourceMapDataInfo.centreCoords.lat).toFixed(7) + ', ' +
+      Number(sourceMapDataInfo.centreCoords.lng).toFixed(7)
+    })
+    Array.from(document.getElementsByClassName('sourceExtrFromVal')).map(elem => {
+      if (undefined === sourceMapDataInfo.locationDescr) {
+        elem.textContent = 'currently displayed map'
+      } else {
+        elem.textContent = sourceMapDataInfo.locationDescr
+      }
+    })
+
+    // show directions category; set directions description
+    if (sourceMapDataInfo.directions) {
+      var dirnDescr = sourceMapDataInfo.directions.numWpts + ' waypoint route'
+      let mode = (sourceMapDataInfo.directions.mode === 'transit')
+        ? 'public transport' : sourceMapDataInfo.directions.mode
+      dirnDescr += ', travelling by ' + mode
+      Array.from(document.getElementsByClassName('directionsDescr')).map((elem) => {
+        elem.textContent = dirnDescr
+      })
+    }
+  }
+
+  // Hide the animated loading dots.
+  loaded () {
+    const loadingElem = document.getElementsByClassName('loading')[0]
+    loadingElem.style.display = 'none'
+    const mainTabBox = document.getElementById('mainBorderBox')
+    mainTabBox.style.display = 'inline-block'
+    const nomapbox = document.getElementById('nomapbox')
+    nomapbox.style.display = 'none'
+  }
+
+  // Handles cases where no coordinates are available from the page, or another problem
+  // has occured.
+  //
+  // @param {object} errorObject - Contains any relevant error data
+  static handleNoCoords (errorObject) {
+    const loadingElem = document.getElementsByClassName('loading')[0]
+    loadingElem.style.display = 'none'
+    const nomapElem = document.getElementById('nomap')
+    nomapElem.style.display = 'block'
+    const maplinkboxElem = document.getElementById('tabContainer')
+    maplinkboxElem.style.display = 'none'
+  }
 }
 
 export default MapLinksView
