@@ -13,7 +13,6 @@
     <script src="../vendor/chris-veness/osgridref.js"></script>
     <script src="../vendor/chris-veness/wgs_airy.js"></script>
     <script src="../src/mapUtil.js"></script>
-    <script src="../src/tabs.js"></script>
     <script type="module" src="../src/mapSwitcher.js"></script>
   </head>
   <body>
@@ -48,45 +47,8 @@
     <div class=borderBox id=mainBorderBox>
       <div id=tabContainer class="container--tabs">
         <section class="row">
-          <ul class="nav nav-tabs">
-            <li class="active"><a href="#basicTabPane">Regular mapping</a></li>
-            <li class="" id="directionsTabTab"><a href="#directionsTabPane">Directions</a></li>
-            <!--<li class=""><a href="#tab-3">Marked point</a></li>-->
-            <li class=""><a href="#miscTabPane">Utilities</a></li>
-          </ul>
-          <div class="tab-content">
-            <div id="basicTabPane" class="tab-pane active">
-              <div class="sourceDescr">
-                <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal sourceLocnVal"></span></div>
-                <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal sourceExtrFromVal"></span></div>
-              </div>
-              <div id="maplinkbox" class=maplinkbox>
-                <div class="maplinkcat" id="noDirns"></div>
-                <div class="maplinkcat" id="regional"></div>
-                <div class="maplinkcat" id="activity"></div>
-              </div>
-            </div>
-            <div id="directionsTabPane" class="tab-pane">
-              <div class="sourceDescr">
-                <div class="descrItem" id="sourceDirn">&nbsp; <span id="sourceDirnVal" class="descrVal"></span></div>
-              </div>
-               <div id="maplinkdirnsbox" class=maplinkbox>
-                <div class="maplinkcat" id="multiSegDirns"></div>
-                <div class="maplinkcat" id="singleSegDirns"></div>
-              </div>
-            </div>
-            <div id="miscTabPane" class="tab-pane">
-              <div class="sourceDescr">
-                <div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>
-                <div class="descrItem"><span class="lbl">Extracted from:</span> &nbsp; <span class="descrVal sourceExtrFromVal"></span></div>
-              </div>
-              <div id="maplinkbox" class=maplinkbox>
-                <div class="maplinkcat" id="special"></div>
-                <div class="maplinkcat" id="misc"></div>
-                <div class="maplinkcat" id="utility"></div>
-              </div>
-            </div>
-          </div>
+          <ul id="tabTabContainer" class="nav nav-tabs"></ul>
+          <div id="tabPaneContainer" class="tab-content"></div>
         </section>
       </div>
       <div id="warningModal" class="modal">

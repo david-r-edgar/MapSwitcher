@@ -3,8 +3,6 @@
   Blob,
   tippy */
 
-import OutputMaps from './outputMaps.js'
-
 let browser
 if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
@@ -12,102 +10,173 @@ if (typeof browser === 'undefined') {
 
 // An instance of this class is the main view object for the extension popup.
 class MapLinksView {
-  constructor () {
-    // Number of direction segments in the source map data
-    this.sourceDirnSegs = 0
+  constructor (tabCatSvcMap, settings, directionsTabs) {
+    this.tabCatSvcMap = tabCatSvcMap
+    this.settings = settings
+    this.directionsTabs = directionsTabs
   }
 
-  // Returns the appropriate jquery selector for the given map service category,
-  // based on the number of direction segments.
-  //
-  // @param {category} OutputMaps category for which the selector is requested.
-  getSelector (category) {
-    if (OutputMaps.category.multidirns === category && this.sourceDirnSegs >= 2) {
-      return 'multiSegDirns'
-    } else if (OutputMaps.category.multidirns === category && this.sourceDirnSegs === 1) {
-      return 'singleSegDirns'
-    } else if (OutputMaps.category.singledirns === category && this.sourceDirnSegs > 0) {
-      return 'singleSegDirns'
-    } else if (OutputMaps.category.misc === category) {
-      return 'misc'
-    } else if (OutputMaps.category.special === category) {
-      return 'special'
-    } else if (OutputMaps.category.regional === category) {
-      return 'regional'
-    } else if (OutputMaps.category.activity === category) {
-      return 'activity'
-    } else {
-      return 'noDirns'
-    }
+  getIdFromName (name) {
+    return name.replace(/[^a-zA-Z0-9]/g, '')
   }
 
-  // Returns the section title for the given map service category, based
-  // on the number of direction segments.
-  //
-  // @param {category} OutputMaps category for which the title is requested.
-  getTitle (category) {
-    let title = ''
-    switch (category) {
-      case OutputMaps.category.multidirns:
-        if (this.sourceDirnSegs >= 2) {
-          title = 'Directions – full route'
-        } else {
-          title = 'Directions'
-        }
-        break
-      case OutputMaps.category.singledirns:
-        if (this.sourceDirnSegs >= 2) {
-          title = 'Directions – single segment only'
-        } else {
-          title = 'Directions'
-        }
-        break
-      case OutputMaps.category.misc:
-        title = 'Miscellaneous'
-        break
-      case OutputMaps.category.special:
-        title = 'Special'
-        break
-      case OutputMaps.category.regional:
-        title = 'Regional'
-        break
-      case OutputMaps.category.activity:
-        title = 'Activity'
-        break
-      default:
-        title = 'General purpose'
-        break
-    }
-    return title
+  getTabPaneIdFromName (name) {
+    return this.getIdFromName(name) + '_tabpane'
   }
 
-  insertServiceLineIntoCategory (categoryElem, serviceLine, prio) {
-    let lastNonMatchingElem
-    for (let elem of categoryElem.children) {
-      if (elem.getAttribute('data-sort') > prio) break
-      lastNonMatchingElem = elem
-    }
-    lastNonMatchingElem.insertAdjacentHTML('afterend', serviceLine)
+  getTabTabIdFromName (name) {
+    return this.getIdFromName(name) + '_tabtab'
   }
 
-  // FIXME move this to tabs.js
-  optionallyShowDirectionsTab () {
-    if (this.sourceDirnSegs >= 1) {
-      const tabs = document.querySelectorAll('ul.nav-tabs > li')
-      for (let tab of tabs) {
-        tab.classList.remove('active')
+  getCatIdFromName (name) {
+    return this.getIdFromName(name) + '_cat'
+  }
+
+  getServiceIdFromName (name) {
+    return this.getIdFromName(name) + '_service'
+  }
+
+  createEmptyTab (tab) {
+    const tabPaneId = this.getTabPaneIdFromName(tab)
+    const tabTabId = this.getTabTabIdFromName(tab)
+
+    // create the tab pane
+    const tabPaneHTML = `<div id="${tabPaneId}" class="tab-pane"><div class=sourceDescr></div><div class=maplinkbox></div></div>`
+    const tabPaneContainer = document.getElementById('tabPaneContainer')
+    tabPaneContainer.innerHTML += tabPaneHTML
+
+    // create the 'tab' itself
+    const tabTabHTML = `<li id="${tabTabId}" class=""><a href="#${tabPaneId}">${tab}</a></li>`
+    const tabTabContainer = document.getElementById('tabTabContainer')
+    tabTabContainer.innerHTML += tabTabHTML
+  }
+
+  createEmptyCat (cat, tabElem) {
+    const catId = this.getCatIdFromName(cat)
+    const catHTML = `<div class="maplinkcat" id="${catId}"><h4>${cat}</h4></div>`
+    const maplinkbox = tabElem.getElementsByClassName('maplinkbox')[0]
+    maplinkbox.innerHTML += catHTML
+  }
+
+  createPlaceholderService (service, catElem) {
+    const serviceId = this.getServiceIdFromName(service)
+    const placeholderServiceLine = `<div id="${serviceId}" class="serviceLine"/>`
+    catElem.innerHTML += placeholderServiceLine
+  }
+
+  tabCatSvcSetup () {
+    const view = this
+    this.tabCatSvcMap.forEach((catSvcMap, tab) => {
+      // create tab
+      view.createEmptyTab(tab)
+      const tabId = this.getTabPaneIdFromName(tab)
+      const tabElem = document.getElementById(tabId)
+      catSvcMap.forEach((svcMap, cat) => {
+        // create cat
+        view.createEmptyCat(cat, tabElem)
+        const catId = this.getCatIdFromName(cat)
+        const catElem = document.getElementById(catId)
+        svcMap.forEach((settings, service) => {
+          // create service placeholder
+          if (!settings.hidden) {
+            view.createPlaceholderService(service, catElem)
+          }
+        })
+      })
+    })
+  }
+
+  setupTabSourceDescr () {
+    this.tabCatSvcMap.forEach((_, tab) => {
+      const tabId = this.getTabPaneIdFromName(tab)
+      const tabSourceDescr = document.querySelector('#' + tabId + ' .sourceDescr')
+      if (this.directionsTabs[tab]) {
+        tabSourceDescr.innerHTML = '<div class="descrItem"><span class="descrVal directionsDescr"></span></div>'
+      } else {
+        tabSourceDescr.innerHTML = '<div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>' +
+          '<div class="descrItem"><span class="lbl">Extracted from:</span> &nbsp; <span class="descrVal sourceExtrFromVal"></span></div>'
       }
-      const directionsTabTab = document.getElementById('directionsTabTab')
-      directionsTabTab.classList.add('active')
-      const panes = document.querySelectorAll('.tab-pane')
-      for (let pane of panes) {
-        pane.classList.remove('active')
+    })
+  }
+
+  // find the first tab with a service for directions, and the first tab with
+  // a service for regular non-directions maps
+  // FIXME surely there's a better way of doing this? maybe just iterate through settings?
+  findFirstTabs () {
+    this.firstTabs = {}
+    for (let [tab, catList] of this.tabCatSvcMap) {
+      for (let [, serviceList] of catList) {
+        for (let [, settings] of serviceList) {
+          if (!this.firstTabs.directions && settings.type === 'directions') {
+            this.firstTabs.directions = tab
+          }
+          if (!this.firstTabs.regular && (!settings.type || !settings.type === 'directions')) {
+            this.firstTabs.regular = tab
+          }
+          if (this.firstTabs.directions && this.firstTabs.regular) {
+            return
+          }
+        }
       }
-      const directionsTabPane = document.getElementById('directionsTabPane')
-      directionsTabPane.classList.add('active')
-    } else {
-      const directionsTabTab = document.getElementById('directionsTabTab')
-      directionsTabTab.style.display = 'none'
+    }
+  }
+
+  prepareTabs (tabType) {
+    this.findFirstTabs()
+    const tab = this.firstTabs[tabType]
+    const tabPaneId = this.getTabPaneIdFromName(tab)
+    const tabTabId = this.getTabTabIdFromName(tab)
+
+    const tabPane = document.getElementById(tabPaneId)
+    tabPane.classList.add('active')
+
+    const tabTab = document.getElementById(tabTabId)
+    tabTab.classList.add('active')
+  }
+
+  // sets up click events etc. to enable tab functionality
+  tabSetup () {
+    const myTabs = document.querySelectorAll('ul.nav-tabs > li')
+    function myTabClicks (tabClickEvent) {
+      for (let i = 0; i < myTabs.length; i++) {
+        myTabs[i].classList.remove('active')
+      }
+      const clickedTab = tabClickEvent.currentTarget
+      clickedTab.classList.add('active')
+      tabClickEvent.preventDefault()
+      const myContentPanes = document.querySelectorAll('.tab-pane')
+      for (let i = 0; i < myContentPanes.length; i++) {
+        myContentPanes[i].classList.remove('active')
+      }
+      const anchorReference = tabClickEvent.target
+      const activePaneId = anchorReference.getAttribute('href')
+      const activePane = document.querySelector(activePaneId)
+      activePane.classList.add('active')
+    }
+    for (let i = 0; i < myTabs.length; i++) {
+      myTabs[i].addEventListener('click', myTabClicks)
+    }
+  }
+
+  showCatAndTab (category, tab) {
+    const catId = this.getCatIdFromName(category)
+    const catElem = document.getElementById(catId)
+    catElem.classList.add('inUse')
+
+    const tabPaneId = this.getTabPaneIdFromName(tab)
+    const tabPaneElem = document.getElementById(tabPaneId)
+    tabPaneElem.classList.add('inUse')
+
+    const tabTabId = this.getTabTabIdFromName(tab)
+    const tabTabElem = document.getElementById(tabTabId)
+    tabTabElem.classList.add('inUse')
+  }
+
+  insertServiceLineIntoCategory (service, serviceLineContents) {
+    const serviceId = this.getServiceIdFromName(service)
+    const serviceElem = document.getElementById(serviceId)
+    if (serviceElem) {
+      serviceElem.innerHTML += serviceLineContents
     }
   }
 
@@ -117,67 +186,36 @@ class MapLinksView {
   // @param {mapService} Object containing data about the particular map service.
   // @param {mapLinks} All the map links to be added.
   // @param {note} Content for an optional explanatory note.
-  addMapServiceLinks (category, mapService, mapLinks, note) {
-    const thisView = this
-    const selector = this.getSelector(category)
-    const categoryElem = document.getElementById(selector)
+  addMapServiceLinks (_, mapService, mapLinks, note) {
+    const newServiceLine = this.buildLineOfLinks(mapService, mapLinks, note)
+    this.insertServiceLineIntoCategory(mapService.id, newServiceLine)
 
-    if (categoryElem.children.length === 0) {
-      const title = document.createElement('h4')
-      title.innerText = this.getTitle(category)
-      categoryElem.appendChild(title)
+    if (note && note.length) {
+      tippy('.linknote', {
+        content: note
+      })
     }
 
-    let prioDefaults = {}
-    prioDefaults['prio/' + mapService.id] = mapService.prio !== undefined ? mapService.prio : 999
-
-    this.optionallyShowDirectionsTab()
-
-    const self = this
-    browser.storage.local.get(prioDefaults, function (prio) {
-      mapService.prio = prio['prio/' + mapService.id]
-
-      mapLinks.forEach(mapLink => {
-        const sanitisedName = mapLink.name.replace(/[^a-zA-Z0-9]/g, '')
-        mapLink.id = mapService.id + '_' + sanitisedName + '_' + category
-      })
-
-      const serviceLine = thisView.buildLineOfLinks(mapService.id,
-        mapService,
-        mapLinks,
-        note)
-      self.insertServiceLineIntoCategory(categoryElem, serviceLine, mapService.prio)
-
-      if (note && note.length) {
-        tippy('.linknote', {
-          content: note
-        })
-      }
-    })
+    const settingsForService = this.settings.get(mapService.id)
+    this.showCatAndTab(settingsForService.cat, settingsForService.tab)
   }
 
   addUtility (mapService, id, name) {
-    // only add the title once
-    const utilityElem = document.getElementById('utility')
-    if (utilityElem.innerText.length === 0) {
-      const title = document.createElement('h4')
-      title.innerText = 'Utilities'
-      utilityElem.appendChild(title)
+    const serviceId = this.getServiceIdFromName(mapService.id) // FIXME why are we using the id as a name?
+    const serviceElem = document.getElementById(serviceId)
+
+    if (serviceElem.innerText.length === 0) {
+      serviceElem.insertAdjacentHTML('beforeend', `<span id='${mapService.id}` +
+        `' data-sort='${mapService.prio}'>` +
+        `<span class="linkLineImg"><img src="../image/${mapService.image}"></span> ` +
+        `<span class="serviceName">${mapService.site}</span></span>`)
     }
 
-    // create div for mapService if not one already
-    let mapServiceIdElem = document.getElementById(mapService.id)
-    if (!mapServiceIdElem || mapServiceIdElem.innerText.length === 0) {
-      utilityElem.insertAdjacentHTML('beforeend', "<div id='" + mapService.id +
-        "' class='serviceLine' data-sort='" + mapService.prio + "'>" +
-        '<span class="linkLineImg"><img src="../image/' + mapService.image + '"></span> ' +
-        '<span class="serviceName">' + mapService.site + '</span></div>')
-    }
+    const linkHtml = `<a href='#' class='maplink' id='${id}'>${name}</a>`
+    serviceElem.innerHTML += linkHtml
 
-    const linkHtml = " <a href='#' class=\"maplink\" id='" + id + "'>" + name + '</a>'
-    // get it again (now that's it been created)
-    mapServiceIdElem = document.getElementById(mapService.id)
-    mapServiceIdElem.insertAdjacentHTML('beforeend', linkHtml)
+    const settingsForService = this.settings.get(mapService.id)
+    this.showCatAndTab(settingsForService.cat, settingsForService.tab)
   }
 
   // Adds links for file downloads (such as GPX)
@@ -232,23 +270,18 @@ class MapLinksView {
   // Utility function which builds the HTML for all the map links belonging to a specific
   // map service.
   //
-  // @param {string} id - id for the main map service div.
   // @param {object} mapSite - the output object representing the map service
   // @param {object} links - the map links to add, containing URLs and names for each
   // @param {note} note - a note for this map service, if applicable
   // @return {string} the HTML for the line
-  buildLineOfLinks (id, mapSite, links, note) {
+  buildLineOfLinks (mapSite, links, note) {
     let html = ''
     if (links) {
       html =
-        "<div id='" + id + "' class='serviceLine' data-sort='" + mapSite.prio + "'>" +
-        '<span class="linkLineImg"><img src="../image/' + mapSite.image + '"></span> ' +
-        '<span class="serviceName">' + mapSite.site + '</span> '
+        `<span class="linkLineImg"><img src="../image/${mapSite.image}"></span> ` +
+        `<span class="serviceName">${mapSite.site}</span> `
       links.forEach(link => {
-        html += '<a class="maplink" target="_blank" id="' +
-          link.id + '" href="' +
-          link.url + '">' +
-          link.name + '</a> '
+        html += `<a class="maplink" target="_blank" href="${link.url}">${link.name}</a> `
       })
 
       if (note && note.length) {
@@ -260,7 +293,6 @@ class MapLinksView {
           '</svg>' +
         '</span>'
       }
-      html += '</div>'
     }
     return html
   }

@@ -80,8 +80,6 @@ function calculatePixelPitchFromDPI (ppi) {
   return 25.4 / ppi
 }
 
-/* eslint-ensable no-unused-vars */
-
 function getDistanceFromLatLonInKm (lat1, lon1, lat2, lon2) {
   const R = 6371 // Radius of the earth in km
   const dLat = deg2rad(lat2 - lat1) // deg2rad below
@@ -98,3 +96,5 @@ function getDistanceFromLatLonInKm (lat1, lon1, lat2, lon2) {
 function deg2rad (deg) {
   return deg * (Math.PI / 180)
 }
+
+/* eslint-ensable no-unused-vars */

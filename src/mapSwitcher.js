@@ -1,5 +1,6 @@
 /* global
   globalThis,
+  fetch,
   ScriptExecution */
 
 import MapLinksView from './mapLinks.js'
@@ -56,6 +57,70 @@ class MapSwitcher {
     })
   }
 
+  async loadConfig () {
+    const response = await fetch(browser.runtime.getURL('../config/defaultServices.json'))
+    return response.json()
+  }
+
+  loadSettings () {
+    return new Map([
+      // FOR TESTING
+      //   ['someservice', {cat: 'somecat', tab: 'sometab'}],
+      //   ['waze', {cat: 'wazewazewazewazecat', tab: 'wazewazewazewazetab'}]
+      // [ 'google', { 'cat': 'General purpose', 'tab': 'Regular mapping', 'hidden': true }]
+    ])
+  }
+
+  mergeSettings (settings, defaultSettings) {
+    // for each key in defaultSettings, if it doesn't exist in settings, add it
+    //
+    // it's not a straightforward 'union' of maps since we want to keep the
+    // order of 'settings', but also keep any values it has set
+    defaultSettings.forEach((value, key) => {
+      if (!settings.has(key)) {
+        settings.set(key, value)
+      }
+    })
+    return settings
+  }
+
+  async loadConfigsAndSettings () {
+    const loadedConfig = await this.loadConfig()
+    const defaultConfig = new Map(loadedConfig)
+    const settings = this.loadSettings()
+    this.settings = this.mergeSettings(settings, defaultConfig)
+  }
+
+  // creates a three-level map with tabs at the top level, a submap of categories beneath each of
+  // the tabs and a further submap of services beneath each of the categories
+  // This structure is convenient for creating the DOM elements before the outputs
+  // are generated
+  convertSettingsToHierachicalMap () {
+    const tabMap = new Map()
+    this.settings.forEach((serviceSettings, service) => {
+      if (!tabMap.has(serviceSettings.tab)) {
+        tabMap.set(serviceSettings.tab, new Map())
+      }
+      if (!(tabMap.get(serviceSettings.tab)).get(serviceSettings.cat)) {
+        (tabMap.get(serviceSettings.tab)).set(serviceSettings.cat, new Map())
+      }
+      const { 'cat': _, 'tab': __, ...otherSettings } = serviceSettings
+
+      tabMap.get(serviceSettings.tab).get(serviceSettings.cat).set(service, otherSettings)
+    })
+    return tabMap
+  }
+
+  determineWhichTabsNeedDirections () {
+    this.directionsTabs = {}
+    this.settings.forEach((serviceSettings) => {
+      if (serviceSettings.type === 'directions') {
+        this.directionsTabs[serviceSettings.tab] = true
+      }
+    })
+    return this.directionsTabs
+  }
+
   // Handles cases where no coordinates are available from the page, or another problem
   // has occured.
   //
@@ -76,8 +141,9 @@ class MapSwitcher {
   //
   // @param sourceMapData
   constructOutputs (sourceMapData) {
-    const mapLinksView = new MapLinksView()
+    const mapLinksView = this.mapLinksView
 
+    // display modal with warning for non-updating sources
     if (sourceMapData.nonUpdating !== undefined) {
       var modal = document.getElementById('warningModal')
       modal.style.display = 'block'
@@ -96,6 +162,7 @@ class MapSwitcher {
       }
     }
 
+    // set source coords and description
     Array.from(document.getElementsByClassName('sourceLocnVal')).map(elem => {
       elem.textContent =
       Number(sourceMapData.centreCoords.lat).toFixed(7) + ', ' +
@@ -108,6 +175,8 @@ class MapSwitcher {
         elem.textContent = sourceMapData.locationDescr
       }
     })
+
+    // show directions category; set directions description
     if ('directions' in sourceMapData) {
       let numWpts = 0
       let mode = ''
@@ -120,15 +189,12 @@ class MapSwitcher {
           ? 'public transport' : sourceMapData.directions.mode
         dirnDescr += ', travelling by ' + mode
       }
-      const sourceDirnElem = document.getElementById('sourceDirn')
-      sourceDirnElem.style.display = 'block'
-      document.getElementById('sourceDirnVal').textContent = dirnDescr
+      Array.from(document.getElementsByClassName('directionsDescr')).map((elem) => {
+        elem.textContent = dirnDescr
+      })
     }
 
-    if (sourceMapData.directions && sourceMapData.directions.route) {
-      mapLinksView.sourceDirnSegs = sourceMapData.directions.route.length - 1
-    }
-
+    // actually construct the lines for each output service
     for (let outputMapService of OutputMaps.services) {
       (function (outputMapService) { // dummy immediately executed fn to save variables
         let mapOptDefaults = {}
@@ -143,6 +209,11 @@ class MapSwitcher {
     }
   }
 
+  // determines whether we're dealing with 'directions' or 'regular' source data
+  determineSourceDataType (sourceMapData) {
+    return sourceMapData.directions ? 'directions' : 'regular'
+  }
+
   // Hide the animated loading dots.
   loaded () {
     const loadingElem = document.getElementsByClassName('loading')[0]
@@ -153,18 +224,26 @@ class MapSwitcher {
     nomapbox.style.display = 'none'
   }
 
-  // Entry routine.
-  //
-  // Injects content scripts into the current tab (including the most important, the data
-  // extractor), which reads data from the map service.
-  // Then performs some auxiliary methods before executing the main method run() which
-  // generates all the links.
+  // Main routine
+  // - Initiates the content scripts
+  // - Loads config and settings to determine how to display output
+  // - Constructs the view
+  // - Builds outputs
   async run () {
     try {
       await this.validateCurrentTab()
       const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
       const sourceMapData = await SourceMapData.build(extractedData)
+      await this.loadConfigsAndSettings()
+      const tabCatSvcMap = this.convertSettingsToHierachicalMap()
+      const directionsTabs = this.determineWhichTabsNeedDirections()
+      this.mapLinksView = new MapLinksView(tabCatSvcMap, this.settings, directionsTabs)
+      this.mapLinksView.tabCatSvcSetup()
+      this.mapLinksView.setupTabSourceDescr()
       await this.constructOutputs(sourceMapData)
+      const sourceDataType = this.determineSourceDataType(sourceMapData)
+      this.mapLinksView.prepareTabs(sourceDataType)
+      this.mapLinksView.tabSetup()
       await this.loaded()
     } catch (err) {
       this.handleNoCoords(err)

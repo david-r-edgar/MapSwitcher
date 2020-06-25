@@ -3,11 +3,6 @@
   calculateScaleFromResolution,
   CoordTransform, OsGridRef, LatLon */
 
-/**
- * The Web Extension API is implemented on different root objects in different browsers.
- * Firefox uses 'browser'. Chrome uses 'chrome'.
- * Checking here allows us to use a common 'browser' everywhere.
- */
 let browser
 if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
@@ -15,15 +10,16 @@ if (typeof browser === 'undefined') {
 
 let OutputMaps = {
 
-  /** Enumeration of the type of map service */
+  // FIXME we shouldn't need this any more - cats now taken from config/settings
+  // Enumeration of the type of map service
   category: {
     multidirns: 2,
-    singledirns: 1,
     plain: 0,
     special: 5,
     misc: 3,
     utility: 4,
-    regional: 6
+    regional: 6,
+    activity: 7
   }
 
 }
@@ -56,6 +52,43 @@ OutputMaps.services = [
     prio: 1,
     image: 'googleMapsLogo16x16.png',
     id: 'google',
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const googleBase = 'https://www.google.com/maps/'
+      const mapCentre = '@' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng + ','
+
+      const zoom = sourceMapData.getStandardZoom({ min: 3 }) + 'z'
+
+      const mapLinksBasic = [
+        {
+          name: 'Maps',
+          url: googleBase + mapCentre + zoom + '/data='
+        },
+        {
+          name: 'Terrain',
+          url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e4'
+        },
+        {
+          name: 'Earth',
+          url: googleBase + mapCentre + zoom + '/data=!3m1!1e3'
+        },
+        {
+          name: 'Traffic',
+          url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e1'
+        },
+        {
+          name: 'Cycling',
+          url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e3'
+        }
+      ]
+      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+    }
+  },
+  {
+    site: 'Google',
+    prio: 1,
+    image: 'googleMapsLogo16x16.png',
+    id: 'googleDirections',
     cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const googleBase = 'https://www.google.com/maps/'
@@ -138,30 +171,6 @@ OutputMaps.services = [
         ]
         view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns)
       }
-
-      const mapLinksBasic = [
-        {
-          name: 'Maps',
-          url: googleBase + mapCentre + zoom + '/data='
-        },
-        {
-          name: 'Terrain',
-          url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e4'
-        },
-        {
-          name: 'Earth',
-          url: googleBase + mapCentre + zoom + '/data=!3m1!1e3'
-        },
-        {
-          name: 'Traffic',
-          url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e1'
-        },
-        {
-          name: 'Cycling',
-          url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e3'
-        }
-      ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
     }
   },
   {
@@ -169,6 +178,47 @@ OutputMaps.services = [
     prio: 2,
     image: 'bingLogo16x16.png',
     id: 'bing',
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const bingBase = 'https://www.bing.com/maps/?'
+      const mapCentre = 'cp=' + sourceMapData.centreCoords.lat + '~' +
+                                sourceMapData.centreCoords.lng
+      const zoom = '&lvl=' + sourceMapData.getStandardZoom({
+        default: 10,
+        min: 3,
+        max: 20
+      })
+
+      const mapLinksBasic = [
+        {
+          name: 'Road',
+          url: bingBase + '&' + mapCentre + zoom
+        },
+        {
+          name: 'Aerial',
+          url: bingBase + '&' + mapCentre + zoom + '&sty=h'
+        },
+        {
+          name: "Bird's eye",
+          url: bingBase + '&' + mapCentre + zoom + '&sty=b'
+        }
+      ]
+
+      if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
+        mapLinksBasic.push({
+          name: 'Ordnance Survey',
+          url: bingBase + '&' + mapCentre + zoom + '&sty=s'
+        })
+      }
+
+      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+    }
+  },
+  {
+    site: 'Bing',
+    prio: 2,
+    image: 'bingLogo16x16.png',
+    id: 'bingDirections',
     cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const bingBase = 'https://www.bing.com/maps/?'
@@ -229,36 +279,16 @@ OutputMaps.services = [
         }
       ]
 
-      const mapLinksBasic = [
-        {
-          name: 'Road',
-          url: bingBase + '&' + mapCentre + zoom
-        },
-        {
-          name: 'Aerial',
-          url: bingBase + '&' + mapCentre + zoom + '&sty=h'
-        },
-        {
-          name: "Bird's eye",
-          url: bingBase + '&' + mapCentre + zoom + '&sty=b'
-        }
-      ]
-
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
         mapLinksWithDirns.push({
           name: 'Ordnance Survey',
           url: bingBase + directions + '&' + mapCentre + zoom + '&sty=s'
-        })
-        mapLinksBasic.push({
-          name: 'Ordnance Survey',
-          url: bingBase + '&' + mapCentre + zoom + '&sty=s'
         })
       }
 
       if (directions.length > 0) {
         view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns)
       }
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
     }
   },
   {
@@ -266,7 +296,41 @@ OutputMaps.services = [
     prio: 3,
     image: 'osmLogo16x16.png',
     id: 'osm',
-    cat: OutputMaps.category.singledirns,
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const osmBase = 'https://www.openstreetmap.org/'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      const zoom = sourceMapData.getStandardZoom({ min: 0, max: 19 })
+
+      const coreBasicLink = osmBase + '#map=' + zoom + '/' + mapCentre
+
+      const mapLinksBasic = [
+        {
+          name: 'Standard',
+          url: coreBasicLink
+        },
+        {
+          name: 'Cycle Map',
+          url: coreBasicLink + '&layers=C'
+        },
+        {
+          name: 'Transport',
+          url: coreBasicLink + '&layers=T'
+        },
+        {
+          name: 'Humanitarian',
+          url: coreBasicLink + '&layers=H'
+        }
+      ]
+      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+    }
+  },
+  {
+    site: 'OpenStreetMap',
+    prio: 3,
+    image: 'osmLogo16x16.png',
+    id: 'osmDirections',
+    cat: OutputMaps.category.multidirns,
     note: '',
     generate: function (sourceMapData, view) {
       const osmBase = 'https://www.openstreetmap.org/'
@@ -302,15 +366,18 @@ OutputMaps.services = [
                     firstElem.coords.lat + ',' + firstElem.coords.lng + ';' +
                     lastElem.coords.lat + ',' + lastElem.coords.lng
         } else {
-          view.addMapServiceLinks(OutputMaps.category.singledirns, this, [],
-            'OSM directions unavailable because waypoints are not ' +
+          view.addMapServiceLinks(OutputMaps.category.multidirns, this, [],
+            'OpenStreetMap directions unavailable because waypoints are not ' +
             'all specified as coordinates.'
           )
+        }
+        if (sourceMapData.directions.route.length > 2) {
+          this.note = 'OpenStreetMap does not support multi-waypoint routing. ' +
+            'Directions from first to last waypoints only.'
         }
       }
 
       const coreDirnsLink = osmBase + directions + '#map=' + zoom + '/' + mapCentre
-      const coreBasicLink = osmBase + '#map=' + zoom + '/' + mapCentre
 
       if (directions.length > 0) {
         const mapLinksWithDirns = [
@@ -331,28 +398,8 @@ OutputMaps.services = [
             url: coreDirnsLink + '&layers=H'
           }
         ]
-        view.addMapServiceLinks(OutputMaps.category.singledirns, this, mapLinksWithDirns)
+        view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns, this.note)
       }
-
-      const mapLinksBasic = [
-        {
-          name: 'Standard',
-          url: coreBasicLink
-        },
-        {
-          name: 'Cycle Map',
-          url: coreBasicLink + '&layers=C'
-        },
-        {
-          name: 'Transport',
-          url: coreBasicLink + '&layers=T'
-        },
-        {
-          name: 'Humanitarian',
-          url: coreBasicLink + '&layers=H'
-        }
-      ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
     }
   },
   {
@@ -425,7 +472,7 @@ OutputMaps.services = [
   {
     site: 'what3words',
     image: 'w3wLogo.png',
-    id: 'w3w',
+    id: 'what3words',
     cat: OutputMaps.category.special,
     generate: function (sourceMapData, view) {
       const w3wBase = 'https://map.what3words.com/'
@@ -510,7 +557,7 @@ OutputMaps.services = [
     image: 'wazeLogo16x16.png',
     id: 'waze',
     prio: 6,
-    cat: OutputMaps.category.singledirns,
+    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const wazeBase = 'https://www.waze.com'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
@@ -605,6 +652,42 @@ OutputMaps.services = [
     image: 'hereLogo16x16.png',
     id: 'here',
     prio: 5,
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const hereBase = 'https://wego.here.com/'
+      const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
+      const zoom = sourceMapData.getStandardZoom()
+
+      const mapLinksBasic = [
+        {
+          name: 'Map',
+          url: hereBase + mapCentre + ',' + zoom + ',' + 'normal'
+        },
+        {
+          name: 'Terrain',
+          url: hereBase + mapCentre + ',' + zoom + ',' + 'terrain'
+        },
+        {
+          name: 'Satellite',
+          url: hereBase + mapCentre + ',' + zoom + ',' + 'satellite'
+        },
+        {
+          name: 'Traffic',
+          url: hereBase + mapCentre + ',' + zoom + ',' + 'traffic'
+        },
+        {
+          name: 'Public Transport',
+          url: hereBase + mapCentre + ',' + zoom + ',' + 'public_transport'
+        }
+      ]
+      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+    }
+  },
+  {
+    site: 'Here',
+    image: 'hereLogo16x16.png',
+    id: 'hereDirections',
+    prio: 5,
     cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const hereBase = 'https://wego.here.com/'
@@ -676,30 +759,6 @@ OutputMaps.services = [
         ]
         view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksDirns, note)
       }
-
-      const mapLinksBasic = [
-        {
-          name: 'Map',
-          url: hereBase + mapCentre + ',' + zoom + ',' + 'normal'
-        },
-        {
-          name: 'Terrain',
-          url: hereBase + mapCentre + ',' + zoom + ',' + 'terrain'
-        },
-        {
-          name: 'Satellite',
-          url: hereBase + mapCentre + ',' + zoom + ',' + 'satellite'
-        },
-        {
-          name: 'Traffic',
-          url: hereBase + mapCentre + ',' + zoom + ',' + 'traffic'
-        },
-        {
-          name: 'Public Transport',
-          url: hereBase + mapCentre + ',' + zoom + ',' + 'public_transport'
-        }
-      ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
     }
   },
   {
@@ -1036,6 +1095,34 @@ OutputMaps.services = [
     image: 'yandex16x16.png',
     id: 'yandex',
     prio: 7,
+    cat: OutputMaps.category.plain,
+    generate: function (sourceMapData, view) {
+      const yandexBase = 'https://yandex.com/maps/'
+      const mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat
+      const zoom = 'z=' + sourceMapData.getStandardZoom({ default: 6 })
+
+      const mapLinksBasic = [
+        {
+          name: 'Maps',
+          url: yandexBase + '?' + mapCentre + '&' + zoom
+        },
+        {
+          name: 'Satellite',
+          url: yandexBase + '?l=sat&' + mapCentre + '&' + zoom
+        },
+        {
+          name: 'Hybrid',
+          url: yandexBase + '?l=sat%2Cskl&' + mapCentre + '&' + zoom
+        }
+      ]
+      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+    }
+  },
+  {
+    site: 'Yandex',
+    image: 'yandex16x16.png',
+    id: 'yandexDirections',
+    prio: 7,
     cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const yandexBase = 'https://yandex.com/maps/'
@@ -1088,28 +1175,12 @@ OutputMaps.services = [
         ]
         view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns)
       }
-
-      const mapLinksBasic = [
-        {
-          name: 'Maps',
-          url: yandexBase + '?' + mapCentre + '&' + zoom
-        },
-        {
-          name: 'Satellite',
-          url: yandexBase + '?l=sat&' + mapCentre + '&' + zoom
-        },
-        {
-          name: 'Hybrid',
-          url: yandexBase + '?l=sat%2Cskl&' + mapCentre + '&' + zoom
-        }
-      ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
     }
   },
   {
     site: 'F4map',
     image: 'f4logo16x16.png',
-    id: 'F4map',
+    id: 'f4map',
     prio: 12,
     cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
@@ -1470,53 +1541,63 @@ OutputMaps.services = [
         }
       ]
       view.addMapServiceLinks(this.cat, this, mapLinksBasic)
+    }
+  },
+  {
+    site: 'BRouter',
+    image: 'defaultNoFavicon16x16.png',
+    id: 'brouterDirections',
+    cat: OutputMaps.category.activity,
+    generate: function (sourceMapData, view) {
+      const base = 'https://brouter.de/brouter-web'
+      const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+      const zoom = sourceMapData.getStandardZoom()
 
-      // first prepare pairs of waypoints which have coords, in a stringified format
-      const coordPairArr = []
-      if ('directions' in sourceMapData &&
-        'route' in sourceMapData.directions) {
+      if (sourceMapData.directions && sourceMapData.directions.route) {
+        // first prepare pairs of waypoints which have coords, in a stringified format
+        const coordPairArr = []
         sourceMapData.directions.route.forEach(wpt => {
           if ('coords' in wpt) {
             coordPairArr.push(wpt.coords.lng + ',' + wpt.coords.lat)
           }
         })
-      }
 
-      if (coordPairArr.length < sourceMapData.directions.route.length) {
-        // no directions at all, show note
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, [],
-          'BRouter directions unavailable because waypoints are not ' +
-          'all available as coordinates.')
-      } else {
-        let directions = '&lonlats='
-        directions += coordPairArr.join(';')
+        if (coordPairArr.length < sourceMapData.directions.route.length) {
+          // no directions at all, show note
+          view.addMapServiceLinks(OutputMaps.category.multidirns, this, [],
+            'BRouter directions unavailable because waypoints are not ' +
+            'all available as coordinates.')
+        } else {
+          let directions = '&lonlats='
+          directions += coordPairArr.join(';')
 
-        let mode = ''
-        if (sourceMapData.directions.mode) {
-          switch (sourceMapData.directions.mode) {
-            case 'car':
-              mode = '&profile=car-eco'
-              break
-            case 'foot':
-              mode = '&profile=hiking-beta'
-              break
-          }
-        }
-
-        directions += mode
-
-        if (directions) {
-          const mapLinksWithDirns = [
-            {
-              name: 'OpenStreetMap',
-              url: base + '#map=' + zoom + '/' + mapCentre + '/standard' + directions
-            },
-            {
-              name: 'OpenTopoMap',
-              url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap' + directions
+          let mode = ''
+          if (sourceMapData.directions.mode) {
+            switch (sourceMapData.directions.mode) {
+              case 'car':
+                mode = '&profile=car-eco'
+                break
+              case 'foot':
+                mode = '&profile=hiking-beta'
+                break
             }
-          ]
-          view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns, this.note)
+          }
+
+          directions += mode
+
+          if (directions) {
+            const mapLinksWithDirns = [
+              {
+                name: 'OpenStreetMap',
+                url: base + '#map=' + zoom + '/' + mapCentre + '/standard' + directions
+              },
+              {
+                name: 'OpenTopoMap',
+                url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap' + directions
+              }
+            ]
+            view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns, this.note)
+          }
         }
       }
     }

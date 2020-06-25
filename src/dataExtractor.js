@@ -6,10 +6,15 @@
   getDistanceFromLatLonInKm,
   Gmdp, GmdpException */
 
+// All the extractors are in one file to simplify loading content scripts.
+// Maybe in future there'll be a build stage (webpack or whatever) to combine
+// individual source files for each extractor.
+
 // The Web Extension API is implemented on different root objects in different browsers.
 // Firefox uses 'browser'. Chrome uses 'chrome'.
 // Check here and use a common 'browserRoot' everywhere.
-// It is var' rather than 'let' to avoid already-declared errors.
+// Use 'var' rather than 'let' to avoid already-declared errors
+// due to this file being executed as a content script.
 var browserRoot
 if (chrome && chrome.runtime) {
   browserRoot = chrome // eslint-disable-line no-global-assign

@@ -79,6 +79,18 @@ a.maplink:active {
   width: 12px;
   height: 12px;
 }
+.maplinkcat {
+  display: none;
+}
+.maplinkcat.inUse {
+  display: block;
+}
+ul.nav-tabs > li {
+  display: none;
+}
+ul.nav-tabs > li.inUse {
+  display: block;
+}
 
 /* animated loading dots from https://martinwolf.org/blog/2015/01/pure-css-savingloading-dots-animation */
 

@@ -1,4 +1,5 @@
 
+// FIXME remove this file!
 window.addEventListener('load', function () {
   const myTabs = document.querySelectorAll('ul.nav-tabs > li')
   function myTabClicks (tabClickEvent) {
