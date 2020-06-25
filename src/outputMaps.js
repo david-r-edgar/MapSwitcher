@@ -35,7 +35,6 @@ function copyTextToClipboard (text) {
 OutputMaps.services = [
   {
     site: 'Google',
-    prio: 1,
     image: 'googleMapsLogo16x16.png',
     id: 'google',
     generate: function (sourceMapData, view) {
@@ -71,7 +70,6 @@ OutputMaps.services = [
   },
   {
     site: 'Google',
-    prio: 1,
     image: 'googleMapsLogo16x16.png',
     id: 'googleDirections',
     generate: function (sourceMapData, view) {
@@ -159,7 +157,6 @@ OutputMaps.services = [
   },
   {
     site: 'Bing',
-    prio: 2,
     image: 'bingLogo16x16.png',
     id: 'bing',
     generate: function (sourceMapData, view) {
@@ -199,7 +196,6 @@ OutputMaps.services = [
   },
   {
     site: 'Bing',
-    prio: 2,
     image: 'bingLogo16x16.png',
     id: 'bingDirections',
     generate: function (sourceMapData, view) {
@@ -275,7 +271,6 @@ OutputMaps.services = [
   },
   {
     site: 'OpenStreetMap',
-    prio: 3,
     image: 'osmLogo16x16.png',
     id: 'osm',
     generate: function (sourceMapData, view) {
@@ -308,7 +303,6 @@ OutputMaps.services = [
   },
   {
     site: 'OpenStreetMap',
-    prio: 3,
     image: 'osmLogo16x16.png',
     id: 'osmDirections',
     note: '',
@@ -386,7 +380,6 @@ OutputMaps.services = [
     site: 'Wikimedia Labs',
     image: 'wmLabsLogo16x16.png',
     id: 'wmLabs',
-    prio: 4,
     generate: function (sourceMapData, view) {
       const mapLinks = []
       const geohackBase = 'https://tools.wmflabs.org/geohack/geohack.php?params='
@@ -416,7 +409,6 @@ OutputMaps.services = [
     site: 'Wikimapia',
     image: 'wikimapiaLogo16x16.png',
     id: 'wikimapia',
-    prio: 10,
     generate: function (sourceMapData, view) {
       const wikimapiaBase = 'http://wikimapia.org/#lang=en&'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -531,7 +523,6 @@ OutputMaps.services = [
     site: 'Waze',
     image: 'wazeLogo16x16.png',
     id: 'waze',
-    prio: 6,
     generate: function (sourceMapData, view) {
       const wazeBase = 'https://www.waze.com'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
@@ -578,7 +569,6 @@ OutputMaps.services = [
     site: 'OpenSeaMap',
     image: 'openSeaMapLogo16x16.png',
     id: 'openseamap',
-    prio: 8,
     generate: function (sourceMapData, view) {
       const openSeaMapBase = 'http://map.openseamap.org/?'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -623,7 +613,6 @@ OutputMaps.services = [
     site: 'Here',
     image: 'hereLogo16x16.png',
     id: 'here',
-    prio: 5,
     generate: function (sourceMapData, view) {
       const hereBase = 'https://wego.here.com/'
       const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -658,7 +647,6 @@ OutputMaps.services = [
     site: 'Here',
     image: 'hereLogo16x16.png',
     id: 'hereDirections',
-    prio: 5,
     generate: function (sourceMapData, view) {
       const hereBase = 'https://wego.here.com/'
       const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -735,7 +723,6 @@ OutputMaps.services = [
     site: 'Streetmap',
     image: 'streetmapLogo16x16.png',
     id: 'streetmap',
-    prio: 11,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
         const streetmapMapBase = 'http://www.streetmap.co.uk/map.srf?'
@@ -814,7 +801,6 @@ OutputMaps.services = [
     site: 'NGI/IGN',
     image: 'ngi_ign_Logo16x16.png',
     id: 'ngi_ign',
-    prio: 13,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode !== 'be') {
         return
@@ -906,7 +892,6 @@ OutputMaps.services = [
     site: 'TopoZone',
     image: 'topozone16x16.png',
     id: 'topozone',
-    prio: 12,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'us') {
         const topozoneBase = 'http://www.topozone.com/'
@@ -925,7 +910,6 @@ OutputMaps.services = [
     site: 'SysMaps',
     image: 'sysmaps16x16.png',
     id: 'sysmaps',
-    prio: 14,
     generate: function (sourceMapData, view) {
       const mapLinks = []
       const base = 'http://www.sysmaps.co.uk/'
@@ -968,7 +952,6 @@ OutputMaps.services = [
     site: 'OpenCycleMap',
     image: 'openCycleMapLogo.png',
     id: 'openCycleMap',
-    prio: 8,
     generate: function (sourceMapData, view) {
       const openCycleMapBase = 'http://www.opencyclemap.org/?'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -1004,7 +987,6 @@ OutputMaps.services = [
     site: 'OpenWeatherMap',
     image: 'openWeatherMap16x16.png',
     id: 'openweathermap',
-    prio: 12,
     generate: function (sourceMapData, view) {
       const owmBase = 'https://openweathermap.org/weathermap?'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -1053,7 +1035,6 @@ OutputMaps.services = [
     site: 'Yandex',
     image: 'yandex16x16.png',
     id: 'yandex',
-    prio: 7,
     generate: function (sourceMapData, view) {
       const yandexBase = 'https://yandex.com/maps/'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat
@@ -1080,7 +1061,6 @@ OutputMaps.services = [
     site: 'Yandex',
     image: 'yandex16x16.png',
     id: 'yandexDirections',
-    prio: 7,
     generate: function (sourceMapData, view) {
       const yandexBase = 'https://yandex.com/maps/'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat
@@ -1138,7 +1118,6 @@ OutputMaps.services = [
     site: 'F4map',
     image: 'f4logo16x16.png',
     id: 'f4map',
-    prio: 12,
     generate: function (sourceMapData, view) {
       const base = 'https://demo.f4map.com/'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng

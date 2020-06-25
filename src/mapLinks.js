@@ -205,8 +205,7 @@ class MapLinksView {
     const serviceElem = document.getElementById(serviceId)
 
     if (serviceElem.innerText.length === 0) {
-      serviceElem.insertAdjacentHTML('beforeend', `<span id='${mapService.id}` +
-        `' data-sort='${mapService.prio}'>` +
+      serviceElem.insertAdjacentHTML('beforeend', `<span id='${mapService.id}'>` +
         `<span class="linkLineImg"><img src="../image/${mapService.image}"></span> ` +
         `<span class="serviceName">${mapService.site}</span></span>`)
     }

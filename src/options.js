@@ -73,10 +73,10 @@ function restoreOptions () {
   document.getElementById('utilsTickList').getElementsByTagName('tbody')[0].innerText = ''
   for (let outputMapService of OutputMaps.services) {
     switch (outputMapService.cat) {
-      case OutputMaps.category.utility:
-      case OutputMaps.category.download:
-        listName = 'utilsTickList'
-        break
+      // case OutputMaps.category.utility:
+      // case OutputMaps.category.download:
+      //   listName = 'utilsTickList'
+      //   break
       default:
         listName = 'mapsTickList'
         break
