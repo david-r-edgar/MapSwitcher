@@ -186,7 +186,7 @@ class MapLinksView {
   // @param {mapService} Object containing data about the particular map service.
   // @param {mapLinks} All the map links to be added.
   // @param {note} Content for an optional explanatory note.
-  addMapServiceLinks (_, mapService, mapLinks, note) {
+  addMapServiceLinks (mapService, mapLinks, note) {
     const newServiceLine = this.buildLineOfLinks(mapService, mapLinks, note)
     this.insertServiceLineIntoCategory(mapService.id, newServiceLine)
 

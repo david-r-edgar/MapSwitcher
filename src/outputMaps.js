@@ -8,21 +8,7 @@ if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
-let OutputMaps = {
-
-  // FIXME we shouldn't need this any more - cats now taken from config/settings
-  // Enumeration of the type of map service
-  category: {
-    multidirns: 2,
-    plain: 0,
-    special: 5,
-    misc: 3,
-    utility: 4,
-    regional: 6,
-    activity: 7
-  }
-
-}
+let OutputMaps = {}
 
 function copyTextToClipboard (text) {
   // create a temporary textbox field into which we can insert text
@@ -52,7 +38,6 @@ OutputMaps.services = [
     prio: 1,
     image: 'googleMapsLogo16x16.png',
     id: 'google',
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const googleBase = 'https://www.google.com/maps/'
       const mapCentre = '@' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng + ','
@@ -81,7 +66,7 @@ OutputMaps.services = [
           url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e3'
         }
       ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+      view.addMapServiceLinks(this, mapLinksBasic)
     }
   },
   {
@@ -89,7 +74,6 @@ OutputMaps.services = [
     prio: 1,
     image: 'googleMapsLogo16x16.png',
     id: 'googleDirections',
-    cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const googleBase = 'https://www.google.com/maps/'
       let directions = ''
@@ -169,7 +153,7 @@ OutputMaps.services = [
             url: googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e3'
           }
         ]
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns)
+        view.addMapServiceLinks(this, mapLinksWithDirns)
       }
     }
   },
@@ -178,7 +162,6 @@ OutputMaps.services = [
     prio: 2,
     image: 'bingLogo16x16.png',
     id: 'bing',
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const bingBase = 'https://www.bing.com/maps/?'
       const mapCentre = 'cp=' + sourceMapData.centreCoords.lat + '~' +
@@ -211,7 +194,7 @@ OutputMaps.services = [
         })
       }
 
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+      view.addMapServiceLinks(this, mapLinksBasic)
     }
   },
   {
@@ -219,7 +202,6 @@ OutputMaps.services = [
     prio: 2,
     image: 'bingLogo16x16.png',
     id: 'bingDirections',
-    cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const bingBase = 'https://www.bing.com/maps/?'
       let directions = ''
@@ -287,7 +269,7 @@ OutputMaps.services = [
       }
 
       if (directions.length > 0) {
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns)
+        view.addMapServiceLinks(this, mapLinksWithDirns)
       }
     }
   },
@@ -296,7 +278,6 @@ OutputMaps.services = [
     prio: 3,
     image: 'osmLogo16x16.png',
     id: 'osm',
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const osmBase = 'https://www.openstreetmap.org/'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -322,7 +303,7 @@ OutputMaps.services = [
           url: coreBasicLink + '&layers=H'
         }
       ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+      view.addMapServiceLinks(this, mapLinksBasic)
     }
   },
   {
@@ -330,7 +311,6 @@ OutputMaps.services = [
     prio: 3,
     image: 'osmLogo16x16.png',
     id: 'osmDirections',
-    cat: OutputMaps.category.multidirns,
     note: '',
     generate: function (sourceMapData, view) {
       const osmBase = 'https://www.openstreetmap.org/'
@@ -366,7 +346,7 @@ OutputMaps.services = [
                     firstElem.coords.lat + ',' + firstElem.coords.lng + ';' +
                     lastElem.coords.lat + ',' + lastElem.coords.lng
         } else {
-          view.addMapServiceLinks(OutputMaps.category.multidirns, this, [],
+          view.addMapServiceLinks(this, [],
             'OpenStreetMap directions unavailable because waypoints are not ' +
             'all specified as coordinates.'
           )
@@ -398,7 +378,7 @@ OutputMaps.services = [
             url: coreDirnsLink + '&layers=H'
           }
         ]
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns, this.note)
+        view.addMapServiceLinks(this, mapLinksWithDirns, this.note)
       }
     }
   },
@@ -406,7 +386,6 @@ OutputMaps.services = [
     site: 'Wikimedia Labs',
     image: 'wmLabsLogo16x16.png',
     id: 'wmLabs',
-    cat: OutputMaps.category.misc,
     prio: 4,
     generate: function (sourceMapData, view) {
       const mapLinks = []
@@ -430,7 +409,7 @@ OutputMaps.services = [
         name: 'Wiki Mini Atlas',
         url: wikiminiatlasBase + mapCentre + '_0_0_en_' + zoom + '_englobe=Earth'
       })
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
@@ -438,7 +417,6 @@ OutputMaps.services = [
     image: 'wikimapiaLogo16x16.png',
     id: 'wikimapia',
     prio: 10,
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const wikimapiaBase = 'http://wikimapia.org/#lang=en&'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -448,7 +426,7 @@ OutputMaps.services = [
         name: 'Maps',
         url: wikimapiaBase + mapCentre + '&' + zoom + '&m=w'
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
@@ -456,7 +434,6 @@ OutputMaps.services = [
     image: 'geocachingLogo16x16.png',
     id: 'geocaching',
     note: 'geocaching.com requires login to see the map (free sign-up)',
-    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const geocachingBase = 'https://www.geocaching.com/map/#?'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -466,14 +443,13 @@ OutputMaps.services = [
         name: 'Map',
         url: geocachingBase + mapCentre + '&' + zoom
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks, this.note)
+      view.addMapServiceLinks(this, mapLinks, this.note)
     }
   },
   {
     site: 'what3words',
     image: 'w3wLogo.png',
     id: 'what3words',
-    cat: OutputMaps.category.special,
     generate: function (sourceMapData, view) {
       const w3wBase = 'https://map.what3words.com/'
       const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -482,14 +458,13 @@ OutputMaps.services = [
         name: 'Map',
         url: w3wBase + mapCentre
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'GPX',
     image: 'gpxFile16x16.png',
     id: 'dl_gpx',
-    cat: OutputMaps.category.utility,
     generate: function (sourceMapData, view) {
       view.addFileDownload(this, 'gpx_map_centre', 'Download map centre waypoint', function () {
         var fileData = {
@@ -557,7 +532,6 @@ OutputMaps.services = [
     image: 'wazeLogo16x16.png',
     id: 'waze',
     prio: 6,
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const wazeBase = 'https://www.waze.com'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
@@ -590,14 +564,14 @@ OutputMaps.services = [
       //     name: 'Livemap',
       //     url: wazeBase + '/livemap/directions?' + directions
       //   }]
-      //   view.addMapServiceLinks(OutputMaps.category.singledirns, this, mapLinksWithDirns, this.note)
+      //   view.addMapServiceLinks(this, mapLinksWithDirns, this.note)
       // }
 
       const mapLinksBasic = [{
         name: 'Livemap',
         url: wazeBase + '/ul?' + mapCentre + '&' + zoom
       }]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic, this.note)
+      view.addMapServiceLinks(this, mapLinksBasic, this.note)
     }
   },
   {
@@ -605,7 +579,6 @@ OutputMaps.services = [
     image: 'openSeaMapLogo16x16.png',
     id: 'openseamap',
     prio: 8,
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const openSeaMapBase = 'http://map.openseamap.org/?'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -617,14 +590,13 @@ OutputMaps.services = [
         name: 'Map',
         url: openSeaMapBase + zoom + '&' + mapCentre + '&' + layers
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Stamen',
     image: 'greyMarker.png',
     id: 'stamen',
-    cat: OutputMaps.category.special,
     generate: function (sourceMapData, view) {
       const stamenBase = 'http://maps.stamen.com/'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -644,7 +616,7 @@ OutputMaps.services = [
           url: stamenBase + 'terrain/#' + zoom + '/' + mapCentre
         }
       ]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
@@ -652,7 +624,6 @@ OutputMaps.services = [
     image: 'hereLogo16x16.png',
     id: 'here',
     prio: 5,
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const hereBase = 'https://wego.here.com/'
       const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -680,7 +651,7 @@ OutputMaps.services = [
           url: hereBase + mapCentre + ',' + zoom + ',' + 'public_transport'
         }
       ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+      view.addMapServiceLinks(this, mapLinksBasic)
     }
   },
   {
@@ -688,7 +659,6 @@ OutputMaps.services = [
     image: 'hereLogo16x16.png',
     id: 'hereDirections',
     prio: 5,
-    cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const hereBase = 'https://wego.here.com/'
       const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -757,7 +727,7 @@ OutputMaps.services = [
             url: hereBase + directions + mapCentre + ',' + zoom + ',' + 'public_transport'
           }
         ]
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksDirns, note)
+        view.addMapServiceLinks(this, mapLinksDirns, note)
       }
     }
   },
@@ -766,7 +736,6 @@ OutputMaps.services = [
     image: 'streetmapLogo16x16.png',
     id: 'streetmap',
     prio: 11,
-    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
         const streetmapMapBase = 'http://www.streetmap.co.uk/map.srf?'
@@ -803,7 +772,7 @@ OutputMaps.services = [
           name: 'Map',
           url: streetmapMapBase + mapCentre + '&A=Y&' + zoomArg
         }]
-        view.addMapServiceLinks(this.cat, this, mapLinks)
+        view.addMapServiceLinks(this, mapLinks)
       }
     }
   },
@@ -811,7 +780,6 @@ OutputMaps.services = [
     site: 'GPX Editor',
     image: 'gpxed16x16.png',
     id: 'gpxeditor',
-    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const gpxEditorBase = 'http://www.gpxeditor.co.uk/?'
       const mapCentre = 'location=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -839,7 +807,7 @@ OutputMaps.services = [
         })
       }
 
-      view.addMapServiceLinks(this.cat, this, mapLinks, this.note)
+      view.addMapServiceLinks(this, mapLinks, this.note)
     }
   },
   {
@@ -847,7 +815,6 @@ OutputMaps.services = [
     image: 'ngi_ign_Logo16x16.png',
     id: 'ngi_ign',
     prio: 13,
-    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode !== 'be') {
         return
@@ -914,7 +881,6 @@ OutputMaps.services = [
     site: 'SunCalc',
     image: 'suncalc_org16x16.png',
     id: 'suncalc',
-    cat: OutputMaps.category.misc,
     generate: function (sourceMapData, view) {
       const suncalcBase = 'http://suncalc.org/#/'
       const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -933,7 +899,7 @@ OutputMaps.services = [
         name: 'Sunrise + sunset times',
         url: suncalcBase + mapCentre + ',' + zoom + '/' + date + '/' + time + '/1/0'
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
@@ -941,7 +907,6 @@ OutputMaps.services = [
     image: 'topozone16x16.png',
     id: 'topozone',
     prio: 12,
-    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'us') {
         const topozoneBase = 'http://www.topozone.com/'
@@ -952,7 +917,7 @@ OutputMaps.services = [
           name: 'Topographic',
           url: topozoneBase + 'map/?' + mapCentre + zoom
         }]
-        view.addMapServiceLinks(this.cat, this, mapLinks)
+        view.addMapServiceLinks(this, mapLinks)
       }
     }
   },
@@ -961,7 +926,6 @@ OutputMaps.services = [
     image: 'sysmaps16x16.png',
     id: 'sysmaps',
     prio: 14,
-    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       const mapLinks = []
       const base = 'http://www.sysmaps.co.uk/'
@@ -981,7 +945,7 @@ OutputMaps.services = [
         })
       }
       if (mapLinks.length > 0) {
-        view.addMapServiceLinks(this.cat, this, mapLinks)
+        view.addMapServiceLinks(this, mapLinks)
       }
     }
   },
@@ -989,7 +953,6 @@ OutputMaps.services = [
     site: 'Boulter',
     image: 'boulterIcon.png',
     id: 'boulter',
-    cat: OutputMaps.category.misc,
     generate: function (sourceMapData, view) {
       const boulterBase = 'http://boulter.com/gps/'
       const mapCentre = '#' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng
@@ -998,7 +961,7 @@ OutputMaps.services = [
         name: 'Coordinate Converter',
         url: boulterBase + mapCentre
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
@@ -1006,7 +969,6 @@ OutputMaps.services = [
     image: 'openCycleMapLogo.png',
     id: 'openCycleMap',
     prio: 8,
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const openCycleMapBase = 'http://www.opencyclemap.org/?'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -1035,7 +997,7 @@ OutputMaps.services = [
         }
       ]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
@@ -1043,7 +1005,6 @@ OutputMaps.services = [
     image: 'openWeatherMap16x16.png',
     id: 'openweathermap',
     prio: 12,
-    cat: OutputMaps.category.misc,
     generate: function (sourceMapData, view) {
       const owmBase = 'https://openweathermap.org/weathermap?'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -1053,14 +1014,13 @@ OutputMaps.services = [
         name: 'Weather Map',
         url: owmBase + zoom + '&' + mapCentre
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Flickr',
     image: 'flickr16x16.png',
     id: 'flickr',
-    cat: OutputMaps.category.misc,
     generate: function (sourceMapData, view) {
       const base = 'http://www.flickr.com/map/'
       const mapCentre = 'fLat=' + sourceMapData.centreCoords.lat + '&fLon=' + sourceMapData.centreCoords.lng
@@ -1070,14 +1030,13 @@ OutputMaps.services = [
         name: 'World map',
         url: base + '?' + mapCentre + '&' + zoom + '&everyone_nearby=1'
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Strava',
     image: 'stravaLogo16x16.png',
     id: 'strava',
-    cat: OutputMaps.category.special,
     generate: function (sourceMapData, view) {
       const siteBase = 'https://www.strava.com/heatmap#'
       const mapCentre = sourceMapData.centreCoords.lng + '/' + sourceMapData.centreCoords.lat
@@ -1087,7 +1046,7 @@ OutputMaps.services = [
         name: 'Global Heatmap',
         url: siteBase + zoom + '/' + mapCentre + '/hot/all'
       }]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
@@ -1095,7 +1054,6 @@ OutputMaps.services = [
     image: 'yandex16x16.png',
     id: 'yandex',
     prio: 7,
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const yandexBase = 'https://yandex.com/maps/'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat
@@ -1115,7 +1073,7 @@ OutputMaps.services = [
           url: yandexBase + '?l=sat%2Cskl&' + mapCentre + '&' + zoom
         }
       ]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinksBasic)
+      view.addMapServiceLinks(this, mapLinksBasic)
     }
   },
   {
@@ -1123,7 +1081,6 @@ OutputMaps.services = [
     image: 'yandex16x16.png',
     id: 'yandexDirections',
     prio: 7,
-    cat: OutputMaps.category.multidirns,
     generate: function (sourceMapData, view) {
       const yandexBase = 'https://yandex.com/maps/'
       const mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat
@@ -1173,7 +1130,7 @@ OutputMaps.services = [
             url: yandexBase + '?l=sat%2Cskl&' + mapCentre + directions + '&' + zoom
           }
         ]
-        view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns)
+        view.addMapServiceLinks(this, mapLinksWithDirns)
       }
     }
   },
@@ -1182,7 +1139,6 @@ OutputMaps.services = [
     image: 'f4logo16x16.png',
     id: 'f4map',
     prio: 12,
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const base = 'https://demo.f4map.com/'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng
@@ -1198,14 +1154,13 @@ OutputMaps.services = [
           url: base + '#' + mapCentre + '&' + zoom
         }
       ]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'OpenTopoMap',
     image: 'opentopomap16x16.png',
     id: 'opentopomap',
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const base = 'https://opentopomap.org/#map='
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -1215,14 +1170,13 @@ OutputMaps.services = [
         name: 'Topographic map',
         url: base + zoom + '/' + mapCentre
       }]
-      view.addMapServiceLinks(OutputMaps.category.plain, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'CalTopo',
     image: 'caltopoLogo16x16.png',
     id: 'caltopo',
-    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if ((sourceMapData.countryCode === 'us') || (sourceMapData.countryCode === 'ca')) {
         const base = 'http://caltopo.com/map.html'
@@ -1251,7 +1205,7 @@ OutputMaps.services = [
             url: base + '#' + mapCentre + '&' + zoom + '&b=sat&o=r&n=0.3&a=c,mba'
           }
         ]
-        view.addMapServiceLinks(this.cat, this, mapLinks)
+        view.addMapServiceLinks(this, mapLinks)
       }
     }
   },
@@ -1259,7 +1213,6 @@ OutputMaps.services = [
     site: 'Qwant',
     image: 'qwantLogo16x16.png',
     id: 'qwant',
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const base = 'https://www.qwant.com/maps'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -1270,14 +1223,13 @@ OutputMaps.services = [
         url: base + '/#map=' + zoom + '/' + mapCentre
       }]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Mapillary',
     image: 'mapillary16x16.png',
     id: 'mapillary',
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const base = 'https://www.mapillary.com/app/'
       const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng
@@ -1288,14 +1240,13 @@ OutputMaps.services = [
         url: base + '?' + mapCentre + '&z=' + zoom
       }]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Komoot',
     image: 'komootLogo16x16.png',
     id: 'komoot',
-    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const base = 'https://www.komoot.com/plan/'
       const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -1306,14 +1257,13 @@ OutputMaps.services = [
         url: base + '@' + mapCentre + ',' + zoom
       }]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Waymarked Trails',
     image: 'waymarkedtrailshiking16x16.png',
     id: 'waymarkedtrails',
-    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const domain = 'waymarkedtrails.org'
       const zoom = sourceMapData.getStandardZoom({ min: 0, max: 18 })
@@ -1345,14 +1295,13 @@ OutputMaps.services = [
           url: 'https://slopes.' + domain + '/#?map=' + location
         }
       ]
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'OS Maps',
     image: 'osLogo16x16.png',
     id: 'ordnancesurvey',
-    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
         const base = 'https://osmaps.ordnancesurvey.co.uk/'
@@ -1364,7 +1313,7 @@ OutputMaps.services = [
           url: base + mapCentre + ',' + zoom
         }]
 
-        view.addMapServiceLinks(this.cat, this, mapLinks)
+        view.addMapServiceLinks(this, mapLinks)
       }
     }
   },
@@ -1372,7 +1321,6 @@ OutputMaps.services = [
     site: 'Clipboard',
     image: 'clipboard16x16.png',
     id: 'clipboard',
-    cat: OutputMaps.category.utility,
     generate: function (sourceMapData, view) {
       view.addUtilityLink(this, 'copyToClipboard', 'Copy map centre coordinates', function () {
         copyTextToClipboard(sourceMapData.centreCoords.lat + ', ' + sourceMapData.centreCoords.lng)
@@ -1383,7 +1331,6 @@ OutputMaps.services = [
     site: 'Windy',
     image: 'windyLogo16x16.png',
     id: 'windy',
-    cat: OutputMaps.category.misc,
     generate: function (sourceMapData, view) {
       const base = 'https://www.windy.com/'
       const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -1404,14 +1351,13 @@ OutputMaps.services = [
         }
       ]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Flightradar24',
     image: 'flightradar24.png',
     id: 'flightradar24',
-    cat: OutputMaps.category.misc,
     generate: function (sourceMapData, view) {
       const base = 'https://www.flightradar24.com/'
       const roundedLat = Math.round(sourceMapData.centreCoords.lat * 100) / 100
@@ -1429,14 +1375,13 @@ OutputMaps.services = [
         url: base + mapCentre + '/' + zoom
       }]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'CyclOSM',
     image: 'cyclosm16x16.png',
     id: 'cyclosm',
-    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const base = 'https://www.cyclosm.org/'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -1453,14 +1398,13 @@ OutputMaps.services = [
         }
       ]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'nakarte.me',
     image: 'nakarte16x16.png',
     id: 'nakarte',
-    cat: OutputMaps.category.plain,
     generate: function (sourceMapData, view) {
       const base = 'https://www.nakarte.me/'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -1485,14 +1429,13 @@ OutputMaps.services = [
         }
       ]
 
-      view.addMapServiceLinks(this.cat, this, mapLinks)
+      view.addMapServiceLinks(this, mapLinks)
     }
   },
   {
     site: 'Mapmyindia',
     image: 'mapmyindia.png',
     id: 'mapmyindia',
-    cat: OutputMaps.category.regional,
     generate: function (sourceMapData, view) {
       const base = 'https://maps.mapmyindia.com/'
       const zoom = sourceMapData.getStandardZoom()
@@ -1516,7 +1459,7 @@ OutputMaps.services = [
       }]
 
       if (sourceMapData.countryCode === 'in') {
-        view.addMapServiceLinks(this.cat, this, mapLinks)
+        view.addMapServiceLinks(this, mapLinks)
       }
     }
   },
@@ -1524,7 +1467,6 @@ OutputMaps.services = [
     site: 'BRouter',
     image: 'defaultNoFavicon16x16.png',
     id: 'brouter',
-    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const base = 'https://brouter.de/brouter-web'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -1540,14 +1482,13 @@ OutputMaps.services = [
           url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap'
         }
       ]
-      view.addMapServiceLinks(this.cat, this, mapLinksBasic)
+      view.addMapServiceLinks(this, mapLinksBasic)
     }
   },
   {
     site: 'BRouter',
     image: 'defaultNoFavicon16x16.png',
     id: 'brouterDirections',
-    cat: OutputMaps.category.activity,
     generate: function (sourceMapData, view) {
       const base = 'https://brouter.de/brouter-web'
       const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
@@ -1564,7 +1505,7 @@ OutputMaps.services = [
 
         if (coordPairArr.length < sourceMapData.directions.route.length) {
           // no directions at all, show note
-          view.addMapServiceLinks(OutputMaps.category.multidirns, this, [],
+          view.addMapServiceLinks(this, [],
             'BRouter directions unavailable because waypoints are not ' +
             'all available as coordinates.')
         } else {
@@ -1596,7 +1537,7 @@ OutputMaps.services = [
                 url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap' + directions
               }
             ]
-            view.addMapServiceLinks(OutputMaps.category.multidirns, this, mapLinksWithDirns, this.note)
+            view.addMapServiceLinks(this, mapLinksWithDirns, this.note)
           }
         }
       }
