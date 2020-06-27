@@ -6,6 +6,7 @@
 import MapLinksView from './mapLinks.js'
 import OutputMaps from './outputMaps.js'
 import SourceMapData from './sourceMapData.js'
+import Config from './config.js'
 
 // The Web Extension API is implemented on different root objects in different browsers.
 // Firefox uses 'browser'. Chrome uses 'chrome'.
@@ -62,58 +63,28 @@ class MapSwitcher {
     return response.json()
   }
 
-  loadSettings () {
+  loadUserSettings () {
     return new Map([
       // FOR TESTING
       //   ['someservice', {cat: 'somecat', tab: 'sometab'}],
       //   ['waze', {cat: 'wazewazewazewazecat', tab: 'wazewazewazewazetab'}]
-      // [ 'google', { 'cat': 'General purpose', 'tab': 'Regular mapping', 'hidden': true }]
+      // [ 'google', { 'cat': 'General purpose', 'tab': 'Regular mapping', 'hidden': false }],
+      // [ "osm", { "cat": "General purpose", "tab": "Regular mapping" }],
+      // [ "bing", { "cat": "General purpose", "tab": "Regular mapping" }]
     ])
-  }
-
-  mergeSettings (settings, defaultSettings) {
-    // for each key in defaultSettings, if it doesn't exist in settings, add it
-    //
-    // it's not a straightforward 'union' of maps since we want to keep the
-    // order of 'settings', but also keep any values it has set
-    defaultSettings.forEach((value, key) => {
-      if (!settings.has(key)) {
-        settings.set(key, value)
-      }
-    })
-    return settings
   }
 
   async loadConfigsAndSettings () {
     const loadedConfig = await this.loadConfig()
     const defaultConfig = new Map(loadedConfig)
-    const settings = this.loadSettings()
-    this.settings = this.mergeSettings(settings, defaultConfig)
-  }
-
-  // creates a three-level map with tabs at the top level, a submap of categories beneath each of
-  // the tabs and a further submap of services beneath each of the categories
-  // This structure is convenient for creating the DOM elements before the outputs
-  // are generated
-  convertSettingsToHierachicalMap () {
-    const tabMap = new Map()
-    this.settings.forEach((serviceSettings, service) => {
-      if (!tabMap.has(serviceSettings.tab)) {
-        tabMap.set(serviceSettings.tab, new Map())
-      }
-      if (!(tabMap.get(serviceSettings.tab)).get(serviceSettings.cat)) {
-        (tabMap.get(serviceSettings.tab)).set(serviceSettings.cat, new Map())
-      }
-      const { 'cat': _, 'tab': __, ...otherSettings } = serviceSettings
-
-      tabMap.get(serviceSettings.tab).get(serviceSettings.cat).set(service, otherSettings)
-    })
-    return tabMap
+    const userSettings = this.loadUserSettings()
+    this.config = new Config(defaultConfig, userSettings)
+    // this.settings = this.mergeSettings(settings, defaultConfig)
   }
 
   determineWhichTabsNeedDirections () {
     this.directionsTabs = {}
-    this.settings.forEach((serviceSettings) => {
+    this.config.getServicesMap().forEach((serviceSettings) => {
       if (serviceSettings.type === 'directions') {
         this.directionsTabs[serviceSettings.tab] = true
       }
@@ -167,9 +138,8 @@ class MapSwitcher {
       const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
       const sourceMapData = await SourceMapData.build(extractedData)
       await this.loadConfigsAndSettings()
-      const tabCatSvcMap = this.convertSettingsToHierachicalMap()
       const directionsTabs = this.determineWhichTabsNeedDirections()
-      this.mapLinksView = new MapLinksView(tabCatSvcMap, this.settings, directionsTabs)
+      this.mapLinksView = new MapLinksView(this.config, directionsTabs)
       this.mapLinksView.tabCatSvcSetup()
       this.mapLinksView.setupTabSourceDescr()
       await this.constructOutputs(sourceMapData)

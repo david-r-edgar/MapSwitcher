@@ -10,9 +10,8 @@ if (typeof browser === 'undefined') {
 
 // An instance of this class is the main view object for the extension popup.
 class MapLinksView {
-  constructor (tabCatSvcMap, settings, directionsTabs) {
-    this.tabCatSvcMap = tabCatSvcMap
-    this.settings = settings
+  constructor (config, directionsTabs) {
+    this.config = config
     this.directionsTabs = directionsTabs
   }
 
@@ -66,7 +65,7 @@ class MapLinksView {
 
   tabCatSvcSetup () {
     const view = this
-    this.tabCatSvcMap.forEach((catSvcMap, tab) => {
+    this.config.getHierarchicalMap().forEach((catSvcMap, tab) => {
       // create tab
       view.createEmptyTab(tab)
       const tabId = this.getTabPaneIdFromName(tab)
@@ -87,7 +86,7 @@ class MapLinksView {
   }
 
   setupTabSourceDescr () {
-    this.tabCatSvcMap.forEach((_, tab) => {
+    this.config.getHierarchicalMap().forEach((_, tab) => {
       const tabId = this.getTabPaneIdFromName(tab)
       const tabSourceDescr = document.querySelector('#' + tabId + ' .sourceDescr')
       if (this.directionsTabs[tab]) {
@@ -104,7 +103,7 @@ class MapLinksView {
   // FIXME surely there's a better way of doing this? maybe just iterate through settings?
   findFirstTabs () {
     this.firstTabs = {}
-    for (let [tab, catList] of this.tabCatSvcMap) {
+    for (let [tab, catList] of this.config.getHierarchicalMap()) {
       for (let [, serviceList] of catList) {
         for (let [, settings] of serviceList) {
           if (!this.firstTabs.directions && settings.type === 'directions') {
@@ -196,7 +195,7 @@ class MapLinksView {
       })
     }
 
-    const settingsForService = this.settings.get(mapService.id)
+    const settingsForService = this.config.getServicesMap().get(mapService.id)
     this.showCatAndTab(settingsForService.cat, settingsForService.tab)
   }
 
@@ -213,7 +212,7 @@ class MapLinksView {
     const linkHtml = `<a href='#' class='maplink' id='${id}'>${name}</a>`
     serviceElem.innerHTML += linkHtml
 
-    const settingsForService = this.settings.get(mapService.id)
+    const settingsForService = this.config.getServicesMap().get(mapService.id)
     this.showCatAndTab(settingsForService.cat, settingsForService.tab)
   }
 
