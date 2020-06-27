@@ -82,16 +82,6 @@ class MapSwitcher {
     // this.settings = this.mergeSettings(settings, defaultConfig)
   }
 
-  determineWhichTabsNeedDirections () {
-    this.directionsTabs = {}
-    this.config.getServicesMap().forEach((serviceSettings) => {
-      if (serviceSettings.type === 'directions') {
-        this.directionsTabs[serviceSettings.tab] = true
-      }
-    })
-    return this.directionsTabs
-  }
-
   // Constructs the outputs to be shown in the extension popup.
   //
   // Iterates throught the map services to request them to generate their links.
@@ -138,8 +128,7 @@ class MapSwitcher {
       const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
       const sourceMapData = await SourceMapData.build(extractedData)
       await this.loadConfigsAndSettings()
-      const directionsTabs = this.determineWhichTabsNeedDirections()
-      this.mapLinksView = new MapLinksView(this.config, directionsTabs)
+      this.mapLinksView = new MapLinksView(this.config)
       this.mapLinksView.tabCatSvcSetup()
       this.mapLinksView.setupTabSourceDescr()
       await this.constructOutputs(sourceMapData)

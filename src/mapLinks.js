@@ -10,9 +10,8 @@ if (typeof browser === 'undefined') {
 
 // An instance of this class is the main view object for the extension popup.
 class MapLinksView {
-  constructor (config, directionsTabs) {
+  constructor (config) {
     this.config = config
-    this.directionsTabs = directionsTabs
   }
 
   getIdFromName (name) {
@@ -89,7 +88,7 @@ class MapLinksView {
     this.config.getHierarchicalMap().forEach((_, tab) => {
       const tabId = this.getTabPaneIdFromName(tab)
       const tabSourceDescr = document.querySelector('#' + tabId + ' .sourceDescr')
-      if (this.directionsTabs[tab]) {
+      if (this.config.getDirectionsTabs()[tab]) {
         tabSourceDescr.innerHTML = '<div class="descrItem"><span class="descrVal directionsDescr"></span></div>'
       } else {
         tabSourceDescr.innerHTML = '<div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>' +

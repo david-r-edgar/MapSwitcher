@@ -23,7 +23,7 @@ class Config {
 
   // returns a Map of tabs, each of which contains a Map of categories, each of those
   // containing a Map of services
-  getHierarchicalMap() {
+  getHierarchicalMap () {
     if (!this.tabMap) {
       this.tabMap = new Map()
       this.config.forEach((serviceSettings, service) => {
@@ -42,20 +42,27 @@ class Config {
   }
 
   // returns a Map, with service names as keys and their settings as the values
-  getServicesMap() {
+  getServicesMap () {
     return this.config
   }
 
   // returns an array of tab names which have direction services in
-  getDirectionsTabs() {
-
+  getDirectionsTabs () {
+    if (!this.directionsTabs) {
+      this.directionsTabs = {}
+      this.getServicesMap().forEach((serviceSettings) => {
+        if (serviceSettings.type === 'directions') {
+          this.directionsTabs[serviceSettings.tab] = true
+        }
+      })
+    }
+    return this.directionsTabs
   }
 
   // returns an array of tab names which have non-direction services in
-  getRegularMappingTabs() {
+  getRegularMappingTabs () {
 
   }
-
 }
 
 export default Config
