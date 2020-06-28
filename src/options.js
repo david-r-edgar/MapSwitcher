@@ -135,6 +135,8 @@ function resetToDefaults () {
   }
 }
 
+// triggered by Sortable on user sort operation
+// Saves priority for each service
 function optionsSorted (event, ui) {
   document.getElementById('status').textContent = 'Saving...'
   let mapPriorities = {}

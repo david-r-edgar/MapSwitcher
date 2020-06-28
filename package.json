@@ -4,7 +4,7 @@
   "main": "",
   "scripts": {
     "test": "npm run lint && echo \"Error: no test specified\"",
-    "build:resources": "cp -r html css image vendor manifest.json release",
+    "build:resources": "cp -r html css config image vendor manifest.json release",
     "build:js": "for srcFile in src/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done",
     "clean:release": "rm -rf release",
     "build:release": "mkdir -p release/src &&  npm run build:resources && npm run build:js",
