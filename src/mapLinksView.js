@@ -91,41 +91,18 @@ class MapLinksView {
     this.config.getHierarchicalMap().forEach((_, tab) => {
       const tabId = this.getTabPaneIdFromName(tab)
       const tabSourceDescr = document.querySelector('#' + tabId + ' .sourceDescr')
-      if (regularMappingTabs[tab]) {
+      if (regularMappingTabs.includes(tab)) {
         tabSourceDescr.innerHTML += '<div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>' +
           '<div class="descrItem"><span class="lbl">Extracted from:</span> &nbsp; <span class="descrVal sourceExtrFromVal"></span></div>'
       }
-      if (directionsTabs[tab]) {
+      if (directionsTabs.includes(tab)) {
         tabSourceDescr.innerHTML += '<div class="descrItem"><span class="descrVal directionsDescr"></span></div>'
       }
     })
   }
 
-  // find the first tab with a service for directions, and the first tab with
-  // a service for regular non-directions maps
-  // FIXME surely there's a better way of doing this? maybe just iterate through settings?
-  findFirstTabs () {
-    this.firstTabs = {}
-    for (let [tab, catList] of this.config.getHierarchicalMap()) {
-      for (let [, serviceList] of catList) {
-        for (let [, settings] of serviceList) {
-          if (!this.firstTabs.directions && settings.type === 'directions') {
-            this.firstTabs.directions = tab
-          }
-          if (!this.firstTabs.regular && (!settings.type || !settings.type === 'directions')) {
-            this.firstTabs.regular = tab
-          }
-          if (this.firstTabs.directions && this.firstTabs.regular) {
-            return
-          }
-        }
-      }
-    }
-  }
-
   prepareTabs (tabType) {
-    this.findFirstTabs()
-    const tab = this.firstTabs[tabType]
+    const tab = tabType === 'directions' ? this.config.getDirectionsTabs()[0] : this.config.getRegularMappingTabs()[0]
     const tabPaneId = this.getTabPaneIdFromName(tab)
     const tabTabId = this.getTabTabIdFromName(tab)
 
