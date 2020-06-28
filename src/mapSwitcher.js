@@ -3,7 +3,7 @@
   fetch,
   ScriptExecution */
 
-import MapLinksView from './mapLinks.js'
+import MapLinksView from './mapLinksView.js'
 import OutputMaps from './outputMaps.js'
 import SourceMapData from './sourceMapData.js'
 import Config from './config.js'
@@ -71,6 +71,8 @@ class MapSwitcher {
       // [ 'google', { 'cat': 'General purpose', 'tab': 'Regular mapping', 'hidden': false }],
       // [ "osm", { "cat": "General purpose", "tab": "Regular mapping" }],
       // [ "bing", { "cat": "General purpose", "tab": "Regular mapping" }]
+      // [ "googleDirections", { "cat": "General purpose", "tab": "Regular mapping", "type": "directions" }],
+      // [ "google", { "cat": "Directions", "tab": "Directions" }]
     ])
   }
 
@@ -79,7 +81,6 @@ class MapSwitcher {
     const defaultConfig = new Map(loadedConfig)
     const userSettings = this.loadUserSettings()
     this.config = new Config(defaultConfig, userSettings)
-    // this.settings = this.mergeSettings(settings, defaultConfig)
   }
 
   // Constructs the outputs to be shown in the extension popup.

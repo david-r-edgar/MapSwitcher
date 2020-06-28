@@ -1,6 +1,7 @@
 
-// A class representing the combined default config + user settings
+// A class representing the combined default config + user settings.
 // Used by the main mapSwitcher routine, the mapLinks view, and the options page.
+// The config dictates the tab, category and service hierarchy.
 class Config {
   constructor (defaultConfig, userSettings) {
     this.defaultConfig = defaultConfig
@@ -59,9 +60,17 @@ class Config {
     return this.directionsTabs
   }
 
-  // returns an array of tab names which have non-direction services in
+  // returns an array of tab names which have regular (non-direction) services in
   getRegularMappingTabs () {
-
+    if (!this.regularMappingTabs) {
+      this.regularMappingTabs = {}
+      this.getServicesMap().forEach((serviceSettings) => {
+        if (serviceSettings.type !== 'directions') {
+          this.regularMappingTabs[serviceSettings.tab] = true
+        }
+      })
+    }
+    return this.regularMappingTabs
   }
 }
 

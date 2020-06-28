@@ -26,8 +26,8 @@ class MapLinksView {
     return this.getIdFromName(name) + '_tabtab'
   }
 
-  getCatIdFromName (name) {
-    return this.getIdFromName(name) + '_cat'
+  getCatIdFromName (name, tabName) {
+    return this.getIdFromName(name) + '_' + this.getIdFromName(tabName) + '_cat'
   }
 
   getServiceIdFromName (name) {
@@ -49,8 +49,8 @@ class MapLinksView {
     tabTabContainer.innerHTML += tabTabHTML
   }
 
-  createEmptyCat (cat, tabElem) {
-    const catId = this.getCatIdFromName(cat)
+  createEmptyCat (cat, tabElem, tab) {
+    const catId = this.getCatIdFromName(cat, tab)
     const catHTML = `<div class="maplinkcat" id="${catId}"><h4>${cat}</h4></div>`
     const maplinkbox = tabElem.getElementsByClassName('maplinkbox')[0]
     maplinkbox.innerHTML += catHTML
@@ -71,8 +71,8 @@ class MapLinksView {
       const tabElem = document.getElementById(tabId)
       catSvcMap.forEach((svcMap, cat) => {
         // create cat
-        view.createEmptyCat(cat, tabElem)
-        const catId = this.getCatIdFromName(cat)
+        view.createEmptyCat(cat, tabElem, tab)
+        const catId = this.getCatIdFromName(cat, tab)
         const catElem = document.getElementById(catId)
         svcMap.forEach((settings, service) => {
           // create service placeholder
@@ -85,14 +85,18 @@ class MapLinksView {
   }
 
   setupTabSourceDescr () {
+    const directionsTabs = this.config.getDirectionsTabs()
+    const regularMappingTabs = this.config.getRegularMappingTabs()
+
     this.config.getHierarchicalMap().forEach((_, tab) => {
       const tabId = this.getTabPaneIdFromName(tab)
       const tabSourceDescr = document.querySelector('#' + tabId + ' .sourceDescr')
-      if (this.config.getDirectionsTabs()[tab]) {
-        tabSourceDescr.innerHTML = '<div class="descrItem"><span class="descrVal directionsDescr"></span></div>'
-      } else {
-        tabSourceDescr.innerHTML = '<div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>' +
+      if (regularMappingTabs[tab]) {
+        tabSourceDescr.innerHTML += '<div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>' +
           '<div class="descrItem"><span class="lbl">Extracted from:</span> &nbsp; <span class="descrVal sourceExtrFromVal"></span></div>'
+      }
+      if (directionsTabs[tab]) {
+        tabSourceDescr.innerHTML += '<div class="descrItem"><span class="descrVal directionsDescr"></span></div>'
       }
     })
   }
@@ -157,7 +161,7 @@ class MapLinksView {
   }
 
   showCatAndTab (category, tab) {
-    const catId = this.getCatIdFromName(category)
+    const catId = this.getCatIdFromName(category, tab)
     const catElem = document.getElementById(catId)
     catElem.classList.add('inUse')
 
@@ -352,9 +356,7 @@ class MapLinksView {
 
   // Handles cases where no coordinates are available from the page, or another problem
   // has occured.
-  //
-  // @param {object} errorObject - Contains any relevant error data
-  static handleNoCoords (errorObject) {
+  static handleNoCoords () {
     const loadingElem = document.getElementsByClassName('loading')[0]
     loadingElem.style.display = 'none'
     const nomapElem = document.getElementById('nomap')
