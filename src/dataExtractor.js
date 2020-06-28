@@ -117,9 +117,7 @@ extractors.push({
 
           sourceMapData.directions.mode = gmdpRoute.getTransportation()
         } catch (ex) {
-          if (ex instanceof GmdpException) {
-            // console.log(ex);
-          }
+          if (ex instanceof GmdpException) {}
         } finally {
           resolve(sourceMapData)
         }

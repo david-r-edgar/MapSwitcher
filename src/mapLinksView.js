@@ -25,6 +25,7 @@ class MapLinksView {
   // - construct output lines of links for each output service
   // - work out what the first tab is, and set it to be initially active
   // - set up the click handlers etc. to make tab switching work
+  // - hide the animated loading dots
   //
   // FIXME review what actually needs to be async / await here
   async display (sourceMapData) {
@@ -347,6 +348,19 @@ class MapLinksView {
     }
   }
 
+  showWarnings (sourceMapData) {
+    if (sourceMapData.nonUpdating !== undefined) {
+      this.displayNonUpdatingWarning(sourceMapData.nonUpdating)
+    }
+  }
+
+  // Iterates through the map services to request each one to generate its links.
+  constructOutputs (sourceMapData) {
+    for (let outputMapService of OutputMaps.services) {
+      outputMapService.generate(sourceMapData, this)
+    }
+  }
+
   // Hide the animated loading dots.
   loaded () {
     const loadingElem = document.getElementsByClassName('loading')[0]
@@ -366,19 +380,6 @@ class MapLinksView {
     nomapElem.style.display = 'block'
     const maplinkboxElem = document.getElementById('tabContainer')
     maplinkboxElem.style.display = 'none'
-  }
-
-  showWarnings (sourceMapData) {
-    if (sourceMapData.nonUpdating !== undefined) {
-      this.displayNonUpdatingWarning(sourceMapData.nonUpdating)
-    }
-  }
-
-  // Iterates through the map services to request each one to generate its links.
-  constructOutputs (sourceMapData) {
-    for (let outputMapService of OutputMaps.services) {
-      outputMapService.generate(sourceMapData, this)
-    }
   }
 }
 

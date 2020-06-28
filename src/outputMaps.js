@@ -858,7 +858,7 @@ OutputMaps.services = [
                 url: commonLink + '&baseLayer=ngi.ortho'
               }
             ]
-            view.addMapServiceLinks(that.cat, that, mapLinks)
+            view.addMapServiceLinks(that, mapLinks)
           })
         })
     }
