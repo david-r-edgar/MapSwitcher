@@ -175,6 +175,16 @@ function optionsLoaded () {
   })
 }
 
+// class Options {
+//   constructor () {
+
+//   }
+
+//   loadConfig () {
+
+//   }
+// }
+
 if (
   document.readyState === 'complete' ||
     (document.readyState !== 'loading' && !document.documentElement.doScroll)

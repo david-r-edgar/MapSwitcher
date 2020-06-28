@@ -131,6 +131,26 @@ class SourceMapData {
     })
   }
 
+  determineSourceDataType () {
+    return this.directions ? 'directions' : 'regular'
+  }
+
+  getSourceInfo () {
+    const sourceMapDataInfo = {
+      centreCoords: this.centreCoords,
+      locationDescr: this.locationDescr
+    }
+
+    if (this.directions && this.directions.route) {
+      sourceMapDataInfo.directions = {
+        numWpts: this.directions.route.length,
+        mode: this.directions.mode
+      }
+    }
+
+    return sourceMapDataInfo
+  }
+
   static async build (extractedData) {
     const sourceMapData = new SourceMapData(extractedData)
     await sourceMapData.normaliseExtractedData()

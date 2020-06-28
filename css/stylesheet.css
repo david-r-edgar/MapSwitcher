@@ -343,9 +343,9 @@ button#reset svg {
   opacity: 0.2;
 }
 
-.container--tabs {
+/* .container--tabs { */
   /* margin: 2rem; */
-}
+/* } */
 .container--tabs .nav-tabs {
   float: left;
   width: 100%;

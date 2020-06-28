@@ -3,6 +3,8 @@
   Blob,
   tippy */
 
+import OutputMaps from './outputMaps.js'
+
 let browser
 if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
@@ -333,13 +335,40 @@ class MapLinksView {
 
   // Handles cases where no coordinates are available from the page, or another problem
   // has occured.
-  static handleNoCoords () {
+  handleNoCoords () {
     const loadingElem = document.getElementsByClassName('loading')[0]
     loadingElem.style.display = 'none'
     const nomapElem = document.getElementById('nomap')
     nomapElem.style.display = 'block'
     const maplinkboxElem = document.getElementById('tabContainer')
     maplinkboxElem.style.display = 'none'
+  }
+
+  showWarnings (sourceMapData) {
+    if (sourceMapData.nonUpdating !== undefined) {
+      this.displayNonUpdatingWarning(sourceMapData.nonUpdating)
+    }
+  }
+
+  // Iterates through the map services to request each one to generate its links.
+  constructOutputs (sourceMapData) {
+    for (let outputMapService of OutputMaps.services) {
+      outputMapService.generate(sourceMapData, this)
+    }
+  }
+
+  // FIXME review what actually needs to be async / await here
+  async display (sourceMapData) {
+    this.tabCatSvcSetup()
+    this.setupTabSourceDescr()
+    const sourceMapDataInfo = sourceMapData.getSourceInfo()
+    this.showInfo(sourceMapDataInfo)
+    this.showWarnings(sourceMapData)
+    this.constructOutputs(sourceMapData)
+    const sourceDataType = sourceMapData.determineSourceDataType()
+    this.prepareTabs(sourceDataType)
+    this.tabSetup()
+    await this.loaded()
   }
 }
 
