@@ -15,6 +15,25 @@ if (typeof browser === 'undefined') {
 }
 
 class MapSwitcher {
+  // Main routine
+  // - Initiates the content scripts
+  // - Loads config and settings to determine how to display output
+  // - Constructs the view, based on the config
+  // - Passes the source data to the view to display the outputs
+  // In case of any error (or for any non-map-service site), show a standard message
+  async run () {
+    try {
+      await this.validateCurrentTab()
+      const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
+      const sourceMapData = await SourceMapData.build(extractedData)
+      const config = await Config.create()
+      this.mapLinksView = new MapLinksView(config)
+      await this.mapLinksView.display(sourceMapData)
+    } catch (err) {
+      this.mapLinksView.handleNoCoords(err)
+    }
+  }
+
   // Checks if we should continue attempting to extract data from the current tab.
   //
   // @return Promise which fulfils if OK to continue, otherwise rejects.
@@ -54,24 +73,6 @@ class MapSwitcher {
         '/src/dataExtractor.js')
       resolve()
     })
-  }
-
-  // Main routine
-  // - Initiates the content scripts
-  // - Loads config and settings to determine how to display output
-  // - Constructs the view, based on the config
-  // - Passes the source data to the view to display the outputs
-  async run () {
-    try {
-      await this.validateCurrentTab()
-      const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
-      const sourceMapData = await SourceMapData.build(extractedData)
-      const config = await Config.create()
-      this.mapLinksView = new MapLinksView(config)
-      await this.mapLinksView.display(sourceMapData)
-    } catch (err) {
-      this.mapLinksView.handleNoCoords(err)
-    }
   }
 }
 

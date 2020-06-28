@@ -16,6 +16,30 @@ class MapLinksView {
     this.config = config
   }
 
+  // Main view display routine
+  // - first set up anything that doesn't depend on the source data
+  //   - set up the tabs, categories and service placeholders (based on the config)
+  //   - set up the per-tab description lines
+  // - get the general info about the source data, and then this for each tab
+  // - show warning modal if necessary
+  // - construct output lines of links for each output service
+  // - work out what the first tab is, and set it to be initially active
+  // - set up the click handlers etc. to make tab switching work
+  //
+  // FIXME review what actually needs to be async / await here
+  async display (sourceMapData) {
+    this.tabCatSvcSetup()
+    this.setupTabSourceDescr()
+    const sourceMapDataInfo = sourceMapData.getSourceInfo()
+    this.showInfo(sourceMapDataInfo)
+    this.showWarnings(sourceMapData)
+    this.constructOutputs(sourceMapData)
+    const sourceDataType = sourceMapData.determineSourceDataType()
+    this.prepareTabs(sourceDataType)
+    this.tabSetup()
+    await this.loaded()
+  }
+
   getIdFromName (name) {
     return name.replace(/[^a-zA-Z0-9]/g, '')
   }
@@ -355,20 +379,6 @@ class MapLinksView {
     for (let outputMapService of OutputMaps.services) {
       outputMapService.generate(sourceMapData, this)
     }
-  }
-
-  // FIXME review what actually needs to be async / await here
-  async display (sourceMapData) {
-    this.tabCatSvcSetup()
-    this.setupTabSourceDescr()
-    const sourceMapDataInfo = sourceMapData.getSourceInfo()
-    this.showInfo(sourceMapDataInfo)
-    this.showWarnings(sourceMapData)
-    this.constructOutputs(sourceMapData)
-    const sourceDataType = sourceMapData.determineSourceDataType()
-    this.prepareTabs(sourceDataType)
-    this.tabSetup()
-    await this.loaded()
   }
 }
 
