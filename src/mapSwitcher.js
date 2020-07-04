@@ -3,7 +3,7 @@
   ScriptExecution */
 
 import SourceMapData from './sourceMapData.js'
-import Config from './config.js'
+import ConfigManager from './config.js'
 import MapLinksView from './mapLinksView.js'
 
 // The Web Extension API is implemented on different root objects in different browsers.
@@ -26,11 +26,12 @@ class MapSwitcher {
       await this.validateCurrentTab()
       const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
       const sourceMapData = await SourceMapData.build(extractedData)
-      const config = await Config.create()
-      this.mapLinksView = new MapLinksView(config)
+      const configManager = await ConfigManager.create()
+      await configManager.getServiceConfig().loadUserSettings()
+      this.mapLinksView = new MapLinksView(configManager.getServiceConfig())
       await this.mapLinksView.display(sourceMapData)
     } catch (err) {
-      this.mapLinksView.handleNoCoords(err)
+      MapLinksView.handleNoCoords(err)
     }
   }
 

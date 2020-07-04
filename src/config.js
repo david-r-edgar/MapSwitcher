@@ -12,54 +12,74 @@ const DEFAULT_CONFIG = '../config/defaultServices.json'
 // A class representing the combined default config + user settings.
 // Used by the main mapSwitcher routine, the mapLinks view, and the options page.
 // The config dictates the tab, category and service hierarchy.
-class Config {
-  constructor (defaultConfig, userSettings) {
-    this.defaultConfig = defaultConfig
-    this.config = userSettings
-    this.config = this.mergeConfig(this.config, defaultConfig)
-  }
-
-  // FIXME is there a better way to structure initial load?
-  // perhaps construct, then initialise?
+class ServiceConfig {
+  // creates a new instance of the ServiceConfig and loads the default config
   static async create () {
-    const loadedConfig = await Config.loadConfig()
-    const defaultConfig = new Map(loadedConfig)
-    const userSettings = Config.loadUserSettings()
-    return new Config(defaultConfig, userSettings)
+    const serviceConfig = new ServiceConfig()
+    await serviceConfig.loadDefaultConfig()
+    return serviceConfig
   }
 
-  static async loadConfig () {
+  // loads the default config (packaged json file) and converts to a Map
+  async loadDefaultConfig () {
     const response = await fetch(browser.runtime.getURL(DEFAULT_CONFIG))
-    return response.json()
+    const defaultConfigJSON = await response.json()
+    this.defaultConfig = new Map(defaultConfigJSON)
+    return this.defaultConfig
   }
 
-  static loadUserSettings () {
-    return new Map([
-      // FOR TESTING
-      //   ['someservice', {cat: 'somecat', tab: 'sometab'}],
-      //   ['waze', {cat: 'wazewazewazewazecat', tab: 'wazewazewazewazetab'}]
-      // [ 'google', { 'cat': 'General purpose', 'tab': 'Regular mapping', 'hidden': false }],
-      // [ "osm", { "cat": "General purpose", "tab": "Regular mapping" }],
-      // [ "bing", { "cat": "General purpose", "tab": "Regular mapping" }]
-      // [ "googleDirections", { "cat": "General purpose", "tab": "Regular mapping", "type": "directions" }],
-      // [ "google", { "cat": "Directions", "tab": "Directions" }]
-    ])
+  async loadFromStorage (key) {
+    return new Promise((resolve) => {
+      browser.storage.local.get(key, function (items) {
+        resolve(items[key])
+      })
+    })
   }
 
+  async saveToStorage (key, value) {
+    const keyValueObject = {}
+    keyValueObject[key] = value
+    return new Promise((resolve) => {
+      browser.storage.local.set(keyValueObject, function () {
+        resolve()
+      })
+    })
+  }
+
+  // loads user settings, converts them to map, merges in the default config
+  async loadUserSettings () {
+    const serviceConfig = await this.loadFromStorage('serviceConfig')
+    this.config = new Map(serviceConfig)
+    this.mergeConfig()
+  }
+
+  async saveUserSettings () {
+    // FIXME possibly we first want to strip out values like service name, image before storing
+
+    return this.saveToStorage('serviceConfig', [...this.config])
+  }
+
+  async initialiseEmptyUserSettings () {
+    this.config = new Map([])
+  }
+
+  // FIXME what is this for?
   async loadConfigsAndSettings () {
   }
 
-  mergeConfig (config, defaultConfig) {
-    // for each key in defaultConfig, if it doesn't exist in settings, add it
-    //
+  // for each key in defaultConfig, if it doesn't exist in config, add it
+  // also copy across any missing properties from defaultConfig
+  mergeConfig () {
     // it's not a straightforward 'union' of maps since we want to keep the
     // order of 'config', but also keep any values it has set
-    defaultConfig.forEach((value, key) => {
-      if (!config.has(key)) {
-        config.set(key, value)
+    this.defaultConfig.forEach((defaultServiceSettings, serviceId) => {
+      let settingsForService = {
+        ...defaultServiceSettings,
+        ...(this.config.get(serviceId))
       }
+      this.config.set(serviceId, settingsForService)
     })
-    return config
+    return this.config
   }
 
   // returns a Map of tabs, each of which contains a Map of categories, each of those
@@ -74,7 +94,7 @@ class Config {
         if (!(this.tabMap.get(serviceSettings.tab)).get(serviceSettings.cat)) {
           (this.tabMap.get(serviceSettings.tab)).set(serviceSettings.cat, new Map())
         }
-        const { 'cat': _, 'tab': __, ...otherSettings } = serviceSettings
+        const { cat: _, tab: __, ...otherSettings } = serviceSettings
 
         this.tabMap.get(serviceSettings.tab).get(serviceSettings.cat).set(service, otherSettings)
       })
@@ -82,16 +102,26 @@ class Config {
     return this.tabMap
   }
 
-  // returns a Map, with service names as keys and their settings as the values
+  // returns a Map of all services, with names as keys and settings as values
   getServicesMap () {
     return this.config
+  }
+
+  // gets the config for a specific service
+  getConfigForService (service) {
+    return this.config.get(service)
+  }
+
+  // sets the config for a specific service
+  setConfigForService (serviceId, serviceSettings) {
+    this.config.set(serviceId, serviceSettings)
   }
 
   // returns an array of tab names which have direction services in
   getDirectionsTabs () {
     if (!this.directionsTabs) {
       this.directionsTabs = []
-      this.getServicesMap().forEach((serviceSettings) => {
+      this.config.forEach((serviceSettings) => {
         if (serviceSettings.type === 'directions') {
           this.directionsTabs.push(serviceSettings.tab)
         }
@@ -104,7 +134,7 @@ class Config {
   getRegularMappingTabs () {
     if (!this.regularMappingTabs) {
       this.regularMappingTabs = []
-      this.getServicesMap().forEach((serviceSettings) => {
+      this.config.forEach((serviceSettings) => {
         if (serviceSettings.type !== 'directions') {
           this.regularMappingTabs.push(serviceSettings.tab)
         }
@@ -114,4 +144,34 @@ class Config {
   }
 }
 
-export default Config
+// Holds different types of config object.
+// Allows the main ServiceConfig to be replaced when user options are changed.
+class ConfigManager {
+  static async create () {
+    const configManager = new ConfigManager()
+    await configManager.createServiceConfig()
+    return configManager
+  }
+
+  async createServiceConfig () {
+    this.serviceConfig = await ServiceConfig.create()
+    return this.serviceConfig
+  }
+
+  getServiceConfig () {
+    return this.serviceConfig
+  }
+
+  // called when user is making changes on options page
+  // - merge in default config (for any missed properties)
+  // - set the new service config on this object
+  // - save the config to local storage
+  async setServiceConfig (newServiceConfig) {
+    newServiceConfig.mergeConfig()
+    this.serviceConfig = newServiceConfig
+    await this.serviceConfig.saveUserSettings()
+  }
+}
+
+export { ConfigManager, ServiceConfig }
+export default ConfigManager

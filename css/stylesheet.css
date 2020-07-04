@@ -245,6 +245,36 @@ body#optionsPage {
   background-color: white;
   margin: 4px;
 }
+
+.optionsTab {
+  background-color: #eee;
+  clear: both;
+  padding: 2px 10px;
+  margin: 10px;
+}
+/* hack to make it enclose the float */
+.optionsTab:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+.tabHeader {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #bbb;
+  margin-bottom: 12px;
+}
+.tabHeader .dragcell {
+  margin-block-start: 10px;
+}
+.tabHeader h3 {
+  margin-block-start: 8px;
+  font-size: 14px;
+  margin-left: 12px;
+}
+
 article.options {
   margin: 1em 2em 1em 3em;
 }
@@ -304,9 +334,8 @@ section.services {
 }
 .srvTickList td.dragcell svg {
   width: 12px;
-  fill: #ddd;
 }
-.srvTickList th.srvTitle {
+.srvTickList th.catTitle {
   text-align: left;
   padding-left: 28px;
 }
@@ -342,6 +371,14 @@ button#reset svg {
 .sortableGhost {
   opacity: 0.2;
 }
+
+.dragcell {
+  width: 12px;
+}
+.dragcell svg {
+  fill: #777;
+}
+
 
 /* .container--tabs { */
   /* margin: 2rem; */

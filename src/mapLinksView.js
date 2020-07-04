@@ -29,6 +29,13 @@ class MapLinksView {
   //
   // FIXME review what actually needs to be async / await here
   async display (sourceMapData) {
+    // console.log('display')
+    // const serviceConfig = this.config.getServiceConfig()
+    // console.log({serviceConfig})
+    // console.log('about to call test()')
+    // serviceConfig.test()
+    // console.log('done')
+
     this.tabCatSvcSetup()
     this.setupTabSourceDescr()
     const sourceMapDataInfo = sourceMapData.getSourceInfo()
@@ -188,12 +195,16 @@ class MapLinksView {
 
   // Adds links to a map service to a particular category
   //
-  // @param {category} Category in which to add this map service.
   // @param {mapService} Object containing data about the particular map service.
   // @param {mapLinks} All the map links to be added.
   // @param {note} Content for an optional explanatory note.
   addMapServiceLinks (mapService, mapLinks, note) {
-    const newServiceLine = this.buildLineOfLinks(mapService, mapLinks, note)
+    // FIXME we shouldn't need to use the default config here
+    const serviceConfig = this.config.getConfigForService(mapService.id)
+    const siteName = serviceConfig.name
+    const imageFilename = serviceConfig.image
+
+    const newServiceLine = this.buildLineOfLinks(siteName, imageFilename, mapLinks, note)
     this.insertServiceLineIntoCategory(mapService.id, newServiceLine)
 
     if (note && note.length) {
@@ -279,12 +290,12 @@ class MapLinksView {
   // @param {object} links - the map links to add, containing URLs and names for each
   // @param {note} note - a note for this map service, if applicable
   // @return {string} the HTML for the line
-  buildLineOfLinks (mapSite, links, note) {
+  buildLineOfLinks (serviceName, imageFilename, links, note) {
     let html = ''
     if (links) {
       html =
-        `<span class="linkLineImg"><img src="../image/${mapSite.image}"></span> ` +
-        `<span class="serviceName">${mapSite.site}</span> `
+        `<span class="linkLineImg"><img src="../image/${imageFilename}"></span> ` +
+        `<span class="serviceName">${serviceName}</span> `
       links.forEach(link => {
         html += `<a class="maplink" target="_blank" href="${link.url}">${link.name}</a> `
       })
@@ -373,7 +384,7 @@ class MapLinksView {
 
   // Handles cases where no coordinates are available from the page, or another problem
   // has occured.
-  handleNoCoords () {
+  static handleNoCoords () {
     const loadingElem = document.getElementsByClassName('loading')[0]
     loadingElem.style.display = 'none'
     const nomapElem = document.getElementById('nomap')
