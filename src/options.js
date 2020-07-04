@@ -160,34 +160,8 @@ class Options {
     this.updateSelectAllNone()
   }
 
-  // triggered by Sortable on user sort operation
-  // Saves priority for each service
-  //                                  FIXME
-  // optionsSorted (event, ui) {
-  //   document.getElementById('status').textContent = 'Saving...'
-  //   let mapPriorities = {}
-  //   let newPriority = 1
-  //   document.querySelectorAll('tr.omsrvRow').forEach(rowElem => {
-  //     let id = rowElem.querySelector('td.chkboxcell input').id
-  //     for (let outputMapService of OutputMaps.services) {
-  //       if (outputMapService.id === id) {
-  //         // outputMapService.prio = newPriority;
-  //         mapPriorities['prio/' + id] = newPriority
-  //         break
-  //       }
-  //     }
-  //     newPriority++
-  //   })
-
-  //   browser.storage.local.set(mapPriorities, function () {
-  //     setTimeout(function () {
-  //       document.getElementById('status').textContent = 'Options saved.'
-  //     }, 1000)
-  //   })
-  // }
-
-  makeServicesSortableWithinCategories () {
-    const sortableContainers = document.getElementsByClassName('sortableServiceContainer')
+  makeSortable(containerClassName, group) {
+    const sortableContainers = document.getElementsByClassName(containerClassName)
     Array.from(sortableContainers).map((container) => {
       Sortable.create(container, {
         animation: 150,
@@ -195,35 +169,7 @@ class Options {
         chosenClass: 'sortableChosen',
         ghostClass: 'sortableGhost',
         onEnd: () => { this.saveOptions() },
-        group: 'services'
-      })
-    })
-  }
-
-  makeCategoriesSortableWithinTabs () {
-    const sortableContainers = document.getElementsByClassName('sortableCategoryContainer')
-    Array.from(sortableContainers).map((container) => {
-      Sortable.create(container, {
-        animation: 150,
-        handle: '.dragcell',
-        chosenClass: 'sortableChosen',
-        ghostClass: 'sortableGhost',
-        onEnd: () => { this.saveOptions() },
-        group: 'categories'
-      })
-    })
-  }
-
-  makeTabsSortableWithinCategories () {
-    const sortableContainers = document.getElementsByClassName('sortableTabContainer')
-    Array.from(sortableContainers).map((container) => {
-      Sortable.create(container, {
-        animation: 150,
-        handle: '.dragcell',
-        chosenClass: 'sortableChosen',
-        ghostClass: 'sortableGhost',
-        onEnd: () => { this.saveOptions() },
-        group: 'tabs'
+        group: group
       })
     })
   }
@@ -265,15 +211,13 @@ class Options {
     await this.configManager.getServiceConfig().loadUserSettings()
     const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap()
     this.tabCatSvcSetup(tabCatSvcMap)
-    this.makeServicesSortableWithinCategories()
-    this.makeCategoriesSortableWithinTabs()
-    this.makeTabsSortableWithinCategories()
+    this.makeSortable('sortableTabContainer', 'tabs')
+    this.makeSortable('sortableCategoryContainer', 'categories')
+    this.makeSortable('sortableServiceContainer', 'services')
   }
 }
 
-function oldAndNew () {
-  // optionsLoaded()
-
+function optionsLoaded() {
   const options = new Options()
   options.build()
 }
@@ -282,9 +226,9 @@ if (
   document.readyState === 'complete' ||
     (document.readyState !== 'loading' && !document.documentElement.doScroll)
 ) {
-  oldAndNew()
+  optionsLoaded()
 } else {
-  document.addEventListener('DOMContentLoaded', oldAndNew)
+  document.addEventListener('DOMContentLoaded', optionsLoaded)
 }
 
 // document.getElementById('reset').addEventListener('click', resetToDefaults)
