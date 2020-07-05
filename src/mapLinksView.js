@@ -29,13 +29,6 @@ class MapLinksView {
   //
   // FIXME review what actually needs to be async / await here
   async display (sourceMapData) {
-    // console.log('display')
-    // const serviceConfig = this.config.getServiceConfig()
-    // console.log({serviceConfig})
-    // console.log('about to call test()')
-    // serviceConfig.test()
-    // console.log('done')
-
     this.tabCatSvcSetup()
     this.setupTabSourceDescr()
     const sourceMapDataInfo = sourceMapData.getSourceInfo()
@@ -96,20 +89,18 @@ class MapLinksView {
     catElem.innerHTML += placeholderServiceLine
   }
 
+  // creates DOM elements for tabs, categories and services
   tabCatSvcSetup () {
     const view = this
     this.config.getHierarchicalMap().forEach((catSvcMap, tab) => {
-      // create tab
       view.createEmptyTab(tab)
       const tabId = this.getTabPaneIdFromName(tab)
       const tabElem = document.getElementById(tabId)
       catSvcMap.forEach((svcMap, cat) => {
-        // create cat
         view.createEmptyCat(cat, tabElem, tab)
         const catId = this.getCatIdFromName(cat, tab)
         const catElem = document.getElementById(catId)
         svcMap.forEach((settings, service) => {
-          // create service placeholder
           if (!settings.hidden) {
             view.createPlaceholderService(service, catElem)
           }
@@ -137,6 +128,7 @@ class MapLinksView {
 
   prepareTabs (tabType) {
     const tab = tabType === 'directions' ? this.config.getDirectionsTabs()[0] : this.config.getRegularMappingTabs()[0]
+
     const tabPaneId = this.getTabPaneIdFromName(tab)
     const tabTabId = this.getTabTabIdFromName(tab)
 
@@ -199,8 +191,14 @@ class MapLinksView {
   // @param {mapLinks} All the map links to be added.
   // @param {note} Content for an optional explanatory note.
   addMapServiceLinks (mapService, mapLinks, note) {
-    // FIXME we shouldn't need to use the default config here
     const serviceConfig = this.config.getConfigForService(mapService.id)
+
+    // don't show links if user options hides it
+    // FIXME can we avoid calling the OutputMaps generator in the first place for hidden services?
+    if (serviceConfig.hidden) {
+      return
+    }
+
     const siteName = serviceConfig.name
     const imageFilename = serviceConfig.image
 
@@ -213,8 +211,7 @@ class MapLinksView {
       })
     }
 
-    const settingsForService = this.config.getServicesMap().get(mapService.id)
-    this.showCatAndTab(settingsForService.cat, settingsForService.tab)
+    this.showCatAndTab(serviceConfig.cat, serviceConfig.tab)
   }
 
   addUtility (mapService, id, name) {
@@ -241,6 +238,13 @@ class MapLinksView {
   // @param {name} Display name for the link.
   // @param {fileGenerator} Function to invoke to create the file contents.
   addFileDownload (mapService, id, name, fileGenerator) {
+    const serviceConfig = this.config.getConfigForService(mapService.id)
+
+    // don't show links if user options hides it
+    if (serviceConfig.hidden) {
+      return
+    }
+
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)
@@ -257,6 +261,12 @@ class MapLinksView {
   }
 
   addUtilityLink (mapService, id, name, utilFunction) {
+    const serviceConfig = this.config.getConfigForService(mapService.id)
+    // don't show links if user options hides it
+    if (serviceConfig.hidden) {
+      return
+    }
+
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)

@@ -225,7 +225,7 @@ class Options {
   async build () {
     this.configManager = await ConfigManager.create()
     await this.configManager.getServiceConfig().loadUserSettings()
-    const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap()
+    const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
     this.tabCatSvcSetup(tabCatSvcMap)
     this.makeSortable('sortableTabContainer', 'tabs')
     this.makeSortable('sortableCategoryContainer', 'categories')

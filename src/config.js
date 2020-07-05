@@ -98,10 +98,14 @@ class ServiceConfig {
 
   // returns a Map of tabs, each of which contains a Map of categories, each of those
   // containing a Map of services
-  getHierarchicalMap () {
+  getHierarchicalMap (includeHidden) {
     if (!this.tabMap) {
       this.tabMap = new Map()
       this.config.forEach((serviceSettings, service) => {
+        if (!includeHidden && serviceSettings.hidden) {
+          return
+        }
+
         if (!this.tabMap.has(serviceSettings.tab)) {
           this.tabMap.set(serviceSettings.tab, new Map())
         }
@@ -136,7 +140,7 @@ class ServiceConfig {
     if (!this.directionsTabs) {
       this.directionsTabs = []
       this.config.forEach((serviceSettings) => {
-        if (serviceSettings.type === 'directions') {
+        if (serviceSettings.type === 'directions' && !serviceSettings.hidden) {
           this.directionsTabs.push(serviceSettings.tab)
         }
       })
@@ -149,7 +153,7 @@ class ServiceConfig {
     if (!this.regularMappingTabs) {
       this.regularMappingTabs = []
       this.config.forEach((serviceSettings) => {
-        if (serviceSettings.type !== 'directions') {
+        if (serviceSettings.type !== 'directions' && !serviceSettings.hidden) {
           this.regularMappingTabs.push(serviceSettings.tab)
         }
       })

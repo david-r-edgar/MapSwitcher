@@ -31,6 +31,7 @@ class MapSwitcher {
       this.mapLinksView = new MapLinksView(configManager.getServiceConfig())
       await this.mapLinksView.display(sourceMapData)
     } catch (err) {
+      console.log('MapSwitcher:run() caught error:', err)
       MapLinksView.handleNoCoords(err)
     }
   }
