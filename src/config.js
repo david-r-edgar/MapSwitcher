@@ -28,7 +28,8 @@ class ServiceConfig {
     return this.defaultConfig
   }
 
-  async loadFromStorage (key) {
+  // returns promise which resolves on successful retrieval from storage
+  loadFromStorage (key) {
     return new Promise((resolve) => {
       browser.storage.local.get(key, function (items) {
         resolve(items[key])
@@ -36,13 +37,22 @@ class ServiceConfig {
     })
   }
 
-  async saveToStorage (key, value) {
+  // returns promise which resolves on successful save to storage
+  saveToStorage (key, value) {
     const keyValueObject = {}
     keyValueObject[key] = value
     return new Promise((resolve) => {
       browser.storage.local.set(keyValueObject, function () {
         resolve()
       })
+    })
+  }
+
+  // returns promise which resolves on successful clear of storage
+  clearStorage () {
+    return new Promise((resolve) => {
+      browser.storage.local.clear()
+      resolve()
     })
   }
 
@@ -57,6 +67,10 @@ class ServiceConfig {
     // FIXME possibly we first want to strip out values like service name, image before storing
 
     return this.saveToStorage('serviceConfig', [...this.config])
+  }
+
+  async clearUserSettings () {
+    this.clearStorage()
   }
 
   async initialiseEmptyUserSettings () {

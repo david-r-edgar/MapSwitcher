@@ -1,5 +1,6 @@
 /* global
   globalThis,
+  confirm,
   Sortable */
 
 import { ConfigManager, ServiceConfig } from './config.js'
@@ -11,18 +12,6 @@ let browser
 if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
-
-/*
-
-function resetToDefaults () {
-  const result = confirm('Reset all options to initial defaults?')
-  if (result) {
-    browser.storage.local.clear()
-    restoreOptions()
-    document.getElementById('status').textContent = 'Default options restored.'
-  }
-}
-*/
 
 class Options {
   // FIXME is this fn common with mapLinksView?
@@ -45,9 +34,7 @@ class Options {
       `<div id="${tabId}" class=optionsTab>` +
         '<div class=tabHeader>' +
           '<span class="dragcell">' +
-            '<svg viewBox="0 0 512 512">' +
-              '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#bars"></use>' +
-            '</svg>' +
+            Options.dragBarsSVG +
           '</span>' +
           `<h3 class='tabTitle'>${tab}</h3>` +
         '</div>' +
@@ -63,9 +50,7 @@ class Options {
       `<table id="${catId}" class=srvTickList>` +
         '<thead>' +
           '<th class="dragcell">' +
-            '<svg viewBox="0 0 512 512">' +
-              '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#bars"></use>' +
-            '</svg>' +
+            Options.dragBarsSVG +
           '</th>' +
           `<th colspan=2 class='catTitle'>${cat}</th>` +
           `<th><input type="checkbox" id="${catId + '_selectAllNone'}" class=selectAllNone cat="${catId}"/> </th>` +
@@ -88,9 +73,7 @@ class Options {
     const serviceHTML =
       '<tr class=omsrvRow>' +
         '<td class="dragcell">' +
-          '<svg viewBox="0 0 512 512">' +
-            '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#bars"></use>' +
-          '</svg>' +
+          Options.dragBarsSVG +
         '</td>' +
         '<td class=imgcell>' +
           `<label for="${service}"><img src="${serviceImage}"></label>` +
@@ -160,7 +143,7 @@ class Options {
     this.updateSelectAllNone()
   }
 
-  makeSortable(containerClassName, group) {
+  makeSortable (containerClassName, group) {
     const sortableContainers = document.getElementsByClassName(containerClassName)
     Array.from(sortableContainers).map((container) => {
       Sortable.create(container, {
@@ -189,7 +172,6 @@ class Options {
         const catTitle = catElem.querySelector('.catTitle').textContent
 
         catElem.querySelectorAll('.outpServiceEnabledChk').forEach(svcElem => {
-          // console.log('tabTitle:', tabTitle, '  catTitle:', catTitle, '  id:', svcElem.id, ' checked?', svcElem.checked)
           const hidden = !svcElem.checked
 
           // for each service, call function to config to set
@@ -203,7 +185,41 @@ class Options {
     // saving to local storage takes almost no time, so use a fake timeout for better UX
     setTimeout(function () {
       document.getElementById('status').textContent = 'Options saved.'
-    }, 1000)
+    }, 500)
+  }
+
+  insertResetButton () {
+    const optionsElem = document.getElementById('resetContainer')
+    const buttonHTML =
+      '<button id="reset">' +
+        '<svg viewBox="0 0 512 512" >' +
+          '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#undo"></use>' +
+        '</svg>' +
+        'Reset to defaults...' +
+      '</button>'
+    optionsElem.innerHTML += buttonHTML
+    document.getElementById('reset').addEventListener('click', () => { this.resetToDefaults() })
+  }
+
+  removeResetButton () {
+    const resetButton = document.getElementById('reset')
+    resetButton.remove()
+  }
+
+  // reset to defaults, if user confirms
+  // - clear storage
+  // - remove everything dynamic from the DOM we created on initial build
+  // - reload (create a new options object and rebuild)
+  async resetToDefaults () {
+    const result = confirm('Reset all options to initial defaults?')
+    if (result) {
+      await this.configManager.getServiceConfig().clearUserSettings()
+      const tabCatSrvContainer = document.getElementById('tabCatSrvContainer')
+      tabCatSrvContainer.textContent = ''
+      this.removeResetButton()
+      Options.loadOptions()
+      document.getElementById('status').textContent = 'Default options restored.'
+    }
   }
 
   async build () {
@@ -214,21 +230,25 @@ class Options {
     this.makeSortable('sortableTabContainer', 'tabs')
     this.makeSortable('sortableCategoryContainer', 'categories')
     this.makeSortable('sortableServiceContainer', 'services')
+    this.insertResetButton()
+  }
+
+  static loadOptions () {
+    const options = new Options()
+    options.build()
   }
 }
 
-function optionsLoaded() {
-  const options = new Options()
-  options.build()
-}
+Options.dragBarsSVG =
+  '<svg viewBox="0 0 512 512">' +
+    '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#bars"></use>' +
+  '</svg>'
 
 if (
   document.readyState === 'complete' ||
     (document.readyState !== 'loading' && !document.documentElement.doScroll)
 ) {
-  optionsLoaded()
+  Options.loadOptions()
 } else {
-  document.addEventListener('DOMContentLoaded', optionsLoaded)
+  document.addEventListener('DOMContentLoaded', Options.loadOptions)
 }
-
-// document.getElementById('reset').addEventListener('click', resetToDefaults)
