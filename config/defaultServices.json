@@ -42,6 +42,7 @@
   ["stamen",{"cat":"Special purpose","tab":"Utilities","name":"Stamen","image":"greyMarker.png"}],
   ["strava",{"cat":"Special purpose","tab":"Utilities","name":"Strava","image":"stravaLogo16x16.png"}],
   ["flightradar24",{"cat":"Special purpose","tab":"Utilities","name":"Flightradar24","image":"flightradar24.png"}],
+  ["MapWithAIRapiD",{"cat":"Special purpose","tab":"Utilities","name":"Map With AI RapiD","image":"mapwithai.png"}],
   ["dl_gpx",{"cat":"Utility","tab":"Utilities","name":"GPX","image":"gpxFile16x16.png"}],
   ["clipboard",{"cat":"Utility","tab":"Utilities","name":"Clipboard","image":"clipboard16x16.png"}]
 ]
