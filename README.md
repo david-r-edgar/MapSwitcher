@@ -73,6 +73,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - CyclOSM
 - nakarte.me
 - Mapmyindia
+- Map With AI RapiD
 
 ### Output mapping services
 
@@ -119,6 +120,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - CyclOSM
 - nakarte.me
 - Mapmyindia
+- Map With AI RapiD
 
 ### Utilities
 - GPX download
