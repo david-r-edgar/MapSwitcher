@@ -239,8 +239,7 @@ class MapLinksView {
   // @param {fileGenerator} Function to invoke to create the file contents.
   addFileDownload (mapService, id, name, fileGenerator) {
     const serviceConfig = this.config.getConfigForService(mapService.id)
-
-    // don't show links if user options hides it
+    // don't show links if user options hides the service
     if (serviceConfig.hidden) {
       return
     }
@@ -262,7 +261,7 @@ class MapLinksView {
 
   addUtilityLink (mapService, id, name, utilFunction) {
     const serviceConfig = this.config.getConfigForService(mapService.id)
-    // don't show links if user options hides it
+    // don't show links if user options hides the service
     if (serviceConfig.hidden) {
       return
     }

@@ -14,6 +14,22 @@ if (typeof browser === 'undefined') {
 }
 
 class Options {
+  static loadOptions () {
+    const options = new Options()
+    options.build()
+  }
+
+  async build () {
+    this.configManager = await ConfigManager.create()
+    await this.configManager.getServiceConfig().loadUserSettings()
+    const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
+    this.tabCatSvcSetup(tabCatSvcMap)
+    this.makeSortable('sortableTabContainer', 'tabs')
+    this.makeSortable('sortableCategoryContainer', 'categories')
+    this.makeSortable('sortableServiceContainer', 'services')
+    this.insertResetButton()
+  }
+
   // FIXME is this fn common with mapLinksView?
   getIdFromName (name) {
     return name.replace(/[^a-zA-Z0-9]/g, '')
@@ -220,22 +236,6 @@ class Options {
       Options.loadOptions()
       document.getElementById('status').textContent = 'Default options restored.'
     }
-  }
-
-  async build () {
-    this.configManager = await ConfigManager.create()
-    await this.configManager.getServiceConfig().loadUserSettings()
-    const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
-    this.tabCatSvcSetup(tabCatSvcMap)
-    this.makeSortable('sortableTabContainer', 'tabs')
-    this.makeSortable('sortableCategoryContainer', 'categories')
-    this.makeSortable('sortableServiceContainer', 'services')
-    this.insertResetButton()
-  }
-
-  static loadOptions () {
-    const options = new Options()
-    options.build()
   }
 }
 
