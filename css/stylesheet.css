@@ -379,6 +379,17 @@ button#reset svg {
   fill: #777;
 }
 
+.noActiveServices {
+  color: #777;
+}
+.noActiveServices .dragcell svg {
+  fill: #aaa;
+}
+.noActiveServices img {
+  /* could just use opacity for all of .noActiveServices, but would need to
+    sort out classes for cats and tabs first, to avoid concurrent opacity */
+  opacity: 0.3;
+}
 
 /* .container--tabs { */
   /* margin: 2rem; */

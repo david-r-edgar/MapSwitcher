@@ -24,6 +24,7 @@ class Options {
     await this.configManager.getServiceConfig().loadUserSettings()
     const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
     this.tabCatSvcSetup(tabCatSvcMap)
+    this.updateEnabledOrDisabled()
     this.makeSortable('sortableTabContainer', 'tabs')
     this.makeSortable('sortableCategoryContainer', 'categories')
     this.makeSortable('sortableServiceContainer', 'services')
@@ -37,11 +38,6 @@ class Options {
 
   getTabIdFromName (name) {
     return this.getIdFromName(name) + '_tab'
-  }
-
-  // FIXME is this fn common with mapLinksView?
-  getCatIdFromName (name, tabName) {
-    return this.getIdFromName(name) + '_' + this.getIdFromName(tabName) + '_cat'
   }
 
   createEmptyTab (tab) {
@@ -60,16 +56,14 @@ class Options {
     tabCatSrvContainer.innerHTML += tabHTML
   }
 
-  createEmptyCat (cat, tab, tabElem) {
-    const catId = this.getCatIdFromName(cat, tab)
+  createEmptyCat (cat, tabElem) {
     const catHTML =
-      `<table id="${catId}" class=srvTickList>` +
+      `<table class=srvTickList data-cat-name="${cat}">` +
         '<thead>' +
           '<th class="dragcell">' +
             Options.dragBarsSVG +
           '</th>' +
-          `<th colspan=2 class='catTitle'>${cat}</th>` +
-          `<th><input type="checkbox" id="${catId + '_selectAllNone'}" class=selectAllNone cat="${catId}"/> </th>` +
+          `<th colspan=3 class='catTitle'>${cat}</th>` +
         '</thead>' +
         '<tbody class="sortableServiceContainer">' +
         '</tbody>' +
@@ -77,9 +71,7 @@ class Options {
     tabElem.innerHTML += catHTML
   }
 
-  createService (service, catBody, catId, configForService) {
-    const listName = catId
-
+  createService (service, catBody, configForService) {
     // need to get image & site from OutputMaps
     const serviceImage = `../image/${configForService.image}`
     const directionsSuffix = configForService.type === 'directions' ? ' directions' : ''
@@ -98,23 +90,35 @@ class Options {
           `<label for="${service}">${siteName}</label>` +
         '</td>' +
         '<td class=chkboxcell>' +
-          `<input type=checkbox class=outpServiceEnabledChk ${checked} id="${service}" cat="${listName}" />` +
+          `<input type=checkbox class=outpServiceEnabledChk ${checked} id="${service}" />` +
         '</td>' +
       '</tr>'
 
     catBody.innerHTML += serviceHTML
   }
 
-  updateSelectAllNone () {
-    // update all the 'select all/none' checkboxes
-    Array.from(document.getElementsByClassName('selectAllNone')).forEach(chkBox => {
-      const targetListElem = document.getElementById(chkBox.getAttribute('cat'))
-      const services = targetListElem.getElementsByClassName('outpServiceEnabledChk')
-      const servicesOn = Array.from(services).filter(serviceChkBox => {
-        return serviceChkBox.checked
-      }).length
-      targetListElem.getElementsByClassName('selectAllNone')[0].checked =
-        (servicesOn === services.length)
+  updateEnabledOrDisabled () {
+    const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
+
+    tabCatSvcMap.forEach((catSvcMap, tab) => {
+      const tabId = this.getTabIdFromName(tab)
+      const tabElem = document.getElementById(tabId)
+      const tabServices = tabElem.querySelectorAll('.outpServiceEnabledChk:checked')
+      if (tabServices.length) {
+        tabElem.classList.remove('noActiveServices')
+      } else {
+        tabElem.classList.add('noActiveServices')
+      }
+
+      catSvcMap.forEach((svcMap, cat) => {
+        const catElem = tabElem.querySelector(`table[data-cat-name="${cat}"]`)
+        const catServices = catElem.querySelectorAll('.outpServiceEnabledChk:checked')
+        if (catServices.length) {
+          catElem.classList.remove('noActiveServices')
+        } else {
+          catElem.classList.add('noActiveServices')
+        }
+      })
     })
   }
 
@@ -122,18 +126,7 @@ class Options {
     // handle change for each individual service (enabled checkbox)
     document.querySelectorAll('.srvTickList .outpServiceEnabledChk').forEach(chkBox => {
       chkBox.addEventListener('change', ev => {
-        this.updateSelectAllNone()
-        this.saveOptions()
-      })
-    })
-
-    // handle change for category select all / select none checkbox
-    Array.from(document.getElementsByClassName('selectAllNone')).forEach(selectAllChkBox => {
-      selectAllChkBox.addEventListener('change', ev => {
-        const targetList = ev.target.getAttribute('cat')
-        document.querySelectorAll('#' + targetList + ' .chkboxcell .outpServiceEnabledChk').forEach(chkBox => {
-          chkBox.checked = ev.target.checked
-        })
+        this.updateEnabledOrDisabled()
         this.saveOptions()
       })
     })
@@ -145,18 +138,16 @@ class Options {
       const tabId = this.getTabIdFromName(tab)
       const tabElem = document.querySelector(`#${tabId} .categoryContainer`)
       catSvcMap.forEach((svcMap, cat) => {
-        this.createEmptyCat(cat, tab, tabElem)
-        const catId = this.getCatIdFromName(cat, tab)
-        const catTable = document.getElementById(catId)
+        this.createEmptyCat(cat, tabElem)
+        const catTable = document.querySelector(`#${tabId} table[data-cat-name="${cat}"]`)
         const catBody = catTable.querySelector('tbody')
         svcMap.forEach((settings, service) => {
           const configForService = this.configManager.getServiceConfig().getConfigForService(service)
-          this.createService(service, catBody, catId, configForService)
+          this.createService(service, catBody, configForService)
         })
       })
     })
     this.setupEventListeners()
-    this.updateSelectAllNone()
   }
 
   makeSortable (containerClassName, group) {
@@ -202,6 +193,9 @@ class Options {
     setTimeout(function () {
       document.getElementById('status').textContent = 'Options saved.'
     }, 500)
+
+    // update the view in case there are newly enabled or disabled cats or tabs
+    this.updateEnabledOrDisabled()
   }
 
   insertResetButton () {

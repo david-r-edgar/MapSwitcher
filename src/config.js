@@ -77,10 +77,6 @@ class ServiceConfig {
     this.config = new Map([])
   }
 
-  // FIXME what is this for?
-  async loadConfigsAndSettings () {
-  }
-
   // for each key in defaultConfig, if it doesn't exist in config, add it
   // also copy across any missing properties from defaultConfig
   mergeConfig () {
@@ -98,6 +94,7 @@ class ServiceConfig {
 
   // returns a Map of tabs, each of which contains a Map of categories, each of those
   // containing a Map of services
+  // FIXME could cache this - used twice on options page load
   getHierarchicalMap (includeHidden) {
     if (!this.tabMap) {
       this.tabMap = new Map()
