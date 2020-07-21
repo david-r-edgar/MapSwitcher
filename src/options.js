@@ -97,7 +97,18 @@ class Options {
     catBody.innerHTML += serviceHTML
   }
 
-  updateEnabledOrDisabled () {
+  setServiceEnabledOrDisabled (svcId, enabled) {
+    const svcElems = document.querySelectorAll(`label[for="${svcId}"]`)
+    svcElems.forEach(svcElem => {
+      if (enabled) {
+        svcElem.classList.remove('noActiveServices')
+      } else {
+        svcElem.classList.add('noActiveServices')
+      }
+    })
+  }
+
+  updateEnabledOrDisabled (ev) {
     const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
 
     tabCatSvcMap.forEach((catSvcMap, tab) => {
@@ -118,15 +129,25 @@ class Options {
         } else {
           catElem.classList.add('noActiveServices')
         }
+
+        // initialise services on load / drag etc.
+        svcMap.forEach((settings, svc) => {
+          this.setServiceEnabledOrDisabled(svc, !settings.hidden)
+        })
       })
     })
+
+    // handle services which have just been checked/unchecked
+    if (ev && ev.target) {
+      this.setServiceEnabledOrDisabled(ev.target.id, ev.target.checked)
+    }
   }
 
   setupEventListeners () {
     // handle change for each individual service (enabled checkbox)
     document.querySelectorAll('.srvTickList .outpServiceEnabledChk').forEach(chkBox => {
       chkBox.addEventListener('change', ev => {
-        this.updateEnabledOrDisabled()
+        this.updateEnabledOrDisabled(ev)
         this.saveOptions()
       })
     })

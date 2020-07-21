@@ -376,11 +376,11 @@ button#reset svg {
   width: 12px;
 }
 .dragcell svg {
-  fill: #777;
+  fill: #999;
 }
 
 .noActiveServices {
-  color: #777;
+  color: #999;
 }
 .noActiveServices .dragcell svg {
   fill: #aaa;
