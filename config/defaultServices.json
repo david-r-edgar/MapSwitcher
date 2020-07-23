@@ -40,7 +40,7 @@
   ["what3words",{"cat":"Special purpose","tab":"Utilities","name":"what3words","image":"w3wLogo.png"}],
   ["openseamap",{"cat":"Special purpose","tab":"Utilities","name":"OpenSeaMap","image":"openSeaMapLogo16x16.png"}],
   ["stamen",{"cat":"Special purpose","tab":"Utilities","name":"Stamen","image":"greyMarker.png"}],
-  ["strava",{"cat":"Special purpose","tab":"Utilities","name":"Strava","image":"stravaLogo16x16.png"}],
+  ["strava",{"cat":"Activity","tab":"Regular mapping","name":"Strava","image":"stravaLogo16x16.png"}],
   ["flightradar24",{"cat":"Special purpose","tab":"Utilities","name":"Flightradar24","image":"flightradar24.png"}],
   ["MapWithAIRapiD",{"cat":"Special purpose","tab":"Utilities","name":"Map With AI RapiD","image":"mapwithai.png"}],
   ["dl_gpx",{"cat":"Utility","tab":"Utilities","name":"GPX","image":"gpxFile16x16.png"}],
