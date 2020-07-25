@@ -459,6 +459,7 @@ extractors.push({
           sourceMapData.resolution =
             calculateResolutionFromStdZoom(coordArray[3], coordArray[1])
         }
+      } else if (window.location.pathname.endsWith('/map')) {
         const re2 = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9.]+)/
         coordArray = window.location.search.match(re2)
         if (coordArray && coordArray.length > 3) {
