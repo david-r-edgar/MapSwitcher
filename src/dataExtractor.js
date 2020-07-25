@@ -461,7 +461,7 @@ extractors.push({
         }
       } else if (window.location.pathname.endsWith('/map')) {
         const re2 = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9.]+)/
-        coordArray = window.location.search.match(re2)
+        let coordArray = window.location.search.match(re2)
         if (coordArray && coordArray.length > 3) {
           sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
           sourceMapData.resolution =
