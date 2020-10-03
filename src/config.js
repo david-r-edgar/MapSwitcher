@@ -165,6 +165,7 @@ class ConfigManager {
   static async create () {
     const configManager = new ConfigManager()
     await configManager.createServiceConfig()
+    await configManager.validateConfigVersion()
     return configManager
   }
 
@@ -185,6 +186,19 @@ class ConfigManager {
     newServiceConfig.mergeConfig()
     this.serviceConfig = newServiceConfig
     await this.serviceConfig.saveUserSettings()
+  }
+
+  // for now, we just clear up old config and set the version for the future
+  async validateConfigVersion () {
+    const manifestData = chrome.runtime.getManifest()
+
+    const storageVersion = await this.serviceConfig.loadFromStorage('version')
+    // clear up any config in pre-v1 format
+    if (!storageVersion || storageVersion < '1.0.0') {
+      await this.serviceConfig.clearUserSettings()
+    }
+
+    this.serviceConfig.saveToStorage('version', manifestData.version)
   }
 }
 
