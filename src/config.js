@@ -190,7 +190,7 @@ class ConfigManager {
 
   // for now, we just clear up old config and set the version for the future
   async validateConfigVersion () {
-    const manifestData = chrome.runtime.getManifest()
+    const manifestData = browser.runtime.getManifest()
 
     const storageVersion = await this.serviceConfig.loadFromStorage('version')
     // clear up any config in pre-v1 format
