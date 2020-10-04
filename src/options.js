@@ -51,6 +51,7 @@ class Options {
           `<h3 class='tabTitle'>${tab}</h3>` +
         '</div>' +
         '<div class="sortableCategoryContainer categoryContainer"></div>' +
+        '<div class=newCatButton><a href="#0">+</a></div>' +
       '</div>'
     const tabCatSrvContainer = document.getElementById('tabCatSrvContainer')
     tabCatSrvContainer.innerHTML += tabHTML
@@ -63,7 +64,7 @@ class Options {
           '<th class="dragcell">' +
             Options.dragBarsSVG +
           '</th>' +
-          `<th colspan=3 class='catTitle'>${cat}</th>` +
+          `<th colspan=3 class='catTitle' contenteditable>${cat}</th>` +
         '</thead>' +
         '<tbody class="sortableServiceContainer">' +
         '</tbody>' +
@@ -143,13 +144,67 @@ class Options {
     }
   }
 
-  setupEventListeners () {
+  // FIXME ugly implementation
+  buildNewCatName (tab, prefix) {
+    let suffix = 1
+    while (1) {
+      let proposedCatName = `${prefix}-${suffix}`
+      let nameOK = true
+      tab.querySelectorAll('.srvTickList').forEach(catElem => {
+        if (catElem.attributes['data-cat-name'].value === proposedCatName) {
+          nameOK = false
+        }
+      })
+      if (nameOK) {
+        return proposedCatName
+      } else {
+        suffix++
+      }
+    }
+  }
+
+  userAddNewCat (ev) {
+    const tabElem = ev.srcElement.parentNode.parentNode
+    const newCatName = this.buildNewCatName(tabElem, 'new-category')
+    this.createEmptyCat(newCatName, tabElem.querySelector('.categoryContainer'))
+    this.makeSortable('sortableServiceContainer', 'services')
+    this.saveOptions()
+    // having changed the container, need to set up listeners for all cats in tab
+    this.setupEventListenersForAllCatsInTab(tabElem)
+  }
+
+  setupEventListenersForCat (cat) {
+    // to edit the contenteditable category name
+    cat.querySelector('.catTitle').addEventListener('input', (ev) => {
+      ev.target.closest('.srvTickList').attributes['data-cat-name'].value = ev.target.textContent
+      this.saveOptions()
+    })
+
     // handle change for each individual service (enabled checkbox)
-    document.querySelectorAll('.srvTickList .outpServiceEnabledChk').forEach(chkBox => {
+    cat.querySelectorAll('.outpServiceEnabledChk').forEach(chkBox => {
       chkBox.addEventListener('change', ev => {
         this.updateEnabledOrDisabled(ev)
         this.saveOptions()
       })
+    })
+  }
+
+  setupEventListenersForAllCatsInTab (tab) {
+    tab.querySelectorAll('.srvTickList').forEach(catElem => {
+      this.setupEventListenersForCat(catElem)
+    })
+  }
+
+  setupEventListenersForTab (tab) {
+    tab.querySelector('.newCatButton').addEventListener('click', (ev) => {
+      this.userAddNewCat(ev)
+    })
+  }
+
+  setupAllEventListeners () {
+    document.querySelectorAll('.optionsTab').forEach(tab => {
+      this.setupEventListenersForTab(tab)
+      this.setupEventListenersForAllCatsInTab(tab)
     })
   }
 
@@ -168,7 +223,7 @@ class Options {
         })
       })
     })
-    this.setupEventListeners()
+    this.setupAllEventListeners()
   }
 
   makeSortable (containerClassName, group) {
