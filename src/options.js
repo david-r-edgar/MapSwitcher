@@ -51,7 +51,7 @@ class Options {
           `<h3 class='tabTitle'>${tab}</h3>` +
         '</div>' +
         '<div class="sortableCategoryContainer categoryContainer"></div>' +
-        '<div class=newCatButton><a href="#0">+</a></div>' +
+        '<div class=newCatButton><a href="#0" title="Add a new category">+</a></div>' +
       '</div>'
     const tabCatSrvContainer = document.getElementById('tabCatSrvContainer')
     tabCatSrvContainer.innerHTML += tabHTML
@@ -91,7 +91,7 @@ class Options {
           `<label for="${service}">${siteName}</label>` +
         '</td>' +
         '<td class=chkboxcell>' +
-          `<input type=checkbox class=outpServiceEnabledChk ${checked} id="${service}" />` +
+          `<input type=checkbox class=outpServiceEnabledChk title="Show or hide this service" ${checked} id="${service}" />` +
         '</td>' +
       '</tr>'
 
@@ -144,23 +144,18 @@ class Options {
     }
   }
 
-  // FIXME ugly implementation
   buildNewCatName (tab, prefix) {
+    const catsInThisTab = []
+    tab.querySelectorAll('.srvTickList').forEach(catElem => {
+      catsInThisTab.push(catElem.attributes['data-cat-name'].value)
+    })
     let suffix = 1
-    while (1) {
-      let proposedCatName = `${prefix}-${suffix}`
-      let nameOK = true
-      tab.querySelectorAll('.srvTickList').forEach(catElem => {
-        if (catElem.attributes['data-cat-name'].value === proposedCatName) {
-          nameOK = false
-        }
-      })
-      if (nameOK) {
-        return proposedCatName
-      } else {
-        suffix++
-      }
-    }
+    let proposedCatName
+    do {
+      proposedCatName = `${prefix}-${suffix}`
+      suffix++
+    } while (catsInThisTab.includes(proposedCatName))
+    return proposedCatName
   }
 
   userAddNewCat (ev) {
