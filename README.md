@@ -74,6 +74,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - nakarte.me
 - Mapmyindia
 - Map With AI RapiD
+- NLS
 
 ### Output mapping services
 
@@ -121,6 +122,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - nakarte.me
 - Mapmyindia
 - Map With AI RapiD
+- NLS (UK)
 
 ### Utilities
 - GPX download
