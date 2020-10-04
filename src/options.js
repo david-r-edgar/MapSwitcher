@@ -54,7 +54,7 @@ class Options {
         '<div class=newCatButton><a href="#0" title="Add a new category">+</a></div>' +
       '</div>'
     const tabCatSrvContainer = document.getElementById('tabCatSrvContainer')
-    tabCatSrvContainer.innerHTML += tabHTML
+    tabCatSrvContainer.insertAdjacentHTML('beforeend', tabHTML)
   }
 
   createEmptyCat (cat, tabElem) {
@@ -69,7 +69,7 @@ class Options {
         '<tbody class="sortableServiceContainer">' +
         '</tbody>' +
       '</table>'
-    tabElem.innerHTML += catHTML
+    tabElem.insertAdjacentHTML('beforeend', catHTML)
   }
 
   createService (service, catBody, configForService) {
@@ -95,7 +95,7 @@ class Options {
         '</td>' +
       '</tr>'
 
-    catBody.innerHTML += serviceHTML
+    catBody.insertAdjacentHTML('beforeend', serviceHTML)
   }
 
   setServiceEnabledOrDisabled (svcId, enabled) {
@@ -164,8 +164,8 @@ class Options {
     this.createEmptyCat(newCatName, tabElem.querySelector('.categoryContainer'))
     this.makeSortable('sortableServiceContainer', 'services')
     this.saveOptions()
-    // having changed the container, need to set up listeners for all cats in tab
-    this.setupEventListenersForAllCatsInTab(tabElem)
+    const catElem = tabElem.querySelector(`.srvTickList[data-cat-name="${newCatName}"]`)
+    this.setupEventListenersForCat(catElem)
   }
 
   setupEventListenersForCat (cat) {
@@ -278,7 +278,7 @@ class Options {
         '</svg>' +
         'Reset to defaults...' +
       '</button>'
-    optionsElem.innerHTML += buttonHTML
+    optionsElem.insertAdjacentHTML('beforeend', buttonHTML)
     document.getElementById('reset').addEventListener('click', () => { this.resetToDefaults() })
   }
 
