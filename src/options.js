@@ -1,17 +1,8 @@
 /* global
-  globalThis,
   confirm,
   Sortable */
 
 import { ConfigManager, ServiceConfig } from './config.js'
-
-// The Web Extension API is implemented on different root objects in different browsers.
-// Firefox uses 'browser'. Chrome uses 'chrome'.
-// Checking here allows us to use a common 'browser' everywhere.
-let browser
-if (typeof browser === 'undefined') {
-  browser = globalThis.chrome // eslint-disable-line no-global-assign
-}
 
 class Options {
   static loadOptions () {
@@ -50,8 +41,9 @@ class Options {
           '</span>' +
           `<h3 class='tabTitle'>${tab}</h3>` +
         '</div>' +
-        '<div class="sortableCategoryContainer categoryContainer"></div>' +
-        '<div class=newCatButton><a href="#0" title="Add a new category">+</a></div>' +
+        '<div class="sortableCategoryContainer categoryContainer">' +
+          '<div class=newCatButton><a href="#0" title="Add a new category">+</a></div>' +
+        '</div>' +
       '</div>'
     const tabCatSrvContainer = document.getElementById('tabCatSrvContainer')
     tabCatSrvContainer.insertAdjacentHTML('beforeend', tabHTML)
@@ -69,7 +61,8 @@ class Options {
         '<tbody class="sortableServiceContainer">' +
         '</tbody>' +
       '</table>'
-    tabElem.insertAdjacentHTML('beforeend', catHTML)
+    const tabNewCatButton = tabElem.getElementsByClassName('newCatButton')[0]
+    tabNewCatButton.insertAdjacentHTML('beforebegin', catHTML)
   }
 
   createService (service, catBody, configForService) {
@@ -159,7 +152,7 @@ class Options {
   }
 
   userAddNewCat (ev) {
-    const tabElem = ev.srcElement.parentNode.parentNode
+    const tabElem = ev.srcElement.closest('.optionsTab')
     const newCatName = this.buildNewCatName(tabElem, 'new-category')
     this.createEmptyCat(newCatName, tabElem.querySelector('.categoryContainer'))
     this.makeSortable('sortableServiceContainer', 'services')
@@ -184,12 +177,6 @@ class Options {
     })
   }
 
-  setupEventListenersForAllCatsInTab (tab) {
-    tab.querySelectorAll('.srvTickList').forEach(catElem => {
-      this.setupEventListenersForCat(catElem)
-    })
-  }
-
   setupEventListenersForTab (tab) {
     tab.querySelector('.newCatButton').addEventListener('click', (ev) => {
       this.userAddNewCat(ev)
@@ -199,7 +186,9 @@ class Options {
   setupAllEventListeners () {
     document.querySelectorAll('.optionsTab').forEach(tab => {
       this.setupEventListenersForTab(tab)
-      this.setupEventListenersForAllCatsInTab(tab)
+      tab.querySelectorAll('.srvTickList').forEach(catElem => {
+        this.setupEventListenersForCat(catElem)
+      })
     })
   }
 

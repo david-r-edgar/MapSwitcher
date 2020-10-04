@@ -352,9 +352,18 @@ article.options {
 #optionsTitleLine img {
   vertical-align: middle;
 }
+
+.categoryContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-height: 440px;
+  overflow-x: auto;
+}
+
 .srvTickList {
   float: left;
-  margin: 0.4em 2.4em 1.8em 2.4em;
+  margin: 0.4em 2.4em 2.8em 2.4em;
   list-style-type: none;
   border-collapse: collapse;
 }
