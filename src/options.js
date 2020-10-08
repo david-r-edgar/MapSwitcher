@@ -24,11 +24,18 @@ class Options {
 
   // FIXME is this fn common with mapLinksView?
   getIdFromName (name) {
+    // FIXME valid ids must start with [a-zA-Z]
     return name.replace(/[^a-zA-Z0-9]/g, '')
   }
 
   getTabIdFromName (name) {
     return this.getIdFromName(name) + '_tab'
+  }
+
+  isValidNameCharacter (character, index) {
+    // only allow letters at the start of the string
+    const re = index === 0 ? /[a-zA-Z]/ : /[a-zA-Z0-9 \-_.:;,/\|'=+*&]/
+    return re.test(character)
   }
 
   createEmptyTab (tab) {
@@ -39,7 +46,7 @@ class Options {
           '<span class="dragcell">' +
             Options.dragBarsSVG +
           '</span>' +
-          `<h3 class='tabTitle'>${tab}</h3>` +
+          `<h3 class='tabTitle' contenteditable>${tab}</h3>` +
         '</div>' +
         '<div class="sortableCategoryContainer categoryContainer">' +
           '<div class=newCatButton><a href="#0" title="Add a new category">+</a></div>' +
@@ -117,11 +124,13 @@ class Options {
 
       catSvcMap.forEach((svcMap, cat) => {
         const catElem = tabElem.querySelector(`table[data-cat-name="${cat}"]`)
-        const catServices = catElem.querySelectorAll('.outpServiceEnabledChk:checked')
-        if (catServices.length) {
-          catElem.classList.remove('noActiveServices')
-        } else {
-          catElem.classList.add('noActiveServices')
+        if (catElem) {
+          const catServices = catElem.querySelectorAll('.outpServiceEnabledChk:checked')
+          if (catServices.length) {
+            catElem.classList.remove('noActiveServices')
+          } else {
+            catElem.classList.add('noActiveServices')
+          }
         }
 
         // initialise services on load / drag etc.
@@ -163,12 +172,18 @@ class Options {
 
   setupEventListenersForCat (cat) {
     // to edit the contenteditable category name
-    cat.querySelector('.catTitle').addEventListener('input', (ev) => {
-      ev.target.closest('.srvTickList').attributes['data-cat-name'].value = ev.target.textContent
+    cat.querySelector('.catTitle').addEventListener('beforeinput', ev => {
+      if (!this.isValidNameCharacter(ev.data, document.getSelection().baseOffset)) {
+        ev.preventDefault()
+      }
+    })
+    cat.querySelector('.catTitle').addEventListener('input', ev => {
+      let nameToBeSet = ev.target.textContent
+      ev.target.closest('.srvTickList').attributes['data-cat-name'].value = nameToBeSet
       this.saveOptions()
     })
 
-    // handle change for each individual service (enabled checkbox)
+    // handle enabled/disabled checkbox toggle for each individual service
     cat.querySelectorAll('.outpServiceEnabledChk').forEach(chkBox => {
       chkBox.addEventListener('change', ev => {
         this.updateEnabledOrDisabled(ev)
@@ -178,8 +193,20 @@ class Options {
   }
 
   setupEventListenersForTab (tab) {
+    // to add a new category on user request
     tab.querySelector('.newCatButton').addEventListener('click', (ev) => {
       this.userAddNewCat(ev)
+    })
+    // to edit the contenteditable tab name
+    tab.querySelector('.tabTitle').addEventListener('beforeinput', ev => {
+      if (!this.isValidNameCharacter(ev.data, document.getSelection().baseOffset)) {
+        ev.preventDefault()
+      }
+    })
+    tab.querySelector('.tabTitle').addEventListener('input', ev => {
+      let nameToBeSet = ev.target.textContent
+      ev.target.closest('.optionsTab').id = this.getTabIdFromName(nameToBeSet)
+      this.saveOptions()
     })
   }
 
