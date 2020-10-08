@@ -24,7 +24,7 @@ class Options {
 
   isValidNameCharacter (character, index) {
     // only allow letters at the start of the string
-    const re = index === 0 ? /[a-zA-Z]/ : /[a-zA-Z0-9 \-_.:;,/\|'=+*&]/
+    const re = index === 0 ? /[a-zA-Z]/ : /[a-zA-Z0-9 \-_.:;,/\\|'=+*&]/
     return re.test(character)
   }
 
