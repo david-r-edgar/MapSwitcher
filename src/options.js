@@ -22,16 +22,6 @@ class Options {
     this.insertResetButton()
   }
 
-  // FIXME is this fn common with mapLinksView?
-  getIdFromName (name) {
-    // FIXME valid ids must start with [a-zA-Z]
-    return name.replace(/[^a-zA-Z0-9]/g, '')
-  }
-
-  getTabIdFromName (name) {
-    return this.getIdFromName(name) + '_tab'
-  }
-
   isValidNameCharacter (character, index) {
     // only allow letters at the start of the string
     const re = index === 0 ? /[a-zA-Z]/ : /[a-zA-Z0-9 \-_.:;,/\|'=+*&]/
@@ -39,9 +29,8 @@ class Options {
   }
 
   createEmptyTab (tab) {
-    const tabId = this.getTabIdFromName(tab)
     const tabHTML =
-      `<div id="${tabId}" class=optionsTab>` +
+      `<div class=optionsTab data-tab-name="${tab}">` +
         '<div class=tabHeader>' +
           '<span class="dragcell">' +
             Options.dragBarsSVG +
@@ -113,8 +102,7 @@ class Options {
     const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
 
     tabCatSvcMap.forEach((catSvcMap, tab) => {
-      const tabId = this.getTabIdFromName(tab)
-      const tabElem = document.getElementById(tabId)
+      const tabElem = document.querySelector(`div[data-tab-name="${tab}"]`)
       const tabServices = tabElem.querySelectorAll('.outpServiceEnabledChk:checked')
       if (tabServices.length) {
         tabElem.classList.remove('noActiveServices')
@@ -205,7 +193,7 @@ class Options {
     })
     tab.querySelector('.tabTitle').addEventListener('input', ev => {
       let nameToBeSet = ev.target.textContent
-      ev.target.closest('.optionsTab').id = this.getTabIdFromName(nameToBeSet)
+      ev.target.closest('.optionsTab').attributes['data-tab-name'].value = nameToBeSet
       this.saveOptions()
     })
   }
@@ -222,11 +210,10 @@ class Options {
   tabCatSvcSetup (tabCatSvcMap) {
     tabCatSvcMap.forEach((catSvcMap, tab) => {
       this.createEmptyTab(tab)
-      const tabId = this.getTabIdFromName(tab)
-      const tabElem = document.querySelector(`#${tabId} .categoryContainer`)
+      const tabElem = document.querySelector(`div[data-tab-name="${tab}"] .categoryContainer`)
       catSvcMap.forEach((svcMap, cat) => {
         this.createEmptyCat(cat, tabElem)
-        const catTable = document.querySelector(`#${tabId} table[data-cat-name="${cat}"]`)
+        const catTable = tabElem.querySelector(`table[data-cat-name="${cat}"]`)
         const catBody = catTable.querySelector('tbody')
         svcMap.forEach((settings, service) => {
           const configForService = this.configManager.getServiceConfig().getConfigForService(service)
