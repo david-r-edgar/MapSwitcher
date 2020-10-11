@@ -279,7 +279,7 @@ class Options {
         '<svg viewBox="0 0 512 512" >' +
           '<use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#undo"></use>' +
         '</svg>' +
-        'Reset to defaults...' +
+        '&nbsp;Reset to defaults...' +
       '</button>'
     optionsElem.insertAdjacentHTML('beforeend', buttonHTML)
     document.getElementById('reset').addEventListener('click', () => { this.resetToDefaults() })
