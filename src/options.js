@@ -14,17 +14,16 @@ class Options {
     this.configManager = await ConfigManager.create()
     await this.configManager.getServiceConfig().loadUserSettings()
     const tabCatSvcMap = this.configManager.getServiceConfig().getHierarchicalMap(true)
+    this.insertResetButton()
     this.tabCatSvcSetup(tabCatSvcMap)
     this.updateEnabledOrDisabled()
     this.makeSortable('sortableTabContainer', 'tabs')
     this.makeSortable('sortableCategoryContainer', 'categories')
     this.makeSortable('sortableServiceContainer', 'services')
-    this.insertResetButton()
   }
 
   isValidNameCharacter (character, index) {
-    // only allow letters at the start of the string
-    const re = index === 0 ? /[a-zA-Z]/ : /[a-zA-Z0-9 \-_.:;,/\\|'=+*&]/
+    const re = /[^"\\<>]/
     return re.test(character)
   }
 
