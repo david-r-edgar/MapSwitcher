@@ -77,6 +77,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Map With AI RapiD
 - NLS
 - Boulter
+- OpenWeatherMap
 
 ### Output mapping services
 
