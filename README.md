@@ -40,6 +40,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Wikimapia
 - Wikimedia Labs
   - Geohack info page
+  - WikiMiniAtlas
 - Geocaching
 - OpenSeaMap
 - Stamen

@@ -404,49 +404,6 @@ extractors.push({
 })
 
 extractors.push({
-  host: 'tools.wmflabs.org',
-  extract:
-    function (resolve) {
-      let sourceMapData = {}
-      const reCoordsD = /params=([-0-9.]+)_([NS])_([-0-9.]+)_([EW])/
-      const reCoordsDM = /params=([0-9]+)_([0-9.]+)_([NS])_([0-9]+)_([0-9.]+)_([EW])/
-      const reCoordsDMS = /params=([0-9]+)_([0-9]+)_([0-9.]+)_([NS])_([0-9]+)_([0-9]+)_([0-9.]+)_([EW])/
-      const coordArrayD = window.location.search.match(reCoordsD)
-      const coordArrayDM = window.location.search.match(reCoordsDM)
-      const coordArrayDMS = window.location.search.match(reCoordsDMS)
-      if (coordArrayD && coordArrayD.length >= 5) {
-        const lat = +coordArrayD[1]
-        const lng = +coordArrayD[3]
-        sourceMapData.centreCoords = {
-          lat: coordArrayD[2] === 'N' ? lat : -lat,
-          lng: coordArrayD[4] === 'E' ? lng : -lng
-        }
-      } else if (coordArrayDM && coordArrayDM.length >= 7) {
-        const lat = +coordArrayDM[1] + coordArrayDM[2] / 60
-        const lng = +coordArrayDM[4] + coordArrayDM[5] / 60
-        sourceMapData.centreCoords = {
-          lat: coordArrayDM[3] === 'N' ? lat : -lat,
-          lng: coordArrayDM[6] === 'E' ? lng : -lng
-        }
-      } else if (coordArrayDMS && coordArrayDMS.length >= 9) {
-        const lat = +coordArrayDMS[1] + coordArrayDMS[2] / 60 + coordArrayDMS[3] / 3600
-        const lng = +coordArrayDMS[5] + coordArrayDMS[6] / 60 + coordArrayDMS[7] / 3600
-        sourceMapData.centreCoords = {
-          lat: coordArrayDMS[4] === 'N' ? lat : -lat,
-          lng: coordArrayDMS[8] === 'E' ? lng : -lng
-        }
-      }
-      sourceMapData.resolution = 12
-      const urlScaleArray = window.location.search.match(/scale:([0-9]+)/)
-      if (urlScaleArray && urlScaleArray.length > 1) {
-        sourceMapData.resolution = calculateResolutionFromScale(urlScaleArray[1])
-      }
-      sourceMapData.locationDescr = 'primary page coordinates'
-      resolve(sourceMapData)
-    }
-})
-
-extractors.push({
   host: 'geocaching.',
   extract:
     function (resolve) {
@@ -1466,6 +1423,19 @@ extractors.push({
       if (lat && lng && zoom) {
         sourceMapData.centreCoords = { lat, lng }
         sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
+      }
+      resolve(sourceMapData)
+    }
+})
+
+extractors.push({
+  host: 'geohack.toolforge.org',
+  extract:
+    function (resolve) {
+      const geoURIelem = document.querySelector('a[href^="geo:"')
+      const [lat, lng] = geoURIelem.href.split(':')[1].split(',')
+      const sourceMapData = {
+        centreCoords: { lat, lng }
       }
       resolve(sourceMapData)
     }
