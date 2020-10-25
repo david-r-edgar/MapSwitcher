@@ -8,7 +8,7 @@ if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
-let OutputMaps = {}
+const OutputMaps = {}
 
 function copyTextToClipboard (text) {
   // create a temporary textbox field into which we can insert text
@@ -82,7 +82,7 @@ OutputMaps.services = [
       if ('directions' in sourceMapData && 'route' in sourceMapData.directions) {
         directions = 'dir/'
 
-        for (let rteWpt of sourceMapData.directions.route) {
+        for (const rteWpt of sourceMapData.directions.route) {
           if ('address' in rteWpt) {
             // if address specified, add to directions
             directions += rteWpt.address + '/'
@@ -212,7 +212,7 @@ OutputMaps.services = [
       if ('directions' in sourceMapData &&
                 'route' in sourceMapData.directions) {
         directions = 'rtp='
-        for (let rteWpt of sourceMapData.directions.route) {
+        for (const rteWpt of sourceMapData.directions.route) {
           if ('coords' in rteWpt) {
             directions += 'pos.' + rteWpt.coords.lat + '_' + rteWpt.coords.lng
             if ('address' in rteWpt) {
@@ -385,7 +385,8 @@ OutputMaps.services = [
       const geohackBase = 'https://tools.wmflabs.org/geohack/geohack.php?params='
       let mapCentre = sourceMapData.centreCoords.lat + '_N_' + sourceMapData.centreCoords.lng + '_E'
       const region = (sourceMapData.countryCode.length > 0)
-        ? '_region:' + sourceMapData.countryCode : ''
+        ? '_region:' + sourceMapData.countryCode
+        : ''
 
       const scale = calculateScaleFromResolution(sourceMapData.resolution)
       mapLinks.push({
@@ -486,7 +487,7 @@ OutputMaps.services = [
 
         let routePoints = ''
         let pointsWithCoords = 0
-        for (let rteIndex in sourceMapData.directions.route) {
+        for (const rteIndex in sourceMapData.directions.route) {
           var rteWpt = sourceMapData.directions.route[rteIndex]
 
           if ('coords' in rteWpt) {
@@ -662,7 +663,7 @@ OutputMaps.services = [
       if ('directions' in sourceMapData &&
                 'route' in sourceMapData.directions) {
         let route = ''
-        for (let rteWpt of sourceMapData.directions.route) {
+        for (const rteWpt of sourceMapData.directions.route) {
           route += '/'
           if ('address' in rteWpt) {
             route += rteWpt.address
@@ -831,7 +832,7 @@ OutputMaps.services = [
           var lang = ''
           // extract the highest priority language (fr or nl) from browser preferences
           browser.i18n.getAcceptLanguages(function (list) {
-            for (let listLang of list) {
+            for (const listLang of list) {
               if (listLang.match(/^en/)) {
                 lang = 'l=en'
                 break

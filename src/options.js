@@ -165,7 +165,7 @@ class Options {
       }
     })
     cat.querySelector('.catTitle').addEventListener('input', ev => {
-      let nameToBeSet = ev.target.textContent
+      const nameToBeSet = ev.target.textContent
       ev.target.closest('.srvTickList').attributes['data-cat-name'].value = nameToBeSet
       this.saveOptions()
     })
@@ -191,7 +191,7 @@ class Options {
       }
     })
     tab.querySelector('.tabTitle').addEventListener('input', ev => {
-      let nameToBeSet = ev.target.textContent
+      const nameToBeSet = ev.target.textContent
       ev.target.closest('.optionsTab').attributes['data-tab-name'].value = nameToBeSet
       this.saveOptions()
     })

@@ -29,7 +29,7 @@ extractors.push({
   extract:
     function (resolve, reject) {
       function customMap () {
-        let sourceMapData = {}
+        const sourceMapData = {}
         const customCoordsRe = /ll=([-0-9.]+)%2C([-0-9.]+)/
         const coordArray = window.location.search.match(customCoordsRe)
         const customZoomRe = /z=([0-9.]+)/
@@ -43,7 +43,7 @@ extractors.push({
       }
 
       function regularMap () {
-        let sourceMapData = {}
+        const sourceMapData = {}
         const re2 = /@([-0-9.]+),([-0-9.]+),([0-9.]+)([a-z])/
         const coordArray2 = window.location.pathname.match(re2)
         if (coordArray2 && coordArray2.length >= 3) {
@@ -71,7 +71,7 @@ extractors.push({
         if (wholeRouteArray && wholeRouteArray.length > 1) {
           sourceMapData.directions = {}
           sourceMapData.directions.route = []
-          for (let arrWpt of wholeRouteArray[1].split('/')) {
+          for (const arrWpt of wholeRouteArray[1].split('/')) {
             if (arrWpt.length > 0) {
               var wptObj = { address: arrWpt }
               // check if the address looks like a coordinate
@@ -95,7 +95,7 @@ extractors.push({
           let mapDataWptIndex = 0 // index into sourceMapData wpts
           // FIXME we should do a count here - number of gmdp primary wpts should be equal to
           // number of sourceMapData wpts
-          for (let gmdpWpt of gmdpRoute.getAllWaypoints()) {
+          for (const gmdpWpt of gmdpRoute.getAllWaypoints()) {
             if (gmdpWpt.primary) {
               var mapDataWptCoords = sourceMapData.directions.route[mapDataWptIndex].coords
               // if coords are not yet specified, insert them
@@ -245,7 +245,7 @@ extractors.push({
   host: '.bing.',
   extract:
     function (resolve, reject) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       // if there's no 'state', it means no scrolling has happened yet.
       // So we should extract the lat and lng from the window.location parameter
       if (window.history && !window.history.state) {
@@ -276,8 +276,7 @@ extractors.push({
           reject()
         }
 
-        sourceMapData.centreCoords = {
-          lat: mapModeStateHistory.centerPoint.latitude, lng: mapModeStateHistory.centerPoint.longitude }
+        sourceMapData.centreCoords = { lat: mapModeStateHistory.centerPoint.latitude, lng: mapModeStateHistory.centerPoint.longitude }
 
         const level = mapModeStateHistory.level
         sourceMapData.resolution = calculateResolutionFromStdZoom(
@@ -292,7 +291,7 @@ extractors.push({
         const routeFrom = document.evaluate('//*[@class="dirWaypoints"]//input[contains(@title, "From")]',
           directionsPanelRoot.singleNodeValue, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
         sourceMapData.directions = {
-          route: [ { address: routeFrom } ]
+          route: [{ address: routeFrom }]
         }
         const routeTo = document.evaluate('//*[@class="dirWaypoints"]//input[contains(@title, "To")]',
           directionsPanelRoot.singleNodeValue, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
@@ -303,8 +302,8 @@ extractors.push({
         }
 
         const re3 = /([-0-9.]+)[ ]*,[ ]*([-0-9.]+)/
-        for (let rteWptIndex in sourceMapData.directions.route) {
-          let wptArray =
+        for (const rteWptIndex in sourceMapData.directions.route) {
+          const wptArray =
             sourceMapData.directions.route[rteWptIndex].address.match(re3)
           if (wptArray && wptArray.length > 2) {
             sourceMapData.directions.route[rteWptIndex].coords =
@@ -335,7 +334,7 @@ extractors.push({
   host: 'openstreetmap.',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re1 = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
       const coordArray = window.location.hash.match(re1)
       if (coordArray && coordArray.length >= 4) {
@@ -360,11 +359,15 @@ extractors.push({
         }
 
         sourceMapData.directions.route[0].coords =
-          { lat: routeCoordsArray[1],
-            lng: routeCoordsArray[2] }
+          {
+            lat: routeCoordsArray[1],
+            lng: routeCoordsArray[2]
+          }
         sourceMapData.directions.route[1].coords =
-          { lat: routeCoordsArray[3],
-            lng: routeCoordsArray[4] }
+          {
+            lat: routeCoordsArray[3],
+            lng: routeCoordsArray[4]
+          }
       }
 
       const re3 = /engine=[a-zA-Z_]+_([a-z]+)&/
@@ -407,10 +410,10 @@ extractors.push({
   host: 'geocaching.',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       if (window.location.pathname.indexOf('/map/') >= 0) {
         const re1 = /ll=([-0-9.]+),([-0-9.]+)&z=([0-9.]+)/
-        let coordArray = window.location.hash.match(re1)
+        const coordArray = window.location.hash.match(re1)
         if (coordArray && coordArray.length > 3) {
           sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
           sourceMapData.resolution =
@@ -418,7 +421,7 @@ extractors.push({
         }
       } else if (window.location.pathname.endsWith('/map')) {
         const re2 = /lat=([-0-9.]+)&lng=([-0-9.]+)&zoom=([0-9.]+)/
-        let coordArray = window.location.search.match(re2)
+        const coordArray = window.location.search.match(re2)
         if (coordArray && coordArray.length > 3) {
           sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
           sourceMapData.resolution =
@@ -452,7 +455,7 @@ extractors.push({
   host: 'wikimapia.org',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re1 = /&lat=([-0-9.]+)&lon=([-0-9.]+)&/
       const coordArray = window.location.hash.match(re1)
       if (coordArray && coordArray.length >= 3) {
@@ -472,7 +475,7 @@ extractors.push({
   host: 'waze.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const centrePermalink = document.evaluate('//*[@class="wm-permalink-control__link"]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.href
 
@@ -493,12 +496,16 @@ extractors.push({
         sourceMapData.directions = {
           route: [
             {
-              coords: { lat: routeCoordsArray[1],
-                lng: routeCoordsArray[2] }
+              coords: {
+                lat: routeCoordsArray[1],
+                lng: routeCoordsArray[2]
+              }
             },
             {
-              coords: { lat: routeCoordsArray[3],
-                lng: routeCoordsArray[4] }
+              coords: {
+                lat: routeCoordsArray[3],
+                lng: routeCoordsArray[4]
+              }
             }
           ]
         }
@@ -511,7 +518,7 @@ extractors.push({
   host: 'openseamap.',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const centrePermalink = document.evaluate('//*[@id="OpenLayers_Control_Permalink_13"]//a/@href',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
@@ -533,7 +540,7 @@ extractors.push({
   host: 'wego.here.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /map=([-0-9.]+),([-0-9.]+),([0-9]+),/
       const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -544,7 +551,7 @@ extractors.push({
 
       // check if pathname contains directions
       let state = -1
-      for (let directions of window.location.pathname.split('/')) {
+      for (const directions of window.location.pathname.split('/')) {
         if (state < 0) {
           if (directions === 'directions') {
             sourceMapData.directions = {}
@@ -598,7 +605,7 @@ extractors.push({
         }
       }
       if (sourceMapData.directions && sourceMapData.directions.route) {
-        for (let wptIndex in sourceMapData.directions.route) {
+        for (const wptIndex in sourceMapData.directions.route) {
           // URL can contain empty waypoints, when locations have not yet been entered
           // into the search box. So we need to do a bit of clean-up.
           if (undefined === sourceMapData.directions.route[wptIndex]) {
@@ -618,7 +625,7 @@ extractors.push({
   host: 'streetmap.co.uk',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const urlToShare = document.evaluate('//*[@id="LinkToInput"]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
       const re1 = /X=([0-9]+)&Y=([0-9]+)/
@@ -724,7 +731,7 @@ extractors.push({
       const re = /lat=([-0-9.]+)&lon=([-0-9.]+)/
       const coordArray = window.location.search.match(re)
       if (coordArray && coordArray.length > 2) {
-        let sourceMapData = {
+        const sourceMapData = {
           centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           nonUpdating: window.location.hostname,
           locationDescr: 'non-updating URL'
@@ -826,7 +833,7 @@ extractors.push({
   host: 'wikipedia.org',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const geo = document.evaluate('//*[@id="coordinates"]//*[@class="geo"]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
       const coordArray = geo.split(';')
@@ -842,7 +849,7 @@ extractors.push({
   host: 'opencyclemap.org',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const href = document.evaluate('//*[@id="permalink"]/@href',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
       const re = /zoom=([0-9]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
@@ -860,7 +867,7 @@ extractors.push({
   host: 'facebook.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
 
       // we rely on this obfuscated class name continuing to be used
       const mapImages = document.evaluate('//*[@class="_a3f img"]',
@@ -868,7 +875,7 @@ extractors.push({
 
       if (mapImages && mapImages.currentSrc && mapImages.currentSrc.length > 0) {
         const re1 = /markers=([-0-9.]+)%2C([-0-9.]+)/
-        let coordArr = mapImages.currentSrc.match(re1)
+        const coordArr = mapImages.currentSrc.match(re1)
         if (coordArr && coordArr.length > 2) {
           sourceMapData.centreCoords = { lat: coordArr[1], lng: coordArr[2] }
           const zoomRe = /zoom=([0-9]+)/
@@ -901,7 +908,7 @@ extractors.push({
       const coordRe = /ll=([-0-9.]+)%2C([-0-9.]+)/
       const coordArray = window.location.search.match(coordRe)
       if (coordArray && coordArray.length > 2) {
-        let sourceMapData = {
+        const sourceMapData = {
           centreCoords: { lat: coordArray[2], lng: coordArray[1] }
         }
         const zoomArray = window.location.search.match(/z=([0-9]+)/)
@@ -914,7 +921,7 @@ extractors.push({
             route: []
           }
           const routeCoordPairs = routeString[1].split('~')
-          for (let coordPair of routeCoordPairs) {
+          for (const coordPair of routeCoordPairs) {
             const [lat, lng] = coordPair.split(',')
             sourceMapData.directions.route.push({ coords: { lat, lng } })
           }
@@ -950,7 +957,7 @@ extractors.push({
       const re = /ll=([-0-9.]+),([-0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 2) {
-        let sourceMapData = {
+        const sourceMapData = {
           centreCoords: { lat: coordArray[1], lng: coordArray[2] },
           locationDescr: 'map centre specified in URL'
         }
@@ -1019,7 +1026,7 @@ extractors.push({
   host: 'f4map.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /#lat=([-0-9.]+)&lon=([-0-9.]+)&zoom=([0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -1035,7 +1042,7 @@ extractors.push({
   host: 'opentopomap.org',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /#map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -1051,7 +1058,7 @@ extractors.push({
   host: 'qwant.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /#map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -1067,7 +1074,7 @@ extractors.push({
   host: 'mapillary.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re1 = /lat=([-0-9.]+)&lng=([-0-9.]+)/
       const coordArray = window.location.search.match(re1)
       if (coordArray && coordArray.length >= 3) {
@@ -1087,7 +1094,7 @@ extractors.push({
   host: 'komoot.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /@([-0-9.]+),([-0-9.]+),([0-9]+)z/
       const coordArray = window.location.pathname.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -1103,7 +1110,7 @@ extractors.push({
   host: 'waymarkedtrails.org',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /map=([0-9]+)!([-0-9.]+)!([-0-9.]+)/
       const coordArray = window.location.hash.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -1119,7 +1126,7 @@ extractors.push({
   host: 'rightmove',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const latlon = document.evaluate('//script[contains(.,"postcode")  and contains(.,"location")]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
       const lat = latlon.text.match(/.latitude.:([0-9.-]+)/)[1]
@@ -1139,7 +1146,7 @@ extractors.push({
   host: 'onthemarket',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const latlon = document.evaluate('//script[contains(.,"MEDIA_PREFIX")  and contains(.,"location")]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
       const lat = latlon.text.match(/lat:[ ']+([0-9.-]+)/)[1]
@@ -1159,7 +1166,7 @@ extractors.push({
   host: 'zoopla',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const latlon = document.evaluate('//script[contains(.,"mapData ")  and contains(.,"bounding_box")]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
       const lat = latlon.text.match(/latitude.:([0-9.-]+)/)[1]
@@ -1179,7 +1186,7 @@ extractors.push({
   host: 'primelocation',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const lat = document.evaluate('/html/head/meta[@property="og:latitude"]',
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.content
       const lon = document.evaluate('/html/head/meta[@property="og:longitude"]',
@@ -1200,7 +1207,7 @@ extractors.push({
   extract:
     function (resolve, reject) {
       function singlePeak () {
-        let sourceMapData = {}
+        const sourceMapData = {}
         const gmap = document.evaluate('//*[@id="Gmap"]/@src',
           document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
         try {
@@ -1218,7 +1225,7 @@ extractors.push({
       if (singlePeak()) { return }
 
       function listOfPeaks () {
-        let sourceMapData = {}
+        const sourceMapData = {}
 
         const iframe = document.querySelector('iframe')
 
@@ -1254,7 +1261,7 @@ extractors.push({
   host: 'osmaps.ordnancesurvey.',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /([-0-9.]+),([-0-9.]+),([0-9]+)/
       const coordArray = window.location.pathname.match(re)
       if (coordArray && coordArray.length > 3) {
@@ -1270,7 +1277,7 @@ extractors.push({
   host: 'windy.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /([-0-9.]+),([-0-9.]+),([0-9]+)$/
       const [, lat, lng, zoom] = window.location.search.match(re)
       if (lat && lng && zoom) {
@@ -1285,7 +1292,7 @@ extractors.push({
   host: 'flightradar24.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /([-0-9.]+),([-0-9.]+)\/([0-9]+)$/
       const [, lat, lng, zoom] = window.location.pathname.match(re)
       if (lat && lng && zoom) {
@@ -1297,7 +1304,7 @@ extractors.push({
 })
 
 function ignngiExtractor (resolve) {
-  let sourceMapData = {}
+  const sourceMapData = {}
   const re = /x=([0-9.]+)&y=([0-9.]+)&zoom=([0-9]+)/
   const [, easting, northing, zoom] = window.location.search.match(re)
   if (easting && northing && zoom) {
@@ -1321,7 +1328,7 @@ extractors.push({
   host: 'cyclosm.org',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       const [, zoom, lat, lng] = window.location.hash.match(re)
       if (lat && lng && zoom) {
@@ -1336,7 +1343,7 @@ extractors.push({
   host: 'nakarte.me',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /m=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       const [, zoom, lat, lng] = window.location.hash.match(re)
       if (lat && lng && zoom) {
@@ -1351,7 +1358,7 @@ extractors.push({
   host: 'mapmyindia.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /@([-a-z]+),([-a-z]+),([a-z]+)/
       const matchArr = window.location.pathname.match(re)
       if (matchArr && matchArr.length > 3) {
@@ -1375,7 +1382,7 @@ extractors.push({
   host: 'brouter.de',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       const [, zoom, lat, lng] = window.location.hash.match(re)
       if (lat && lng && zoom) {
@@ -1402,7 +1409,7 @@ extractors.push({
   host: 'mapwith.ai',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /map=([0-9.]+)\/([-0-9.]+)\/([-0-9.]+)/
       const [, zoom, lat, lng] = window.location.hash.match(re)
       if (lat && lng && zoom) {
@@ -1417,7 +1424,7 @@ extractors.push({
   host: 'maps.nls.uk',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /zoom=([0-9.]+)&lat=([-0-9.]+)&lon=([-0-9.]+)/
       const [, zoom, lat, lng] = window.location.hash.match(re)
       if (lat && lng && zoom) {
@@ -1446,7 +1453,7 @@ extractors.push({
   host: 'boulter.com',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const re = /([-0-9.]+)%2C([-0-9.]+)/
       const [, lat, lng] = window.location.hash.match(re)
       if (lat && lng) {
@@ -1460,7 +1467,7 @@ extractors.push({
   host: 'openweathermap.org',
   extract:
     function (resolve) {
-      let sourceMapData = {}
+      const sourceMapData = {}
       const coordRe = /lat=([-0-9.]+)&lon=([-0-9.]+)/
       const [, lat, lng] = window.location.search.match(coordRe)
       if (lat && lng) {
@@ -1483,7 +1490,7 @@ var runDataExtraction = function () {
     extract: resolve => { resolve(null) }
   }
   // we iterate through our extractors to find a matching host
-  for (let extr of extractors) {
+  for (const extr of extractors) {
     if (window.location.hostname.indexOf(extr.host) >= 0) {
       extractor = extr
       break

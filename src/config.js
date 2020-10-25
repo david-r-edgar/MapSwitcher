@@ -83,7 +83,7 @@ class ServiceConfig {
     // it's not a straightforward 'union' of maps since we want to keep the
     // order of 'config', but also keep any values it has set
     this.defaultConfig.forEach((defaultServiceSettings, serviceId) => {
-      let settingsForService = {
+      const settingsForService = {
         ...defaultServiceSettings,
         ...(this.config.get(serviceId))
       }

@@ -359,8 +359,9 @@ class MapLinksView {
     // show directions category; set directions description
     if (sourceMapDataInfo.directions) {
       var dirnDescr = sourceMapDataInfo.directions.numWpts + ' waypoint route'
-      let mode = (sourceMapDataInfo.directions.mode === 'transit')
-        ? 'public transport' : sourceMapDataInfo.directions.mode
+      const mode = (sourceMapDataInfo.directions.mode === 'transit')
+        ? 'public transport'
+        : sourceMapDataInfo.directions.mode
       dirnDescr += ', travelling by ' + mode
       Array.from(document.getElementsByClassName('directionsDescr')).map((elem) => {
         elem.textContent = dirnDescr
@@ -376,7 +377,7 @@ class MapLinksView {
 
   // Iterates through the map services to request each one to generate its links.
   constructOutputs (sourceMapData) {
-    for (let outputMapService of OutputMaps.services) {
+    for (const outputMapService of OutputMaps.services) {
       outputMapService.generate(sourceMapData, this)
     }
   }
