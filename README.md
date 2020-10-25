@@ -76,6 +76,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Mapmyindia
 - Map With AI RapiD
 - NLS
+- Boulter
 
 ### Output mapping services
 
