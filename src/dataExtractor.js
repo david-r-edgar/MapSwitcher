@@ -1432,10 +1432,25 @@ extractors.push({
   host: 'geohack.toolforge.org',
   extract:
     function (resolve) {
+      const sourceMapData = {}
       const geoURIelem = document.querySelector('a[href^="geo:"')
       const [lat, lng] = geoURIelem.href.split(':')[1].split(',')
-      const sourceMapData = {
-        centreCoords: { lat, lng }
+      if (lat && lng) {
+        sourceMapData.centreCoords = { lat, lng }
+      }
+      resolve(sourceMapData)
+    }
+})
+
+extractors.push({
+  host: 'boulter.com',
+  extract:
+    function (resolve) {
+      let sourceMapData = {}
+      const re = /([-0-9.]+)%2C([-0-9.]+)/
+      const [, lat, lng] = window.location.hash.match(re)
+      if (lat && lng) {
+        sourceMapData.centreCoords = { lat, lng }
       }
       resolve(sourceMapData)
     }
