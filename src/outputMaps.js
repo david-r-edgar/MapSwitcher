@@ -312,8 +312,7 @@ OutputMaps.services = [
       let directions = ''
       const zoom = sourceMapData.getStandardZoom({ min: 0, max: 19 })
 
-      if (sourceMapData.directions &&
-                'route' in sourceMapData.directions) {
+      if (sourceMapData.directions?.route) {
         let mode = ''
         if (sourceMapData.directions.mode) {
           switch (sourceMapData.directions.mode) {

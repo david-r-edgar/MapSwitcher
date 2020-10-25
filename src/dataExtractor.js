@@ -16,7 +16,7 @@
 // Use 'var' rather than 'let' to avoid already-declared errors
 // due to this file being executed as a content script.
 var browserRoot
-if (chrome && chrome.runtime) {
+if (chrome?.runtime) {
   browserRoot = chrome // eslint-disable-line no-global-assign
 } else {
   browserRoot = browser // eslint-disable-line no-global-assign
@@ -1264,7 +1264,7 @@ extractors.push({
       const sourceMapData = {}
       const re = /([-0-9.]+),([-0-9.]+),([0-9]+)/
       const coordArray = window.location.pathname.match(re)
-      if (coordArray && coordArray.length > 3) {
+      if (coordArray?.length > 3) {
         sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(coordArray[3], coordArray[1])

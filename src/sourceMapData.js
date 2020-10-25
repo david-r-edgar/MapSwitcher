@@ -96,7 +96,7 @@ class SourceMapData {
   }
 
   normaliseRoute () {
-    if (this.directions && this.directions.route) {
+    if (this.directions?.route) {
       // routes without at least 2 waypoints are invalid - so just delete them
       if (this.directions.route.length < 2) {
         delete this.directions
