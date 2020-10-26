@@ -5,9 +5,9 @@
   "scripts": {
     "test": "npm run lint && echo \"Error: no test specified\"",
     "build:resources": "cp -r html css config image vendor manifest.json release",
-    "build:js": "for srcFile in src/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done",
+    "build:js": "for srcFile in src/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done; for srcFile in src/extractors/*.js ; do terser $srcFile -c --mangle -o release/$srcFile ; done",
     "clean:release": "rm -rf release",
-    "build:release": "mkdir -p release/src &&  npm run build:resources && npm run build:js",
+    "build:release": "mkdir -p release/src/extractors &&  npm run build:resources && npm run build:js",
     "zip:release": "cd release ; zip -r ../MapSwitcher_v.zip * ; cd ..",
     "build": "npm run clean:release && npm run build:release && npm run zip:release",
     "lint": "standard"
@@ -30,7 +30,7 @@
   "homepage": "https://github.com/david-r-edgar/MapSwitcher#readme",
   "dependencies": {
     "sortablejs": "^1.10.1",
-    "terser": "^3.14.1"
+    "terser": "^5.3.8"
   },
   "devDependencies": {
     "standard": "^15.0.0"
