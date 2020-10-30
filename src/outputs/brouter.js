@@ -1,0 +1,22 @@
+export default {
+  site: 'BRouter',
+  image: 'defaultNoFavicon16x16.png',
+  id: 'brouter',
+  generate: function (sourceMapData, view) {
+    const base = 'https://brouter.de/brouter-web'
+    const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
+    const zoom = sourceMapData.getStandardZoom()
+
+    const mapLinksBasic = [
+      {
+        name: 'OpenStreetMap',
+        url: base + '#map=' + zoom + '/' + mapCentre + '/standard'
+      },
+      {
+        name: 'OpenTopoMap',
+        url: base + '#map=' + zoom + '/' + mapCentre + '/OpenTopoMap'
+      }
+    ]
+    view.addMapServiceLinks(this, mapLinksBasic)
+  }
+}

@@ -3,7 +3,9 @@
   Blob,
   tippy */
 
-import OutputMaps from './outputMaps.js'
+// import OutputMaps from './outputMaps.js'
+
+import outputList from './outputList.js'
 
 let browser
 if (typeof browser === 'undefined') {
@@ -377,7 +379,9 @@ class MapLinksView {
 
   // Iterates through the map services to request each one to generate its links.
   constructOutputs (sourceMapData) {
-    for (const outputMapService of OutputMaps.services) {
+    console.log({ outputList })
+
+    for (const outputMapService of outputList) {
       outputMapService.generate(sourceMapData, this)
     }
   }
