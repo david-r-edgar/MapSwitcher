@@ -379,8 +379,6 @@ class MapLinksView {
 
   // Iterates through the map services to request each one to generate its links.
   constructOutputs (sourceMapData) {
-    console.log({ outputList })
-
     for (const outputMapService of outputList) {
       outputMapService.generate(sourceMapData, this)
     }
