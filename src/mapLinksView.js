@@ -265,8 +265,9 @@ class MapLinksView {
   // @param {mapService} Object representing the map service.
   // @param {note} Text content of the note to be displayed.
   addNote (mapService, note) {
-    if (note && note.length) {
-      const mapServiceIdElem = document.getElementById(mapService.id)
+    if (note?.length) {
+      const serviceId = this.getServiceId(mapService.id)
+      const mapServiceIdElem = document.getElementById(serviceId)
       mapServiceIdElem.innerHTML += ' ' +
         "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
@@ -297,7 +298,7 @@ class MapLinksView {
         html += `<a class="maplink" target="_blank" href="${link.url}">${link.name}</a> `
       })
 
-      if (note && note.length) {
+      if (note?.length) {
         html +=
         "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +

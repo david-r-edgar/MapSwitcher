@@ -15,6 +15,8 @@ if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
 
+class NoExtraction extends Error {}
+
 class MapSwitcher {
   // Main routine
   // - Initiates the content scripts
@@ -24,6 +26,7 @@ class MapSwitcher {
   // In case of any error (or for any non-map-service site), show a standard message
   async run () {
     try {
+      this.initEnv()
       const { url } = await this.validateCurrentTab()
       const contentScripts = await this.getListOfContentScripts(url)
       const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction(contentScripts)])
@@ -33,9 +36,17 @@ class MapSwitcher {
       this.mapLinksView = new MapLinksView(configManager.getServiceConfig())
       await this.mapLinksView.display(sourceMapData)
     } catch (err) {
-      console.log('MapSwitcher:run() caught error:', err)
+      if (!(err instanceof NoExtraction)) {
+        this.log('MapSwitcher:run() caught error:', err)
+      }
       MapLinksView.handleNoCoords(err)
     }
+  }
+
+  initEnv () {
+    browser.management.getSelf((info) => {
+      this.environment = info.installType
+    })
   }
 
   // Checks if we should continue attempting to extract data from the current tab.
@@ -55,6 +66,22 @@ class MapSwitcher {
     })
   }
 
+  getListOfContentScripts (hostname) {
+    const extractor = ExtractorList.filter(extr => hostname.indexOf(extr.host) >= 0)[0]
+
+    if (extractor) {
+      const preScripts = extractor.preScripts || []
+      const utils = extractor.utils === false ? [] : ['/src/mapUtil.js']
+      return [
+        ...preScripts,
+        ...utils,
+        '/src/dataExtractor.js',
+        `/src/extractors/${extractor.extractor}.js`
+      ]
+    }
+    throw new NoExtraction()
+  }
+
   // Sets up message listener to receive results from content script
   //
   // @return Promise which fulfils with the source map data
@@ -66,19 +93,6 @@ class MapSwitcher {
     })
   }
 
-  getListOfContentScripts (hostname) {
-    const extractor = ExtractorList.filter(extr => hostname.indexOf(extr.host) >= 0)[0]
-
-    const preScripts = extractor.preScripts || []
-    const utils = extractor.utils === false ? [] : ['/src/mapUtil.js']
-    return [
-      ...preScripts,
-      ...utils,
-      '/src/dataExtractor.js',
-      `/src/extractors/${extractor.extractor}.js`
-    ]
-  }
-
   // Runs the content scripts which handle the extraction of coordinate data from the current tab.
   //
   // @return Promise which fulfils when complete
@@ -87,6 +101,12 @@ class MapSwitcher {
       new ScriptExecution().executeScripts(...contentScripts)
       resolve()
     })
+  }
+
+  log (...msg) {
+    if (this.environment === 'development') {
+      console.log(...msg)
+    }
   }
 }
 
