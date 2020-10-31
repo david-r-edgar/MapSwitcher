@@ -46,7 +46,7 @@ import MapWithAIRapiD from './outputs/MapWithAIRapiD.js'
 import dlgpx from './outputs/dlgpx.js'
 import clipboard from './outputs/clipboard.js'
 
-const outputs = [
+const outputs = {
   google,
   googleDirections,
   bing,
@@ -94,6 +94,6 @@ const outputs = [
   MapWithAIRapiD,
   dlgpx,
   clipboard
-]
+}
 
 export default outputs

@@ -6,7 +6,7 @@ export default {
     view.addFileDownload(this, 'gpx_map_centre', 'Download map centre waypoint', function () {
       const fileData = {
         name: 'MapSwitcher.gpx',
-        type: 'text/xml;charset=utf-8',
+        type: 'application/gpx+xml;charset=utf-8',
         content:
           '<?xml version="1.1"?>\n' +
           '<gpx creator="MapSwitcher" version="1.1" xmlns="http://www.topografix.com/GPX/1/1">\n' +
@@ -43,7 +43,7 @@ export default {
         view.addFileDownload(this, 'gpx_rte', 'Download route', function () {
           var fileData = {
             name: 'MapSwitcherRoute.gpx',
-            type: 'text/xml;charset=utf-8',
+            type: 'application/gpx+xml;charset=utf-8',
             content:
               '<?xml version="1.1"?>\n' +
               '<gpx creator="MapSwitcher" version="1.1" xmlns="http://www.topografix.com/GPX/1/1">\n' +
