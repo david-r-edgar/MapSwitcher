@@ -3,7 +3,6 @@
   CoordTransform, OsGridRef, LatLon */
 
 export default {
-  id: 'streetmap',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
       const streetmapMapBase = 'http://www.streetmap.co.uk/map.srf?'

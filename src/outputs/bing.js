@@ -1,5 +1,4 @@
 export default {
-  id: 'bing',
   generate: function (sourceMapData, view) {
     const bingBase = 'https://www.bing.com/maps/?'
     const mapCentre = 'cp=' + sourceMapData.centreCoords.lat + '~' +

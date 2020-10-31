@@ -1,5 +1,4 @@
 export default {
-  id: 'caltopo',
   generate: function (sourceMapData, view) {
     if ((sourceMapData.countryCode === 'us') || (sourceMapData.countryCode === 'ca')) {
       const base = 'http://caltopo.com/map.html'

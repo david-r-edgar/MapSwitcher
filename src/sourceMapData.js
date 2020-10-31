@@ -9,16 +9,11 @@ class SourceMapData {
   }
 
   getStandardZoom (options) {
-    // FIXME eslint reports parsing errors with optional chaining operator
-    // let zoom = options?.default ? options.default : 12
-    let zoom = (options && options.default) ? options.default : 12
-    const min = (options && options.min)
-    const max = (options && options.max)
+    let zoom = options?.default || 12
 
     if (this.resolution) {
       zoom = calculateStdZoomFromResolution(
-        this.resolution, this.centreCoords.lat, min, max)
-      // FIXME options?.min, options?.max
+        this.resolution, this.centreCoords.lat, options?.min, options?.max)
     }
 
     return zoom

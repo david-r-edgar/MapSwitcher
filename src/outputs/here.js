@@ -1,5 +1,4 @@
 export default {
-  id: 'here',
   generate: function (sourceMapData, view) {
     const hereBase = 'https://wego.here.com/'
     const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng

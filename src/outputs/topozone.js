@@ -1,5 +1,4 @@
 export default {
-  id: 'topozone',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode === 'us') {
       const topozoneBase = 'http://www.topozone.com/'

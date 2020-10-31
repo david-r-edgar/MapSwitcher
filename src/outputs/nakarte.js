@@ -1,5 +1,4 @@
 export default {
-  id: 'nakarte',
   generate: function (sourceMapData, view) {
     const base = 'https://www.nakarte.me/'
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng

@@ -1,5 +1,4 @@
 export default {
-  id: 'yandexDirections',
   generate: function (sourceMapData, view) {
     const yandexBase = 'https://yandex.com/maps/'
     const mapCentre = 'll=' + sourceMapData.centreCoords.lng + ',' + sourceMapData.centreCoords.lat

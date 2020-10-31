@@ -1,5 +1,4 @@
 export default {
-  id: 'bingDirections',
   generate: function (sourceMapData, view) {
     const bingBase = 'https://www.bing.com/maps/?'
     let directions = ''

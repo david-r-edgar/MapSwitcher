@@ -1,5 +1,4 @@
 export default {
-  id: 'google',
   generate: function (sourceMapData, view) {
     const googleBase = 'https://www.google.com/maps/'
     const mapCentre = '@' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng + ','

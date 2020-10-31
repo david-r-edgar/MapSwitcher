@@ -1,5 +1,4 @@
 export default {
-  id: 'komoot',
   generate: function (sourceMapData, view) {
     const base = 'https://www.komoot.com/plan/'
     const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng

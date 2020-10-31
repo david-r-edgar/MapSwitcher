@@ -1,5 +1,4 @@
 export default {
-  id: 'wikimapia',
   generate: function (sourceMapData, view) {
     const wikimapiaBase = 'http://wikimapia.org/#lang=en&'
     const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng

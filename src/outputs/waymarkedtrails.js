@@ -1,5 +1,4 @@
 export default {
-  id: 'waymarkedtrails',
   generate: function (sourceMapData, view) {
     const domain = 'waymarkedtrails.org'
     const zoom = sourceMapData.getStandardZoom({ min: 0, max: 18 })

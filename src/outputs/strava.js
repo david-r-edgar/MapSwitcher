@@ -1,5 +1,4 @@
 export default {
-  id: 'strava',
   generate: function (sourceMapData, view) {
     const siteBase = 'https://www.strava.com/heatmap#'
     const mapCentre = sourceMapData.centreCoords.lng + '/' + sourceMapData.centreCoords.lat

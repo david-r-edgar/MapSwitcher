@@ -1,5 +1,4 @@
 export default {
-  id: 'boulter',
   generate: function (sourceMapData, view) {
     const boulterBase = 'http://boulter.com/gps/'
     const mapCentre = '#' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng

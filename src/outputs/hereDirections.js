@@ -1,5 +1,4 @@
 export default {
-  id: 'hereDirections',
   generate: function (sourceMapData, view) {
     const hereBase = 'https://wego.here.com/'
     const mapCentre = '?map=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
@@ -50,11 +49,6 @@ export default {
           name: 'Map',
           url: hereBase + directions + mapCentre + ',' + zoom + ',' + 'normal'
         },
-        // FIXME do all the rest of these actually still work?
-        {
-          name: 'Terrain',
-          url: hereBase + directions + mapCentre + ',' + zoom + ',' + 'terrain'
-        },
         {
           name: 'Satellite',
           url: hereBase + directions + mapCentre + ',' + zoom + ',' + 'satellite'
@@ -62,10 +56,6 @@ export default {
         {
           name: 'Traffic',
           url: hereBase + directions + mapCentre + ',' + zoom + ',' + 'traffic'
-        },
-        {
-          name: 'Public Transport',
-          url: hereBase + directions + mapCentre + ',' + zoom + ',' + 'public_transport'
         }
       ]
       view.addMapServiceLinks(this, mapLinksDirns, note)

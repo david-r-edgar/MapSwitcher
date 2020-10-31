@@ -1,5 +1,4 @@
 export default {
-  id: 'mapmyindia',
   generate: function (sourceMapData, view) {
     const base = 'https://maps.mapmyindia.com/'
     const zoom = sourceMapData.getStandardZoom()

@@ -1,5 +1,4 @@
 export default {
-  id: 'openCycleMap',
   generate: function (sourceMapData, view) {
     const openCycleMapBase = 'http://www.opencyclemap.org/?'
     const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng

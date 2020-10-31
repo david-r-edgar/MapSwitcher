@@ -1,5 +1,4 @@
 export default {
-  id: 'gpxeditor',
   generate: function (sourceMapData, view) {
     const gpxEditorBase = 'http://www.gpxeditor.co.uk/?'
     const mapCentre = 'location=' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng

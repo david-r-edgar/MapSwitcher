@@ -1,5 +1,4 @@
 export default {
-  id: 'waze',
   generate: function (sourceMapData, view) {
     const wazeBase = 'https://www.waze.com'
     const mapCentre = 'll=' + sourceMapData.centreCoords.lat + '%2C' + sourceMapData.centreCoords.lng

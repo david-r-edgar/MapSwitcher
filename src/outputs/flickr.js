@@ -1,5 +1,4 @@
 export default {
-  id: 'flickr',
   generate: function (sourceMapData, view) {
     const base = 'http://www.flickr.com/map/'
     const mapCentre = 'fLat=' + sourceMapData.centreCoords.lat + '&fLon=' + sourceMapData.centreCoords.lng

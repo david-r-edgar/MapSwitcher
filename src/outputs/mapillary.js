@@ -1,5 +1,4 @@
 export default {
-  id: 'mapillary',
   generate: function (sourceMapData, view) {
     const base = 'https://www.mapillary.com/app/'
     const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lng=' + sourceMapData.centreCoords.lng

@@ -1,11 +1,10 @@
 export default {
-  id: 'osmDirections',
-  note: '',
   generate: function (sourceMapData, view) {
     const osmBase = 'https://www.openstreetmap.org/'
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng
     let directions = ''
     const zoom = sourceMapData.getStandardZoom({ min: 0, max: 19 })
+    let note = ''
 
     if (sourceMapData.directions?.route) {
       let mode = ''
@@ -40,7 +39,7 @@ export default {
         )
       }
       if (sourceMapData.directions.route.length > 2) {
-        this.note = 'OpenStreetMap does not support multi-waypoint routing. ' +
+        note = 'OpenStreetMap does not support multi-waypoint routing. ' +
           'Directions from first to last waypoints only.'
       }
     }
@@ -66,7 +65,7 @@ export default {
           url: coreDirnsLink + '&layers=H'
         }
       ]
-      view.addMapServiceLinks(this, mapLinksWithDirns, this.note)
+      view.addMapServiceLinks(this, mapLinksWithDirns, note)
     }
   }
 }

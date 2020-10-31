@@ -1,5 +1,4 @@
 export default {
-  id: 'dlgpx',
   generate: function (sourceMapData, view) {
     view.addFileDownload(this, 'gpx_map_centre', 'Download map centre waypoint', function () {
       const fileData = {

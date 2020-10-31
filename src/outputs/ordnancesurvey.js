@@ -1,5 +1,4 @@
 export default {
-  id: 'ordnancesurvey',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {
       const base = 'https://osmaps.ordnancesurvey.co.uk/'

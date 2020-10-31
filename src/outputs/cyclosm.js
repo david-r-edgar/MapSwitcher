@@ -1,5 +1,4 @@
 export default {
-  id: 'cyclosm',
   generate: function (sourceMapData, view) {
     const base = 'https://www.cyclosm.org/'
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng

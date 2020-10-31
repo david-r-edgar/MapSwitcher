@@ -1,5 +1,4 @@
 export default {
-  id: 'windy',
   generate: function (sourceMapData, view) {
     const base = 'https://www.windy.com/'
     const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng

@@ -1,5 +1,4 @@
 export default {
-  id: 'googleDirections',
   generate: function (sourceMapData, view) {
     const googleBase = 'https://www.google.com/maps/'
     let directions = ''

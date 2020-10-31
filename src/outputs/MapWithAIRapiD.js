@@ -1,5 +1,4 @@
 export default {
-  id: 'MapWithAIRapiD',
   generate: function (sourceMapData, view) {
     const base = 'https://mapwith.ai/rapid'
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng

@@ -1,5 +1,4 @@
 export default {
-  id: 'brouter',
   generate: function (sourceMapData, view) {
     const base = 'https://brouter.de/brouter-web'
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng

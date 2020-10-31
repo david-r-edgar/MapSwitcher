@@ -1,5 +1,4 @@
 export default {
-  id: 'sysmaps',
   generate: function (sourceMapData, view) {
     const mapLinks = []
     const base = 'http://www.sysmaps.co.uk/'

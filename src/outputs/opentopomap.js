@@ -1,5 +1,4 @@
 export default {
-  id: 'opentopomap',
   generate: function (sourceMapData, view) {
     const base = 'https://opentopomap.org/#map='
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng

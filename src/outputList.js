@@ -44,7 +44,7 @@ import stamen from './outputs/stamen.js'
 import flightradar24 from './outputs/flightradar24.js'
 import MapWithAIRapiD from './outputs/MapWithAIRapiD.js'
 import dlgpx from './outputs/dlgpx.js'
-import clipboard from './outputs/clipboard.js'
+// import clipboard from './outputs/clipboard.js'
 
 const outputs = {
   google,
@@ -92,8 +92,16 @@ const outputs = {
   stamen,
   flightradar24,
   MapWithAIRapiD,
-  dlgpx,
-  clipboard
+  dlgpx
+}
+
+outputs.init = async function () {
+  const module = await import('./outputs/clipboard.js')
+  this.clipboard = module.default
+
+  for (const [id, service] of Object.entries(outputs)) {
+    service.id = id
+  }
 }
 
 export default outputs

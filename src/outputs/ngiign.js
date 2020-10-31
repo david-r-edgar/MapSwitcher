@@ -4,7 +4,6 @@
 var browserRoot = chrome?.runtime ? chrome : browser // eslint-disable-line no-global-assign
 
 export default {
-  id: 'ngiign',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode !== 'be') {
       return

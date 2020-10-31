@@ -1,5 +1,4 @@
 export default {
-  id: 'stamen',
   generate: function (sourceMapData, view) {
     const stamenBase = 'http://maps.stamen.com/'
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng

@@ -2,7 +2,6 @@
   calculateScaleFromResolution */
 
 export default {
-  id: 'wmLabs',
   generate: function (sourceMapData, view) {
     const mapLinks = []
     const geohackBase = 'https://tools.wmflabs.org/geohack/geohack.php?params='

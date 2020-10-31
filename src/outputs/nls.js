@@ -1,5 +1,4 @@
 export default {
-  id: 'nls',
   generate: function (sourceMapData, view) {
     const base = 'https://maps.nls.uk/geo/explore/'
     const mapCentre = `lat=${sourceMapData.centreCoords.lat}&lon=${sourceMapData.centreCoords.lng}`

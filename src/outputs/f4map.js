@@ -1,5 +1,4 @@
 export default {
-  id: 'f4map',
   generate: function (sourceMapData, view) {
     const base = 'https://demo.f4map.com/'
     const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng

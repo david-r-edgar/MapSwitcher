@@ -1,5 +1,4 @@
 export default {
-  id: 'openweathermap',
   generate: function (sourceMapData, view) {
     const owmBase = 'https://openweathermap.org/weathermap?'
     const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng

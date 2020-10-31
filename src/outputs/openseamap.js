@@ -1,5 +1,4 @@
 export default {
-  id: 'openseamap',
   generate: function (sourceMapData, view) {
     const openSeaMapBase = 'http://map.openseamap.org/?'
     const mapCentre = 'lat=' + sourceMapData.centreCoords.lat + '&lon=' + sourceMapData.centreCoords.lng

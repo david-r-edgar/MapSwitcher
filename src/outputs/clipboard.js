@@ -12,7 +12,6 @@ function copyTextToClipboard (text) {
 }
 
 export default {
-  id: 'clipboard',
   generate: function (sourceMapData, view) {
     view.addUtilityLink(this, 'copyToClipboard', 'Copy map centre coordinates', function () {
       copyTextToClipboard(sourceMapData.centreCoords.lat + ', ' + sourceMapData.centreCoords.lng)

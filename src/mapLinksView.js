@@ -3,8 +3,6 @@
   Blob,
   tippy */
 
-// import OutputMaps from './outputMaps.js'
-
 import outputList from './outputList.js'
 
 let browser
@@ -36,7 +34,7 @@ class MapLinksView {
     const sourceMapDataInfo = sourceMapData.getSourceInfo()
     this.showInfo(sourceMapDataInfo)
     this.showWarnings(sourceMapData)
-    this.constructOutputs(sourceMapData)
+    await this.constructOutputs(sourceMapData)
     const sourceDataType = sourceMapData.determineSourceDataType()
     this.prepareTabs(sourceDataType)
     this.tabSetup()
@@ -194,7 +192,6 @@ class MapLinksView {
   // @param {note} Content for an optional explanatory note.
   addMapServiceLinks (mapService, mapLinks, note) {
     const serviceConfig = this.config.getConfigForService(mapService.id)
-
     const siteName = serviceConfig.name
     const imageFilename = serviceConfig.image
 
@@ -212,7 +209,6 @@ class MapLinksView {
 
   addUtility (mapService, linkId, name) {
     const serviceConfig = this.config.getConfigForService(mapService.id)
-
     const siteName = serviceConfig.name
     const imageFilename = serviceConfig.image
 
@@ -365,7 +361,9 @@ class MapLinksView {
   }
 
   // Iterates through the map services to request each one to generate its links.
-  constructOutputs (sourceMapData) {
+  async constructOutputs (sourceMapData) {
+    await outputList.init()
+
     this.config.getServicesMap().forEach((serviceConfig, serviceId) => {
       if (!serviceConfig.hidden) {
         outputList[serviceId].generate(sourceMapData, this)

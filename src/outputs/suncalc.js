@@ -1,5 +1,4 @@
 export default {
-  id: 'suncalc',
   generate: function (sourceMapData, view) {
     const suncalcBase = 'http://suncalc.org/#/'
     const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng

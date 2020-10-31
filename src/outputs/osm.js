@@ -1,5 +1,4 @@
 export default {
-  id: 'osm',
   generate: function (sourceMapData, view) {
     const osmBase = 'https://www.openstreetmap.org/'
     const mapCentre = sourceMapData.centreCoords.lat + '/' + sourceMapData.centreCoords.lng

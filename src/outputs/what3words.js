@@ -1,5 +1,4 @@
 export default {
-  id: 'what3words',
   generate: function (sourceMapData, view) {
     const w3wBase = 'https://map.what3words.com/'
     const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
