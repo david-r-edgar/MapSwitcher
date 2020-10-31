@@ -1,6 +1,4 @@
 export default {
-  site: 'Boulter',
-  image: 'boulterIcon.png',
   id: 'boulter',
   generate: function (sourceMapData, view) {
     const boulterBase = 'http://boulter.com/gps/'

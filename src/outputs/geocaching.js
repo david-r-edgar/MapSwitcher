@@ -1,6 +1,4 @@
 export default {
-  site: 'Geocaching',
-  image: 'geocachingLogo16x16.png',
   id: 'geocaching',
   note: 'geocaching.com requires login to see the map (free sign-up)',
   generate: function (sourceMapData, view) {

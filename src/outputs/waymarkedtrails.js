@@ -1,6 +1,4 @@
 export default {
-  site: 'Waymarked Trails',
-  image: 'waymarkedtrailshiking16x16.png',
   id: 'waymarkedtrails',
   generate: function (sourceMapData, view) {
     const domain = 'waymarkedtrails.org'

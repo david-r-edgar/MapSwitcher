@@ -1,6 +1,4 @@
 export default {
-  site: 'Waze',
-  image: 'wazeLogo16x16.png',
   id: 'waze',
   generate: function (sourceMapData, view) {
     const wazeBase = 'https://www.waze.com'

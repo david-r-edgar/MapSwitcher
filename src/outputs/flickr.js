@@ -1,6 +1,4 @@
 export default {
-  site: 'Flickr',
-  image: 'flickr16x16.png',
   id: 'flickr',
   generate: function (sourceMapData, view) {
     const base = 'http://www.flickr.com/map/'

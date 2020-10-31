@@ -1,6 +1,4 @@
 export default {
-  site: 'Stamen',
-  image: 'greyMarker.png',
   id: 'stamen',
   generate: function (sourceMapData, view) {
     const stamenBase = 'http://maps.stamen.com/'

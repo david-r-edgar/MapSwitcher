@@ -1,6 +1,4 @@
 export default {
-  site: 'OpenTopoMap',
-  image: 'opentopomap16x16.png',
   id: 'opentopomap',
   generate: function (sourceMapData, view) {
     const base = 'https://opentopomap.org/#map='

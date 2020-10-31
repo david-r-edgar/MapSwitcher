@@ -1,6 +1,4 @@
 export default {
-  site: 'OpenSeaMap',
-  image: 'openSeaMapLogo16x16.png',
   id: 'openseamap',
   generate: function (sourceMapData, view) {
     const openSeaMapBase = 'http://map.openseamap.org/?'

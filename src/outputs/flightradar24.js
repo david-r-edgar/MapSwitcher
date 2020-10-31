@@ -1,6 +1,4 @@
 export default {
-  site: 'Flightradar24',
-  image: 'flightradar24.png',
   id: 'flightradar24',
   generate: function (sourceMapData, view) {
     const base = 'https://www.flightradar24.com/'

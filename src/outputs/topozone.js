@@ -1,6 +1,4 @@
 export default {
-  site: 'TopoZone',
-  image: 'topozone16x16.png',
   id: 'topozone',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode === 'us') {

@@ -1,6 +1,4 @@
 export default {
-  site: 'Google',
-  image: 'googleMapsLogo16x16.png',
   id: 'googleDirections',
   generate: function (sourceMapData, view) {
     const googleBase = 'https://www.google.com/maps/'

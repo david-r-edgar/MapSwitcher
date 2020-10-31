@@ -1,6 +1,4 @@
 export default {
-  site: 'CyclOSM',
-  image: 'cyclosm16x16.png',
   id: 'cyclosm',
   generate: function (sourceMapData, view) {
     const base = 'https://www.cyclosm.org/'

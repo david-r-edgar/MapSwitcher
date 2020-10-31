@@ -1,6 +1,4 @@
 export default {
-  site: 'OpenWeatherMap',
-  image: 'openWeatherMap16x16.png',
   id: 'openweathermap',
   generate: function (sourceMapData, view) {
     const owmBase = 'https://openweathermap.org/weathermap?'

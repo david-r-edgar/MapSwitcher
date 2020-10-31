@@ -1,6 +1,4 @@
 export default {
-  site: 'CalTopo',
-  image: 'caltopoLogo16x16.png',
   id: 'caltopo',
   generate: function (sourceMapData, view) {
     if ((sourceMapData.countryCode === 'us') || (sourceMapData.countryCode === 'ca')) {

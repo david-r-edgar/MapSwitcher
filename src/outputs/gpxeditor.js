@@ -1,6 +1,4 @@
 export default {
-  site: 'GPX Editor',
-  image: 'gpxed16x16.png',
   id: 'gpxeditor',
   generate: function (sourceMapData, view) {
     const gpxEditorBase = 'http://www.gpxeditor.co.uk/?'

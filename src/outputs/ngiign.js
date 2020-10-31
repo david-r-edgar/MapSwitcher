@@ -4,8 +4,6 @@
 var browserRoot = chrome?.runtime ? chrome : browser // eslint-disable-line no-global-assign
 
 export default {
-  site: 'NGI/IGN',
-  image: 'ngi_ign_Logo16x16.png',
   id: 'ngiign',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode !== 'be') {

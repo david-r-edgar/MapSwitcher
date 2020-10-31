@@ -1,6 +1,4 @@
 export default {
-  site: 'Bing',
-  image: 'bingLogo16x16.png',
   id: 'bing',
   generate: function (sourceMapData, view) {
     const bingBase = 'https://www.bing.com/maps/?'

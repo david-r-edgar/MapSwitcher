@@ -1,6 +1,4 @@
 export default {
-  site: 'OS Maps',
-  image: 'osLogo16x16.png',
   id: 'ordnancesurvey',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {

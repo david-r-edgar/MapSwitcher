@@ -1,6 +1,4 @@
 export default {
-  site: 'Komoot',
-  image: 'komootLogo16x16.png',
   id: 'komoot',
   generate: function (sourceMapData, view) {
     const base = 'https://www.komoot.com/plan/'

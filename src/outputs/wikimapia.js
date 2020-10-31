@@ -1,6 +1,4 @@
 export default {
-  site: 'Wikimapia',
-  image: 'wikimapiaLogo16x16.png',
   id: 'wikimapia',
   generate: function (sourceMapData, view) {
     const wikimapiaBase = 'http://wikimapia.org/#lang=en&'

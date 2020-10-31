@@ -1,6 +1,4 @@
 export default {
-  site: 'nakarte.me',
-  image: 'nakarte16x16.png',
   id: 'nakarte',
   generate: function (sourceMapData, view) {
     const base = 'https://www.nakarte.me/'

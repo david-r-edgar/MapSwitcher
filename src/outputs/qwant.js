@@ -1,6 +1,4 @@
 export default {
-  site: 'Qwant',
-  image: 'qwantLogo16x16.png',
   id: 'qwant',
   generate: function (sourceMapData, view) {
     const base = 'https://www.qwant.com/maps'

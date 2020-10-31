@@ -1,6 +1,4 @@
 export default {
-  site: 'OpenCycleMap',
-  image: 'openCycleMapLogo.png',
   id: 'openCycleMap',
   generate: function (sourceMapData, view) {
     const openCycleMapBase = 'http://www.opencyclemap.org/?'

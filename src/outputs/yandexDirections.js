@@ -1,6 +1,4 @@
 export default {
-  site: 'Yandex',
-  image: 'yandex16x16.png',
   id: 'yandexDirections',
   generate: function (sourceMapData, view) {
     const yandexBase = 'https://yandex.com/maps/'

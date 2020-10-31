@@ -1,6 +1,4 @@
 export default {
-  site: 'SysMaps',
-  image: 'sysmaps16x16.png',
   id: 'sysmaps',
   generate: function (sourceMapData, view) {
     const mapLinks = []

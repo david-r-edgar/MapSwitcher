@@ -1,6 +1,4 @@
 export default {
-  site: 'GPX',
-  image: 'gpxFile16x16.png',
   id: 'dlgpx',
   generate: function (sourceMapData, view) {
     view.addFileDownload(this, 'gpx_map_centre', 'Download map centre waypoint', function () {

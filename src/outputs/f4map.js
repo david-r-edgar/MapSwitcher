@@ -1,6 +1,4 @@
 export default {
-  site: 'F4map',
-  image: 'f4logo16x16.png',
   id: 'f4map',
   generate: function (sourceMapData, view) {
     const base = 'https://demo.f4map.com/'

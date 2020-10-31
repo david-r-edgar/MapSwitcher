@@ -2,8 +2,6 @@
   calculateScaleFromResolution */
 
 export default {
-  site: 'Wikimedia Labs',
-  image: 'wmLabsLogo16x16.png',
   id: 'wmLabs',
   generate: function (sourceMapData, view) {
     const mapLinks = []

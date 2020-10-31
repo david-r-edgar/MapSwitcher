@@ -1,6 +1,4 @@
 export default {
-  site: 'Mapillary',
-  image: 'mapillary16x16.png',
   id: 'mapillary',
   generate: function (sourceMapData, view) {
     const base = 'https://www.mapillary.com/app/'

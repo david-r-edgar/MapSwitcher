@@ -1,6 +1,4 @@
 export default {
-  site: 'OpenStreetMap',
-  image: 'osmLogo16x16.png',
   id: 'osmDirections',
   note: '',
   generate: function (sourceMapData, view) {

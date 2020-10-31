@@ -3,8 +3,6 @@
   CoordTransform, OsGridRef, LatLon */
 
 export default {
-  site: 'Streetmap',
-  image: 'streetmapLogo16x16.png',
   id: 'streetmap',
   generate: function (sourceMapData, view) {
     if (sourceMapData.countryCode === 'gb' || sourceMapData.countryCode === 'im') {

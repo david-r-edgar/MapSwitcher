@@ -1,6 +1,4 @@
 export default {
-  site: 'Here',
-  image: 'hereLogo16x16.png',
   id: 'hereDirections',
   generate: function (sourceMapData, view) {
     const hereBase = 'https://wego.here.com/'

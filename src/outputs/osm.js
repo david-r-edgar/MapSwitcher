@@ -1,6 +1,4 @@
 export default {
-  site: 'OpenStreetMap',
-  image: 'osmLogo16x16.png',
   id: 'osm',
   generate: function (sourceMapData, view) {
     const osmBase = 'https://www.openstreetmap.org/'

@@ -1,6 +1,4 @@
 export default {
-  site: 'BRouter',
-  image: 'defaultNoFavicon16x16.png',
   id: 'brouterDirections',
   generate: function (sourceMapData, view) {
     const base = 'https://brouter.de/brouter-web'

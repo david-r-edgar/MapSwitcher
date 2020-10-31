@@ -1,6 +1,4 @@
 export default {
-  site: 'Mapmyindia',
-  image: 'mapmyindia.png',
   id: 'mapmyindia',
   generate: function (sourceMapData, view) {
     const base = 'https://maps.mapmyindia.com/'

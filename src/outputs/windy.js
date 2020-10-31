@@ -1,6 +1,4 @@
 export default {
-  site: 'Windy',
-  image: 'windyLogo16x16.png',
   id: 'windy',
   generate: function (sourceMapData, view) {
     const base = 'https://www.windy.com/'

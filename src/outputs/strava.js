@@ -1,6 +1,4 @@
 export default {
-  site: 'Strava',
-  image: 'stravaLogo16x16.png',
   id: 'strava',
   generate: function (sourceMapData, view) {
     const siteBase = 'https://www.strava.com/heatmap#'

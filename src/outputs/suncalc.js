@@ -1,6 +1,4 @@
 export default {
-  site: 'SunCalc',
-  image: 'suncalc_org16x16.png',
   id: 'suncalc',
   generate: function (sourceMapData, view) {
     const suncalcBase = 'http://suncalc.org/#/'
