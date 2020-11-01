@@ -3,7 +3,7 @@
   Blob,
   tippy */
 
-import OutputMaps from './outputMaps.js'
+import outputList from './outputList.js'
 
 let browser
 if (typeof browser === 'undefined') {
@@ -34,7 +34,7 @@ class MapLinksView {
     const sourceMapDataInfo = sourceMapData.getSourceInfo()
     this.showInfo(sourceMapDataInfo)
     this.showWarnings(sourceMapData)
-    this.constructOutputs(sourceMapData)
+    await this.constructOutputs(sourceMapData)
     const sourceDataType = sourceMapData.determineSourceDataType()
     this.prepareTabs(sourceDataType)
     this.tabSetup()
@@ -57,7 +57,7 @@ class MapLinksView {
     return this.getIdFromName(name) + '_' + this.getIdFromName(tabName) + '_cat'
   }
 
-  getServiceIdFromName (name) {
+  getServiceId (name) {
     return this.getIdFromName(name) + '_service'
   }
 
@@ -84,7 +84,7 @@ class MapLinksView {
   }
 
   createPlaceholderService (service, catElem) {
-    const serviceId = this.getServiceIdFromName(service)
+    const serviceId = this.getServiceId(service)
     const placeholderServiceLine = `<div id="${serviceId}" class="serviceLine"/>`
     catElem.innerHTML += placeholderServiceLine
   }
@@ -178,7 +178,7 @@ class MapLinksView {
   }
 
   insertServiceLineIntoCategory (service, serviceLineContents) {
-    const serviceId = this.getServiceIdFromName(service)
+    const serviceId = this.getServiceId(service)
     const serviceElem = document.getElementById(serviceId)
     if (serviceElem) {
       serviceElem.innerHTML += serviceLineContents
@@ -192,20 +192,13 @@ class MapLinksView {
   // @param {note} Content for an optional explanatory note.
   addMapServiceLinks (mapService, mapLinks, note) {
     const serviceConfig = this.config.getConfigForService(mapService.id)
-
-    // don't show links if user options hides it
-    // FIXME can we avoid calling the OutputMaps generator in the first place for hidden services?
-    if (serviceConfig.hidden) {
-      return
-    }
-
     const siteName = serviceConfig.name
     const imageFilename = serviceConfig.image
 
     const newServiceLine = this.buildLineOfLinks(siteName, imageFilename, mapLinks, note)
     this.insertServiceLineIntoCategory(mapService.id, newServiceLine)
 
-    if (note && note.length) {
+    if (note?.length) {
       tippy('.linknote', {
         content: note
       })
@@ -214,20 +207,23 @@ class MapLinksView {
     this.showCatAndTab(serviceConfig.cat, serviceConfig.tab)
   }
 
-  addUtility (mapService, id, name) {
-    const serviceId = this.getServiceIdFromName(mapService.id) // FIXME why are we using the id as a name?
+  addUtility (mapService, linkId, name) {
+    const serviceConfig = this.config.getConfigForService(mapService.id)
+    const siteName = serviceConfig.name
+    const imageFilename = serviceConfig.image
+
+    const serviceId = this.getServiceId(mapService.id)
     const serviceElem = document.getElementById(serviceId)
 
     if (serviceElem.innerText.length === 0) {
-      serviceElem.insertAdjacentHTML('beforeend', `<span id='${mapService.id}'>` +
-        `<span class="linkLineImg"><img src="../image/${mapService.image}"></span> ` +
-        `<span class="serviceName">${mapService.site}</span></span>`)
+      const newServiceLine = this.buildLineOfLinks(siteName, imageFilename, [])
+      this.insertServiceLineIntoCategory(mapService.id, newServiceLine)
     }
 
-    const linkHtml = `<a href='#' class='maplink' id='${id}'>${name}</a>`
-    serviceElem.innerHTML += linkHtml
+    const linkHtml = `<a href='#' class='maplink' id='${linkId}'>${name}</a>`
+    serviceElem.insertAdjacentHTML('beforeend', linkHtml)
 
-    const settingsForService = this.config.getServicesMap().get(mapService.id)
+    const settingsForService = this.config.getConfigForService(mapService.id)
     this.showCatAndTab(settingsForService.cat, settingsForService.tab)
   }
 
@@ -238,12 +234,6 @@ class MapLinksView {
   // @param {name} Display name for the link.
   // @param {fileGenerator} Function to invoke to create the file contents.
   addFileDownload (mapService, id, name, fileGenerator) {
-    const serviceConfig = this.config.getConfigForService(mapService.id)
-    // don't show links if user options hides the service
-    if (serviceConfig.hidden) {
-      return
-    }
-
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)
@@ -260,12 +250,6 @@ class MapLinksView {
   }
 
   addUtilityLink (mapService, id, name, utilFunction) {
-    const serviceConfig = this.config.getConfigForService(mapService.id)
-    // don't show links if user options hides the service
-    if (serviceConfig.hidden) {
-      return
-    }
-
     this.addUtility(mapService, id, name)
 
     const idElem = document.getElementById(id)
@@ -277,8 +261,9 @@ class MapLinksView {
   // @param {mapService} Object representing the map service.
   // @param {note} Text content of the note to be displayed.
   addNote (mapService, note) {
-    if (note && note.length) {
-      const mapServiceIdElem = document.getElementById(mapService.id)
+    if (note?.length) {
+      const serviceId = this.getServiceId(mapService.id)
+      const mapServiceIdElem = document.getElementById(serviceId)
       mapServiceIdElem.innerHTML += ' ' +
         "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
@@ -309,7 +294,7 @@ class MapLinksView {
         html += `<a class="maplink" target="_blank" href="${link.url}">${link.name}</a> `
       })
 
-      if (note && note.length) {
+      if (note?.length) {
         html +=
         "<span class=linknote title=''>" +
           '<svg viewBox="0 0 512 512">' +
@@ -376,10 +361,14 @@ class MapLinksView {
   }
 
   // Iterates through the map services to request each one to generate its links.
-  constructOutputs (sourceMapData) {
-    for (const outputMapService of OutputMaps.services) {
-      outputMapService.generate(sourceMapData, this)
-    }
+  async constructOutputs (sourceMapData) {
+    await outputList.init()
+
+    this.config.getServicesMap().forEach((serviceConfig, serviceId) => {
+      if (!serviceConfig.hidden) {
+        outputList[serviceId].generate(sourceMapData, this)
+      }
+    })
   }
 
   // Hide the animated loading dots.
