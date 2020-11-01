@@ -1,6 +1,6 @@
 # Test URLs
 
-Provided below are a non-comprehensive set of URLs which are useful for testing (in particular for testing the extractors).
+Provided below are a non-comprehensive set of URLs which are useful for test purposes. (In particular they are helpful for identifying when extractors start failing.)
 
 ## Directions
 
@@ -85,7 +85,7 @@ Provided below are a non-comprehensive set of URLs which are useful for testing 
 - single peak: https://www.peakbagger.com/peak.aspx?pid=10966
 - list of peaks: https://www.peakbagger.com/list.aspx?lid=12240 (should match displayed map)
 
-### No permanent URL available
+## No permanent URL available
 
 - https://www.rightmove.co.uk/ (pick any property)
 - https://www.zoopla.co.uk/ (pick any property)
