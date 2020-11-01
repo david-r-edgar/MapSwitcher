@@ -23,6 +23,10 @@ npm run build
 ```
 This will clean and build into `./release`, generating or copying all necessary files. It can be tested using the `chrome://extensions` 'Load unpacked extension...' option (see above), and also packed through the same page.
 
+### Testing
+
+There is a list of [Test URLs](docs/testURLs.md).
+
 ## Mapping services supported
 
 ### Input mapping services
