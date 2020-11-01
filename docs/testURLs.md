@@ -66,6 +66,12 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 - NLS explore: https://maps.nls.uk/geo/explore/#zoom=16&lat=51.48377&lon=-0.11459&layers=6&b=1
 
+- Sysmaps DE topo: http://www.sysmaps.co.uk/sysmaps_bkg.html?layers=B00000000000000000000000FFFFFTFFFTFFTTTTT&lat=51.3184&lon=9.4958 (**Failing**)
+
+- Sysmaps OSGB: http://www.sysmaps.co.uk/sysmaps_os.html?!55.9550465~-3.1827409
+
+- Waze: https://www.waze.com/en-GB/livemap/directions?latlng=51.3184%2C9.4958&zoom=15 (**Failing**)
+
 ## Special map cases
 
 - Custom map: https://www.google.com/maps/d/viewer?ie=UTF8&hl=en&msa=0&z=13&mid=1Qau52q093LkUcvO3wzsvscXlnkg&ll=53.452152151956845%2C-2.214619999999996 (**Failing**)
@@ -101,6 +107,10 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 - Peakbagger, single peak: https://www.peakbagger.com/peak.aspx?pid=10966
 
 - Peakbagger, list of peaks: https://www.peakbagger.com/list.aspx?lid=12240 (should match displayed map)
+
+- Strava heatmap (URL): https://www.strava.com/heatmap#12.10/170.44176/-45.88426/hot/all
+
+- Strava activity (tile): https://www.strava.com/activities/1126517520
 
 ## No permanent URL available
 
