@@ -5,6 +5,7 @@
 import SourceMapData from './sourceMapData.js'
 import ConfigManager from './config.js'
 import MapLinksView from './mapLinksView.js'
+import ExtractorList from './extractorList.js'
 
 // The Web Extension API is implemented on different root objects in different browsers.
 // Firefox uses 'browser'. Chrome uses 'chrome'.
@@ -13,6 +14,8 @@ let browser
 if (typeof browser === 'undefined') {
   browser = globalThis.chrome // eslint-disable-line no-global-assign
 }
+
+class NoExtraction extends Error {}
 
 class MapSwitcher {
   // Main routine
@@ -23,17 +26,27 @@ class MapSwitcher {
   // In case of any error (or for any non-map-service site), show a standard message
   async run () {
     try {
-      await this.validateCurrentTab()
-      const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction()])
+      this.initEnv()
+      const { url } = await this.validateCurrentTab()
+      const contentScripts = await this.getListOfContentScripts(url)
+      const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction(contentScripts)])
       const sourceMapData = await SourceMapData.build(extractedData)
       const configManager = await ConfigManager.create()
       await configManager.getServiceConfig().loadUserSettings()
       this.mapLinksView = new MapLinksView(configManager.getServiceConfig())
       await this.mapLinksView.display(sourceMapData)
     } catch (err) {
-      console.log('MapSwitcher:run() caught error:', err)
+      if (!(err instanceof NoExtraction)) {
+        this.log('MapSwitcher:run() caught error:', err)
+      }
       MapLinksView.handleNoCoords(err)
     }
+  }
+
+  initEnv () {
+    browser.management.getSelf((info) => {
+      this.environment = info.installType
+    })
   }
 
   // Checks if we should continue attempting to extract data from the current tab.
@@ -47,10 +60,26 @@ class MapSwitcher {
             (tabs[0].url.indexOf('//chrome.google.com/') >= 0)) {
           reject(new Error())
         } else {
-          resolve()
+          resolve({ url: tabs[0].url })
         }
       })
     })
+  }
+
+  getListOfContentScripts (hostname) {
+    const extractor = ExtractorList.filter(extr => hostname.indexOf(extr.host) >= 0)[0]
+
+    if (extractor) {
+      const preScripts = extractor.preScripts || []
+      const utils = extractor.utils === false ? [] : ['/src/mapUtil.js']
+      return [
+        ...preScripts,
+        ...utils,
+        '/src/dataExtractor.js',
+        `/src/extractors/${extractor.extractor}.js`
+      ]
+    }
+    throw new NoExtraction()
   }
 
   // Sets up message listener to receive results from content script
@@ -67,14 +96,17 @@ class MapSwitcher {
   // Runs the content scripts which handle the extraction of coordinate data from the current tab.
   //
   // @return Promise which fulfils when complete
-  runExtraction () {
+  runExtraction (contentScripts) {
     return new Promise(function (resolve) {
-      new ScriptExecution().executeScripts(
-        '/vendor/google-maps-data-parameter-parser/src/googleMapsDataParameter.js',
-        '/src/mapUtil.js',
-        '/src/dataExtractor.js')
+      new ScriptExecution().executeScripts(...contentScripts)
       resolve()
     })
+  }
+
+  log (...msg) {
+    if (this.environment === 'development') {
+      console.log(...msg)
+    }
   }
 }
 

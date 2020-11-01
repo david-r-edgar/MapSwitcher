@@ -210,6 +210,7 @@ h4 {
   color: #999;
   padding: 2px 4px;
   line-height: 1.5em;
+  min-height: 19px;
   display: block;
 }
 

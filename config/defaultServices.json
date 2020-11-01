@@ -18,7 +18,7 @@
   ["mapillary",{"cat":"General purpose","tab":"Regular mapping","name":"Mapillary","image":"mapillary16x16.png"}],
   ["nakarte",{"cat":"General purpose","tab":"Regular mapping","name":"nakarte.me","image":"nakarte16x16.png"}],
   ["streetmap",{"cat":"Regional","tab":"Regular mapping","name":"Streetmap","image":"streetmapLogo16x16.png"}],
-  ["ngi_ign",{"cat":"Regional","tab":"Regular mapping","name":"NGI/IGN","image":"ngi_ign_Logo16x16.png"}],
+  ["ngiign",{"cat":"Regional","tab":"Regular mapping","name":"NGI/IGN","image":"ngi_ign_Logo16x16.png"}],
   ["topozone",{"cat":"Regional","tab":"Regular mapping","name":"TopoZone","image":"topozone16x16.png"}],
   ["sysmaps",{"cat":"Regional","tab":"Regular mapping","name":"SysMaps","image":"sysmaps16x16.png"}],
   ["caltopo",{"cat":"Regional","tab":"Regular mapping","name":"CalTopo","image":"caltopoLogo16x16.png"}],
@@ -44,6 +44,6 @@
   ["stamen",{"cat":"Special purpose","tab":"Special purpose","name":"Stamen","image":"greyMarker.png"}],
   ["flightradar24",{"cat":"Special purpose","tab":"Special purpose","name":"Flightradar24","image":"flightradar24.png"}],
   ["MapWithAIRapiD",{"cat":"Special purpose","tab":"Special purpose","name":"Map With AI RapiD","image":"mapwithai.png"}],
-  ["dl_gpx",{"cat":"Utility","tab":"Special purpose","name":"GPX","image":"gpxFile16x16.png"}],
+  ["dlgpx",{"cat":"Utility","tab":"Special purpose","name":"GPX","image":"gpxFile16x16.png"}],
   ["clipboard",{"cat":"Utility","tab":"Special purpose","name":"Clipboard","image":"clipboard16x16.png"}]
 ]
