@@ -309,7 +309,7 @@ class MapLinksView {
 
   displayNonUpdatingWarning (warning) {
   // display modal with warning for non-updating sources
-    var modal = document.getElementById('warningModal')
+    const modal = document.getElementById('warningModal')
     modal.style.display = 'block'
 
     document.getElementById('nonUpdatingHost').textContent = warning
@@ -343,7 +343,7 @@ class MapLinksView {
 
     // show directions category; set directions description
     if (sourceMapDataInfo.directions) {
-      var dirnDescr = sourceMapDataInfo.directions.numWpts + ' waypoint route'
+      let dirnDescr = sourceMapDataInfo.directions.numWpts + ' waypoint route'
       const mode = (sourceMapDataInfo.directions.mode === 'transit')
         ? 'public transport'
         : sourceMapDataInfo.directions.mode

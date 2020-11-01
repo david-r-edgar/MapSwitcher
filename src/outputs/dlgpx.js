@@ -38,7 +38,7 @@ export default {
       // only provide a gpx route download if all the points in the route have coordinates
       if (pointsWithCoords === route.length) {
         view.addFileDownload(this, 'gpx_rte', 'Download route', function () {
-          var fileData = {
+          const fileData = {
             name: 'MapSwitcherRoute.gpx',
             type: 'application/gpx+xml;charset=utf-8',
             content:

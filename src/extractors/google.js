@@ -50,11 +50,11 @@ registerExtractor((resolve, reject) => {
       sourceMapData.directions.route = []
       for (const arrWpt of wholeRouteArray[1].split('/')) {
         if (arrWpt.length > 0) {
-          var wptObj = { address: arrWpt }
+          const wptObj = { address: arrWpt }
           // check if the address looks like a coordinate
           // if so, we put it in the coords sub-object too
           const coordRe = /([-0-9.]+),[+]?([-0-9.]+)/
-          var addrIsCoordArr = arrWpt.match(coordRe)
+          const addrIsCoordArr = arrWpt.match(coordRe)
           if (addrIsCoordArr && addrIsCoordArr.length > 2) {
             wptObj.coords = { lat: addrIsCoordArr[1], lng: addrIsCoordArr[2] }
           }
@@ -74,7 +74,7 @@ registerExtractor((resolve, reject) => {
       // number of sourceMapData wpts
       for (const gmdpWpt of gmdpRoute.getAllWaypoints()) {
         if (gmdpWpt.primary) {
-          var mapDataWptCoords = sourceMapData.directions.route[mapDataWptIndex].coords
+          const mapDataWptCoords = sourceMapData.directions.route[mapDataWptIndex].coords
           // if coords are not yet specified, insert them
           // - but don't overwrite them if they're already there
           if ((!mapDataWptCoords) ||
@@ -85,8 +85,7 @@ registerExtractor((resolve, reject) => {
           }
           mapDataWptIndex++
         } else {
-          var newSecondaryWpt =
-                        { coords: { lat: gmdpWpt.lat, lng: gmdpWpt.lng } }
+          const newSecondaryWpt = { coords: { lat: gmdpWpt.lat, lng: gmdpWpt.lng } }
           sourceMapData.directions.route.splice(mapDataWptIndex, 0, newSecondaryWpt)
           mapDataWptIndex++
         }

@@ -26,7 +26,7 @@ export default {
           max: 19
         }) - 7
 
-        var lang = ''
+        let lang = ''
         // extract the highest priority language (fr or nl) from browser preferences
         browserRoot.i18n.getAcceptLanguages(function (list) {
           for (const listLang of list) {

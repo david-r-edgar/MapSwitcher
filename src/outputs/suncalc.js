@@ -4,14 +4,14 @@ export default {
     const mapCentre = sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng
     const zoom = sourceMapData.getStandardZoom()
 
-    var now = new Date()
-    var year = now.getFullYear()
-    var month = now.getMonth() + 1
-    var dayOfMonth = now.getDate()
-    var hours = now.getHours()
-    var mins = now.getMinutes()
-    var date = year + '.' + month + '.' + dayOfMonth
-    var time = hours + ':' + mins
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth() + 1
+    const dayOfMonth = now.getDate()
+    const hours = now.getHours()
+    const mins = now.getMinutes()
+    const date = year + '.' + month + '.' + dayOfMonth
+    const time = hours + ':' + mins
 
     const mapLinks = [{
       name: 'Sunrise + sunset times',

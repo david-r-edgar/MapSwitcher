@@ -3,8 +3,8 @@ export default {
     const googleBase = 'https://www.google.com/maps/'
     let directions = ''
     const mapCentre = '@' + sourceMapData.centreCoords.lat + ',' + sourceMapData.centreCoords.lng + ','
-    var dataWpts = ''
-    var dataDirnOptions = ''
+    let dataWpts = ''
+    let dataDirnOptions = ''
 
     if ('directions' in sourceMapData && 'route' in sourceMapData.directions) {
       directions = 'dir/'
@@ -49,7 +49,7 @@ export default {
       dataDirnOptions = dataWpts + mode
 
       // add elements identifying directions, with counts of all following sub-elements
-      var exclMarkCount = (dataDirnOptions.match(/!/g) || []).length
+      const exclMarkCount = (dataDirnOptions.match(/!/g) || []).length
       dataDirnOptions = '!4m' + (exclMarkCount + 1) + '!4m' + exclMarkCount + dataDirnOptions
     }
 
