@@ -29,12 +29,13 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 - Bing: https://www.bing.com/maps/?rtp=adr.Boise,%20Idaho,%20United%20States~adr.Baton%20Rouge,%20Louisiana,%20United%20States~&mode=d&cp=38.10742880250442~-111.90390144319697&lvl=4 (it's expected that several output services are unable to use addresses without coords)
 
+- Waze: https://www.waze.com/en-GB/livemap/directions?to=ll.-33.8688197%2C151.2092955&from=place.ChIJrf08OilsEmsR4NQyFmh9AQU
+
 ### Directions (other cases)
 
 - Missing start point: https://www.bing.com/maps/?rtp=adr.~pos.27_00024_Strada%20di%20Villa%20Cucuzza%2027,%2000024%20Tivoli%20Rome~&cp=42.24294068331044~12.727743577639025&lvl=8
 
 - Missing end point: https://www.bing.com/maps/?rtp=adr.Vila%20Franca%20de%20Xira,%20Portugal%202600~adr.~&cp=38.831294302680035~-8.838409915044574&lvl=9&sty=h
-
 
 ## Regular maps
 
@@ -70,17 +71,17 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 - Sysmaps OSGB: http://www.sysmaps.co.uk/sysmaps_os.html?!55.9550465~-3.1827409
 
-- Waze: https://www.waze.com/en-GB/livemap/directions?latlng=51.3184%2C9.4958&zoom=15 (**Failing**)
+- Waze: https://www.waze.com/en-GB/livemap/directions?latlng=51.3184%2C9.4958&zoom=15
 
 ## Special map cases
 
-- Custom map: https://www.google.com/maps/d/viewer?ie=UTF8&hl=en&msa=0&z=13&mid=1Qau52q093LkUcvO3wzsvscXlnkg&ll=53.452152151956845%2C-2.214619999999996 (**Failing**)
+- Custom map: https://www.google.com/maps/d/viewer?ie=UTF8&hl=en&msa=0&z=13&mid=1Qau52q093LkUcvO3wzsvscXlnkg&ll=53.452152151956845%2C-2.214619999999996
 
 ## Search results
 
 - Search results, map in right-hand column: https://www.google.com/search?q=machu+picchu&oq=macchu+pi&aqs=chrome.1.69i57j0l7.3186j0j7&client=ubuntu&sourceid=chrome&ie=UTF-8
 
-- Search results, map at top: https://www.google.com/search?q=Dorset+Street&oq=Dorset+Street&aqs=chrome..69i57&client=ubuntu&sourceid=chrome&ie=UTF-8 (**Failing**)
+- Search results, map at top: https://www.google.com/search?q=Dorset+Street&oq=Dorset+Street&aqs=chrome..69i57&client=ubuntu&sourceid=chrome&ie=UTF-8 (**Not currently supported**)
 
 - Search results, map not in top position: https://www.google.com/search?safe=strict&q=horse+riding+myanmar
 

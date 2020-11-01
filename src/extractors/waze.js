@@ -1,43 +1,30 @@
 /* global
-  registerExtractor,
-  XPathResult,
-  calculateResolutionFromStdZoom */
+  registerExtractor */
 
 registerExtractor(resolve => {
   const sourceMapData = {}
-  const centrePermalink = document.evaluate('//*[@class="wm-permalink-control__link"]',
-    document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.href
-
-  const lonArray = centrePermalink.match(/lon=([-0-9.]+)/)
-  const latArray = centrePermalink.match(/lat=([-0-9.]+)/)
-  if (lonArray && lonArray.length > 1 && latArray && latArray.length > 1) {
-    sourceMapData.centreCoords = { lat: latArray[1], lng: lonArray[1] }
-    const zoomArray = centrePermalink.match(/zoom=([0-9]+)/)
-    if (zoomArray && zoomArray.length > 1) {
-      sourceMapData.resolution =
-        calculateResolutionFromStdZoom(zoomArray[1], latArray[1])
-    }
+  const permalink = document.getElementsByClassName('wz-attribution-link__input')[0]
+  const [, lat, lng] = permalink.value.match(/latlng=([-0-9.]+)%2C([-0-9.]+)/)
+  if (lat && lng) {
+    sourceMapData.centreCoords = { lat, lng }
+    // apparently it no longer supports zoom
   }
 
-  const re2 = /from_lat=([-0-9.]+)&from_lon=([-0-9.]+)&to_lat=([-0-9.]+)&to_lon=([-0-9.]+)/
-  const routeCoordsArray = centrePermalink.match(re2)
-  if (routeCoordsArray && routeCoordsArray.length > 4) {
+  const originPrimary = document.querySelector('.wz-search-container.is-origin .wm-search__primary')
+  const originSecondary = document.querySelector('.wz-search-container.is-origin .wm-search__secondary')
+  const destinationPrimary = document.querySelector('.wz-search-container.is-destination .wm-search__primary')
+  const destinationSecondary = document.querySelector('.wz-search-container.is-destination .wm-search__secondary')
+  if (originPrimary?.textContent && originSecondary?.textContent &&
+    destinationPrimary?.textContent && destinationSecondary?.textContent) {
+    origin = `${originPrimary.textContent}, ${originSecondary.textContent}`
+    destination = `${destinationPrimary.textContent}, ${destinationSecondary.textContent}`
     sourceMapData.directions = {
       route: [
-        {
-          coords: {
-            lat: routeCoordsArray[1],
-            lng: routeCoordsArray[2]
-          }
-        },
-        {
-          coords: {
-            lat: routeCoordsArray[3],
-            lng: routeCoordsArray[4]
-          }
-        }
+        { address: origin },
+        { address: destination }
       ]
     }
   }
+
   resolve(sourceMapData)
 })

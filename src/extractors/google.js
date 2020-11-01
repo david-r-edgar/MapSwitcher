@@ -8,13 +8,12 @@ registerExtractor((resolve, reject) => {
   function customMap () {
     const sourceMapData = {}
     const customCoordsRe = /ll=([-0-9.]+)%2C([-0-9.]+)/
-    const coordArray = window.location.search.match(customCoordsRe)
+    const [, lat, lng] = window.location.search.match(customCoordsRe)
     const customZoomRe = /z=([0-9.]+)/
-    const zoomArray = window.location.search.match(customZoomRe)
-    if (coordArray && coordArray.length > 2 && zoomArray && zoomArray.length > 1) {
-      sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
-      sourceMapData.resolution =
-        calculateResolutionFromStdZoom(zoomArray[1], coordArray[1])
+    const [, zoom] = window.location.search.match(customZoomRe)
+    if (lat && lng && zoom) {
+      sourceMapData.centreCoords = { lat, lng }
+      sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
     }
     resolve(sourceMapData)
   }
@@ -201,7 +200,7 @@ registerExtractor((resolve, reject) => {
     }
   }
 
-  if (window.location.pathname === '/maps/d/viewer') {
+  if (window.location.pathname.indexOf('/viewer') > 0) {
     customMap()
   } else if (window.location.pathname.indexOf('/maps/') === 0) {
     regularMap()

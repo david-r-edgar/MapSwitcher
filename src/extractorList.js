@@ -116,7 +116,7 @@ const extractors = [
   },
   {
     host: 'rightmove',
-    extractor: ''
+    extractor: 'rightmove'
   },
   {
     host: 'onthemarket',
@@ -190,7 +190,7 @@ const extractors = [
   },
   {
     host: 'openweathermap.org',
-    extractor: 'openweathermap'
+    extractor: 'openweather'
   }
 ]
 

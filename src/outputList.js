@@ -36,7 +36,7 @@ import strava from './outputs/strava.js'
 import wmLabs from './outputs/wmLabs.js'
 import suncalc from './outputs/suncalc.js'
 import boulter from './outputs/boulter.js'
-import openweathermap from './outputs/openweathermap.js'
+import openweather from './outputs/openweather.js'
 import flickr from './outputs/flickr.js'
 import windy from './outputs/windy.js'
 import what3words from './outputs/what3words.js'
@@ -85,7 +85,7 @@ const outputs = {
   wmLabs,
   suncalc,
   boulter,
-  openweathermap,
+  openweather,
   flickr,
   windy,
   what3words,

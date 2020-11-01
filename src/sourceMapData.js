@@ -60,7 +60,6 @@ class SourceMapData {
   //
   // The main functionality is to convert from unusual coordinate systems to WGS84.
   async normaliseExtractedData () {
-    // return new Promise(function (resolve, reject) {
 
     if (this.centreCoords) {
       // regular wgs84 coords extracted
