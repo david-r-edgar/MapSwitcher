@@ -47,14 +47,23 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 - Near a border: https://demo.f4map.com/#lat=41.2943321&lon=45.0143813&zoom=14&3d=false&camera.theta=0.9
 
 - Browse map: https://www.geocaching.com/map/#?ll=50.97691,11.0277&z=12
+
 - Search map: https://www.geocaching.com/play/map/?lat=47.608376&lng=-122.347891&zoom=15&asc=true&sort=distance
 
+- NGI/IGN: https://topomapviewer.ngi.be/?x=648833.54&y=670721.26&zoom=11&l=en&baseLayer=ngi.cartoweb.topo.be
+
+- streetmap.co.uk: https://www.streetmap.co.uk/map.srf?X=318088&Y=176467&A=Y&Z=106
+
 - Cyclosm: https://www.cyclosm.org/#map=12/-34.9182/138.6174/cyclosm
+
 - nakarte.me: https://nakarte.me/#m=18/50.06441/14.41323&l=Czt
+
 - OpenWeather: https://openweathermap.org/weathermap?basemap=map&cities=true&layer=temperature&lat=46.29903&lon=8.47527&zoom=10
 
 - MapmyIndia: https://maps.mapmyindia.com/@tfiosjoaa,oeiqfsvja,le,l,t,fzdata
+
 - NLS side by side: https://maps.nls.uk/geo/explore/side-by-side/#zoom=15&lat=51.58231&lon=0.49097&layers=1&right=BingHyb
+
 - NLS explore: https://maps.nls.uk/geo/explore/#zoom=16&lat=51.48377&lon=-0.11459&layers=6&b=1
 
 ## Special map cases
@@ -73,21 +82,32 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 ## Social media
 
-- FB event: https://www.facebook.com/events/217567725294368/?acontext=%7B%22event_action_history%22%3A[%7B%22mechanism%22%3A%22search_results%22%2C%22surface%22%3A%22search%22%7D]%7D (**Failing**)
-- FB page: https://www.facebook.com/hornvenue (**Failing**)
-- FB place: https://www.facebook.com/places/Things-to-do-in-Weymouth-Dorset/108451039178633 (**Failing**)
+- Facebook event: https://www.facebook.com/events/217567725294368/?acontext=%7B%22event_action_history%22%3A[%7B%22mechanism%22%3A%22search_results%22%2C%22surface%22%3A%22search%22%7D]%7D (**Failing**)
+
+- Facebook page: https://www.facebook.com/hornvenue (**Failing**)
+
+- Facebook place: https://www.facebook.com/places/Things-to-do-in-Weymouth-Dorset/108451039178633 (**Failing**)
 
 ## Other services
 
-- geohack: https://geohack.toolforge.org/geohack.php?pagename=Flamengo_Park&params=22.921_S_43.17_W_type:landmark_region:BR
-- boulter: http://boulter.com/gps/#15.20071%2C44.60037
+- Geohack: https://geohack.toolforge.org/geohack.php?pagename=Flamengo_Park&params=22.921_S_43.17_W_type:landmark_region:BR
 
-- single peak: https://www.peakbagger.com/peak.aspx?pid=10966
-- list of peaks: https://www.peakbagger.com/list.aspx?lid=12240 (should match displayed map)
+- Boulter: http://boulter.com/gps/#15.20071%2C44.60037
+
+- Wikipedia, specified in page: https://en.wikipedia.org/wiki/Bridge_of_Sighs
+
+- Wikipedia, only given in infobox: https://en.wikipedia.org/wiki/Mekong (**Failing**)
+
+- Peakbagger, single peak: https://www.peakbagger.com/peak.aspx?pid=10966
+
+- Peakbagger, list of peaks: https://www.peakbagger.com/list.aspx?lid=12240 (should match displayed map)
 
 ## No permanent URL available
 
 - https://www.rightmove.co.uk/ (pick any property)
+
 - https://www.zoopla.co.uk/ (pick any property)
+
 - https://www.onthemarket.com/ (pick any property)
+
 - https://www.primelocation.com/ (pick a property; some may fail due to not having lat & lng specified in header meta)
