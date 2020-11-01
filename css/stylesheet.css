@@ -64,9 +64,10 @@ a.maplink:active {
   color: #110066;
 }
 .serviceLine {
-  margin: 1px 0px;
+  margin: 1px 0px 5px 0px;
   padding-left: 20px;
   text-indent: -20px;
+  line-height: 90%;
 }
 .serviceName {
   font-size: 1.05em;
