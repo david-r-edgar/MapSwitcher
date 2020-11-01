@@ -5,32 +5,39 @@ export default {
     const zoom = 'z=' + sourceMapData.getStandardZoom({ default: 6 })
 
     let directions = ''
-    if ('directions' in sourceMapData && 'route' in sourceMapData.directions) {
+    if (sourceMapData?.directions?.route) {
       const sourceWaypoints = sourceMapData.directions.route.filter((wpt) => {
         return ('coords' in wpt)
       })
-      const waypointPairs = sourceWaypoints.map(wpt => {
-        return wpt.coords.lat + ',' + wpt.coords.lng
-      })
-      const routeCoords = waypointPairs.join('~')
-      let mode = 'auto'
-      if (sourceMapData.directions.mode) {
-        switch (sourceMapData.directions.mode) {
-          case 'car':
-            mode = 'auto'
-            break
-          case 'bike':
-            mode = 'bc'
-            break
-          case 'foot':
-            mode = 'pd'
-            break
-          case 'transit':
-            mode = 'mt'
-            break
+      if (sourceWaypoints.length >= 2) {
+        const waypointPairs = sourceWaypoints.map(wpt => {
+          return wpt.coords.lat + ',' + wpt.coords.lng
+        })
+        const routeCoords = waypointPairs.join('~')
+        let mode = 'auto'
+        if (sourceMapData.directions.mode) {
+          switch (sourceMapData.directions.mode) {
+            case 'car':
+              mode = 'auto'
+              break
+            case 'bike':
+              mode = 'bc'
+              break
+            case 'foot':
+              mode = 'pd'
+              break
+            case 'transit':
+              mode = 'mt'
+              break
+          }
         }
+        directions = '&mode=routes&rtext=' + routeCoords + '&rtt=' + mode
+      } else {
+        view.addMapServiceLinks(this, [],
+          'Yandex directions unavailable because waypoints are not ' +
+          'all specified as coordinates.'
+        )
       }
-      directions = '&mode=routes&rtext=' + routeCoords + '&rtt=' + mode
     }
 
     if (directions.length > 0) {

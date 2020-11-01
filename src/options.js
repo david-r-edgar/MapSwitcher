@@ -61,7 +61,6 @@ class Options {
   }
 
   createService (service, catBody, configForService) {
-    // need to get image & site from OutputMaps
     const serviceImage = `../image/${configForService.image}`
     const directionsSuffix = configForService.type === 'directions' ? ' directions' : ''
     const siteName = configForService.name + directionsSuffix
