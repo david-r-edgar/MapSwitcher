@@ -15,7 +15,7 @@ export default {
         url: googleBase + mapCentre + zoom + '/data=' + '!5m1!1e4'
       },
       {
-        name: 'Earth',
+        name: 'Satellite',
         url: googleBase + mapCentre + zoom + '/data=!3m1!1e3'
       },
       {

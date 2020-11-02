@@ -66,7 +66,7 @@ export default {
           url: googleBase + directions + mapCentre + zoom + '/data=' + dataDirnOptions + '!5m1!1e4'
         },
         {
-          name: 'Earth',
+          name: 'Satellite',
           url: googleBase + directions + mapCentre + zoom + '/data=!3m1!1e3' + dataDirnOptions
         },
         {
