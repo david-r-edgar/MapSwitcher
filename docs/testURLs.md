@@ -89,11 +89,13 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 ## Social media
 
-- Facebook event: https://www.facebook.com/events/217567725294368/?acontext=%7B%22event_action_history%22%3A[%7B%22mechanism%22%3A%22search_results%22%2C%22surface%22%3A%22search%22%7D]%7D (**Failing**)
+- Facebook event: https://www.facebook.com/events/217567725294368/?acontext=%7B%22event_action_history%22%3A[%7B%22mechanism%22%3A%22search_results%22%2C%22surface%22%3A%22search%22%7D]%7D
 
-- Facebook page: https://www.facebook.com/hornvenue (**Failing**)
+- Facebook page: https://www.facebook.com/hornvenue
 
-- Facebook place: https://www.facebook.com/places/Things-to-do-in-Weymouth-Dorset/108451039178633 (**Failing**)
+- Facebook place: https://www.facebook.com/places/Things-to-do-in-Weymouth-Dorset/108451039178633
+
+- Facebook place search: https://www.facebook.com/search/places/?q=madrid (**Failing**)
 
 ## Other services
 

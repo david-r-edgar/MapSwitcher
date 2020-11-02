@@ -16,8 +16,8 @@ registerExtractor(resolve => {
   const destinationSecondary = document.querySelector('.wz-search-container.is-destination .wm-search__secondary')
   if (originPrimary?.textContent && originSecondary?.textContent &&
     destinationPrimary?.textContent && destinationSecondary?.textContent) {
-    origin = `${originPrimary.textContent}, ${originSecondary.textContent}`
-    destination = `${destinationPrimary.textContent}, ${destinationSecondary.textContent}`
+    const origin = `${originPrimary.textContent}, ${originSecondary.textContent}`
+    const destination = `${destinationPrimary.textContent}, ${destinationSecondary.textContent}`
     sourceMapData.directions = {
       route: [
         { address: origin },

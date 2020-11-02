@@ -1,38 +1,80 @@
 /* global
   calculateResolutionFromStdZoom,
-  XPathResult,
   registerExtractor */
 
 registerExtractor(resolve => {
-  const sourceMapData = {}
-
-  // we rely on this obfuscated class name continuing to be used
-  const mapImages = document.evaluate('//*[@class="_a3f img"]',
-    document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
-
-  if (mapImages && mapImages.currentSrc && mapImages.currentSrc.length > 0) {
-    const re1 = /markers=([-0-9.]+)%2C([-0-9.]+)/
-    const coordArr = mapImages.currentSrc.match(re1)
-    if (coordArr && coordArr.length > 2) {
-      sourceMapData.centreCoords = { lat: coordArr[1], lng: coordArr[2] }
-      const zoomRe = /zoom=([0-9]+)/
-      const zoomArr = mapImages.currentSrc.match(zoomRe)
-      if (zoomArr && zoomArr.length > 1) {
-        sourceMapData.resolution =
-          calculateResolutionFromStdZoom(zoomArr[1], coordArr[1])
-      } else {
-        // hacky way to find zoom for pages - could maybe use bounding box instead
-        const zoomUrl = document.evaluate('//*[@class="_3n4p"]',
-          document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
-        const zoomArr = zoomUrl.getAttribute('ajaxify').match(zoomRe)
-        if (zoomArr && zoomArr.length > 1) {
-          sourceMapData.resolution =
-            calculateResolutionFromStdZoom(zoomArr[1], coordArr[1])
+  // this is pretty similar to the 'event' code - we could probably get away with using that instead - not sure about centre vs. marker_list
+  function fbPage () {
+    try {
+      const mapView = document.querySelector('*[aria-label="Map view"]')
+      const bgImageElem = mapView.querySelector('*[style*="background-image"]')
+      const bgImageString = bgImageElem?.style?.backgroundImage
+      const [, lat, lng] = bgImageString.match(/center=([-0-9.]+)%2C([-0-9.]+)/)
+      const [, zoom] = bgImageString.match(/zoom=([0-9]+)/)
+      if (lat && lng && zoom) {
+        return {
+          centreCoords: { lat, lng },
+          resolution: calculateResolutionFromStdZoom(zoom, lat),
+          locationDescr: 'map displayed on page'
         }
       }
+    } catch (err) {
+      return null
     }
-    sourceMapData.locationDescr = 'primary identified location'
   }
 
-  resolve(sourceMapData)
+  function fbEvent () {
+    try {
+      const bgImageElems = document.querySelectorAll('*[style*="background-image"]')
+      const mapElems = Array.from(bgImageElems).map(elem => {
+        const bgImageUrl = elem?.style?.backgroundImage
+        return (bgImageUrl && bgImageUrl.indexOf('static_map') > 0) ? bgImageUrl : ''
+      })
+      const bgImageString = mapElems[0]
+      const [, lat, lng] = bgImageString.match(/marker_list\[0\]=([-0-9.]+)%2C([-0-9.]+)/)
+      const [, zoom] = bgImageString.match(/zoom=([0-9]+)/)
+      if (lat && lng && zoom) {
+        return {
+          centreCoords: { lat, lng },
+          resolution: calculateResolutionFromStdZoom(zoom, lat),
+          locationDescr: 'map displayed on page'
+        }
+      }
+    } catch (err) {
+      return null
+    }
+  }
+
+  function fbPlace () {
+    // similar to strava extractor
+    try {
+      const mapIframe = document.querySelector('iframe[src*=place]')
+      const container = mapIframe.contentWindow.document.querySelector('.leaflet-container')
+      const containerRect = container.getBoundingClientRect()
+
+      const tile = container.querySelector('.leaflet-tile')
+      const tileRect = tile.getBoundingClientRect()
+
+      const re = /x=([0-9]+)&y=([0-9]+)&z=([0-9]+)/
+      const [, tx, ty, z] = tile.src.match(re)
+      if (!(tx && ty && z)) {
+        return null
+      }
+
+      const cx = +tx + ((containerRect.left + containerRect.right) / 2 - tileRect.left) / tileRect.width
+      const cy = +ty + ((containerRect.top + containerRect.bottom) / 2 - tileRect.top) / tileRect.height
+      const lat = Math.atan(Math.sinh(Math.PI * (1 - 2 * (cy / 2 ** z)))) / Math.PI * 180
+      const lng = (cx / 2 ** z) * 360 - 180
+
+      return {
+        centreCoords: { lat, lng },
+        resolution: calculateResolutionFromStdZoom(z, lat),
+        locationDescr: 'mapped location'
+      }
+    } catch (err) {
+      return null
+    }
+  }
+
+  resolve(fbPage() || fbEvent() || fbPlace())
 })
