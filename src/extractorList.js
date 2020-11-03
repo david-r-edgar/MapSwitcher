@@ -191,6 +191,11 @@ const extractors = [
   {
     host: 'openweathermap.org',
     extractor: 'openweather'
+  },
+  {
+    host: 'heavens-above.com',
+    extractor: 'heavensAbove',
+    utils: false
   }
 ]
 

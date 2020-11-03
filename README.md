@@ -82,6 +82,7 @@ There is a list of [Test URLs](docs/testURLs.md).
 - NLS
 - Boulter
 - OpenWeatherMap
+- Heavens-Above
 
 ### Output mapping services
 
@@ -137,6 +138,7 @@ There is a list of [Test URLs](docs/testURLs.md).
 - SunCalc
 - Boulter (coordinate conversion)
 - Flickr (map of nearby photos)
+- Heavens-Above
 
 ## Known issues
 

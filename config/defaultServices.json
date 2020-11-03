@@ -39,6 +39,7 @@
   ["openweather",{"cat":"Miscellaneous","tab":"Special purpose","name":"OpenWeather","image":"openWeatherMap16x16.png"}],
   ["flickr",{"cat":"Miscellaneous","tab":"Special purpose","name":"Flickr","image":"flickr16x16.png"}],
   ["windy",{"cat":"Miscellaneous","tab":"Special purpose","name":"Windy","image":"windyLogo16x16.png"}],
+  ["heavensAbove", {"cat":"Miscellaneous","tab":"Special purpose","name":"Heavens-Above","image":"heavensAbove16x16.png"}],
   ["what3words",{"cat":"Special purpose","tab":"Special purpose","name":"what3words","image":"w3wLogo.png"}],
   ["openseamap",{"cat":"Special purpose","tab":"Special purpose","name":"OpenSeaMap","image":"openSeaMapLogo16x16.png"}],
   ["stamen",{"cat":"Special purpose","tab":"Special purpose","name":"Stamen","image":"greyMarker.png"}],

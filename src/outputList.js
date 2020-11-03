@@ -45,6 +45,7 @@ import flightradar24 from './outputs/flightradar24.js'
 import MapWithAIRapiD from './outputs/MapWithAIRapiD.js'
 import dlgpx from './outputs/dlgpx.js'
 import clipboard from './outputs/clipboard.js'
+import heavensAbove from './outputs/heavensAbove.js'
 
 const outputs = {
   google,
@@ -93,7 +94,8 @@ const outputs = {
   flightradar24,
   MapWithAIRapiD,
   dlgpx,
-  clipboard
+  clipboard,
+  heavensAbove
 }
 
 outputs.init = async function () {
