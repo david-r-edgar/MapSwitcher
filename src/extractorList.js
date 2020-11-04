@@ -62,8 +62,7 @@ const extractors = [
   },
   {
     host: 'sysmaps.co.uk',
-    extractor: 'sysmaps',
-    utils: false
+    extractor: 'sysmaps'
   },
   {
     host: 'wikipedia.org',

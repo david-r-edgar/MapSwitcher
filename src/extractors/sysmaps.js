@@ -1,5 +1,6 @@
 /* global
   registerExtractor,
+  calculateResolutionFromStdZoom,
   XPathResult */
 
 registerExtractor((resolve, reject) => {
@@ -35,11 +36,43 @@ registerExtractor((resolve, reject) => {
     }
   }
 
+  function leafletExtractor () {
+    // similar to strava extractor
+    try {
+      const container = document.querySelector('.leaflet-container')
+      const containerRect = container.getBoundingClientRect()
+
+      const tile = container.querySelector('.leaflet-tile')
+      const tileRect = tile.getBoundingClientRect()
+
+      const re = /([0-9]+)\/([0-9]+)\/([0-9]+)/
+      const [, z, tx, ty] = tile.src.match(re)
+      if (!(tx && ty && z)) {
+        return null
+      }
+
+      const cx = +tx + ((containerRect.left + containerRect.right) / 2 - tileRect.left) / tileRect.width
+      const cy = +ty + ((containerRect.top + containerRect.bottom) / 2 - tileRect.top) / tileRect.height
+      const lat = Math.atan(Math.sinh(Math.PI * (1 - 2 * (cy / 2 ** z)))) / Math.PI * 180
+      const lng = (cx / 2 ** z) * 360 - 180
+
+      return {
+        centreCoords: { lat, lng },
+        resolution: calculateResolutionFromStdZoom(z, lat)
+      }
+    } catch (err) {
+      return null
+    }
+  }
+
   if (window.location.pathname.indexOf('/sysmaps_os.html') === 0) {
     if (inDom()) { return }
   }
 
   if (inLocationSearch()) { return }
+
+  const leafletExtrResult = leafletExtractor()
+  if (leafletExtrResult) { return resolve(leafletExtrResult) }
 
   reject()
 })

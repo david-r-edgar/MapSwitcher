@@ -71,6 +71,8 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 - Sysmaps OSGB: http://www.sysmaps.co.uk/sysmaps_os.html?!55.9550465~-3.1827409
 
+- Sysmaps IGN FR: https://www.sysmaps.co.uk/sysmaps_ign2.html
+
 - Waze: https://www.waze.com/en-GB/livemap/directions?latlng=51.3184%2C9.4958&zoom=15
 
 ## Special map cases
