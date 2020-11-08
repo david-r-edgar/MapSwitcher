@@ -115,8 +115,6 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 - Wikipedia, in infobox, degrees, minutes and seconds: https://en.wikipedia.org/wiki/Stoppani_Glacier
 
-https://en.wikipedia.org/wiki/Slade_Hall
-
 - Peakbagger, single peak: https://www.peakbagger.com/peak.aspx?pid=10966
 
 - Peakbagger, list of peaks: https://www.peakbagger.com/list.aspx?lid=12240 (should match displayed map)
