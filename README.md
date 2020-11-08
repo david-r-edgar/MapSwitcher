@@ -42,6 +42,7 @@ There is a list of [Test URLs](docs/testURLs.md).
 
 ##### Without directions
 - Wikimapia
+- Wikipedia
 - Wikimedia Labs
   - Geohack info page
   - WikiMiniAtlas

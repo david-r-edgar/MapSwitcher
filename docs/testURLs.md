@@ -105,9 +105,17 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 - Boulter: http://boulter.com/gps/#15.20071%2C44.60037
 
-- Wikipedia, specified in page: https://en.wikipedia.org/wiki/Bridge_of_Sighs
+- Wikipedia, specified in page (title position): https://en.wikipedia.org/wiki/Bridge_of_Sighs
 
-- Wikipedia, only given in infobox: https://en.wikipedia.org/wiki/Mekong (**Failing**)
+- Wikipedia, in infobox and in text, degrees: https://en.wikipedia.org/wiki/Slade_Hall
+
+- Wikipedia, in page, degrees and minutes: https://en.wikipedia.org/wiki/Almirantazgo_Fjord
+
+- Wikipedia, in infobox, degrees and minutes: https://en.wikipedia.org/wiki/Mekong
+
+- Wikipedia, in infobox, degrees, minutes and seconds: https://en.wikipedia.org/wiki/Stoppani_Glacier
+
+https://en.wikipedia.org/wiki/Slade_Hall
 
 - Peakbagger, single peak: https://www.peakbagger.com/peak.aspx?pid=10966
 
