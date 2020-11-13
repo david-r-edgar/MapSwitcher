@@ -40,21 +40,18 @@ registerExtractor(resolve => {
       }
   }
 
-  const re3 = /engine=[a-zA-Z_]+_([a-z]+)&/
-  const modeArray = window.location.search.match(re3)
-
-  if (modeArray && modeArray.length > 1) {
-    switch (modeArray[1]) {
-      case 'bicycle':
-        sourceMapData.directions.mode = 'bike'
-        break
-      case 'car':
-        sourceMapData.directions.mode = 'car'
-        break
-      case 'foot':
-        sourceMapData.directions.mode = 'foot'
-        break
-    }
+  const [, mode] = window.location.search.match(/engine=[a-zA-Z_]+_([a-z]+)&/)
+  switch (mode) {
+    case 'bicycle':
+    case 'bike':
+      sourceMapData.directions.mode = 'bike'
+      break
+    case 'car':
+      sourceMapData.directions.mode = 'car'
+      break
+    case 'foot':
+      sourceMapData.directions.mode = 'foot'
+      break
   }
 
   // sometimes (eg. after a search?) osm has directions but no centre coords

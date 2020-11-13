@@ -17,10 +17,6 @@ export default {
       {
         name: 'Aerial',
         url: bingBase + '&' + mapCentre + zoom + '&sty=h'
-      },
-      {
-        name: "Bird's eye",
-        url: bingBase + '&' + mapCentre + zoom + '&sty=b'
       }
     ]
 

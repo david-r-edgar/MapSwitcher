@@ -11,10 +11,10 @@ export default {
       if (sourceMapData.directions.mode) {
         switch (sourceMapData.directions.mode) {
           case 'foot':
-            mode = 'engine=mapzen_foot&'
+            mode = 'engine=graphhopper_foot&'
             break
           case 'car':
-            mode = 'engine=osrm_car&'
+            mode = 'engine=graphhopper_car&'
             break
           case 'bike':
             mode = 'engine=graphhopper_bicycle&'
