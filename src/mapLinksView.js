@@ -36,7 +36,7 @@ class MapLinksView {
     this.showWarnings(sourceMapData)
     await this.constructOutputs(sourceMapData)
     const sourceDataType = sourceMapData.determineSourceDataType()
-    this.prepareTabs(sourceDataType)
+    this.setOneTabActive(sourceDataType)
     this.tabSetup()
     await this.loaded()
   }
@@ -116,18 +116,21 @@ class MapLinksView {
     this.config.getHierarchicalMap().forEach((_, tab) => {
       const tabId = this.getTabPaneIdFromName(tab)
       const tabSourceDescr = document.querySelector('#' + tabId + ' .sourceDescr')
-      if (regularMappingTabs.includes(tab)) {
+      if (regularMappingTabs.has(tab)) {
         tabSourceDescr.innerHTML += '<div class="descrItem"><span class="lbl">Location:</span> &nbsp; <span class="descrVal sourceLocnVal"></span></div>' +
           '<div class="descrItem"><span class="lbl">Extracted from:</span> &nbsp; <span class="descrVal sourceExtrFromVal"></span></div>'
       }
-      if (directionsTabs.includes(tab)) {
+      if (directionsTabs.has(tab)) {
         tabSourceDescr.innerHTML += '<div class="descrItem"><span class="descrVal directionsDescr"></span></div>'
       }
     })
   }
 
-  prepareTabs (tabType) {
-    const tab = tabType === 'directions' ? this.config.getDirectionsTabs()[0] : this.config.getRegularMappingTabs()[0]
+  setOneTabActive (tabType) {
+    const directionsTabs = this.config.getDirectionsTabs()
+    const tabIter = ((tabType === 'directions') && directionsTabs.size) ? directionsTabs : this.config.getRegularMappingTabs()
+    const tab = tabIter.values().next().value
+    if (!tab) return
 
     const tabPaneId = this.getTabPaneIdFromName(tab)
     const tabTabId = this.getTabTabIdFromName(tab)

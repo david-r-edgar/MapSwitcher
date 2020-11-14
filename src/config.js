@@ -135,10 +135,10 @@ class ServiceConfig {
   // returns an array of tab names which have direction services in
   getDirectionsTabs () {
     if (!this.directionsTabs) {
-      this.directionsTabs = []
+      this.directionsTabs = new Set()
       this.config.forEach((serviceSettings) => {
         if (serviceSettings.type === 'directions' && !serviceSettings.hidden) {
-          this.directionsTabs.push(serviceSettings.tab)
+          this.directionsTabs.add(serviceSettings.tab)
         }
       })
     }
@@ -148,10 +148,10 @@ class ServiceConfig {
   // returns an array of tab names which have regular (non-direction) services in
   getRegularMappingTabs () {
     if (!this.regularMappingTabs) {
-      this.regularMappingTabs = []
+      this.regularMappingTabs = new Set()
       this.config.forEach((serviceSettings) => {
         if (serviceSettings.type !== 'directions' && !serviceSettings.hidden) {
-          this.regularMappingTabs.push(serviceSettings.tab)
+          this.regularMappingTabs.add(serviceSettings.tab)
         }
       })
     }
