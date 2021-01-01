@@ -5,18 +5,17 @@
 
 registerExtractor(resolve => {
   const sourceMapData = {}
-  const re1 = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
-  const coordArray = window.location.hash.match(re1)
-  if (coordArray && coordArray.length >= 4) {
-    sourceMapData.centreCoords = { lat: coordArray[2], lng: coordArray[3] }
-    sourceMapData.resolution = calculateResolutionFromStdZoom(
-      coordArray[1], sourceMapData.centreCoords.lat)
+  const mapCentreRe = /map=([0-9]+)\/([-0-9.]+)\/([-0-9.]+)/
+  const [, zoom, lat, lng] = window.location.hash.match(mapCentreRe)
+  if (zoom && lat && lng) {
+    sourceMapData.centreCoords = { lat, lng }
+    sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
   }
 
-  const re2 = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
-  const routeCoordsArray = window.location.search.match(re2)
+  const routeRe = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
+  const [lat1, lng1, lat2, lng2] = window.location.search.match(routeRe)
 
-  if (routeCoordsArray && routeCoordsArray.length > 4) {
+  if (lat1 && lng1 && lat2 && lng2) {
     const routeFrom = document.evaluate('//*[@id="route_from"]',
       document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
     const routeTo = document.evaluate('//*[@id="route_to"]',
@@ -30,28 +29,30 @@ registerExtractor(resolve => {
 
     sourceMapData.directions.route[0].coords =
       {
-        lat: routeCoordsArray[1],
-        lng: routeCoordsArray[2]
+        lat: lat1,
+        lng: lng1
       }
     sourceMapData.directions.route[1].coords =
       {
-        lat: routeCoordsArray[3],
-        lng: routeCoordsArray[4]
+        lat: lat2,
+        lng: lng2
       }
   }
 
-  const [, mode] = window.location.search.match(/engine=[a-zA-Z_]+_([a-z]+)&/)
-  switch (mode) {
-    case 'bicycle':
-    case 'bike':
-      sourceMapData.directions.mode = 'bike'
-      break
-    case 'car':
-      sourceMapData.directions.mode = 'car'
-      break
-    case 'foot':
-      sourceMapData.directions.mode = 'foot'
-      break
+  if (sourceMapData.directions) {
+    const [, mode] = window.location.search.match(/engine=[a-zA-Z_]+_([a-z]+)&/)
+    switch (mode) {
+      case 'bicycle':
+      case 'bike':
+        sourceMapData.directions.mode = 'bike'
+        break
+      case 'car':
+        sourceMapData.directions.mode = 'car'
+        break
+      case 'foot':
+        sourceMapData.directions.mode = 'foot'
+        break
+    }
   }
 
   // sometimes (eg. after a search?) osm has directions but no centre coords
@@ -65,8 +66,7 @@ registerExtractor(resolve => {
       lat: calcCentreLat,
       lng: calcCentreLng
     }
-    sourceMapData.resolution = calculateResolutionFromStdZoom(
-      8, calcCentreLat)
+    sourceMapData.resolution = calculateResolutionFromStdZoom(8, calcCentreLat)
   }
 
   resolve(sourceMapData)
