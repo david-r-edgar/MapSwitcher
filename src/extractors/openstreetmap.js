@@ -1,5 +1,4 @@
 /* global
-  XPathResult,
   calculateResolutionFromStdZoom,
   registerExtractor */
 
@@ -13,13 +12,11 @@ registerExtractor(resolve => {
   }
 
   const routeRe = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
-  const [lat1, lng1, lat2, lng2] = window.location.search.match(routeRe)
+  const [, lat1, lng1, lat2, lng2] = window.location.search.match(routeRe)
 
   if (lat1 && lng1 && lat2 && lng2) {
-    const routeFrom = document.evaluate('//*[@id="route_from"]',
-      document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
-    const routeTo = document.evaluate('//*[@id="route_to"]',
-      document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.value
+    const routeFrom = document.getElementById('route_from').value
+    const routeTo = document.getElementById('route_to').value
     sourceMapData.directions = {
       route: [
         { address: routeFrom },

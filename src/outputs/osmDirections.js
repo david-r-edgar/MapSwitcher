@@ -22,7 +22,7 @@ export default {
         }
       }
 
-      // OSM appears to only handle single-segment routes.
+      // OSM only handles single-segment routes.
       // So we choose to use the first and last point of the route from the source map.
 
       const firstElem = sourceMapData.directions.route[0]
