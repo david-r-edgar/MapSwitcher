@@ -51,6 +51,8 @@ Provided below are a non-comprehensive set of URLs which are useful for test pur
 
 - Search map: https://www.geocaching.com/play/map/?lat=47.608376&lng=-122.347891&zoom=15&asc=true&sort=distance
 
+- Google Satellite, unusual zoom parameter: https://www.google.com/maps/@53.4016168,-1.9301034,834a,35y,133.51h/data=!3m1!1e3
+
 - NGI/IGN: https://topomapviewer.ngi.be/?x=648833.54&y=670721.26&zoom=11&l=en&baseLayer=ngi.cartoweb.topo.be
 
 - streetmap.co.uk: https://www.streetmap.co.uk/map.srf?X=318088&Y=176467&A=Y&Z=106

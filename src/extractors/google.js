@@ -29,9 +29,9 @@ registerExtractor((resolve, reject) => {
       if (coordArray2[4] === 'z') {
         sourceMapData.resolution =
           calculateResolutionFromStdZoom(coordArray2[3], coordArray2[1])
-      } else if (coordArray2[4] === 'm') {
+      } else if (coordArray2[4] === 'm' || coordArray2[4] === 'a') {
         // on google satellite / earth, the zoom is specified in the URL not
-        // as the standard 'z' value but as an m value, which is the height in
+        // as the standard 'z' value but as an m or a value, which is the height in
         // metres of the map displayed in the map window.
         // (i.e. if you resize the window, you'll see the URL updated accordingly)
         sourceMapData.resolution = coordArray2[3] / document.body.offsetHeight
