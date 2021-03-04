@@ -11,29 +11,33 @@ registerExtractor(resolve => {
     sourceMapData.resolution = calculateResolutionFromStdZoom(zoom, lat)
   }
 
-  const routeRe = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
-  const [, lat1, lng1, lat2, lng2] = window.location.search.match(routeRe)
+  try {
+    const routeRe = /route=([-0-9.]+)%2C([-0-9.]+)%3B([-0-9.]+)%2C([-0-9.]+)/
+    const [, lat1, lng1, lat2, lng2] = window.location.search.match(routeRe)
 
-  if (lat1 && lng1 && lat2 && lng2) {
-    const routeFrom = document.getElementById('route_from').value
-    const routeTo = document.getElementById('route_to').value
-    sourceMapData.directions = {
-      route: [
-        { address: routeFrom },
-        { address: routeTo }
-      ]
+    if (lat1 && lng1 && lat2 && lng2) {
+      const routeFrom = document.getElementById('route_from').value
+      const routeTo = document.getElementById('route_to').value
+      sourceMapData.directions = {
+        route: [
+          { address: routeFrom },
+          { address: routeTo }
+        ]
+      }
+
+      sourceMapData.directions.route[0].coords =
+        {
+          lat: lat1,
+          lng: lng1
+        }
+      sourceMapData.directions.route[1].coords =
+        {
+          lat: lat2,
+          lng: lng2
+        }
     }
-
-    sourceMapData.directions.route[0].coords =
-      {
-        lat: lat1,
-        lng: lng1
-      }
-    sourceMapData.directions.route[1].coords =
-      {
-        lat: lat2,
-        lng: lng2
-      }
+  } catch (err) {
+    // if we can't extract directions, ignore
   }
 
   if (sourceMapData.directions) {
