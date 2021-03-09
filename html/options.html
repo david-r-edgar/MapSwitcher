@@ -4,7 +4,6 @@
     <meta charset="utf-8"/>
     <title>Options - Map Switcher</title>
     <script src="../vendor/sortablejs/Sortable.min.js"></script>
-    <script src="../src/outputMaps.js"></script>
     <link rel="stylesheet" href="../css/stylesheet.css">
   </head>
   <body id="optionsPage">
@@ -15,33 +14,16 @@
     </div>
 
     <article class="options">
-      <h3>Output service options</h3>
+      <h2>Output service options</h2>
 
       <section class="services">
-        <table id="mapsTickList" class=srvTickList>
-          <thead>
-            <th></th><th colspan=2 class=srvTitle>Mapping services</th><th><input type="checkbox" id="mapsSelectAllNone" class=selectAllNone cat="mapsTickList"/> </th>
-          </thead>
-          <tbody class="sortable">
-          </tbody>
-        </table>
-        <table id="utilsTickList" class=srvTickList>
-          <thead>
-            <th></th><th colspan=2 class=srvTitle>Utilities</th><th><input type="checkbox" id="utilsSelectAllNone" class=selectAllNone cat="utilsTickList"/> </th>
-          </thead>
-          <tbody class="sortable">
-          </tbody>
-        </table>
-      </section>
+        <div id="tabCatSrvContainer" class="sortableTabContainer"></div>
+       </section>
 
       <div id="status"></div>
-      <button id="reset">
-        <svg viewBox="0 0 512 512" >
-          <use href="../vendor/font-awesome-5.8.2_stripped/icons.svg#undo"></use>
-        </svg>
-        Reset to defaults...</button>
+      <div id="resetContainer"></div>
     </article>
 
-    <script src="../src/options.js"></script>
+    <script type="module" src="../src/options.js"></script>
   </body>
 </html>

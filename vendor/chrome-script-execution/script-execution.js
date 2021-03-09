@@ -1,6 +1,12 @@
 'use strict';
 
+let browser
+if (typeof browser === 'undefined') {
+  browser = globalThis.chrome // eslint-disable-line no-global-assign
+}
+
 (function () {
+
     function ScriptExecution(tabId) {
         this.tabId = tabId;
     }
@@ -20,7 +26,7 @@
 
     function promiseTo(fn, tabId, info) {
         return new Promise(function (resolve, reject) {
-            browser.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+            browser.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 if (tabs[0].url.match(/^chrome:\/\//)) {
                     return reject();
                 } else {

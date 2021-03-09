@@ -23,6 +23,10 @@ npm run build
 ```
 This will clean and build into `./release`, generating or copying all necessary files. It can be tested using the `chrome://extensions` 'Load unpacked extension...' option (see above), and also packed through the same page.
 
+### Testing
+
+There is a list of [Test URLs](docs/testURLs.md).
+
 ## Mapping services supported
 
 ### Input mapping services
@@ -34,11 +38,14 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Waze
 - Here
 - Yandex
+- BRouter web
 
 ##### Without directions
 - Wikimapia
+- Wikipedia
 - Wikimedia Labs
   - Geohack info page
+  - WikiMiniAtlas
 - Geocaching
 - OpenSeaMap
 - Stamen
@@ -69,6 +76,14 @@ This will clean and build into `./release`, generating or copying all necessary 
 - OSMaps
 - Windy
 - Flightradar24
+- CyclOSM
+- nakarte.me
+- Mapmyindia
+- Map With AI RapiD
+- NLS
+- Boulter
+- OpenWeatherMap
+- Heavens-Above
 
 ### Output mapping services
 
@@ -76,14 +91,15 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Google
 - Bing
 - Here
+- BRouter web
 
 ##### With limited directions
 (These services only support single segment directions, no 'via' points.)
 - OpenStreetMap (only for routes with coordinate-specified waypoints)
-- Waze (only for routes with coordinate-specified waypoints)
 - Yandex
 
 ##### Without directions
+- Waze
 - Wikimapia
 - Wikimedia Labs
   - Geohack info page
@@ -111,6 +127,11 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Windy
 - OpenWeatherMap
 - Flightradar24
+- CyclOSM
+- nakarte.me
+- Mapmyindia
+- Map With AI RapiD
+- NLS (UK)
 
 ### Utilities
 - GPX download
@@ -118,6 +139,7 @@ This will clean and build into `./release`, generating or copying all necessary 
 - SunCalc
 - Boulter (coordinate conversion)
 - Flickr (map of nearby photos)
+- Heavens-Above
 
 ## Known issues
 
@@ -125,3 +147,4 @@ This will clean and build into `./release`, generating or copying all necessary 
 - Zoom / scale may not always be exact, depending on the limitations of the input & output map services
 - Directions handle multi-segment routes (with intermediate specified locations) where possible. Only some services (google, microsoft) support this. In these cases, output services which only support single segments will show maps from the first location to the last location.
 - Waze currently fails to handle zoom. The parameters do not work as its own documentation suggests they should.
+- Waze output routing has been disabled, as deep-linking to coordinates currently doesn't work properly.
