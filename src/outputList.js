@@ -46,6 +46,7 @@ import MapWithAIRapiD from './outputs/MapWithAIRapiD.js'
 import dlgpx from './outputs/dlgpx.js'
 import clipboard from './outputs/clipboard.js'
 import heavensAbove from './outputs/heavensAbove.js'
+import openrailwaymap from './outputs/openrailwaymap.js'
 
 const outputs = {
   google,
@@ -95,7 +96,8 @@ const outputs = {
   MapWithAIRapiD,
   dlgpx,
   clipboard,
-  heavensAbove
+  heavensAbove,
+  openrailwaymap
 }
 
 outputs.init = async function () {

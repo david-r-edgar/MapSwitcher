@@ -44,6 +44,7 @@
   ["openseamap",{"cat":"Special purpose","tab":"Special purpose","name":"OpenSeaMap","image":"openSeaMapLogo16x16.png"}],
   ["stamen",{"cat":"Special purpose","tab":"Special purpose","name":"Stamen","image":"greyMarker.png"}],
   ["flightradar24",{"cat":"Special purpose","tab":"Special purpose","name":"Flightradar24","image":"flightradar24.png"}],
+  ["openrailwaymap",{"cat":"Special purpose","tab":"Special purpose","name":"OpenRailwayMap","image":"openrailwaymap16x16.png"}],
   ["MapWithAIRapiD",{"cat":"Special purpose","tab":"Special purpose","name":"Map With AI RapiD","image":"mapwithai.png"}],
   ["dlgpx",{"cat":"Utility","tab":"Special purpose","name":"GPX","image":"gpxFile16x16.png"}],
   ["clipboard",{"cat":"Utility","tab":"Special purpose","name":"Clipboard","image":"clipboard16x16.png"}]

@@ -195,6 +195,10 @@ const extractors = [
     host: 'heavens-above.com',
     extractor: 'heavensAbove',
     utils: false
+  },
+  {
+    host: 'openrailwaymap.org',
+    extractor: 'openrailwaymap'
   }
 ]
 
