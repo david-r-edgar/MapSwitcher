@@ -98,7 +98,7 @@ function restoreOptions () {
       '<label for"' + outputMapService.id + "\"><td class='imgcell'><img src=\"../image/" + outputMapService.image + '"></td>' + "<td class='mapnamecell'>" + outputMapService.site + '</td></label>' +
       "<td class='chkboxcell'><input type=\"checkbox\" class='outpServiceEnabledChk' id=\"" + outputMapService.id +
       '" cat="' + listName + '" /></td>' + '</tr>'
-    document.getElementById(listName).getElementsByTagName('tbody')[0].insertAdjacentText('beforeend', mapEntry)
+    document.getElementById(listName).getElementsByTagName('tbody')[0].insertAdjacentHTML('beforeend', mapEntry)
 
     mapEnabledDefaults[outputMapService.id] = true
     prioDefaults['prio/' + outputMapService.id] =
