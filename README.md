@@ -1,10 +1,11 @@
 # MapSwitcher
 
-Chrome extension to switch from one online map provider to another, maintaining (as far as possible) the map centre, zoom level, and directions of the source map.
+Chrome and Firefox extension to switch from one online map provider to another, maintaining (as far as possible) the map centre, zoom level, and directions of the source map.
 
 ## Installation
 
 Most users will want to use the released version, [available on the Chrome Store](https://chrome.google.com/webstore/detail/map-switcher/fanpjcbgdinjeknjikpfnldfpnnpkelb).
+Most users will want to use the released version, [available on the Firefox Browser Add-Ons Store]().
 
 ### To install the development version
 If you're interested in contributing to its development, modifying the extension for your own use, or simply using the most recent code, you should follow these steps:
