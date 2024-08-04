@@ -27,9 +27,10 @@ class MapSwitcher {
   async run () {
     try {
       this.initEnv()
-      const { url } = await this.validateCurrentTab()
+      const { url, tabId } = await this.validateCurrentTab()
+
       const contentScripts = await this.getListOfContentScripts(url)
-      const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction(contentScripts)])
+      const [extractedData] = await Promise.all([this.listenForExtraction(), this.runExtraction2(contentScripts, tabId)])
       const sourceMapData = await SourceMapData.build(extractedData)
       const configManager = await ConfigManager.create()
       await configManager.getServiceConfig().loadUserSettings()
@@ -60,7 +61,7 @@ class MapSwitcher {
             (tabs[0].url.indexOf('//chrome.google.com/') >= 0)) {
           reject(new Error())
         } else {
-          resolve({ url: tabs[0].url })
+          resolve({ url: tabs[0].url, tabId: tabs[0].id })
         }
       })
     })
@@ -94,13 +95,10 @@ class MapSwitcher {
   }
 
   // Runs the content scripts which handle the extraction of coordinate data from the current tab.
-  //
-  // @return Promise which fulfils when complete
-  runExtraction (contentScripts) {
-    return new Promise(function (resolve) {
-      new ScriptExecution().executeScripts(...contentScripts)
-      resolve()
-    })
+  async runExtraction2 (contentScripts, tabId) {
+    for (const file of contentScripts) {
+      await browser.scripting.executeScript({ target: { tabId }, files: [file] })
+    }
   }
 
   log (...msg) {
