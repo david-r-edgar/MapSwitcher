@@ -174,6 +174,10 @@ const extractors = [
     extractor: 'mapwith_ai'
   },
   {
+    host: 'rapideditor.org',
+    extractor: 'mapwith_ai'
+  },
+  {
     host: 'maps.nls.uk',
     extractor: 'nls_uk'
   },
