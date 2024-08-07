@@ -138,6 +138,10 @@ const extractors = [
     extractor: 'ordnancesurvey'
   },
   {
+    host: 'explore.osmaps.com',
+    extractor: 'ordnancesurvey'
+  },
+  {
     host: 'windy.com',
     extractor: 'windy'
   },

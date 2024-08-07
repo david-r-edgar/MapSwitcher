@@ -4,8 +4,8 @@
 
 registerExtractor(resolve => {
   const sourceMapData = {}
-  const re = /([-0-9.]+),([-0-9.]+),([0-9]+)/
-  const coordArray = window.location.pathname.match(re)
+  const re = /lat=([-0-9.]+)&lon=([-0-9.]+)&zoom=([0-9.]+)/
+  const coordArray = window.location.search.match(re)
   if (coordArray?.length > 3) {
     sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
     sourceMapData.resolution =
