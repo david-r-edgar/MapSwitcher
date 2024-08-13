@@ -12,12 +12,11 @@
     <script src="../vendor/chris-veness/latlon.js"></script>
     <script src="../vendor/chris-veness/osgridref.js"></script>
     <script src="../vendor/chris-veness/wgs_airy.js"></script>
-    <script src="../src/outputMaps.js"></script>
     <script src="../src/mapUtil.js"></script>
-    <script src="../src/mapSwitcher.js"></script>
+    <script type="module" src="../src/mapSwitcher.js"></script>
   </head>
   <body>
-    <div class=borderBox>
+    <div class=titleBox>
       <div id="titleLine">
         <h2>Map Switcher</h2> <img src="../image/mapswitcher48x48.png">
         <div id="ctrlButtons">
@@ -46,28 +45,23 @@
       </div>
     </div>
     <div class=borderBox id=mainBorderBox>
-        <div id="sourceDescr">
-            <div class="descrItem" id="sourceLocn"><span class="lbl">Location:</span> &nbsp; <span id="sourceLocnVal" class="descrVal"></span></div>
-            <div class="descrItem" id="sourceDirn">&nbsp; <span id="sourceDirnVal" class="descrVal"></span></div>
-            <div class="descrItem" id="sourceExtrFrom"><span class="lbl">Extracted from:</span> &nbsp; <span id="sourceExtrFromVal" class="descrVal"></span></div>
-        </div>
-      <div id="maplinkbox">
-        <div class="loading"><span>.</span><span>.</span><span>.</span></div>
-        <div class="maplinkcat" id="multiSegDirns"></div>
-        <div class="maplinkcat" id="singleSegDirns"></div>
-        <div class="maplinkcat" id="noDirns"></div>
-        <div class="maplinkcat" id="special"></div>
-        <div class="maplinkcat" id="misc"></div>
-        <div class="maplinkcat" id="utility"></div>
-        <div id="warningModal" class="modal">
-          <div class="modal-content">
-            <span class="modalClose">x</span>
-            <div id=nonupdating>
-              <div class=warning>Attention:</div><div><span id="nonUpdatingHost">This site</span> doesn't provide up-to-date extractable location data.</div><div>If you have moved or zoomed the map since loading the page, the coordinates in the URL will not be updated, and Map Switcher's links will be incorrect.</div>
-            </div>
+      <div id=tabContainer class="container--tabs">
+        <section class="row">
+          <ul id="tabTabContainer" class="nav nav-tabs"></ul>
+          <div id="tabPaneContainer" class="tab-content"></div>
+        </section>
+      </div>
+      <div id="warningModal" class="modal">
+        <div class="modal-content">
+          <span class="modalClose">x</span>
+          <div id=nonupdating>
+            <div class=warning>Attention:</div><div><span id="nonUpdatingHost">This site</span> may not provide up-to-date extractable location data.</div><div>If you have moved or zoomed the map since loading the page, the coordinates in the URL will not be updated, and Map Switcher's links will be incorrect.</div>
           </div>
         </div>
       </div>
+    </div>
+    <div class=borderBox id=nomapbox>
+      <div class="loading"><span>.</span><span>.</span><span>.</span></div>
       <div id=nomap>
         <span>No coordinates available on this page</span>
       </div>

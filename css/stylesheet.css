@@ -6,10 +6,15 @@ body {
 }
 .borderBox {
   background-color: #fff;
-  padding: 4px;
+  padding: 0px 2px 2px 2px;
 }
 #mainBorderBox {
-  margin-top: 4px;
+  display: none;
+  background-color: #eee;
+}
+.titleBox {
+  background-color: #eee;
+  padding: 4px 4px 0px 4px;
 }
 #titleLine {
   min-width: 300px;
@@ -26,7 +31,7 @@ body {
 }
 #ctrlButtons {
   position: absolute;
-  top: 42px;
+  top: 12px;
 }
 #ctrlButtons svg {
   width:16px;
@@ -37,6 +42,10 @@ body {
 }
 #nomap {
   display: none;
+}
+#nomapbox {
+  margin-top: 4px;
+  background-color: #fff;
 }
 #ctrlButtons a {
   text-decoration: none;
@@ -55,7 +64,10 @@ a.maplink:active {
   color: #110066;
 }
 .serviceLine {
-  margin: 1px 0px;
+  margin: 1px 0px 5px 0px;
+  padding-left: 20px;
+  text-indent: -20px;
+  line-height: 90%;
 }
 .serviceName {
   font-size: 1.05em;
@@ -67,6 +79,18 @@ a.maplink:active {
 .linknote svg {
   width: 12px;
   height: 12px;
+}
+.maplinkcat {
+  display: none;
+}
+.maplinkcat.inUse {
+  display: block;
+}
+ul.nav-tabs > li {
+  display: none;
+}
+ul.nav-tabs > li.inUse {
+  display: block;
 }
 
 /* animated loading dots from https://martinwolf.org/blog/2015/01/pure-css-savingloading-dots-animation */
@@ -118,13 +142,13 @@ h4 {
   margin: 0.8em 0em 0.5em 0em;
 }
 
-#maplinkbox {
+.maplinkbox {
   display: flex;
   /*flex: 2;*/
   flex-direction: column;
   flex-wrap: wrap;
   /*position: relative;*/
-  max-height: 470px;
+  max-height: 420px;
   width: 538px;
   overflow-x: auto;
 }
@@ -182,28 +206,29 @@ h4 {
   margin-bottom: 0.4em
 }
 
-#sourceDescr {
-  background-color: #e8e8e8;
+.sourceDescr {
+  background-color: #fff;
   color: #999;
   padding: 2px 4px;
   line-height: 1.5em;
-  display: none;
+  min-height: 19px;
+  display: block;
 }
 
-#sourceDescr .descrItem {
+.sourceDescr .descrItem {
   display: inline-block;
   padding-right: 10px;
 }
 
-#sourceDescr .lbl {
+.sourceDescr .lbl {
   font-style: italic;
 }
 
-#sourceDescr .descrVal {
+.sourceDescr .descrVal {
   color: #666;
 }
 
-#sourceLocnVal {
+.sourceLocnVal {
   font-family: monospace;
   font-size: 11px;
 }
@@ -212,8 +237,66 @@ h4 {
   display: none;
 }
 
-
-
+/* .container--tabs { */
+  /* margin: 2rem; */
+/* } */
+.container--tabs .nav-tabs {
+  float: left;
+  width: 100%;
+  margin: 0;
+  list-style-type: none;
+  border-bottom: 1px solid #ddd;
+  padding-inline-start: 0px;
+}
+.container--tabs .nav-tabs > li {
+  float: left;
+  margin-bottom: -1px;
+}
+.container--tabs .nav-tabs > li > a {
+  float: left;
+  margin-right: 2px;
+  line-height: 1.42857143;
+  padding: 4px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px 8px 0 0;
+  background-color: #fafafa;
+  text-decoration: none;
+  color: #777;
+}
+.container--tabs .nav-tabs > li > a:hover {
+  border-color: #f5f5f5;
+  color: #333;
+  background-color: #fefefe;
+}
+.container--tabs .nav-tabs > li.active > a,
+.container--tabs .nav-tabs > li.active > a:hover,
+.container--tabs .nav-tabs > li.active > a:focus {
+  color: #555;
+  cursor: default;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  font-weight: 700;
+}
+.container--tabs .tab-content {
+  float: left;
+  width: 100%;
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+.container--tabs .tab-content > .tab-pane {
+  display: none;
+}
+.container--tabs .tab-content > .tab-pane.active {
+  display: block;
+  /* padding: 2.5% 3.5%; */
+  /* background-color: #eee; */
+}
+.container--tabs .tab-content > .active {
+  display: block;
+}
 
 /******** Options **********/
 
@@ -224,6 +307,36 @@ body#optionsPage {
   background-color: white;
   margin: 4px;
 }
+
+.optionsTab {
+  background-color: #eee;
+  clear: both;
+  padding: 2px 10px;
+  margin: 10px;
+}
+/* hack to make it enclose the float */
+.optionsTab:after {
+  content: "";
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+.tabHeader {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #bbb;
+  margin-bottom: 12px;
+}
+.tabHeader .dragcell {
+  margin-block-start: 10px;
+}
+.tabHeader h3 {
+  margin-block-start: 8px;
+  font-size: 14px;
+  margin-left: 12px;
+}
+
 article.options {
   margin: 1em 2em 1em 3em;
 }
@@ -241,9 +354,18 @@ article.options {
 #optionsTitleLine img {
   vertical-align: middle;
 }
+
+.categoryContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-height: 440px;
+  overflow-x: auto;
+}
+
 .srvTickList {
   float: left;
-  margin: 0.4em 2.4em 1.8em 2.4em;
+  margin: 0.4em 2.4em 2.8em 2.4em;
   list-style-type: none;
   border-collapse: collapse;
 }
@@ -283,9 +405,8 @@ section.services {
 }
 .srvTickList td.dragcell svg {
   width: 12px;
-  fill: #ddd;
 }
-.srvTickList th.srvTitle {
+.srvTickList th.catTitle {
   text-align: left;
   padding-left: 28px;
 }
@@ -320,4 +441,39 @@ button#reset svg {
 
 .sortableGhost {
   opacity: 0.2;
+}
+
+.dragcell {
+  width: 12px;
+}
+.dragcell svg {
+  fill: #999;
+}
+
+.noActiveServices {
+  color: #999;
+}
+.noActiveServices .dragcell svg {
+  fill: #aaa;
+}
+.noActiveServices img {
+  /* could just use opacity for all of .noActiveServices, but would need to
+    sort out classes for cats and tabs first, to avoid concurrent opacity */
+  opacity: 0.3;
+}
+
+.newCatButton {
+  float: left;
+  margin: 0em 0.4em 1.4em 2em;
+}
+
+.newCatButton>a {
+  font-size: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #666;
+}
+
+.newCatButton>a:hover {
+  color: #aaa;
 }

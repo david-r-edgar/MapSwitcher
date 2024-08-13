@@ -1,6 +1,5 @@
 node_modules
-package-lock.json
 release
 scratch
 .vscode
-MapSwitcher_v.zip
+MapSwitcher_v*.zip
