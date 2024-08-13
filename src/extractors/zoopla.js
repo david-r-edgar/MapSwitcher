@@ -1,20 +1,20 @@
 /* global
   registerExtractor,
-  XPathResult,
   calculateResolutionFromStdZoom */
 
 registerExtractor(resolve => {
   const sourceMapData = {}
-  const latlon = document.evaluate('//script[contains(.,"mapData ")  and contains(.,"bounding_box")]',
-    document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
-  const lat = latlon.text.match(/latitude.:([0-9.-]+)/)[1]
-  const lon = latlon.text.match(/longitude.:([0-9.-]+)/)[1]
+  const mapsrc = document.querySelector('*[data-testid="static-map-container"] picture source')
+  console.log(mapsrc.srcset)
 
-  if (lat.length > 3 && lon.length > 3) {
-    sourceMapData.centreCoords = { lat: lat, lng: lon }
+  const re1 = /center=([-0-9.]+),([-0-9.]+)/
+  const coordArray = mapsrc.srcset.match(re1)
+
+  if (coordArray?.length > 2) {
+    sourceMapData.centreCoords = { lat: coordArray[1], lng: coordArray[2] }
   }
   sourceMapData.resolution = calculateResolutionFromStdZoom(
-    17, sourceMapData.centreCoords.lat)
+    17, coordArray[1])
 
   resolve(sourceMapData)
 })
